@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo
@@ -14,13 +16,16 @@ namespace TehGM.Wolfringo
         public string Url { get; }
         public string Token { get; }
         public string Device { get; }
+        public bool ThrowMissingSerializer { get; set; } = true;
 
         public event Action Connected;
         public event Action Disconnected;
+        public event Action<IWolfMessage> MessageReceived;
         public event Action PingSent;
         public event Action<TimeSpan> PongReceived;
 
         private readonly SocketIO _client;
+        private readonly IDictionary<string, IMessageSerializer> _serializers;
 
         public WolfClient(string url, string token, string device = DefaultDevice)
         {
@@ -28,6 +33,7 @@ namespace TehGM.Wolfringo
             this.Token = token;
             this.Device = device;
 
+            this._serializers = GetDefaultMessageSerializers();
             this._client = new SocketIO(this.Url);
             this._client.Parameters = new Dictionary<string, string>()
             {
@@ -57,9 +63,25 @@ namespace TehGM.Wolfringo
         public void Dispose()
             => _client.Dispose();
 
-        private void _client_OnReceivedEvent(string arg1, SocketIOClient.Arguments.ResponseArgs arg2)
+        private void _client_OnReceivedEvent(string command, SocketIOClient.Arguments.ResponseArgs payload)
         {
-            throw new NotImplementedException();
+            if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+            {
+                if (ThrowMissingSerializer)
+                    throw new KeyNotFoundException($"Serializer for command {command} not found");
+                return;
+            }
+
+            IWolfMessage msg = serializer.Deserialize(command, payload.Text, payload.Buffers);
+            this.MessageReceived?.Invoke(msg);
+        }
+
+        protected virtual Dictionary<string, IMessageSerializer> GetDefaultMessageSerializers()
+        {
+            return new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
+            {
+                { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() }
+            };
         }
     }
 }

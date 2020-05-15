@@ -10,5 +10,6 @@ namespace TehGM.Wolfringo
 
         event Action Connected;
         event Action Disconnected;
+        event Action<IWolfMessage> MessageReceived;
     }
 }
