@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Messages;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {
     class Program
     {
+        static IWolfClient _client;
         static async Task Main(string[] args)
         {
-            IWolfClient client = new WolfClient();
-            client.Connected += OnClientConnected;
-            client.Disconnected += OnClientDisconnected;
-            client.MessageReceived += OnMessageReceived;
-            await client.ConnectAsync();
+            _client = new WolfClient();
+            _client.Connected += OnClientConnected;
+            _client.Disconnected += OnClientDisconnected;
+            _client.MessageReceived += OnMessageReceived;
+            await _client.ConnectAsync();
             await Task.Delay(-1);
         }
 
-        private static void OnMessageReceived(IWolfMessage obj)
+        private static async void OnMessageReceived(IWolfMessage obj)
         {
             Console.WriteLine("Message received: " + obj.Command);
+            if (obj is WelcomeMessage)
+            {
+                await _client.SendAsync(new LoginMessage("", ""));
+            }
         }
 
         private static void OnClientConnected()

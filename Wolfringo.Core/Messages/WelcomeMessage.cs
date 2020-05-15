@@ -6,6 +6,7 @@ namespace TehGM.Wolfringo.Messages
 {
     public class WelcomeMessage : IWolfMessage
     {
+        [JsonIgnore]
         public string Command => MessageCommands.Welcome;
 
         [JsonProperty("ip")]
