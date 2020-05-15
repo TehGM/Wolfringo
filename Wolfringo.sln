@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePingBot", "Examples\SimplePingBot\SimplePingBot.csproj", "{6F0C05BE-73E6-44FB-859A-EA3595F6B955}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F765215F-98D7-4199-8124-1FF254A35A21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,9 +26,16 @@ Global
 		{AB84565F-651E-49FD-A78D-FBB8A08BBD23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB84565F-651E-49FD-A78D-FBB8A08BBD23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB84565F-651E-49FD-A78D-FBB8A08BBD23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F0C05BE-73E6-44FB-859A-EA3595F6B955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F0C05BE-73E6-44FB-859A-EA3595F6B955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F0C05BE-73E6-44FB-859A-EA3595F6B955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F0C05BE-73E6-44FB-859A-EA3595F6B955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F0C05BE-73E6-44FB-859A-EA3595F6B955} = {F765215F-98D7-4199-8124-1FF254A35A21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}

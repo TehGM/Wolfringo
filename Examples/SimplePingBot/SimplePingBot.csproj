@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TehGM.Wolfringo.Examples.SimplePingBot</RootNamespace>
+    <AssemblyName>Example_SimplePingBot</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Wolfringo.Core\Wolfringo.Core.csproj" />
+  </ItemGroup>
+
+</Project>

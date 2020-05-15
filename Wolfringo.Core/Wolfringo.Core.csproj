@@ -13,4 +13,8 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SocketIOClient" Version="1.0.3.13" />
+  </ItemGroup>
+
 </Project>
