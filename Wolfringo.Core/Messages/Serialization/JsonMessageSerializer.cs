@@ -13,17 +13,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
 
         public JToken Serialize(IWolfMessage message)
         {
+            JObject payload = new JObject();
             JToken body = JToken.FromObject(message, SerializationHelper.DefaultSerializer);
-            if (message is IHeadersWolfMessage headersMessage)
-            {
-                JObject payload = new JObject();
-                if (body.HasValues)
-                    payload.Add(new JProperty("body", body));
-                if (headersMessage.Headers?.Any() == true)
-                    payload.Add(new JProperty("headers", JToken.FromObject(headersMessage.Headers, SerializationHelper.DefaultSerializer)));
-                return payload;
-            }
-            return body;
-        } 
+            if (body.HasValues)
+                payload.Add(new JProperty("body", body));
+            if (message is IHeadersWolfMessage headersMessage && headersMessage.Headers?.Any() == true)
+                payload.Add(new JProperty("headers", JToken.FromObject(headersMessage.Headers, SerializationHelper.DefaultSerializer)));
+            return payload;
+        }
     }
 }

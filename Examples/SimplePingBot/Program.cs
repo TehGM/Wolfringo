@@ -23,6 +23,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             if (obj is WelcomeMessage)
             {
                 await _client.SendAsync(new LoginMessage("", ""));
+                await Task.Delay(250);
+                await _client.SendAsync(new SubscribeToPmMessage());
             }
         }
 

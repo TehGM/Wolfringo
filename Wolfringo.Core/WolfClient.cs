@@ -52,12 +52,6 @@ namespace TehGM.Wolfringo
             this._client.OnClosed += _ => this.Disconnected?.Invoke();
             this._client.OnPing += () => this.PingSent?.Invoke();
             this._client.OnPong += ts => this.PongReceived?.Invoke(ts);
-            this._client.OnError += _client_OnError;
-        }
-
-        private void _client_OnError(SocketIOClient.Arguments.ResponseArgs obj)
-        {
-            Console.WriteLine(obj.Text);
         }
 
         public WolfClient(string token, string device = DefaultDevice)
@@ -81,9 +75,9 @@ namespace TehGM.Wolfringo
                 throw new KeyNotFoundException($"Serializer for command {message.Command} not found");
             else
                 // try fallback simple serialization
-                payload = JToken.FromObject(message, SerializationHelper.DefaultSerializer);
+                payload = new JObject(new JProperty("body", JToken.FromObject(message, SerializationHelper.DefaultSerializer)));
 
-            return _client.EmitAsync(message.Command, payload);
+            return _client.EmitAsync(message.Command, payload, e => Console.WriteLine(e.RawText));
         }
 
         public void Dispose()
@@ -107,7 +101,8 @@ namespace TehGM.Wolfringo
             return new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
                 { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() },
-                { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() }
+                { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() },
+                { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() }
             };
         }
 

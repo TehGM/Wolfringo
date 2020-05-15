@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
         public string Login { get; private set; }
         [JsonProperty("password", Required = Required.Always)]
         public string Md5Password { get; private set; }
-        [JsonProperty("md5password")]
+        [JsonProperty("md5Password")]
         private readonly bool _useMd5 = true;
         [JsonProperty("type")]
         private string _loginType = "email";
