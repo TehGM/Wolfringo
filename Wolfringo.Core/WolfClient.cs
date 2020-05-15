@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using SocketIOClient;
+﻿using SocketIOClient;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -84,5 +83,8 @@ namespace TehGM.Wolfringo
                 { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() }
             };
         }
+
+        public void SetSerializer(string command, IMessageSerializer serializer)
+            => this._serializers[command] = serializer;
     }
 }
