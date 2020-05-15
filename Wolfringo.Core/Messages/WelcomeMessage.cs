@@ -14,14 +14,14 @@ namespace TehGM.Wolfringo.Messages
         public string CountryCode { get; private set; }
         [JsonProperty("token")]
         public string Token { get; private set; }
-        [JsonProperty("enpointConfig")]
+        [JsonProperty("endpointConfig")]
         public EndpointConfig Endpoints { get; private set; }
 
         public class EndpointConfig
         {
-            [JsonProperty("avatarEnpoint")]
+            [JsonProperty("avatarEndpoint")]
             public string AvatarEndpoint { get; private set; }
-            [JsonProperty("mmsUploadEnpoint")]
+            [JsonProperty("mmsUploadEndpoint")]
             public string MmsUploadEndpoint { get; private set; }
             [JsonProperty("banner")]
             public BannerEndpointConfig BannerEndpoints { get; private set; }
