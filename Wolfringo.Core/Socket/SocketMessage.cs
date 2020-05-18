@@ -33,11 +33,12 @@ namespace TehGM.Wolfringo.Socket
             SocketMessageType msgType = ParseMessageType(rawMessage, out int parserIndex);
             // get payload
             JToken payload = ParsePayload(rawMessage, out int payloadIndex);
-
-            // get binary count and message id
+            // get binary count
             int binaryCount = ParseBinaryCount(rawMessage, ref parserIndex, payloadIndex);
+            // get message id
             int? id = ParseMessageID(rawMessage, ref parserIndex, payloadIndex);
 
+            // return results
             SocketMessage result = new SocketMessage(msgType, id, payload, binaryCount);
             result._rawMessage = rawMessage;
             return result;
@@ -59,8 +60,9 @@ namespace TehGM.Wolfringo.Socket
             int tackIndex = rawMessage.IndexOf('-', parserIndex, searchCount);
             if (tackIndex < 0)
                 return 0;
+            int result = int.Parse(rawMessage.Substring(parserIndex, tackIndex - parserIndex));
             parserIndex = tackIndex + 1;
-            return int.Parse(rawMessage.Substring(parserIndex, tackIndex - parserIndex));
+            return result;
         }
 
         private static int? ParseMessageID(string rawMessage, ref int parserIndex, int payloadIndex = -1)
