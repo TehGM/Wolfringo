@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
+using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo
@@ -30,7 +31,7 @@ namespace TehGM.Wolfringo
         public event Action PingSent;
         public event Action<TimeSpan> PongReceived;
 
-        private readonly SocketIO _client;
+        private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
 
         public WolfClient(string url, string token, string device = DefaultDevice)
@@ -40,19 +41,17 @@ namespace TehGM.Wolfringo
             this.Device = device;
 
             this._serializers = GetDefaultMessageSerializers();
-            this._client = new SocketIO(this.Url);
-            this._client.Parameters = new Dictionary<string, string>()
-            {
-                { "token", this.Token },
-                { "device", this.Device }
-            };
-
-            this._client.OnReceivedEvent += _client_OnReceivedEvent;
-            this._client.OnConnected += () => this.Connected?.Invoke();
-            this._client.OnClosed += _ => this.Disconnected?.Invoke();
-            this._client.OnPing += () => this.PingSent?.Invoke();
-            this._client.OnPong += ts => this.PongReceived?.Invoke(ts);
+            this._client = new SocketClient();
         }
+
+        private void _client_OnReceivedEvent(object sender, SocketIOClient.EventArguments.ReceivedEventArgs e)
+        {
+            if (!_serializers.TryGetValue(e.Event, out IMessageSerializer serializer))
+            {
+                if (ThrowMissingSerializer)
+                    throw new KeyNotFoundException($"Serializer for command {e.Event} not found");
+                return;
+            }
 
         public WolfClient(string token, string device = DefaultDevice)
             : this(DefaultUrl, token, device) { }
@@ -61,7 +60,7 @@ namespace TehGM.Wolfringo
             : this(DefaultUrl, new DefaultWolfTokenProvider().GenerateToken(18), device) { }
 
         public Task ConnectAsync()
-            => _client.ConnectAsync();
+            => _client.ConnectAsync(new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"));
 
         public Task DisconnectAsync()
             => _client.CloseAsync();
@@ -77,7 +76,7 @@ namespace TehGM.Wolfringo
                 // try fallback simple serialization
                 payload = new JObject(new JProperty("body", JToken.FromObject(message, SerializationHelper.DefaultSerializer)));
 
-            return _client.EmitAsync(message.Command, payload, e => Console.WriteLine(e.RawText));
+            throw new NotImplementedException();
         }
 
         public void Dispose()

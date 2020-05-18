@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,11 @@ namespace TehGM.Wolfringo.Socket
         private CancellationTokenSource _connectionCts;
 
         public event EventHandler<SocketClosedEventArgs> Disconnected;
+
+        public SocketClient()
+        {
+            this._websocketClient = new ClientWebSocket();
+        }
 
         public async Task ConnectAsync(Uri url, CancellationToken cancellationToken = default)
         {
@@ -39,6 +45,7 @@ namespace TehGM.Wolfringo.Socket
                 if (receivedMessage == null || receivedMessage.BytesRead == 0)
                     continue;
 
+                Console.WriteLine($"< {Encoding.UTF8.GetString(receivedMessage.ContentBytes, 0, receivedMessage.BytesRead)}");
                 // TODO: parse message
             }
         }
