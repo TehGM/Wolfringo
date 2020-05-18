@@ -20,7 +20,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             Console.WriteLine("Message received: " + obj.Command);
             if (obj is WelcomeMessage)
             {
-                await _client.SendAsync(new LoginMessage("", ""));
+                Config config = Config.Load();
+                await _client.SendAsync(new LoginMessage(config.Username, config.Password));
                 await Task.Delay(250);
                 await _client.SendAsync(new SubscribeToPmMessage());
             }
