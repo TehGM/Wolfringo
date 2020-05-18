@@ -10,8 +10,6 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         static async Task Main(string[] args)
         {
             _client = new WolfClient();
-            _client.Connected += OnClientConnected;
-            _client.Disconnected += OnClientDisconnected;
             _client.MessageReceived += OnMessageReceived;
             await _client.ConnectAsync();
             await Task.Delay(-1);
@@ -26,16 +24,6 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
                 await Task.Delay(250);
                 await _client.SendAsync(new SubscribeToPmMessage());
             }
-        }
-
-        private static void OnClientConnected()
-        {
-            Console.WriteLine("Connected");
-        }
-
-        private static void OnClientDisconnected()
-        {
-            Console.WriteLine("Disconnected");
         }
     }
 }

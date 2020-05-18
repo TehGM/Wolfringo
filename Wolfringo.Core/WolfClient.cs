@@ -1,11 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SocketIOClient;
-using SocketIOClient.Parsers;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Serialization;
@@ -25,11 +20,7 @@ namespace TehGM.Wolfringo
         public string Device { get; }
         public bool ThrowMissingSerializer { get; set; } = true;
 
-        public event Action Connected;
-        public event Action Disconnected;
         public event Action<IWolfMessage> MessageReceived;
-        public event Action PingSent;
-        public event Action<TimeSpan> PongReceived;
 
         private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
@@ -44,15 +35,6 @@ namespace TehGM.Wolfringo
             this._client = new SocketClient();
         }
 
-        private void _client_OnReceivedEvent(object sender, SocketIOClient.EventArguments.ReceivedEventArgs e)
-        {
-            if (!_serializers.TryGetValue(e.Event, out IMessageSerializer serializer))
-            {
-                if (ThrowMissingSerializer)
-                    throw new KeyNotFoundException($"Serializer for command {e.Event} not found");
-                return;
-            }
-
         public WolfClient(string token, string device = DefaultDevice)
             : this(DefaultUrl, token, device) { }
 
@@ -63,7 +45,7 @@ namespace TehGM.Wolfringo
             => _client.ConnectAsync(new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"));
 
         public Task DisconnectAsync()
-            => _client.CloseAsync();
+            => _client.DisconnectAsync();
 
         public Task SendAsync(IWolfMessage message)
         {
@@ -80,9 +62,9 @@ namespace TehGM.Wolfringo
         }
 
         public void Dispose()
-            => _client.Dispose();
+            => (_client as IDisposable).Dispose();
 
-        private void _client_OnReceivedEvent(string command, SocketIOClient.Arguments.ResponseArgs payload)
+        private void _client_OnReceivedEvent(string command)
         {
             if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
             {
@@ -91,7 +73,7 @@ namespace TehGM.Wolfringo
                 return;
             }
 
-            IWolfMessage msg = serializer.Deserialize(command, payload.Text, payload.Buffers);
+            IWolfMessage msg = serializer.Deserialize(command, null, null);
             this.MessageReceived?.Invoke(msg);
         }
 

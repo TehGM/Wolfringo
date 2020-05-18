@@ -9,8 +9,6 @@ namespace TehGM.Wolfringo
         Task DisconnectAsync();
         Task SendAsync(IWolfMessage message);
 
-        event Action Connected;
-        event Action Disconnected;
         event Action<IWolfMessage> MessageReceived;
     }
 }
