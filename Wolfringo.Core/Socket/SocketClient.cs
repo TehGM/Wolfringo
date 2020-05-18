@@ -11,11 +11,16 @@ namespace TehGM.Wolfringo.Socket
 {
     public class SocketClient : ISocketClient, IDisposable
     {
+        public SocketSession Session { get; private set; }
+        public TimeSpan Latency { get; private set; }
+
         private readonly ClientWebSocket _websocketClient;
         private CancellationTokenSource _connectionCts;
         private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1);
 
+        private static readonly SocketMessage _pingMessage = new SocketMessage(SocketMessageType.Ping, null, null);
         private uint _lastMessageID = 7;
+        private DateTime _lastPingSentUtc;
 
         public event EventHandler<SocketClosedEventArgs> Disconnected;
 
@@ -30,7 +35,7 @@ namespace TehGM.Wolfringo.Socket
             _connectionCts?.Dispose();
             _connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             await _websocketClient.ConnectAsync(url, _connectionCts.Token).ConfigureAwait(false);
-            _ = ConnectionTaskAsync();
+            _ = ConnectionLoopAsync();
         }
 
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
@@ -59,7 +64,7 @@ namespace TehGM.Wolfringo.Socket
             }
         }
 
-        private async Task ConnectionTaskAsync(CancellationToken cancellationToken = default)
+        private async Task ConnectionLoopAsync(CancellationToken cancellationToken = default)
         {
             ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024 * 16]);
 
@@ -83,13 +88,28 @@ namespace TehGM.Wolfringo.Socket
                             throw new InvalidDataException("Received a text message while a binary message was expected");
                         binaryMessages.Add(receivedBinaryMessage.ContentBytes);
                     }
-                    // TODO: event
+                    OnTextMessageReceived(msg, binaryMessages);
                 }
                 else
                 {
-                    // TODO: event
+                    throw new InvalidDataException("Received a binary message while a text message was expected");
                 }
             }
+        }
+
+        private void OnTextMessageReceived(SocketMessage msg, IEnumerable<byte[]> binaryMessages)
+        {
+            if (msg.Type == SocketMessageType.SID)
+            {
+                this.Session = msg.Payload.ToObject<SocketSession>();
+                _ = PingLoopAsync(this.Session, _connectionCts.Token);
+            }
+            else if (msg.Type == SocketMessageType.Pong)
+            {
+                this.Latency = DateTime.UtcNow - _lastPingSentUtc;
+                Console.WriteLine($"Latency: {this.Latency.TotalMilliseconds}");
+            }
+            // TODO: notify listeners
         }
 
         private static bool IsAnythingReceived(SocketReceiveResult result)
@@ -137,6 +157,16 @@ namespace TehGM.Wolfringo.Socket
             }
 
             return new SocketReceiveResult(contents, bytesRead, result.MessageType);
+        }
+
+        private async Task PingLoopAsync(SocketSession session, CancellationToken cancellationToken = default)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
+                await SendInternalAsync(_pingMessage, cancellationToken).ConfigureAwait(false);
+                _lastPingSentUtc = DateTime.UtcNow;
+            }
         }
 
         public void Dispose()
