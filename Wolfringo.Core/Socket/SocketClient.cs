@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
@@ -12,6 +13,9 @@ namespace TehGM.Wolfringo.Socket
     {
         private readonly ClientWebSocket _websocketClient;
         private CancellationTokenSource _connectionCts;
+        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1);
+
+        private uint _lastMessageID = 7;
 
         public event EventHandler<SocketClosedEventArgs> Disconnected;
 
@@ -34,6 +38,25 @@ namespace TehGM.Wolfringo.Socket
             _connectionCts?.Cancel();
             _connectionCts?.Dispose();
             return _websocketClient.CloseAsync(WebSocketCloseStatus.NormalClosure, $"Disconnection requested", cancellationToken);
+        }
+
+        public Task SendAsync(JToken payload, CancellationToken cancellationToken = default)
+            => SendInternalAsync(new SocketMessage(SocketMessageType.Event, ++_lastMessageID, payload), cancellationToken);
+
+        private async Task SendInternalAsync(SocketMessage message, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await _sendLock.WaitAsync().ConfigureAwait(false);
+                byte[] data = Encoding.UTF8.GetBytes(message.ToString());
+
+                using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
+                    await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                _sendLock.Release();
+            }
         }
 
         private async Task ConnectionTaskAsync(CancellationToken cancellationToken = default)

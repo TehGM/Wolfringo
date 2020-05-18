@@ -49,16 +49,16 @@ namespace TehGM.Wolfringo
 
         public Task SendAsync(IWolfMessage message)
         {
-            JToken payload;
+            JToken data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
-                payload = serializer.Serialize(message);
+                data = serializer.Serialize(message);
             else if (!ThrowMissingSerializer)
                 throw new KeyNotFoundException($"Serializer for command {message.Command} not found");
             else
                 // try fallback simple serialization
-                payload = new JObject(new JProperty("body", JToken.FromObject(message, SerializationHelper.DefaultSerializer)));
+                data = new JObject(new JProperty("body", JToken.FromObject(message, SerializationHelper.DefaultSerializer)));
 
-            throw new NotImplementedException();
+            return _client.SendAsync(message.Command, data);
         }
 
         public void Dispose()

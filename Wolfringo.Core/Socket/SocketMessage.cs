@@ -7,13 +7,13 @@ namespace TehGM.Wolfringo.Socket
     public class SocketMessage
     {
         public SocketMessageType Type { get; }
-        public int? ID { get; }
+        public uint? ID { get; }
         public JToken Payload { get; }
         public int BinaryMessagesCount { get; }
 
         private string _rawMessage;
 
-        public SocketMessage(SocketMessageType type, int? id, JToken payload, int binaryCount = 0)
+        public SocketMessage(SocketMessageType type, uint? id, JToken payload, int binaryCount = 0)
         {
             this.Type = type;
             this.ID = id;
@@ -36,7 +36,7 @@ namespace TehGM.Wolfringo.Socket
             // get binary count
             int binaryCount = ParseBinaryCount(rawMessage, ref parserIndex, payloadIndex);
             // get message id
-            int? id = ParseMessageID(rawMessage, ref parserIndex, payloadIndex);
+            uint? id = ParseMessageID(rawMessage, ref parserIndex, payloadIndex);
 
             // return results
             SocketMessage result = new SocketMessage(msgType, id, payload, binaryCount);
@@ -65,7 +65,7 @@ namespace TehGM.Wolfringo.Socket
             return result;
         }
 
-        private static int? ParseMessageID(string rawMessage, ref int parserIndex, int payloadIndex = -1)
+        private static uint? ParseMessageID(string rawMessage, ref int parserIndex, int payloadIndex = -1)
         {
             // if message has -, the ID will be after it
             int tackIndex = payloadIndex > parserIndex
@@ -77,7 +77,7 @@ namespace TehGM.Wolfringo.Socket
             // if there's payload, id length is from index to payload, otherwise to end of the message
             int idLength = (payloadIndex > parserIndex ? payloadIndex : rawMessage.Length) - parserIndex;
 
-            if (int.TryParse(rawMessage.Substring(parserIndex, idLength), out int result))
+            if (uint.TryParse(rawMessage.Substring(parserIndex, idLength), out uint result))
                 return result;
             return null;
         }

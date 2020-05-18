@@ -12,6 +12,11 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             _client = new WolfClient();
             _client.MessageReceived += OnMessageReceived;
             await _client.ConnectAsync();
+            await Task.Delay(250);
+            Config config = Config.Load();
+            await _client.SendAsync(new LoginMessage(config.Username, config.Password));
+            await Task.Delay(250);
+            await _client.SendAsync(new SubscribeToPmMessage());
             await Task.Delay(-1);
         }
 
