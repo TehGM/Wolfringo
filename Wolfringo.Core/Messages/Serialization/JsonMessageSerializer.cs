@@ -8,8 +8,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
 {
     public class JsonMessageSerializer<T> : IMessageSerializer where T : IWolfMessage
     {
-        public IWolfMessage Deserialize(string command, string payload, IEnumerable<byte[]> buffers)
-            => JsonConvert.DeserializeObject<T>(payload, SerializationHelper.SerializerSettings);
+        public IWolfMessage Deserialize(string command, JToken payload, IEnumerable<byte[]> binaryMessages)
+            => payload.ToObject<T>(SerializationHelper.DefaultSerializer);
 
         public JToken Serialize(IWolfMessage message)
         {
