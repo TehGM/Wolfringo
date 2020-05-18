@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -42,13 +43,34 @@ namespace TehGM.Wolfringo.Socket
             while (!cancellationToken.IsCancellationRequested)
             {
                 SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
-                if (receivedMessage == null || receivedMessage.BytesRead == 0)
+                if (!IsAnythingReceived(receivedMessage))
                     continue;
 
-                Console.WriteLine($"< {Encoding.UTF8.GetString(receivedMessage.ContentBytes, 0, receivedMessage.BytesRead)}");
-                // TODO: parse message
+                if (receivedMessage.MessageType == WebSocketMessageType.Text)
+                {
+                    SocketMessage msg = SocketMessage.Parse(Encoding.UTF8.GetString(receivedMessage.ContentBytes));
+                    Console.WriteLine(msg.ToString());
+                    List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
+                    for (int i = 0; i < msg.BinaryMessagesCount; i++)
+                    {
+                        SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+                        if (!IsAnythingReceived(receivedBinaryMessage))
+                            continue;
+                        if (receivedBinaryMessage.MessageType == WebSocketMessageType.Text)
+                            throw new InvalidDataException("Received a text message while a binary message was expected");
+                        binaryMessages.Add(receivedBinaryMessage.ContentBytes);
+                    }
+                    // TODO: event
+                }
+                else
+                {
+                    // TODO: event
+                }
             }
         }
+
+        private static bool IsAnythingReceived(SocketReceiveResult result)
+            => result != null && result.ContentBytes != null && result.ContentBytes.Length != 0;
 
         private async Task<SocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken = default)
         {

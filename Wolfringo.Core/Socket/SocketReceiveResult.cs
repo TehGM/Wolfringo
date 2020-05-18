@@ -6,15 +6,14 @@ namespace TehGM.Wolfringo.Socket
     internal class SocketReceiveResult
     {
         public byte[] ContentBytes { get; }
-        public int BytesRead { get; }
         public WebSocketMessageType MessageType { get; }
 
         public SocketReceiveResult(byte[] contentBytes, int bytesRead, WebSocketMessageType messageType)
         {
             if (messageType == WebSocketMessageType.Close)
                 throw new ArgumentException($"{messageType} message type not supported in {nameof(SocketReceiveResult)}", nameof(messageType));
-            this.ContentBytes = contentBytes;
-            this.BytesRead = bytesRead;
+            this.ContentBytes = new byte[bytesRead];
+            Buffer.BlockCopy(contentBytes, 0, this.ContentBytes, 0, bytesRead);
             this.MessageType = messageType;
         }
     }
