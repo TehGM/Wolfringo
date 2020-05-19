@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -23,6 +24,8 @@ namespace TehGM.Wolfringo.Socket
         private DateTime _lastPingSentUtc;
 
         public event EventHandler<SocketClosedEventArgs> Disconnected;
+        public event EventHandler<SocketMessageEventArgs> MessageReceived;
+        public event EventHandler<SocketMessageEventArgs> MessageSent;
 
         public SocketClient()
         {
@@ -57,6 +60,7 @@ namespace TehGM.Wolfringo.Socket
 
                 using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
                     await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+                MessageSent?.Invoke(this, new SocketMessageEventArgs(message, Enumerable.Empty<byte[]>()));
             }
             finally
             {
@@ -77,7 +81,6 @@ namespace TehGM.Wolfringo.Socket
                 if (receivedMessage.MessageType == WebSocketMessageType.Text)
                 {
                     SocketMessage msg = SocketMessage.Parse(Encoding.UTF8.GetString(receivedMessage.ContentBytes));
-                    Console.WriteLine(msg.ToString());
                     List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
                     for (int i = 0; i < msg.BinaryMessagesCount; i++)
                     {
@@ -105,11 +108,8 @@ namespace TehGM.Wolfringo.Socket
                 _ = PingLoopAsync(this.Session, _connectionCts.Token);
             }
             else if (msg.Type == SocketMessageType.Pong)
-            {
                 this.Latency = DateTime.UtcNow - _lastPingSentUtc;
-                Console.WriteLine($"Latency: {this.Latency.TotalMilliseconds}");
-            }
-            // TODO: notify listeners
+            MessageReceived?.Invoke(this, new SocketMessageEventArgs(msg, binaryMessages ?? Enumerable.Empty<byte[]>()));
         }
 
         private static bool IsAnythingReceived(SocketReceiveResult result)

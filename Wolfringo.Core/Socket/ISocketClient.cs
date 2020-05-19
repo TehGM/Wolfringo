@@ -8,6 +8,8 @@ namespace TehGM.Wolfringo.Socket
     public interface ISocketClient
     {
         event EventHandler<SocketClosedEventArgs> Disconnected;
+        event EventHandler<SocketMessageEventArgs> MessageReceived;
+        event EventHandler<SocketMessageEventArgs> MessageSent;
 
         Task ConnectAsync(Uri url, CancellationToken cancellationToken = default);
         Task DisconnectAsync(CancellationToken cancellationToken = default);

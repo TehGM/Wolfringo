@@ -33,6 +33,8 @@ namespace TehGM.Wolfringo
 
             this._serializers = GetDefaultMessageSerializers();
             this._client = new SocketClient();
+            this._client.MessageReceived += OnClientMessageReceived;
+            this._client.MessageSent += OnClientMessageSent;
         }
 
         public WolfClient(string token, string device = DefaultDevice)
@@ -64,17 +66,32 @@ namespace TehGM.Wolfringo
         public void Dispose()
             => (_client as IDisposable).Dispose();
 
-        private void _client_OnReceivedEvent(string command)
+        private void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
-            if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
-            {
-                if (ThrowMissingSerializer)
-                    throw new KeyNotFoundException($"Serializer for command {command} not found");
-                return;
-            }
+            Console.WriteLine($"< {e.Message}");
 
-            IWolfMessage msg = serializer.Deserialize(command, null, null);
-            this.MessageReceived?.Invoke(msg);
+            if (e.Message.Type == SocketMessageType.BinaryEvent || e.Message.Type == SocketMessageType.Event)
+            {
+                if (e.Message.Payload is JArray array)
+                {
+                    string command = array.First.ToObject<string>();
+
+                    if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+                    {
+                        if (ThrowMissingSerializer)
+                            throw new KeyNotFoundException($"Serializer for command {command} not found");
+                        return;
+                    }
+
+                    IWolfMessage msg = serializer.Deserialize(command, array.First.Next, e.BinaryMessages);
+                    this.MessageReceived?.Invoke(msg);
+                }
+            }
+        }
+
+        private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
+        {
+            Console.WriteLine($"> {e.Message}");
         }
 
         protected virtual IDictionary<string, IMessageSerializer> GetDefaultMessageSerializers()
