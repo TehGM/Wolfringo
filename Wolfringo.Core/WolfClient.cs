@@ -64,7 +64,7 @@ namespace TehGM.Wolfringo
         }
 
         public void Dispose()
-            => (_client as IDisposable).Dispose();
+            => (_client as IDisposable)?.Dispose();
 
         private void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
