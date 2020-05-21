@@ -53,6 +53,7 @@ namespace TehGM.Wolfringo.Messages
             this.Type = type;
             this.RawData = data;
             this.IsGroupMessage = groupMessage;
+            this.FlightID = Guid.NewGuid();
         }
 
         // helper create static methods
