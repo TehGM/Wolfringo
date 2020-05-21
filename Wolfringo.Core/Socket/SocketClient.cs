@@ -15,6 +15,8 @@ namespace TehGM.Wolfringo.Socket
         public SocketSession Session { get; private set; }
         public TimeSpan Latency { get; private set; }
 
+        public bool IsConnected => _websocketClient != null && (_websocketClient.State != WebSocketState.Closed || _websocketClient.State != WebSocketState.Aborted);
+
         private ClientWebSocket _websocketClient;
         private CancellationTokenSource _connectionCts;
         private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1);
@@ -32,22 +34,20 @@ namespace TehGM.Wolfringo.Socket
 
         public async Task ConnectAsync(Uri url, CancellationToken cancellationToken = default)
         {
-            if (_websocketClient != null && (_websocketClient.State != WebSocketState.Closed || _websocketClient.State != WebSocketState.Aborted))
+            if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            _connectionCts?.Cancel();
-            _connectionCts?.Dispose();
+            this.Dispose();
             _connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            _websocketClient?.Dispose();
             _websocketClient = new ClientWebSocket();
             await _websocketClient.ConnectAsync(url, _connectionCts.Token).ConfigureAwait(false);
-            _ = ConnectionLoopAsync();
+            _ = ConnectionLoopAsync(_connectionCts.Token);
             Connected?.Invoke(this, EventArgs.Empty);
         }
 
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
-            if (_websocketClient == null || (_websocketClient.State != WebSocketState.Open && _websocketClient.State != WebSocketState.Connecting))
+            if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
             await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested", cancellationToken);
@@ -73,9 +73,12 @@ namespace TehGM.Wolfringo.Socket
 
         private async Task<uint> SendInternalAsync(SocketMessage message, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
         {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+
             try
             {
-                await _sendLock.WaitAsync().ConfigureAwait(false);
+                await _sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
                 byte[] data = Encoding.UTF8.GetBytes(message.ToString());
                 using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
                 {
@@ -109,8 +112,15 @@ namespace TehGM.Wolfringo.Socket
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (_websocketClient?.State == WebSocketState.Closed)
-                        break;
+                    if (_websocketClient == null || _websocketClient.State == WebSocketState.Closed)
+                        _connectionCts?.Cancel();
+                    else if (_websocketClient?.State == WebSocketState.CloseReceived)
+                    {
+                        await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested by server", cancellationToken).ConfigureAwait(false);
+                        _connectionCts?.Cancel();
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
                     if (!IsAnythingReceived(receivedMessage))
                         continue;
@@ -168,10 +178,9 @@ namespace TehGM.Wolfringo.Socket
             // cancel further execution if connection was closed
             if (result.MessageType == WebSocketMessageType.Close)
             {
-                _connectionCts?.Cancel();
                 if (result.CloseStatus != WebSocketCloseStatus.NormalClosure)
                     throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely, result.CloseStatusDescription);
-                else return null;
+                return null;
             }
 
             byte[] contents = null;

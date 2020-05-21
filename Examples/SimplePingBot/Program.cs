@@ -36,6 +36,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             }
             else if (obj is ChatMessage msg)
             {
+                await _client.DisconnectAsync();
                 // ignore own messages
                 if (_currentUserID == msg.SenderID)
                     return;
