@@ -36,6 +36,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             {
                 if (msg.IsText)
                     Console.WriteLine(msg.Text);
+                WolfResponse response = await _client.SendAsync(ChatMessage.TextMessage(msg.SenderID.Value, msg.IsGroupMessage, "Hello there!"));
             }
         }
     }
