@@ -14,6 +14,6 @@ namespace TehGM.Wolfringo.Socket
 
         Task ConnectAsync(Uri url, CancellationToken cancellationToken = default);
         Task DisconnectAsync(CancellationToken cancellationToken = default);
-        Task SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default);
+        Task<uint> SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default);
     }
 }

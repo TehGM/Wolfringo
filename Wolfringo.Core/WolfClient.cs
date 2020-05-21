@@ -50,7 +50,7 @@ namespace TehGM.Wolfringo
         public Task DisconnectAsync()
             => _client.DisconnectAsync();
 
-        public Task SendAsync(IWolfMessage message)
+        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message) where TResponse : class
         {
             JToken data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
@@ -61,7 +61,31 @@ namespace TehGM.Wolfringo
                 // try fallback simple serialization
                 data = _fallbackSerializer.Serialize(message);
 
-            return _client.SendAsync(message.Command, data, null);
+            uint msgId = await _client.SendAsync(message.Command, data, null).ConfigureAwait(false);
+            return await AwaitResponseAsync<TResponse>(msgId).ConfigureAwait(false);
+        }
+
+        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId) where TResponse : class
+        {
+            TaskCompletionSource<TResponse> tcs = new TaskCompletionSource<TResponse>();
+            EventHandler<SocketMessageEventArgs> callback = null;
+            callback = (sender, e) =>
+            {
+                if (e.Message.ID == null)
+                    return;
+                if (e.Message.ID.Value != messageId)
+                    return;
+
+                TResponse response = null;
+                if (e.Message.Payload is JArray array)
+                    response = array.First.ToObject<TResponse>();
+                else response = e.Message.Payload.ToObject<TResponse>();
+                tcs.TrySetResult(response);
+                if (_client != null)
+                    _client.MessageReceived -= callback;
+            };
+            _client.MessageReceived += callback;
+            return tcs.Task;
         }
 
         public void Dispose()

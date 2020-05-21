@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {
@@ -12,11 +13,6 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             _client = new WolfClient();
             _client.MessageReceived += OnMessageReceived;
             await _client.ConnectAsync();
-            await Task.Delay(250);
-            Config config = Config.Load();
-            await _client.SendAsync(new LoginMessage(config.Username, config.Password));
-            await Task.Delay(250);
-            await _client.SendAsync(new SubscribeToPmMessage());
             await Task.Delay(-1);
         }
 
@@ -26,9 +22,9 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             if (obj is WelcomeMessage)
             {
                 Config config = Config.Load();
-                await _client.SendAsync(new LoginMessage(config.Username, config.Password));
+                WolfResponse response = await _client.SendAsync(new LoginMessage(config.Username, config.Password));
                 await Task.Delay(250);
-                await _client.SendAsync(new SubscribeToPmMessage());
+                response = await _client.SendAsync(new SubscribeToPmMessage());
             }
         }
     }

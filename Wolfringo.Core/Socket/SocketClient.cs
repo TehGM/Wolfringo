@@ -55,10 +55,10 @@ namespace TehGM.Wolfringo.Socket
         /// <param name="binaryMessages">Collection of binary messages to send.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns></returns>
-        public Task SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
+        public Task<uint> SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
             => SendInternalAsync(new SocketMessage(SocketMessageType.Event, ++_lastMessageID, payload, binaryMessages?.Count() ?? 0), binaryMessages, cancellationToken);
 
-        private async Task SendInternalAsync(SocketMessage message, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
+        private async Task<uint> SendInternalAsync(SocketMessage message, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -80,6 +80,7 @@ namespace TehGM.Wolfringo.Socket
                     }
                 }
                 MessageSent?.Invoke(this, new SocketMessageEventArgs(message, binaryMessages));
+                return message.ID.Value;
             }
             finally
             {
