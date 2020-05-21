@@ -20,6 +20,7 @@ namespace TehGM.Wolfringo.Socket
         private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1);
 
         private static readonly SocketMessage _pingMessage = new SocketMessage(SocketMessageType.Ping, null, null);
+        private static readonly ArraySegment<byte> _binaryPrepend = new ArraySegment<byte>(new byte[] { 4 });
         private uint _lastMessageID = 7;
         private DateTime _lastPingSentUtc;
 
@@ -48,19 +49,37 @@ namespace TehGM.Wolfringo.Socket
             return _websocketClient.CloseAsync(WebSocketCloseStatus.NormalClosure, $"Disconnection requested", cancellationToken);
         }
 
-        public Task SendAsync(JToken payload, CancellationToken cancellationToken = default)
-            => SendInternalAsync(new SocketMessage(SocketMessageType.Event, ++_lastMessageID, payload), cancellationToken);
+        /// <summary>Sends message.</summary>
+        /// <remarks>It is assumed that <paramref name="payload"/> already contains data placeholders if there's any <paramref name="binaryMessages"/>.</remarks>
+        /// <param name="payload">Json payload for text message.</param>
+        /// <param name="binaryMessages">Collection of binary messages to send.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns></returns>
+        public Task SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
+            => SendInternalAsync(new SocketMessage(SocketMessageType.Event, ++_lastMessageID, payload, binaryMessages?.Count() ?? 0), binaryMessages, cancellationToken);
 
-        private async Task SendInternalAsync(SocketMessage message, CancellationToken cancellationToken = default)
+        private async Task SendInternalAsync(SocketMessage message, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
         {
             try
             {
                 await _sendLock.WaitAsync().ConfigureAwait(false);
                 byte[] data = Encoding.UTF8.GetBytes(message.ToString());
-
                 using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
-                    await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
-                MessageSent?.Invoke(this, new SocketMessageEventArgs(message, Enumerable.Empty<byte[]>()));
+                {
+                    // send the text message
+                    await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cts.Token).ConfigureAwait(false);
+
+                    // send binary messages if any
+                    if (message.BinaryMessagesCount != 0)
+                    {
+                        foreach (byte[] binMsg in binaryMessages)
+                        {
+                            await _websocketClient.SendAsync(_binaryPrepend, WebSocketMessageType.Binary, false, cts.Token).ConfigureAwait(false);
+                            await _websocketClient.SendAsync(new ArraySegment<byte>(binMsg), WebSocketMessageType.Binary, true, cts.Token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                MessageSent?.Invoke(this, new SocketMessageEventArgs(message, binaryMessages));
             }
             finally
             {
@@ -164,7 +183,7 @@ namespace TehGM.Wolfringo.Socket
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
-                await SendInternalAsync(_pingMessage, cancellationToken).ConfigureAwait(false);
+                await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
                 _lastPingSentUtc = DateTime.UtcNow;
             }
         }
@@ -172,6 +191,7 @@ namespace TehGM.Wolfringo.Socket
         public void Dispose()
         {
             this.DisconnectAsync().GetAwaiter().GetResult();
+            this._websocketClient?.Dispose();
         }
     }
 }

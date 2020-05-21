@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +14,6 @@ namespace TehGM.Wolfringo.Socket
 
         Task ConnectAsync(Uri url, CancellationToken cancellationToken = default);
         Task DisconnectAsync(CancellationToken cancellationToken = default);
-        Task SendAsync(JToken payload, CancellationToken cancellationToken = default);
+        Task SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default);
     }
 }

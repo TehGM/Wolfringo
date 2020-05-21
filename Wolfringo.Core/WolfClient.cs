@@ -60,7 +60,7 @@ namespace TehGM.Wolfringo
                 // try fallback simple serialization
                 data = new JObject(new JProperty("body", JToken.FromObject(message, SerializationHelper.DefaultSerializer)));
 
-            return _client.SendAsync(message.Command, data);
+            return _client.SendAsync(message.Command, data, null);
         }
 
         public void Dispose()
@@ -75,14 +75,12 @@ namespace TehGM.Wolfringo
                 if (e.Message.Payload is JArray array)
                 {
                     string command = array.First.ToObject<string>();
-
                     if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
                     {
                         if (ThrowMissingSerializer)
                             throw new KeyNotFoundException($"Serializer for command {command} not found");
                         return;
                     }
-
                     IWolfMessage msg = serializer.Deserialize(command, array.First.Next, e.BinaryMessages);
                     this.MessageReceived?.Invoke(msg);
                 }
