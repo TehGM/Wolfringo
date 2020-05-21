@@ -37,6 +37,18 @@ namespace TehGM.Wolfringo
             this._client = new SocketClient();
             this._client.MessageReceived += OnClientMessageReceived;
             this._client.MessageSent += OnClientMessageSent;
+            this._client.Disconnected += _client_Disconnected;
+            this._client.ErrorRaised += _client_ErrorRaised;
+        }
+
+        private void _client_ErrorRaised(object sender, UnhandledExceptionEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _client_Disconnected(object sender, SocketClosedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public WolfClient(string token, string device = DefaultDevice)
