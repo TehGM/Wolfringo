@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Messages.Responses
     public class WolfResponse
     {
         [JsonProperty("code")]
-        private int _code;
+        private readonly int _code;
 
         public HttpStatusCode ResponseCode => (HttpStatusCode)_code;
     }

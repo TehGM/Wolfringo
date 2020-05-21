@@ -22,9 +22,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             if (obj is WelcomeMessage)
             {
                 Config config = Config.Load();
-                WolfResponse response = await _client.SendAsync(new LoginMessage(config.Username, config.Password));
-                await Task.Delay(250);
-                response = await _client.SendAsync(new SubscribeToPmMessage());
+                LoginResponse loginResponse = await _client.SendAsync<LoginResponse>(new LoginMessage(config.Username, config.Password));
+                WolfResponse response = await _client.SendAsync(new SubscribeToPmMessage());
             }
         }
     }

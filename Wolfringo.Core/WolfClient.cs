@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Serialization;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 
@@ -71,18 +73,32 @@ namespace TehGM.Wolfringo
             EventHandler<SocketMessageEventArgs> callback = null;
             callback = (sender, e) =>
             {
-                if (e.Message.ID == null)
-                    return;
-                if (e.Message.ID.Value != messageId)
-                    return;
+                try
+                {
+                    // only accept response with corresponding message ID
+                    if (e.Message.ID == null)
+                        return;
+                    if (e.Message.ID.Value != messageId)
+                        return;
 
-                TResponse response = null;
-                if (e.Message.Payload is JArray array)
-                    response = array.First.ToObject<TResponse>();
-                else response = e.Message.Payload.ToObject<TResponse>();
-                tcs.TrySetResult(response);
-                if (_client != null)
-                    _client.MessageReceived -= callback;
+                    // parse response
+                    JToken responseObject = (e.Message.Payload is JArray) ? e.Message.Payload.First : e.Message.Payload;
+                    TResponse response = responseObject.ToObject<TResponse>();
+
+                    // if response has body or headers, further use it to populate the response entity
+                    responseObject.PopulateObject(ref response, "headers");
+                    responseObject.PopulateObject(ref response, "body");
+
+                    // set task result to finish it, and unhook the event to prevent memory leaks
+                    tcs.TrySetResult(response);
+                    if (_client != null)
+                        _client.MessageReceived -= callback;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    throw;
+                }
             };
             _client.MessageReceived += callback;
             return tcs.Task;

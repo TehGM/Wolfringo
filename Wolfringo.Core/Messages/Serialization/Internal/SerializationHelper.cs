@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
@@ -12,9 +13,19 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             SerializerSettings = new JsonSerializerSettings();
             SerializerSettings.Converters.Add(new IPAddressConverter());
             SerializerSettings.Converters.Add(new IPEndPointConverter());
+            SerializerSettings.Converters.Add(new MicrosecondEpochConverter());
             SerializerSettings.Formatting = Formatting.None;
 
             DefaultSerializer = JsonSerializer.CreateDefault(SerializerSettings);
+        }
+
+        public static void PopulateObject<T>(this JToken token, ref T target, string childPath = null)
+        {
+            JToken source = childPath != null ? token.SelectToken(childPath) : token;
+            if (source == null)
+                return;
+            using (JsonReader reader = source.CreateReader())
+                SerializationHelper.DefaultSerializer.Populate(reader, target);
         }
     }
 }
