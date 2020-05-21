@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
@@ -47,13 +48,15 @@ namespace TehGM.Wolfringo
         public WolfClient(string device = DefaultDevice)
             : this(DefaultUrl, new DefaultWolfTokenProvider().GenerateToken(18), device) { }
 
-        public Task ConnectAsync()
-            => _client.ConnectAsync(new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"));
+        public Task ConnectAsync(CancellationToken cancellationToken = default)
+            => _client.ConnectAsync(
+                new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"),
+                cancellationToken);
 
-        public Task DisconnectAsync()
-            => _client.DisconnectAsync();
+        public Task DisconnectAsync(CancellationToken cancellationToken = default)
+            => _client.DisconnectAsync(cancellationToken);
 
-        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message) where TResponse : WolfResponse
+        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : WolfResponse
         {
             SerializedMessageData data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
@@ -64,14 +67,15 @@ namespace TehGM.Wolfringo
                 // try fallback simple serialization
                 data = _fallbackSerializer.Serialize(message);
 
-            uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages).ConfigureAwait(false);
-            return await AwaitResponseAsync<TResponse>(msgId).ConfigureAwait(false);
+            uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
+            return await AwaitResponseAsync<TResponse>(msgId, cancellationToken).ConfigureAwait(false);
         }
 
-        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId) where TResponse : WolfResponse
+        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId, CancellationToken cancellationToken = default) where TResponse : WolfResponse
         {
             TaskCompletionSource<TResponse> tcs = new TaskCompletionSource<TResponse>();
             EventHandler<SocketMessageEventArgs> callback = null;
+            CancellationTokenRegistration ctr = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
             callback = (sender, e) =>
             {
                 try
@@ -92,6 +96,7 @@ namespace TehGM.Wolfringo
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
+                    ctr.Dispose();
                     if (_client != null)
                         _client.MessageReceived -= callback;
                 }
