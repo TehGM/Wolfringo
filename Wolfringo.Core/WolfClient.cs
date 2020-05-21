@@ -1,15 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SocketIOClient;
-using SocketIOClient.Parsers;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
+using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo
@@ -24,14 +20,11 @@ namespace TehGM.Wolfringo
         public string Device { get; }
         public bool ThrowMissingSerializer { get; set; } = true;
 
-        public event Action Connected;
-        public event Action Disconnected;
         public event Action<IWolfMessage> MessageReceived;
-        public event Action PingSent;
-        public event Action<TimeSpan> PongReceived;
 
-        private readonly SocketIO _client;
+        private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
+        private readonly IMessageSerializer _fallbackSerializer;
 
         public WolfClient(string url, string token, string device = DefaultDevice)
         {
@@ -40,24 +33,10 @@ namespace TehGM.Wolfringo
             this.Device = device;
 
             this._serializers = GetDefaultMessageSerializers();
-            this._client = new SocketIO(this.Url);
-            this._client.Parameters = new Dictionary<string, string>()
-            {
-                { "token", this.Token },
-                { "device", this.Device }
-            };
-
-            this._client.OnReceivedEvent += _client_OnReceivedEvent;
-            this._client.OnConnected += () => this.Connected?.Invoke();
-            this._client.OnClosed += _ => this.Disconnected?.Invoke();
-            this._client.OnPing += () => this.PingSent?.Invoke();
-            this._client.OnPong += ts => this.PongReceived?.Invoke(ts);
-            this._client.OnError += _client_OnError;
-        }
-
-        private void _client_OnError(SocketIOClient.Arguments.ResponseArgs obj)
-        {
-            Console.WriteLine(obj.Text);
+            this._fallbackSerializer = new JsonMessageSerializer<IWolfMessage>();
+            this._client = new SocketClient();
+            this._client.MessageReceived += OnClientMessageReceived;
+            this._client.MessageSent += OnClientMessageSent;
         }
 
         public WolfClient(string token, string device = DefaultDevice)
@@ -67,39 +46,99 @@ namespace TehGM.Wolfringo
             : this(DefaultUrl, new DefaultWolfTokenProvider().GenerateToken(18), device) { }
 
         public Task ConnectAsync()
-            => _client.ConnectAsync();
+            => _client.ConnectAsync(new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"));
 
         public Task DisconnectAsync()
-            => _client.CloseAsync();
+            => _client.DisconnectAsync();
 
-        public Task SendAsync(IWolfMessage message)
+        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message) where TResponse : class
         {
-            JToken payload;
+            SerializedMessageData data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
-                payload = serializer.Serialize(message);
+                data = serializer.Serialize(message);
             else if (!ThrowMissingSerializer)
                 throw new KeyNotFoundException($"Serializer for command {message.Command} not found");
             else
                 // try fallback simple serialization
-                payload = JToken.FromObject(message, SerializationHelper.DefaultSerializer);
+                data = _fallbackSerializer.Serialize(message);
 
-            return _client.EmitAsync(message.Command, payload);
+            uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages).ConfigureAwait(false);
+            return await AwaitResponseAsync<TResponse>(msgId).ConfigureAwait(false);
+        }
+
+        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId) where TResponse : class
+        {
+            TaskCompletionSource<TResponse> tcs = new TaskCompletionSource<TResponse>();
+            EventHandler<SocketMessageEventArgs> callback = null;
+            callback = (sender, e) =>
+            {
+                try
+                {
+                    // only accept response with corresponding message ID
+                    if (e.Message.ID == null)
+                        return;
+                    if (e.Message.ID.Value != messageId)
+                        return;
+
+                    // parse response
+                    JToken responseObject = (e.Message.Payload is JArray) ? e.Message.Payload.First : e.Message.Payload;
+                    TResponse response = responseObject.ToObject<TResponse>();
+
+                    // if response has body or headers, further use it to populate the response entity
+                    responseObject.PopulateObject(ref response, "headers");
+                    responseObject.PopulateObject(ref response, "body");
+
+                    // set task result to finish it, and unhook the event to prevent memory leaks
+                    tcs.TrySetResult(response);
+                    if (_client != null)
+                        _client.MessageReceived -= callback;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    throw;
+                }
+            };
+            _client.MessageReceived += callback;
+            return tcs.Task;
         }
 
         public void Dispose()
-            => _client.Dispose();
+            => (_client as IDisposable)?.Dispose();
 
-        private void _client_OnReceivedEvent(string command, SocketIOClient.Arguments.ResponseArgs payload)
+        private void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
-            if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+            try
             {
-                if (ThrowMissingSerializer)
-                    throw new KeyNotFoundException($"Serializer for command {command} not found");
-                return;
-            }
+                Console.WriteLine($"< {e.Message}");
 
-            IWolfMessage msg = serializer.Deserialize(command, payload.Text, payload.Buffers);
-            this.MessageReceived?.Invoke(msg);
+                if (e.Message.Type == SocketMessageType.BinaryEvent || e.Message.Type == SocketMessageType.Event)
+                {
+                    if (e.Message.Payload is JArray array)
+                    {
+                        string command = array.First.ToObject<string>();
+                        if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+                        {
+                            if (ThrowMissingSerializer)
+                                throw new KeyNotFoundException($"Serializer for command {command} not found");
+                            return;
+                        }
+                        IWolfMessage msg = serializer.Deserialize(command, new SerializedMessageData(array.First.Next, e.BinaryMessages));
+                        if (msg == null)
+                            return;
+                        this.MessageReceived?.Invoke(msg);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
+        {
+            Console.WriteLine($"> {e.Message}");
         }
 
         protected virtual IDictionary<string, IMessageSerializer> GetDefaultMessageSerializers()
@@ -107,7 +146,9 @@ namespace TehGM.Wolfringo
             return new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
                 { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() },
-                { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() }
+                { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() },
+                { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() },
+                { MessageCommands.Chat, new ChatMessageSerializer() }
             };
         }
 

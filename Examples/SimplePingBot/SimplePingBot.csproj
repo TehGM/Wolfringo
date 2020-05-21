@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsecrets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsecrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Wolfringo.Core\Wolfringo.Core.csproj" />
   </ItemGroup>
 
