@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo
 
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message) where TResponse : class
         {
-            JToken data;
+            SerializedMessageData data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
                 data = serializer.Serialize(message);
             else if (!ThrowMissingSerializer)
@@ -63,7 +63,7 @@ namespace TehGM.Wolfringo
                 // try fallback simple serialization
                 data = _fallbackSerializer.Serialize(message);
 
-            uint msgId = await _client.SendAsync(message.Command, data, null).ConfigureAwait(false);
+            uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages).ConfigureAwait(false);
             return await AwaitResponseAsync<TResponse>(msgId).ConfigureAwait(false);
         }
 
@@ -109,22 +109,31 @@ namespace TehGM.Wolfringo
 
         private void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
-            Console.WriteLine($"< {e.Message}");
-
-            if (e.Message.Type == SocketMessageType.BinaryEvent || e.Message.Type == SocketMessageType.Event)
+            try
             {
-                if (e.Message.Payload is JArray array)
+                Console.WriteLine($"< {e.Message}");
+
+                if (e.Message.Type == SocketMessageType.BinaryEvent || e.Message.Type == SocketMessageType.Event)
                 {
-                    string command = array.First.ToObject<string>();
-                    if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+                    if (e.Message.Payload is JArray array)
                     {
-                        if (ThrowMissingSerializer)
-                            throw new KeyNotFoundException($"Serializer for command {command} not found");
-                        return;
+                        string command = array.First.ToObject<string>();
+                        if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+                        {
+                            if (ThrowMissingSerializer)
+                                throw new KeyNotFoundException($"Serializer for command {command} not found");
+                            return;
+                        }
+                        IWolfMessage msg = serializer.Deserialize(command, new SerializedMessageData(array.First.Next, e.BinaryMessages));
+                        if (msg == null)
+                            return;
+                        this.MessageReceived?.Invoke(msg);
                     }
-                    IWolfMessage msg = serializer.Deserialize(command, array.First.Next, e.BinaryMessages);
-                    this.MessageReceived?.Invoke(msg);
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 
@@ -139,7 +148,8 @@ namespace TehGM.Wolfringo
             {
                 { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() },
                 { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() },
-                { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() }
+                { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() },
+                { MessageCommands.Chat, new ChatMessageSerializer() }
             };
         }
 

@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonIgnore]
         public string Command => MessageCommands.SubscribeToPm;
         [JsonIgnore]
-        public IDictionary<string, object> Headers => new Dictionary<string, object>()
+        public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
         {
             { "version", 2 }
         };

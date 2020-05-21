@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Linq;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
@@ -9,10 +8,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// <typeparam name="T"></typeparam>
     public class JsonMessageSerializer<T> : IMessageSerializer where T : IWolfMessage
     {
-        public IWolfMessage Deserialize(string command, JToken payload, IEnumerable<byte[]> binaryMessages)
-            => payload.ToObject<T>(SerializationHelper.DefaultSerializer);
+        public virtual IWolfMessage Deserialize(string command, SerializedMessageData messageData)
+            => messageData.Payload.ToObject<T>(SerializationHelper.DefaultSerializer);
 
-        public JToken Serialize(IWolfMessage message)
+        public virtual SerializedMessageData Serialize(IWolfMessage message)
+            => new SerializedMessageData(GetJsonPayload(message));
+
+        public static JObject GetJsonPayload(IWolfMessage message)
         {
             JObject payload = new JObject();
             JToken body = JToken.FromObject(message, SerializationHelper.DefaultSerializer);
