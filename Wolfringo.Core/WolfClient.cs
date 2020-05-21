@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Socket;
@@ -19,6 +20,7 @@ namespace TehGM.Wolfringo
         public string Token { get; }
         public string Device { get; }
         public bool ThrowMissingSerializer { get; set; } = true;
+        public WolfUser CurrentUser { get; private set; }
 
         public event Action<IWolfMessage> MessageReceived;
 
@@ -82,11 +84,11 @@ namespace TehGM.Wolfringo
 
                     // parse response
                     JToken responseObject = (e.Message.Payload is JArray) ? e.Message.Payload.First : e.Message.Payload;
-                    TResponse response = responseObject.ToObject<TResponse>();
+                    TResponse response = ParseResponse<TResponse>(responseObject);
 
-                    // if response has body or headers, further use it to populate the response entity
-                    responseObject.PopulateObject(ref response, "headers");
-                    responseObject.PopulateObject(ref response, "body");
+                    // if it's a login message, we can also extract current user
+                    if (response is LoginResponse loginResponse && loginResponse.Username != default)
+                        this.CurrentUser = ParseResponse<WolfUser>(responseObject);
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
@@ -101,6 +103,15 @@ namespace TehGM.Wolfringo
             };
             _client.MessageReceived += callback;
             return tcs.Task;
+
+            T ParseResponse<T>(JToken response)
+            {
+                T result = response.ToObject<T>(SerializationHelper.DefaultSerializer);
+                // if response has body or headers, further use it to populate the response entity
+                response.PopulateObject(ref result, "headers");
+                response.PopulateObject(ref result, "body");
+                return result;
+            }
         }
 
         public void Dispose()
@@ -116,6 +127,7 @@ namespace TehGM.Wolfringo
                 {
                     if (e.Message.Payload is JArray array)
                     {
+                        // find serializer for command
                         string command = array.First.ToObject<string>();
                         if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
                         {
@@ -123,9 +135,14 @@ namespace TehGM.Wolfringo
                                 throw new KeyNotFoundException($"Serializer for command {command} not found");
                             return;
                         }
+                        // deserialize message
                         IWolfMessage msg = serializer.Deserialize(command, new SerializedMessageData(array.First.Next, e.BinaryMessages));
                         if (msg == null)
                             return;
+                        // ignore own messages
+                        if (msg is ChatMessage chatMessage && this.CurrentUser != null && chatMessage.SenderID.Value == this.CurrentUser.ID)
+                            return;
+
                         this.MessageReceived?.Invoke(msg);
                     }
                 }
