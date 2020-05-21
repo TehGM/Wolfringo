@@ -53,7 +53,7 @@ namespace TehGM.Wolfringo
         public Task DisconnectAsync()
             => _client.DisconnectAsync();
 
-        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message) where TResponse : class
+        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message) where TResponse : WolfResponse
         {
             SerializedMessageData data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
@@ -68,7 +68,7 @@ namespace TehGM.Wolfringo
             return await AwaitResponseAsync<TResponse>(msgId).ConfigureAwait(false);
         }
 
-        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId) where TResponse : class
+        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId) where TResponse : WolfResponse
         {
             TaskCompletionSource<TResponse> tcs = new TaskCompletionSource<TResponse>();
             EventHandler<SocketMessageEventArgs> callback = null;
