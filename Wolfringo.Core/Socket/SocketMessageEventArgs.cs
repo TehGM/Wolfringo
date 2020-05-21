@@ -7,7 +7,9 @@ namespace TehGM.Wolfringo.Socket
     [Serializable]
     public class SocketMessageEventArgs : EventArgs
     {
+        /// <summary>The text message.</summary>
         public SocketMessage Message { get; }
+        /// <summary>Binary messages associated with this message. Might be null.</summary>
         public IEnumerable<byte[]> BinaryMessages { get; }
 
         public SocketMessageEventArgs(SocketMessage message, IEnumerable<byte[]> binaryMessages)

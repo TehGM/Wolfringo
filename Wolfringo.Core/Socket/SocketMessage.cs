@@ -6,9 +6,13 @@ namespace TehGM.Wolfringo.Socket
 {
     public class SocketMessage
     {
+        /// <summary>Type of SocketIO message.</summary>
         public SocketMessageType Type { get; }
+        /// <summary>ID of the message in case of events.</summary>
         public uint? ID { get; }
+        /// <summary>Raw JSON payload.</summary>
         public JToken Payload { get; }
+        /// <summary>Count of binary messages that will be sent after this message.</summary>
         public int BinaryMessagesCount { get; }
 
         private string _rawMessage;
@@ -21,7 +25,9 @@ namespace TehGM.Wolfringo.Socket
             this.BinaryMessagesCount = binaryCount;
         }
 
-        // TODO: this code is a mess, rework needed
+        /// <summary>Parses raw message text from stream.</summary>
+        /// <param name="rawMessage">Message text.</param>
+        /// <returns>Parsed message</returns>
         public static SocketMessage Parse(string rawMessage)
         {
             if (rawMessage == null)
@@ -119,6 +125,7 @@ namespace TehGM.Wolfringo.Socket
         }
     }
 
+    /// <summary>Represents type of SocketIO message.</summary>
     public enum SocketMessageType
     {
         SID = 0,
