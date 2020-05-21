@@ -13,7 +13,6 @@ namespace TehGM.Wolfringo.Socket
     public class SocketClient : ISocketClient, IDisposable
     {
         public SocketSession Session { get; private set; }
-        public TimeSpan Latency { get; private set; }
 
         public bool IsConnected => _websocketClient != null && (_websocketClient.State != WebSocketState.Closed || _websocketClient.State != WebSocketState.Aborted);
 
@@ -24,7 +23,6 @@ namespace TehGM.Wolfringo.Socket
         private static readonly SocketMessage _pingMessage = new SocketMessage(SocketMessageType.Ping, null, null);
         private static readonly ArraySegment<byte> _binaryPrepend = new ArraySegment<byte>(new byte[] { 4 });
         private uint _lastMessageID = 7;
-        private DateTime _lastPingSentUtc;
 
         public event EventHandler Connected;
         public event EventHandler<SocketClosedEventArgs> Disconnected;
@@ -164,8 +162,6 @@ namespace TehGM.Wolfringo.Socket
                 this.Session = msg.Payload.ToObject<SocketSession>();
                 _ = PingLoopAsync(this.Session, _connectionCts.Token);
             }
-            else if (msg.Type == SocketMessageType.Pong)
-                this.Latency = DateTime.UtcNow - _lastPingSentUtc;
             MessageReceived?.Invoke(this, new SocketMessageEventArgs(msg, binaryMessages ?? Enumerable.Empty<byte[]>()));
         }
 
@@ -222,7 +218,6 @@ namespace TehGM.Wolfringo.Socket
                 {
                     await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
                     await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
-                    _lastPingSentUtc = DateTime.UtcNow;
                 }
             }
             catch (TaskCanceledException) { }

@@ -8,6 +8,8 @@ namespace TehGM.Wolfringo.Socket
 {
     public interface ISocketClient
     {
+        bool IsConnected { get; }
+
         event EventHandler Connected;
         event EventHandler<SocketClosedEventArgs> Disconnected;
         event EventHandler<SocketMessageEventArgs> MessageReceived;
