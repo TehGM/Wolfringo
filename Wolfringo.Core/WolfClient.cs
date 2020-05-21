@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Serialization;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 
@@ -24,6 +23,7 @@ namespace TehGM.Wolfringo
 
         private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
+        private readonly IMessageSerializer _fallbackSerializer;
 
         public WolfClient(string url, string token, string device = DefaultDevice)
         {
@@ -32,6 +32,7 @@ namespace TehGM.Wolfringo
             this.Device = device;
 
             this._serializers = GetDefaultMessageSerializers();
+            this._fallbackSerializer = new JsonMessageSerializer<IWolfMessage>();
             this._client = new SocketClient();
             this._client.MessageReceived += OnClientMessageReceived;
             this._client.MessageSent += OnClientMessageSent;
@@ -58,7 +59,7 @@ namespace TehGM.Wolfringo
                 throw new KeyNotFoundException($"Serializer for command {message.Command} not found");
             else
                 // try fallback simple serialization
-                data = new JObject(new JProperty("body", JToken.FromObject(message, SerializationHelper.DefaultSerializer)));
+                data = _fallbackSerializer.Serialize(message);
 
             return _client.SendAsync(message.Command, data, null);
         }
