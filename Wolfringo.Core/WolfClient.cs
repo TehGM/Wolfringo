@@ -170,6 +170,7 @@ namespace TehGM.Wolfringo
                 { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() },
                 { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() },
                 { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() },
+                { MessageCommands.SubscribeToGroup, new JsonMessageSerializer<SubscribeToGroupMessage>() },
                 { MessageCommands.Chat, new ChatMessageSerializer() }
             };
         }
