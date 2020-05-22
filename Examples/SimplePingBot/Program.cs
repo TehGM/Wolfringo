@@ -29,14 +29,14 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             if (obj is WelcomeMessage)
             {
                 Config config = Config.Load();
-                LoginResponse loginResponse = await _client.SendAsync<LoginResponse>(new LoginMessage(config.Username, config.Password));
-                WolfResponse response = await _client.SendAsync(new SubscribeToPmMessage());
+                await _client.LoginAsync(config.Username, config.Password);
             }
             else if (obj is ChatMessage msg)
             {
                 if (msg.IsText)
                     Console.WriteLine(msg.Text);
-                WolfResponse response = await _client.SendAsync(ChatMessage.TextMessage(msg.SenderID.Value, msg.IsGroupMessage, "Hello there!"));
+                if (msg.IsPrivateMessage)
+                    await _client.SendAsync(ChatMessage.TextMessage(msg.SenderID.Value, msg.IsGroupMessage, "Hello there!"));
             }
         }
     }
