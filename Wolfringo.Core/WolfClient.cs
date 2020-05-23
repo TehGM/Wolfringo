@@ -150,7 +150,6 @@ namespace TehGM.Wolfringo
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
                     _log?.LogError(ex, "Exception has occured when handling socket response");
-                    this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
                     tcs.TrySetException(ex);
                 }
             };
