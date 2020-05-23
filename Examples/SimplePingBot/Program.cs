@@ -16,7 +16,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
 
             ILogger<WolfClient> log = CreateLogger<WolfClient>();
 
-            _client = new WolfClient(new WolfClientOptions(), log);
+            _client = new WolfClient(log);
             _client.MessageReceived += OnMessageReceived;
             await _client.ConnectAsync();
             await Task.Delay(-1);

@@ -30,7 +30,7 @@ namespace TehGM.Wolfringo
         private readonly ILogger _log;
 
         #region Constructors
-        public WolfClient(string url, string token, string device, ILogger logger = null, ITokenProvider tokenProvider = null)
+        public WolfClient(string url, string device, string token, ILogger logger = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
@@ -46,14 +46,6 @@ namespace TehGM.Wolfringo
             this.Token = token;
             this._log = logger;
 
-            // if token not provided, use token provider service. If null, use a default one
-            if (this.Token == null)
-            {
-                if (tokenProvider == null)
-                    tokenProvider = new DefaultWolfTokenProvider();
-                this.Token = tokenProvider.GenerateToken(18);
-            }
-
             // init default serializers
             this._serializers = GetDefaultMessageSerializers();
             this._fallbackSerializer = new JsonMessageSerializer<IWolfMessage>();
@@ -67,8 +59,21 @@ namespace TehGM.Wolfringo
             this._client.ErrorRaised += OnClientError;
         }
 
-        public WolfClient(WolfClientOptions options = null, ILogger logger = null, ITokenProvider tokenProvider = null)
-            : this(options?.ServerURL ?? WolfClientOptions.DefaultServerURL, options?.Token, options?.Device ?? WolfClientOptions.DefaultDevice, logger, tokenProvider) { }
+        public WolfClient(string url, string device, ILogger logger = null, ITokenProvider tokenProvider = null)
+            : this(url, device, GetNewToken(tokenProvider), logger) { }
+
+        public WolfClient(WolfClientOptions options, ILogger logger = null, ITokenProvider tokenProvider = null)
+            : this(options.ServerURL, options.Device, options.Token ?? GetNewToken(tokenProvider), logger) { }
+
+        public WolfClient(ILogger logger = null, ITokenProvider tokenProvider = null)
+            : this(WolfClientOptions.DefaultServerURL, WolfClientOptions.DefaultDevice, logger, tokenProvider) { }
+
+        private static string GetNewToken(ITokenProvider tokenProvider = null)
+        {
+            if (tokenProvider == null)
+                tokenProvider = new DefaultWolfTokenProvider();
+            return tokenProvider.GenerateToken(18);
+        }
         #endregion
 
         #region Connection management
