@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
 {
@@ -17,5 +19,12 @@ namespace TehGM.Wolfringo
             await client.SendAsync(new SubscribeToGroupMessage(), cancellationToken).ConfigureAwait(false);
             return response;
         }
+
+        public static void AddMessageListener<T>(this IWolfClient client, Action<T> listener) where T : IWolfMessage
+            => client.AddMessageListener(new TypedMessageCallback<T>(listener));
+        public static void AddMessageListener<T>(this IWolfClient client, string command, Action<T> listener) where T : IWolfMessage
+            => client.AddMessageListener(new CommandMessageCallback<T>(command, listener));
+        public static void RemoveMessageListener<T>(this IWolfClient client, Action<T> listener) where T : IWolfMessage
+            => client.RemoveMessageListener(new TypedMessageCallback<T>(listener));
     }
 }

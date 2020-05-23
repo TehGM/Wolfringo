@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages.Responses;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
 {
@@ -21,8 +22,7 @@ namespace TehGM.Wolfringo
         event EventHandler<WolfMessageSentEventArgs> MessageSent;
         event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
-        void AddMessageListener<T>(Action<T> listener) where T : IWolfMessage;
-        void AddMessageListener<T>(string command, Action<T> listener) where T : IWolfMessage;
-        void RemoveMessageListener<T>(Action<T> listener) where T : IWolfMessage;
+        void AddMessageListener(IMessageCallback listener);
+        void RemoveMessageListener(IMessageCallback listener);
     }
 }
