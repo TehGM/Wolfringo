@@ -28,16 +28,14 @@ namespace TehGM.Wolfringo
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
         private readonly ISocketClient _client;
-        private readonly IDictionary<string, IMessageSerializer> _messageSerializers;
-        private readonly IDictionary<Type, IResponseSerializer> _responseSerializers;
-        private readonly IMessageSerializer _fallbackMessageSerializer;
-        private readonly IResponseSerializer _fallbackResponseSerializer;
+        private readonly ISerializerMap<string, IMessageSerializer> _messageSerializers;
+        private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ILogger _log;
 
         #region Constructors
         public WolfClient(string url, string device, string token, ILogger logger = null, 
-            IResponseTypeResolver responseTypeResolver = null)
+            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
@@ -53,12 +51,8 @@ namespace TehGM.Wolfringo
             this.Token = token;
             this._log = logger;
             this._responseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
-
-            // init default serializers
-            this._fallbackMessageSerializer = new DefaultMessageSerializer<IWolfMessage>();
-            this._fallbackResponseSerializer = new DefaultResponseSerializer();
-            this._messageSerializers = GetDefaultMessageSerializers();
-            this._responseSerializers = GetDefaultResponseSerializers();
+            this._messageSerializers = messageSerializers ?? new DefaultMessageSerializerMap();
+            this._responseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
 
             // init socket client
             this._client = new SocketClient();
@@ -70,16 +64,19 @@ namespace TehGM.Wolfringo
         }
 
         public WolfClient(string url, string device, ILogger logger = null, 
-            ITokenProvider tokenProvider = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(url, device, GetNewToken(tokenProvider), logger, responseTypeResolver) { }
+            ITokenProvider tokenProvider = null, 
+            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         public WolfClient(WolfClientOptions options, ILogger logger = null, 
-            ITokenProvider tokenProvider = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(options.ServerURL, options.Device, options.Token ?? GetNewToken(tokenProvider), logger, responseTypeResolver) { }
+            ITokenProvider tokenProvider = null,
+            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            : this(options.ServerURL, options.Device, options.Token ?? GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
 
-        public WolfClient(ILogger logger = null, ITokenProvider tokenProvider = null, 
-            IResponseTypeResolver responseTypeResolver = null)
-            : this(WolfClientOptions.DefaultServerURL, WolfClientOptions.DefaultDevice, logger, tokenProvider, responseTypeResolver) { }
+        public WolfClient(ILogger logger = null, 
+            ITokenProvider tokenProvider = null,
+            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            : this(WolfClientOptions.DefaultServerURL, WolfClientOptions.DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         private static string GetNewToken(ITokenProvider tokenProvider = null)
         {
@@ -110,11 +107,11 @@ namespace TehGM.Wolfringo
             if (string.IsNullOrWhiteSpace(message.Command))
                 throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
 
-            if (!_messageSerializers.TryGetValue(message.Command, out IMessageSerializer serializer))
+            if (!_messageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
             {
                 // try fallback simple serialization
                 _log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
-                serializer = _fallbackMessageSerializer;
+                serializer = _messageSerializers.FallbackSerializer;
             }
             SerializedMessageData data = serializer.Serialize(message);
 
@@ -147,10 +144,10 @@ namespace TehGM.Wolfringo
 
                     // parse response
                     Type responseType = _responseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
-                    if (!_responseSerializers.TryGetValue(responseType, out IResponseSerializer serializer))
+                    if (!_responseSerializers.TryFindMappedSerializer(responseType, out IResponseSerializer serializer))
                     {
                         _log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
-                        serializer = _fallbackResponseSerializer;
+                        serializer = _responseSerializers.FallbackSerializer;
                     }
                     WolfResponse response = serializer.Deserialize(responseType, new SerializedMessageData(e.Message.Payload, e.BinaryMessages));
 
@@ -174,9 +171,6 @@ namespace TehGM.Wolfringo
             _client.MessageReceived += callback;
             return tcs.Task;
         }
-
-        public void SetSerializer(string command, IMessageSerializer serializer)
-            => this._messageSerializers[command] = serializer;
         #endregion
 
         #region Event handlers
@@ -189,8 +183,9 @@ namespace TehGM.Wolfringo
                 if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
                 {
                     // find serializer for command
-                    if (!_messageSerializers.TryGetValue(command, out IMessageSerializer serializer))
+                    if (!_messageSerializers.TryFindMappedSerializer(command, out IMessageSerializer serializer))
                     {
+                        // don't throw exception here, as doing so will kill the socket client loop
                         _log?.LogError("Serializer for command {Command} not found", command);
                         return;
                     }
@@ -275,27 +270,6 @@ namespace TehGM.Wolfringo
                 else
                     _log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
             }
-        }
-
-        protected virtual IDictionary<string, IMessageSerializer> GetDefaultMessageSerializers()
-        {
-            return new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
-            {
-                { MessageCommands.Welcome, new DefaultMessageSerializer<WelcomeMessage>() },
-                { MessageCommands.Login, new DefaultMessageSerializer<LoginMessage>() },
-                { MessageCommands.SubscribeToPm, new DefaultMessageSerializer<SubscribeToPmMessage>() },
-                { MessageCommands.SubscribeToGroup, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
-                { MessageCommands.Chat, new ChatMessageSerializer() }
-            };
-        }
-
-        protected virtual IDictionary<Type, IResponseSerializer> GetDefaultResponseSerializers()
-        {
-            return new Dictionary<Type, IResponseSerializer>()
-            {
-                { typeof(LoginResponse), _fallbackResponseSerializer },
-                { typeof(WolfResponse), _fallbackResponseSerializer }
-            };
         }
         #endregion
     }
