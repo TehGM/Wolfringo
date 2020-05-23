@@ -14,9 +14,6 @@ namespace TehGM.Wolfringo
 {
     public class WolfClient : IWolfClient, IDisposable
     {
-        public const string DefaultUrl = "wss://v3-rc.palringo.com:3051";
-        public const string DefaultDevice = "bot";
-
         public string Url { get; }
         public string Token { get; }
         public string Device { get; }
@@ -29,24 +26,41 @@ namespace TehGM.Wolfringo
         private readonly IDictionary<string, IMessageSerializer> _serializers;
         private readonly IMessageSerializer _fallbackSerializer;
 
-        public WolfClient(string url, string token, string device = DefaultDevice)
+        public WolfClient(string url, string token, string device, ITokenProvider tokenProvider = null)
         {
-            this.Url = url;
-            this.Token = token;
-            this.Device = device;
+            // verify input
+            if (string.IsNullOrWhiteSpace(url))
+                throw new ArgumentNullException(nameof(url));
+            if (string.IsNullOrWhiteSpace(device))
+                throw new ArgumentNullException(nameof(device));
+            if (token != null && string.IsNullOrWhiteSpace(token))
+                throw new ArgumentException("Token can be null for auto-generation or have a value, but it cannot be empty or whitespace", nameof(token));
 
+            // set provided props
+            this.Url = url;
+            this.Device = device;
+            this.Token = token;
+
+            // if token not provided, use token provider service. If null, use a default one
+            if (this.Token == null)
+            {
+                if (tokenProvider == null)
+                    tokenProvider = new DefaultWolfTokenProvider();
+                this.Token = tokenProvider.GenerateToken(18);
+            }
+
+            // init default serializers
             this._serializers = GetDefaultMessageSerializers();
             this._fallbackSerializer = new JsonMessageSerializer<IWolfMessage>();
+
+            // init socket client
             this._client = new SocketClient();
             this._client.MessageReceived += OnClientMessageReceived;
             this._client.MessageSent += OnClientMessageSent;
         }
 
-        public WolfClient(string token, string device = DefaultDevice)
-            : this(DefaultUrl, token, device) { }
-
-        public WolfClient(string device = DefaultDevice)
-            : this(DefaultUrl, new DefaultWolfTokenProvider().GenerateToken(18), device) { }
+        public WolfClient(WolfClientOptions options = null, ITokenProvider tokenProvider = null)
+            : this(options?.ServerURL ?? WolfClientOptions.DefaultServerURL, options?.Token, options?.Device ?? WolfClientOptions.DefaultDevice, tokenProvider) { }
 
         public Task ConnectAsync(CancellationToken cancellationToken = default)
             => _client.ConnectAsync(
