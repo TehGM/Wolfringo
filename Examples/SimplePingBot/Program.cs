@@ -17,6 +17,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
 
             _client = new WolfClient(log);
             _client.MessageReceived += OnMessageReceived;
+            _client.AddMessageListener<WelcomeMessage>(OnWelcome);
+            _client.AddMessageListener<ChatMessage>(OnChatMessage);
             await _client.ConnectAsync();
             await Task.Delay(-1);
         }
@@ -46,19 +48,24 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
 
         private static async void OnMessageReceived(object sender, WolfMessageEventArgs e)
         {
-            //Console.WriteLine("Message received: " + obj.Command);
-            if (e.Message is WelcomeMessage)
+            if (e.Message is ChatMessage msg)
             {
-                Config config = Config.Load();
-                await _client.LoginAsync(config.Username, config.Password);
-            }
-            else if (e.Message is ChatMessage msg)
-            {
-                //if (msg.IsText)
-                //    Console.WriteLine(msg.Text);
                 if (msg.IsPrivateMessage)
                     await _client.SendAsync(ChatMessage.TextMessage(msg.SenderID.Value, msg.IsGroupMessage, "Hello there!"));
             }
+        }
+
+        private static async void OnWelcome(WelcomeMessage message)
+        {
+            Config config = Config.Load();
+            await _client.LoginAsync(config.Username, config.Password);
+        }
+
+        private static async void OnChatMessage(ChatMessage message)
+        {
+            if (message.IsPrivateMessage)
+                await _client.SendAsync(ChatMessage.TextMessage(message.SenderID.Value, message.IsGroupMessage, "Hello there (using dispatcher)!!!"));
+            _client.RemoveMessageListener<ChatMessage>(OnChatMessage);
         }
     }
 }

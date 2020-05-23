@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,6 +10,7 @@ using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
 {
@@ -32,6 +32,7 @@ namespace TehGM.Wolfringo
         private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ILogger _log;
+        private readonly MessageCallbackDispatcher _callbackDispatcher;
 
         #region Constructors
         public WolfClient(string url, string device, string token, ILogger logger = null, 
@@ -53,6 +54,9 @@ namespace TehGM.Wolfringo
             this._responseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
             this._messageSerializers = messageSerializers ?? new DefaultMessageSerializerMap();
             this._responseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
+
+            // init dispatcher
+            _callbackDispatcher = new MessageCallbackDispatcher();
 
             // init socket client
             this._client = new SocketClient();
@@ -199,6 +203,7 @@ namespace TehGM.Wolfringo
 
                     _log?.LogDebug("Message received: {Command}", command);
                     this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
+                    _callbackDispatcher.Invoke(msg);
                 }
             }
             catch (Exception ex)
@@ -208,6 +213,12 @@ namespace TehGM.Wolfringo
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
             }
         }
+
+        public void AddMessageListener<T>(Action<T> listener) where T : IWolfMessage
+            => _callbackDispatcher.Add(new TypedMessageCallback<T>(listener));
+
+        public void RemoveMessageListener<T>(Action<T> listener) where T : IWolfMessage
+            => _callbackDispatcher.Remove(new TypedMessageCallback<T>(listener));
 
         private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
         {
