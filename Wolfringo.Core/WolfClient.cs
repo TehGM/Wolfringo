@@ -31,10 +31,12 @@ namespace TehGM.Wolfringo
         private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
         private readonly IMessageSerializer _fallbackSerializer;
+        private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ILogger _log;
 
         #region Constructors
-        public WolfClient(string url, string device, string token, ILogger logger = null)
+        public WolfClient(string url, string device, string token, ILogger logger = null, 
+            IResponseTypeResolver responseTypeResolver = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
@@ -49,6 +51,7 @@ namespace TehGM.Wolfringo
             this.Device = device;
             this.Token = token;
             this._log = logger;
+            this._responseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
 
             // init default serializers
             this._serializers = GetDefaultMessageSerializers();
@@ -63,14 +66,17 @@ namespace TehGM.Wolfringo
             this._client.ErrorRaised += OnClientError;
         }
 
-        public WolfClient(string url, string device, ILogger logger = null, ITokenProvider tokenProvider = null)
-            : this(url, device, GetNewToken(tokenProvider), logger) { }
+        public WolfClient(string url, string device, ILogger logger = null, 
+            ITokenProvider tokenProvider = null, IResponseTypeResolver responseTypeResolver = null)
+            : this(url, device, GetNewToken(tokenProvider), logger, responseTypeResolver) { }
 
-        public WolfClient(WolfClientOptions options, ILogger logger = null, ITokenProvider tokenProvider = null)
-            : this(options.ServerURL, options.Device, options.Token ?? GetNewToken(tokenProvider), logger) { }
+        public WolfClient(WolfClientOptions options, ILogger logger = null, 
+            ITokenProvider tokenProvider = null, IResponseTypeResolver responseTypeResolver = null)
+            : this(options.ServerURL, options.Device, options.Token ?? GetNewToken(tokenProvider), logger, responseTypeResolver) { }
 
-        public WolfClient(ILogger logger = null, ITokenProvider tokenProvider = null)
-            : this(WolfClientOptions.DefaultServerURL, WolfClientOptions.DefaultDevice, logger, tokenProvider) { }
+        public WolfClient(ILogger logger = null, ITokenProvider tokenProvider = null, 
+            IResponseTypeResolver responseTypeResolver = null)
+            : this(WolfClientOptions.DefaultServerURL, WolfClientOptions.DefaultDevice, logger, tokenProvider, responseTypeResolver) { }
 
         private static string GetNewToken(ITokenProvider tokenProvider = null)
         {
@@ -112,14 +118,15 @@ namespace TehGM.Wolfringo
             }
 
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
-            TResponse response = await AwaitResponseAsync<TResponse>(msgId, cancellationToken).ConfigureAwait(false);
+            TResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
             if (response.IsError)
                 throw new MessageSendingException(response);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
             return response;
         }
 
-        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId, CancellationToken cancellationToken = default) where TResponse : WolfResponse
+        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
+            CancellationToken cancellationToken = default) where TResponse : WolfResponse
         {
             TaskCompletionSource<TResponse> tcs = new TaskCompletionSource<TResponse>();
             EventHandler<SocketMessageEventArgs> callback = null;
@@ -139,14 +146,15 @@ namespace TehGM.Wolfringo
 
                     // parse response
                     JToken responseObject = (e.Message.Payload is JArray) ? e.Message.Payload.First : e.Message.Payload;
-                    TResponse response = ParseResponse<TResponse>(responseObject);
+                    Type responseType = _responseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
+                    object response = ParseResponse(responseObject, responseType);
 
                     // if it's a login message, we can also extract current user
                     if (response is LoginResponse loginResponse && loginResponse.Username != default)
-                        this.CurrentUser = ParseResponse<WolfUser>(responseObject);
+                        this.CurrentUser = ParseResponse(responseObject, typeof(WolfUser)) as WolfUser;
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
-                    tcs.TrySetResult(response);
+                    tcs.TrySetResult(response as TResponse);
                     ctr.Dispose();
                     if (_client != null)
                         _client.MessageReceived -= callback;
@@ -161,9 +169,9 @@ namespace TehGM.Wolfringo
             _client.MessageReceived += callback;
             return tcs.Task;
 
-            T ParseResponse<T>(JToken response)
+            object ParseResponse(JToken response, Type responseType)
             {
-                T result = response.ToObject<T>(SerializationHelper.DefaultSerializer);
+                object result = response.ToObject(responseType, SerializationHelper.DefaultSerializer);
                 // if response has body or headers, further use it to populate the response entity
                 response.PopulateObject(ref result, "headers");
                 response.PopulateObject(ref result, "body");
