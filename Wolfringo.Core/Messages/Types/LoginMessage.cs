@@ -2,9 +2,11 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
 {
+    [ResponseType(typeof(LoginResponse))]
     public class LoginMessage : IWolfMessage
     {
         [JsonIgnore]
