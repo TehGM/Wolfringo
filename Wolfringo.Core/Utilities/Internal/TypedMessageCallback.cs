@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace TehGM.Wolfringo.Utilities.Internal
@@ -25,19 +24,12 @@ namespace TehGM.Wolfringo.Utilities.Internal
         }
 
         public override bool Equals(object obj)
-        {
-            return Equals(obj as TypedMessageCallback<T>);
-        }
+            => Equals(obj as TypedMessageCallback<T>);
 
         public bool Equals(TypedMessageCallback<T> other)
-        {
-            return other != null &&
-                   EqualityComparer<MethodInfo>.Default.Equals(CallbackInfo, other.CallbackInfo);
-        }
+            => other != null && CallbackInfo.Equals(other.CallbackInfo);
 
         public override int GetHashCode()
-        {
-            return -1397514458 + CallbackInfo.GetHashCode();
-        }
+            => -1397514458 + CallbackInfo.GetHashCode();
     }
 }
