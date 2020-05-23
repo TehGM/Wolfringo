@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using System;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
@@ -12,20 +14,40 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         {
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
-            _client = new WolfClient();
+            ILogger<WolfClient> log = CreateLogger<WolfClient>();
+
+            _client = new WolfClient(new WolfClientOptions(), log);
             _client.MessageReceived += OnMessageReceived;
             await _client.ConnectAsync();
             await Task.Delay(-1);
         }
 
+        // using Microsoft.Extensions.Logging.Console here for the sake of an example
+        // in real life scenario, probably a full-fledged logging framework would be used, like Serilog, NLog or Log4Net
+        private static ILogger<T> CreateLogger<T>()
+        {
+            ILoggerFactory loggerFactory = new LoggerFactory(
+                            new[] { new ConsoleLoggerProvider((_, level) => level != LogLevel.Trace, true) }
+                        );
+            return loggerFactory.CreateLogger<T>();
+        }
+
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Console.WriteLine(e);
+            try
+            {
+                ILogger log = CreateLogger<Program>();
+                log.LogCritical(e.ExceptionObject as Exception, "An exception was unhandled");
+            }
+            catch
+            {
+                Console.WriteLine("ERROR: " + e.ExceptionObject.ToString());
+            }
         }
 
         private static async void OnMessageReceived(IWolfMessage obj)
         {
-            Console.WriteLine("Message received: " + obj.Command);
+            //Console.WriteLine("Message received: " + obj.Command);
             if (obj is WelcomeMessage)
             {
                 Config config = Config.Load();
@@ -33,8 +55,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             }
             else if (obj is ChatMessage msg)
             {
-                if (msg.IsText)
-                    Console.WriteLine(msg.Text);
+                //if (msg.IsText)
+                //    Console.WriteLine(msg.Text);
                 if (msg.IsPrivateMessage)
                     await _client.SendAsync(ChatMessage.TextMessage(msg.SenderID.Value, msg.IsGroupMessage, "Hello there!"));
             }

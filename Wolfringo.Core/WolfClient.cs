@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -17,7 +20,6 @@ namespace TehGM.Wolfringo
         public string Url { get; }
         public string Token { get; }
         public string Device { get; }
-        public bool ThrowMissingSerializer { get; set; } = true;
         public WolfUser CurrentUser { get; private set; }
 
         public event Action<IWolfMessage> MessageReceived;
@@ -25,8 +27,10 @@ namespace TehGM.Wolfringo
         private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
         private readonly IMessageSerializer _fallbackSerializer;
+        private readonly ILogger _log;
 
-        public WolfClient(string url, string token, string device, ITokenProvider tokenProvider = null)
+        #region Constructors
+        public WolfClient(string url, string token, string device, ILogger logger = null, ITokenProvider tokenProvider = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
@@ -40,6 +44,7 @@ namespace TehGM.Wolfringo
             this.Url = url;
             this.Device = device;
             this.Token = token;
+            this._log = logger;
 
             // if token not provided, use token provider service. If null, use a default one
             if (this.Token == null)
@@ -57,11 +62,16 @@ namespace TehGM.Wolfringo
             this._client = new SocketClient();
             this._client.MessageReceived += OnClientMessageReceived;
             this._client.MessageSent += OnClientMessageSent;
+            this._client.Connected += OnClientConnected;
+            this._client.Disconnected += OnClientDisconnected;
+            this._client.ErrorRaised += OnClientError;
         }
 
-        public WolfClient(WolfClientOptions options = null, ITokenProvider tokenProvider = null)
-            : this(options?.ServerURL ?? WolfClientOptions.DefaultServerURL, options?.Token, options?.Device ?? WolfClientOptions.DefaultDevice, tokenProvider) { }
+        public WolfClient(WolfClientOptions options = null, ILogger logger = null, ITokenProvider tokenProvider = null)
+            : this(options?.ServerURL ?? WolfClientOptions.DefaultServerURL, options?.Token, options?.Device ?? WolfClientOptions.DefaultDevice, logger, tokenProvider) { }
+        #endregion
 
+        #region Connection management
         public Task ConnectAsync(CancellationToken cancellationToken = default)
             => _client.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"),
@@ -70,16 +80,27 @@ namespace TehGM.Wolfringo
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
             => _client.DisconnectAsync(cancellationToken);
 
+        public void Dispose()
+            => (_client as IDisposable)?.Dispose();
+        #endregion
+
+        #region Message Sending
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : WolfResponse
         {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+            if (string.IsNullOrWhiteSpace(message.Command))
+                throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
+
             SerializedMessageData data;
             if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
                 data = serializer.Serialize(message);
-            else if (!ThrowMissingSerializer)
-                throw new KeyNotFoundException($"Serializer for command {message.Command} not found");
             else
+            {
                 // try fallback simple serialization
+                _log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
                 data = _fallbackSerializer.Serialize(message);
+            }
 
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
             return await AwaitResponseAsync<TResponse>(msgId, cancellationToken).ConfigureAwait(false);
@@ -116,8 +137,9 @@ namespace TehGM.Wolfringo
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
-                    throw;
+                    // don't rethrow exception here, as doing so will kill the socket client loop
+                    _log?.LogError(ex, "Exception has occured when handling socket response");
+                    tcs.TrySetException(ex);
                 }
             };
             _client.MessageReceived += callback;
@@ -133,48 +155,102 @@ namespace TehGM.Wolfringo
             }
         }
 
-        public void Dispose()
-            => (_client as IDisposable)?.Dispose();
+        public void SetSerializer(string command, IMessageSerializer serializer)
+            => this._serializers[command] = serializer;
+        #endregion
 
+        #region Event handlers
         private void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
             try
             {
-                Console.WriteLine($"< {e.Message}");
+                TryLogMessageTrace(e, "Received");
 
-                if (e.Message.Type == SocketMessageType.BinaryEvent || e.Message.Type == SocketMessageType.Event)
+                if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
                 {
-                    if (e.Message.Payload is JArray array)
+                    // find serializer for command
+                    if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
                     {
-                        // find serializer for command
-                        string command = array.First.ToObject<string>();
-                        if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
-                        {
-                            if (ThrowMissingSerializer)
-                                throw new KeyNotFoundException($"Serializer for command {command} not found");
-                            return;
-                        }
-                        // deserialize message
-                        IWolfMessage msg = serializer.Deserialize(command, new SerializedMessageData(array.First.Next, e.BinaryMessages));
-                        if (msg == null)
-                            return;
-                        // ignore own messages
-                        if (msg is ChatMessage chatMessage && this.CurrentUser != null && chatMessage.SenderID.Value == this.CurrentUser.ID)
-                            return;
-
-                        this.MessageReceived?.Invoke(msg);
+                        _log?.LogError("Serializer for command {Command} not found", command);
+                        return;
                     }
+                    // deserialize message
+                    IWolfMessage msg = serializer.Deserialize(command, new SerializedMessageData(payload, e.BinaryMessages));
+                    if (msg == null)
+                        return;
+                    // ignore own messages
+                    if (msg is ChatMessage chatMessage && this.CurrentUser != null && chatMessage.SenderID.Value == this.CurrentUser.ID)
+                        return;
+
+                    _log?.LogDebug("Message received: {Command}", command);
+                    this.MessageReceived?.Invoke(msg);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                // don't rethrow exception here, as doing so will kill the socket client loop
+                _log?.LogError(ex, "Exception occured when handling received message");
             }
         }
 
         private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
         {
-            Console.WriteLine($"> {e.Message}");
+            TryLogMessageTrace(e, "Sent");
+            if (TryParseCommandEvent(e.Message, out string command, out _))
+                _log?.LogDebug("Message sent: {Command}", command);
+        }
+
+        private void OnClientConnected(object sender, EventArgs e)
+        {
+            _log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
+        }
+
+        private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
+        {
+            if (e.CloseStatus == System.Net.WebSockets.WebSocketCloseStatus.NormalClosure)
+                _log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
+            else
+                _log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
+        }
+
+        private void OnClientError(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject is Exception ex)
+                _log?.LogError(ex, "Socket client error: {Error}", ex.Message);
+            else _log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+        }
+        #endregion
+
+        #region Internal helpers
+        private bool TryParseCommandEvent(SocketMessage message, out string command, out JToken payload)
+        {
+            if ((message.Type == SocketMessageType.BinaryEvent || message.Type == SocketMessageType.Event)
+                && message.Payload is JArray array)
+            {
+                command = array.First.ToObject<string>();
+                payload = array.First.Next;
+                return true;
+            }
+            else
+            {
+                command = null;
+                payload = message.Payload;
+                return false;
+            }
+        }
+
+        private void TryLogMessageTrace(SocketMessageEventArgs e, string keyword)
+        {
+            if (_log?.IsEnabled(LogLevel.Trace) == true)
+            {
+                if (e.BinaryMessages?.Any() == true)
+                {
+                    string binaryMessages = string.Join("\n", e.BinaryMessages.Where(msg => msg?.Any() == true).Select(msg => Encoding.UTF8.GetString(msg)));
+                    _log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}\n{{BinaryMessages}}", e.Message.Type.ToString(), e.Message.ToString(), binaryMessages);
+                }
+                else
+                    _log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
+            }
         }
 
         protected virtual IDictionary<string, IMessageSerializer> GetDefaultMessageSerializers()
@@ -188,8 +264,6 @@ namespace TehGM.Wolfringo
                 { MessageCommands.Chat, new ChatMessageSerializer() }
             };
         }
-
-        public void SetSerializer(string command, IMessageSerializer serializer)
-            => this._serializers[command] = serializer;
+        #endregion
     }
 }
