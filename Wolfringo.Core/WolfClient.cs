@@ -55,7 +55,7 @@ namespace TehGM.Wolfringo
             this._responseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
 
             // init default serializers
-            this._fallbackMessageSerializer = new JsonMessageSerializer<IWolfMessage>();
+            this._fallbackMessageSerializer = new DefaultMessageSerializer<IWolfMessage>();
             this._fallbackResponseSerializer = new DefaultResponseSerializer();
             this._messageSerializers = GetDefaultMessageSerializers();
             this._responseSerializers = GetDefaultResponseSerializers();
@@ -281,10 +281,10 @@ namespace TehGM.Wolfringo
         {
             return new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
-                { MessageCommands.Welcome, new JsonMessageSerializer<WelcomeMessage>() },
-                { MessageCommands.Login, new JsonMessageSerializer<LoginMessage>() },
-                { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() },
-                { MessageCommands.SubscribeToGroup, new JsonMessageSerializer<SubscribeToGroupMessage>() },
+                { MessageCommands.Welcome, new DefaultMessageSerializer<WelcomeMessage>() },
+                { MessageCommands.Login, new DefaultMessageSerializer<LoginMessage>() },
+                { MessageCommands.SubscribeToPm, new DefaultMessageSerializer<SubscribeToPmMessage>() },
+                { MessageCommands.SubscribeToGroup, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
                 { MessageCommands.Chat, new ChatMessageSerializer() }
             };
         }

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
-    public class ChatMessageSerializer : JsonMessageSerializer<ChatMessage>
+    public class ChatMessageSerializer : DefaultMessageSerializer<ChatMessage>
     {
         public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {

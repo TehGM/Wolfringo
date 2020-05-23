@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
 {
     /// <summary>Serializer for basic messages that don't have binary data.</summary>
     /// <typeparam name="T"></typeparam>
-    public class JsonMessageSerializer<T> : IMessageSerializer where T : IWolfMessage
+    public class DefaultMessageSerializer<T> : IMessageSerializer where T : IWolfMessage
     {
         public virtual IWolfMessage Deserialize(string command, SerializedMessageData messageData)
             => messageData.Payload.ToObject<T>(SerializationHelper.DefaultSerializer);
