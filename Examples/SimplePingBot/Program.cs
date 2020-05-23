@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         private static ILogger<T> CreateLogger<T>()
         {
             ILoggerFactory loggerFactory = new LoggerFactory(
-                            new[] { new ConsoleLoggerProvider((_, level) => level != LogLevel.Trace, true) }
+                            new[] { new ConsoleLoggerProvider((_, level) => true, true) }
                         );
             return loggerFactory.CreateLogger<T>();
         }
