@@ -22,7 +22,11 @@ namespace TehGM.Wolfringo
         public string Device { get; }
         public WolfUser CurrentUser { get; private set; }
 
-        public event Action<IWolfMessage> MessageReceived;
+        public event EventHandler Connected;
+        public event EventHandler Disconnected;
+        public event EventHandler<WolfMessageEventArgs> MessageReceived;
+        public event EventHandler<WolfMessageSentEventArgs> MessageSent;
+        public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
         private readonly ISocketClient _client;
         private readonly IDictionary<string, IMessageSerializer> _serializers;
@@ -108,7 +112,9 @@ namespace TehGM.Wolfringo
             }
 
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
-            return await AwaitResponseAsync<TResponse>(msgId, cancellationToken).ConfigureAwait(false);
+            TResponse response = await AwaitResponseAsync<TResponse>(msgId, cancellationToken).ConfigureAwait(false);
+            this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
+            return response;
         }
 
         private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId, CancellationToken cancellationToken = default) where TResponse : WolfResponse
@@ -144,6 +150,7 @@ namespace TehGM.Wolfringo
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
                     _log?.LogError(ex, "Exception has occured when handling socket response");
+                    this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
                     tcs.TrySetException(ex);
                 }
             };
@@ -188,13 +195,14 @@ namespace TehGM.Wolfringo
                         return;
 
                     _log?.LogDebug("Message received: {Command}", command);
-                    this.MessageReceived?.Invoke(msg);
+                    this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
                 }
             }
             catch (Exception ex)
             {
                 // don't rethrow exception here, as doing so will kill the socket client loop
                 _log?.LogError(ex, "Exception occured when handling received message");
+                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
             }
         }
 
@@ -208,6 +216,7 @@ namespace TehGM.Wolfringo
         private void OnClientConnected(object sender, EventArgs e)
         {
             _log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
+            this.Connected?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
@@ -216,6 +225,7 @@ namespace TehGM.Wolfringo
                 _log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
             else
                 _log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
+            this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
@@ -223,6 +233,7 @@ namespace TehGM.Wolfringo
             if (e.ExceptionObject is Exception ex)
                 _log?.LogError(ex, "Socket client error: {Error}", ex.Message);
             else _log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+            this.ErrorRaised?.Invoke(this, e);
         }
         #endregion
 

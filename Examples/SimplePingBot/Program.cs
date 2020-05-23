@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging.Console;
 using System;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
-using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {
@@ -45,15 +44,15 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             }
         }
 
-        private static async void OnMessageReceived(IWolfMessage obj)
+        private static async void OnMessageReceived(object sender, WolfMessageEventArgs e)
         {
             //Console.WriteLine("Message received: " + obj.Command);
-            if (obj is WelcomeMessage)
+            if (e.Message is WelcomeMessage)
             {
                 Config config = Config.Load();
                 await _client.LoginAsync(config.Username, config.Password);
             }
-            else if (obj is ChatMessage msg)
+            else if (e.Message is ChatMessage msg)
             {
                 //if (msg.IsText)
                 //    Console.WriteLine(msg.Text);

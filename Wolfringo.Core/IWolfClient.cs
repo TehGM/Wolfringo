@@ -13,6 +13,12 @@ namespace TehGM.Wolfringo
         Task DisconnectAsync(CancellationToken cancellationToken = default);
         Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : WolfResponse;
 
-        event Action<IWolfMessage> MessageReceived;
+        /// <summary>Rasied when the client connects to the server.</summary>
+        event EventHandler Connected;
+        /// <summary>Raised when the client disconnects from the server.</summary>
+        event EventHandler Disconnected;
+        event EventHandler<WolfMessageEventArgs> MessageReceived;
+        event EventHandler<WolfMessageSentEventArgs> MessageSent;
+        event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
     }
 }
