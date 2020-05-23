@@ -5,7 +5,7 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
-    public class DefaultMessageResponseSerializer : IMessageResponseSerializer
+    public class DefaultResponseSerializer : IResponseSerializer
     {
         private static readonly Type _baseResponseType = ResponseTypeAttribute.BaseResponseType;
 
