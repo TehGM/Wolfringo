@@ -217,6 +217,9 @@ namespace TehGM.Wolfringo
         public void AddMessageListener<T>(Action<T> listener) where T : IWolfMessage
             => _callbackDispatcher.Add(new TypedMessageCallback<T>(listener));
 
+        public void AddMessageListener<T>(string command, Action<T> listener) where T : IWolfMessage
+            => _callbackDispatcher.Add(new CommandMessageCallback<T>(command, listener));
+
         public void RemoveMessageListener<T>(Action<T> listener) where T : IWolfMessage
             => _callbackDispatcher.Remove(new TypedMessageCallback<T>(listener));
 

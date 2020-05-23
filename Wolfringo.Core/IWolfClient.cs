@@ -22,6 +22,7 @@ namespace TehGM.Wolfringo
         event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
         void AddMessageListener<T>(Action<T> listener) where T : IWolfMessage;
+        void AddMessageListener<T>(string command, Action<T> listener) where T : IWolfMessage;
         void RemoveMessageListener<T>(Action<T> listener) where T : IWolfMessage;
     }
 }

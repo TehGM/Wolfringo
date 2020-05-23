@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
             this._callback = callback ?? throw new ArgumentNullException(nameof(callback));
         }
 
-        public bool TryInvoke(IWolfMessage message)
+        public virtual bool TryInvoke(IWolfMessage message)
         {
             if (message is T msg)
             {
