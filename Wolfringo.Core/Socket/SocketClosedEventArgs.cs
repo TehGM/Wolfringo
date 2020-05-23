@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Socket
         /// <summary>Returns the optional description that describes why the close handshake has been initiated by the remote endpoint.</summary>
         public string CloseStatusDescription { get; }
 
-        public SocketClosedEventArgs(WebSocketCloseStatus closeStatus, string closeStatusDescription)
+        public SocketClosedEventArgs(WebSocketCloseStatus closeStatus, string closeStatusDescription) : base()
         {
             this.CloseStatus = closeStatus;
             this.CloseStatusDescription = closeStatusDescription;

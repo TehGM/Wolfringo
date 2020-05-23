@@ -9,5 +9,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         private readonly int _code;
 
         public HttpStatusCode ResponseCode => (HttpStatusCode)_code;
+
+        public bool IsSuccess => _code >= 200 && _code <= 299;
+        public bool IsError => !IsSuccess;
     }
 }

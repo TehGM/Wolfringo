@@ -113,6 +113,8 @@ namespace TehGM.Wolfringo
 
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
             TResponse response = await AwaitResponseAsync<TResponse>(msgId, cancellationToken).ConfigureAwait(false);
+            if (response.IsError)
+                throw new MessageSendingException(response);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
             return response;
         }
@@ -126,6 +128,9 @@ namespace TehGM.Wolfringo
             {
                 try
                 {
+                    // ignore messages that are no acks
+                    if (e.Message.Type != SocketMessageType.EventAck && e.Message.Type != SocketMessageType.BinaryEventAck)
+                        return;
                     // only accept response with corresponding message ID
                     if (e.Message.ID == null)
                         return;

@@ -12,7 +12,7 @@ namespace TehGM.Wolfringo.Socket
         /// <summary>Binary messages associated with this message. Might be null.</summary>
         public IEnumerable<byte[]> BinaryMessages { get; }
 
-        public SocketMessageEventArgs(SocketMessage message, IEnumerable<byte[]> binaryMessages)
+        public SocketMessageEventArgs(SocketMessage message, IEnumerable<byte[]> binaryMessages) : base()
         {
             this.Message = message;
             this.BinaryMessages = binaryMessages;

@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo
     {
         public IWolfMessage Message { get; }
 
-        public WolfMessageEventArgs(IWolfMessage message)
+        public WolfMessageEventArgs(IWolfMessage message) : base()
         {
             this.Message = message;
         }
