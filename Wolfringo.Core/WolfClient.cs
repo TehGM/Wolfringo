@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 
@@ -29,8 +28,10 @@ namespace TehGM.Wolfringo
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
         private readonly ISocketClient _client;
-        private readonly IDictionary<string, IMessageSerializer> _serializers;
-        private readonly IMessageSerializer _fallbackSerializer;
+        private readonly IDictionary<string, IMessageSerializer> _messageSerializers;
+        private readonly IDictionary<Type, IResponseSerializer> _responseSerializers;
+        private readonly IMessageSerializer _fallbackMessageSerializer;
+        private readonly IResponseSerializer _fallbackResponseSerializer;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ILogger _log;
 
@@ -54,8 +55,10 @@ namespace TehGM.Wolfringo
             this._responseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
 
             // init default serializers
-            this._serializers = GetDefaultMessageSerializers();
-            this._fallbackSerializer = new JsonMessageSerializer<IWolfMessage>();
+            this._fallbackMessageSerializer = new JsonMessageSerializer<IWolfMessage>();
+            this._fallbackResponseSerializer = new DefaultResponseSerializer();
+            this._messageSerializers = GetDefaultMessageSerializers();
+            this._responseSerializers = GetDefaultResponseSerializers();
 
             // init socket client
             this._client = new SocketClient();
@@ -107,28 +110,26 @@ namespace TehGM.Wolfringo
             if (string.IsNullOrWhiteSpace(message.Command))
                 throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
 
-            SerializedMessageData data;
-            if (_serializers.TryGetValue(message.Command, out IMessageSerializer serializer))
-                data = serializer.Serialize(message);
-            else
+            if (!_messageSerializers.TryGetValue(message.Command, out IMessageSerializer serializer))
             {
                 // try fallback simple serialization
                 _log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
-                data = _fallbackSerializer.Serialize(message);
+                serializer = _fallbackMessageSerializer;
             }
+            SerializedMessageData data = serializer.Serialize(message);
 
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
-            TResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
+            WolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
             if (response.IsError)
                 throw new MessageSendingException(response);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
-            return response;
+            return response as TResponse;
         }
 
-        private Task<TResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
+        private Task<WolfResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
             CancellationToken cancellationToken = default) where TResponse : WolfResponse
         {
-            TaskCompletionSource<TResponse> tcs = new TaskCompletionSource<TResponse>();
+            TaskCompletionSource<WolfResponse> tcs = new TaskCompletionSource<WolfResponse>();
             EventHandler<SocketMessageEventArgs> callback = null;
             CancellationTokenRegistration ctr = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
             callback = (sender, e) =>
@@ -145,16 +146,20 @@ namespace TehGM.Wolfringo
                         return;
 
                     // parse response
-                    JToken responseObject = (e.Message.Payload is JArray) ? e.Message.Payload.First : e.Message.Payload;
                     Type responseType = _responseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
-                    object response = ParseResponse(responseObject, responseType);
+                    if (!_responseSerializers.TryGetValue(responseType, out IResponseSerializer serializer))
+                    {
+                        _log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
+                        serializer = _fallbackResponseSerializer;
+                    }
+                    WolfResponse response = serializer.Deserialize(responseType, new SerializedMessageData(e.Message.Payload, e.BinaryMessages));
 
                     // if it's a login message, we can also extract current user
-                    if (response is LoginResponse loginResponse && loginResponse.Username != default)
-                        this.CurrentUser = ParseResponse(responseObject, typeof(WolfUser)) as WolfUser;
+                    if (response is LoginResponse loginResponse)
+                        this.CurrentUser = WolfUser.FromLoginResponse(loginResponse);
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
-                    tcs.TrySetResult(response as TResponse);
+                    tcs.TrySetResult(response);
                     ctr.Dispose();
                     if (_client != null)
                         _client.MessageReceived -= callback;
@@ -168,19 +173,10 @@ namespace TehGM.Wolfringo
             };
             _client.MessageReceived += callback;
             return tcs.Task;
-
-            object ParseResponse(JToken response, Type responseType)
-            {
-                object result = response.ToObject(responseType, SerializationHelper.DefaultSerializer);
-                // if response has body or headers, further use it to populate the response entity
-                response.PopulateObject(ref result, "headers");
-                response.PopulateObject(ref result, "body");
-                return result;
-            }
         }
 
         public void SetSerializer(string command, IMessageSerializer serializer)
-            => this._serializers[command] = serializer;
+            => this._messageSerializers[command] = serializer;
         #endregion
 
         #region Event handlers
@@ -193,7 +189,7 @@ namespace TehGM.Wolfringo
                 if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
                 {
                     // find serializer for command
-                    if (!_serializers.TryGetValue(command, out IMessageSerializer serializer))
+                    if (!_messageSerializers.TryGetValue(command, out IMessageSerializer serializer))
                     {
                         _log?.LogError("Serializer for command {Command} not found", command);
                         return;
@@ -290,6 +286,15 @@ namespace TehGM.Wolfringo
                 { MessageCommands.SubscribeToPm, new JsonMessageSerializer<SubscribeToPmMessage>() },
                 { MessageCommands.SubscribeToGroup, new JsonMessageSerializer<SubscribeToGroupMessage>() },
                 { MessageCommands.Chat, new ChatMessageSerializer() }
+            };
+        }
+
+        protected virtual IDictionary<Type, IResponseSerializer> GetDefaultResponseSerializers()
+        {
+            return new Dictionary<Type, IResponseSerializer>()
+            {
+                { typeof(LoginResponse), _fallbackResponseSerializer },
+                { typeof(WolfResponse), _fallbackResponseSerializer }
             };
         }
         #endregion
