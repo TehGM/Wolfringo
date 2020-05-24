@@ -7,8 +7,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
     {
         public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
-            // due to how stupid the protocol is, chat message needs unwrapping of body
-            ChatMessage result = (ChatMessage)base.Deserialize(command, new SerializedMessageData(messageData.Payload["body"], messageData.BinaryMessages));
+            ChatMessage result = (ChatMessage)base.Deserialize(command, messageData);
 
             // return null to cancel further execution if it's mime types that are more nicely sent in normal events
             if (result.Type == ChatMessageTypes.PrivateRequestResponse || result.Type == ChatMessageTypes.GroupAction)
