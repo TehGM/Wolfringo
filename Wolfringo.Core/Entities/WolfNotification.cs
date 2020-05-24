@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TehGM.Wolfringo
 {
-    public class WolfNotification
+    public class WolfNotification : IWolfEntity
     {
         [JsonProperty("id")]
         public uint ID { get; private set; }

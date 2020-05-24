@@ -3,7 +3,7 @@ using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo
 {
-    public class WolfUser
+    public class WolfUser : IWolfEntity
     {
         [JsonProperty("id")]
         public uint ID { get; protected set; }
