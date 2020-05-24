@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
@@ -22,6 +23,9 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         public static void PopulateObject<T>(this JToken token, ref T target, string childPath = null)
         {
             JToken source = childPath != null ? token.SelectToken(childPath) : token;
+            // sometimes body can be an array - if target is not an enumerable, ignore
+            if (source is JArray && !(target is IEnumerable))
+                return;
             if (source == null)
                 return;
             using (JsonReader reader = source.CreateReader())
