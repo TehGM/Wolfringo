@@ -8,8 +8,6 @@ namespace TehGM.Wolfringo
 {
     public interface IWolfClient
     {
-        WolfUser CurrentUser { get; }
-
         Task ConnectAsync(CancellationToken cancellationToken = default);
         Task DisconnectAsync(CancellationToken cancellationToken = default);
         Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : WolfResponse;
@@ -24,5 +22,8 @@ namespace TehGM.Wolfringo
 
         void AddMessageListener(IMessageCallback listener);
         void RemoveMessageListener(IMessageCallback listener);
+
+        Task<WolfUser> GetUserAsync(uint userID, CancellationToken cancellationToken = default);
+        Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default);
     }
 }

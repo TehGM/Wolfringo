@@ -20,7 +20,6 @@ namespace TehGM.Wolfringo
         public string Url { get; }
         public string Token { get; }
         public string Device { get; }
-        public WolfUser CurrentUser { get; private set; }
 
         public event EventHandler Connected;
         public event EventHandler Disconnected;
@@ -34,6 +33,9 @@ namespace TehGM.Wolfringo
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ILogger _log;
         private readonly MessageCallbackDispatcher _callbackDispatcher;
+        private readonly IWolfEntityCache<WolfUser> _usersCache;
+
+        private uint _currentUserID;
 
         #region Constructors
         public WolfClient(string url, string device, string token, ILogger logger = null, 
@@ -58,6 +60,9 @@ namespace TehGM.Wolfringo
 
             // init dispatcher
             _callbackDispatcher = new MessageCallbackDispatcher();
+
+            // init caches
+            _usersCache = new WolfEntityCache<WolfUser>();
 
             // init socket client
             this._client = new SocketClient();
@@ -183,13 +188,28 @@ namespace TehGM.Wolfringo
         {
             // if it's a login message, we can extract current user
             if (response is LoginResponse loginResponse)
-                this.CurrentUser = WolfUser.FromLoginResponse(loginResponse);
+            {
+                this._usersCache?.AddOrReplace(WolfUser.FromLoginResponse(loginResponse));
+                this._currentUserID = loginResponse.UserID;
+            }
             // if it's chat message, populate with response info to get timestamp
             if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
             // TODO: handle other types
             return Task.CompletedTask;
         }
+        #endregion
+
+        #region Caching
+        public Task<WolfUser> GetUserAsync(uint userID, CancellationToken cancellationToken = default)
+        {
+            if (!this._client.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return Task.FromResult(this._usersCache.Get(userID));
+        }
+
+        public Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default)
+            => this.GetUserAsync(this._currentUserID, cancellationToken);
         #endregion
 
         #region Event handlers
@@ -213,7 +233,7 @@ namespace TehGM.Wolfringo
                     if (msg == null)
                         return;
                     // ignore own messages
-                    if (msg is ChatMessage chatMessage && this.CurrentUser != null && chatMessage.SenderID.Value == this.CurrentUser.ID)
+                    if (msg is ChatMessage chatMessage && chatMessage.SenderID.Value == this._currentUserID)
                         return;
 
                     _log?.LogDebug("Message received: {Command}", command);
