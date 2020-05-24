@@ -30,8 +30,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                 if (item == null || item.First == null)
                     results.Add(default);
                 T result = item.First.ToObject<T>(serializer);
-                item.First.PopulateObject(ref result, "body");
-                item.First.PopulateObject(ref result, "headers");
+                item.First.FlattenCommonProperties(ref result);
                 results.Add(result);
             }
             return results.ToArray();

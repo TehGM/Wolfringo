@@ -30,5 +30,12 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             using (JsonReader reader = source.CreateReader())
                 SerializationHelper.DefaultSerializer.Populate(reader, target);
         }
+
+        public static void FlattenCommonProperties<T>(this JToken token, ref T target)
+        {
+            token.PopulateObject(ref target, "body");
+            token.PopulateObject(ref target, "headers");
+            token.PopulateObject(ref target, "body.extended");
+        }
     }
 }

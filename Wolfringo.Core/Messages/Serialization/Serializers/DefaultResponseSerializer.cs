@@ -14,12 +14,14 @@ namespace TehGM.Wolfringo.Messages.Serialization
             if (!_baseResponseType.IsAssignableFrom(responseType))
                 throw new ArgumentException($"Response type must implement {_baseResponseType.FullName}", nameof(responseType));
 
-            JToken responseJson = (responseData.Payload is JArray) ? responseData.Payload.First : responseData.Payload;
+            JToken responseJson = GetResponseJson(responseData);
             object result = responseJson.ToObject(responseType, SerializationHelper.DefaultSerializer);
             // if response has body or headers, further use it to populate the response entity
-            responseJson.PopulateObject(ref result, "headers");
-            responseJson.PopulateObject(ref result, "body");
+            responseJson.FlattenCommonProperties(ref result);
             return (IWolfResponse)result;
         }
+
+        protected static JToken GetResponseJson(SerializedMessageData responseData)
+            => (responseData.Payload is JArray) ? responseData.Payload.First : responseData.Payload;
     }
 }

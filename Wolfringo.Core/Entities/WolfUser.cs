@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo
 {
@@ -27,6 +29,23 @@ namespace TehGM.Wolfringo
         public WolfOnlineState OnlineState { get; private set; }
         [JsonProperty("privileges")]
         public int Privileges { get; private set; }
+
+        // data from "extended" prop - should be populated by converter
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        public string Name { get; private set; }
+        [JsonProperty("about", NullValueHandling = NullValueHandling.Ignore)]
+        public string About { get; private set; }
+        [JsonProperty("language", NullValueHandling = NullValueHandling.Ignore)]
+        public WolfLanguage? Language { get; private set; }
+        [JsonProperty("gender", NullValueHandling = NullValueHandling.Ignore)]
+        public WolfGender? Gender { get; private set; }
+        [JsonProperty("lookingFor", NullValueHandling = NullValueHandling.Ignore)]
+        public WolfLookingFor? LookingFor { get; private set; }
+        [JsonProperty("urls", NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<string> Links { get; private set; }
+        [JsonProperty("utcOffset", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(MinutesTimespanConverter))]
+        public TimeSpan? UtcOffset { get; private set; }
 
         public override bool Equals(object obj)
             => Equals(obj as WolfUser);
