@@ -217,7 +217,10 @@ namespace TehGM.Wolfringo
                 throw new InvalidOperationException("Not connected");
             WolfUser result = _usersCache?.Get(userID);
             if (result != null)
+            {
+                _log?.LogTrace("User {UserID} found in cache", userID);
                 return result;
+            }
             SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(
                 new SubscriberProfileMessage(userID, true, true), cancellationToken).ConfigureAwait(false);
             result = response.UserProfiles.FirstOrDefault(u => u.ID == userID);
