@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Messages.Types;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
@@ -18,7 +19,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.Login, new DefaultMessageSerializer<LoginMessage>() },
                 { MessageCommands.SubscribeToPm, new DefaultMessageSerializer<SubscribeToPmMessage>() },
                 { MessageCommands.SubscribeToGroup, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
-                { MessageCommands.Chat, new ChatMessageSerializer() }
+                { MessageCommands.Chat, new ChatMessageSerializer() },
+                { MessageCommands.ListNotifications, new DefaultMessageSerializer<ListNotificationsMessage>() }
             };
         }
 

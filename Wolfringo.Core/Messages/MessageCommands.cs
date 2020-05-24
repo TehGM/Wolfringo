@@ -7,5 +7,6 @@
         public const string SubscribeToGroup = "message group subscribe";
         public const string Login = "security login";
         public const string Chat = "message send";
+        public const string ListNotifications = "notification list";
     }
 }

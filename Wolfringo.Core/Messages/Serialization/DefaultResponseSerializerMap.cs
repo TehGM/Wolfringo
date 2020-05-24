@@ -18,7 +18,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
             {
                 { typeof(WolfResponse), defaultSerializer },
                 { typeof(ChatResponse), defaultSerializer },
-                { typeof(LoginResponse), defaultSerializer }
+                { typeof(LoginResponse), defaultSerializer },
+                { typeof(ListNotificationsResponse), defaultSerializer }
             };
         }
 

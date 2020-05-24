@@ -94,7 +94,7 @@ namespace TehGM.Wolfringo
         #region Connection management
         public Task ConnectAsync(CancellationToken cancellationToken = default)
             => _client.ConnectAsync(
-                new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device}&EIO=3&transport=websocket"),
+                new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device.ToLower()}&EIO=3&transport=websocket"),
                 cancellationToken);
 
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
