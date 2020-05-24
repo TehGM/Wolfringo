@@ -25,7 +25,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("icon")]
         public int Icon { get; private set; }
         [JsonProperty("deviceType")]
-        public int DeviceType { get; private set; }
+        public WolfDevice DeviceType { get; private set; }
         [JsonProperty("hash")]
         public string Hash { get; private set; }
         [JsonProperty("privileges")]
