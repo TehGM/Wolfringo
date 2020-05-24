@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
@@ -8,6 +9,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("uuid")]
         public Guid ID { get; private set; }
         [JsonProperty("timestamp")]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime Timestamp { get; private set; }
         [JsonProperty("isSpam")]
         public bool SpamFiltered { get; private set; }

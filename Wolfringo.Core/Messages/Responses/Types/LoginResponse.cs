@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
     public class LoginResponse : WolfResponse, IWolfResponse
     {
         [JsonProperty("offlineMessageTimestamp")]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime OfflineMessageTimestamp { get; private set; }
 
         [JsonProperty("id")]

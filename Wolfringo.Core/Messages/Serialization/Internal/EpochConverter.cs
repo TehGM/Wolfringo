@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
     // https://stackoverflow.com/questions/19971494/how-to-deserialize-a-unix-timestamp-%CE%BCs-to-a-datetime-from-json/56795442
 
-    public class MicrosecondEpochConverter : DateTimeConverterBase
+    public class EpochConverter : DateTimeConverterBase
     {
         private static readonly DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

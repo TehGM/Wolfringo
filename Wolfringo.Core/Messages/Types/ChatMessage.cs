@@ -21,6 +21,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("mimeType")]
         public string Type { get; private set; }
         [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(EpochConverter))]
         public DateTime? Timestamp { get; private set; }
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(UserIdConverter))]

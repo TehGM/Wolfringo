@@ -14,7 +14,6 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             SerializerSettings = new JsonSerializerSettings();
             SerializerSettings.Converters.Add(new IPAddressConverter());
             SerializerSettings.Converters.Add(new IPEndPointConverter());
-            SerializerSettings.Converters.Add(new MicrosecondEpochConverter());
             SerializerSettings.Formatting = Formatting.None;
 
             DefaultSerializer = JsonSerializer.CreateDefault(SerializerSettings);
