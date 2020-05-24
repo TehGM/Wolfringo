@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Logging.Console;
 using System;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Types;
+using System.Collections.Generic;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {
@@ -61,7 +63,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         {
             Config config = Config.Load();
             await _client.LoginAsync(config.Username, config.Password);
-            ListNotificationsResponse notifications = await _client.SendAsync<ListNotificationsResponse>(new ListNotificationsMessage());
+            IEnumerable<WolfNotification> notifications = await _client.GetNotificationsAsync();
         }
 
         private static async void OnChatMessage(ChatMessage message)
