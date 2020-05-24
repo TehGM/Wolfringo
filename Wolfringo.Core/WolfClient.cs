@@ -123,6 +123,7 @@ namespace TehGM.Wolfringo
             IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
             if (response.IsError())
                 throw new MessageSendingException(response);
+            await OnMessageSentInternalAsync(message, response, cancellationToken).ConfigureAwait(false);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
             return response as TResponse;
         }
@@ -155,10 +156,6 @@ namespace TehGM.Wolfringo
                     }
                     IWolfResponse response = serializer.Deserialize(responseType, new SerializedMessageData(e.Message.Payload, e.BinaryMessages));
 
-                    // if it's a login message, we can also extract current user
-                    if (response is LoginResponse loginResponse)
-                        this.CurrentUser = WolfUser.FromLoginResponse(loginResponse);
-
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
                     ctr.Dispose();
@@ -174,6 +171,19 @@ namespace TehGM.Wolfringo
             };
             _client.MessageReceived += callback;
             return tcs.Task;
+        }
+
+        /// <summary>Internal method for handling additional actions on sent message.</summary>
+        /// <param name="message">Sent message.</param>
+        /// <param name="response">Response received.</param>
+        /// <param name="cancellationToken"></param>
+        private Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, CancellationToken cancellationToken = default)
+        {
+            // if it's a login message, we can extract current user
+            if (response is LoginResponse loginResponse)
+                this.CurrentUser = WolfUser.FromLoginResponse(loginResponse);
+            // TODO: handle other types
+            return Task.CompletedTask;
         }
         #endregion
 
