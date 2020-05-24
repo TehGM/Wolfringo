@@ -20,7 +20,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.SubscribeToPm, new DefaultMessageSerializer<SubscribeToPmMessage>() },
                 { MessageCommands.SubscribeToGroup, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
                 { MessageCommands.Chat, new ChatMessageSerializer() },
-                { MessageCommands.ListNotifications, new DefaultMessageSerializer<ListNotificationsMessage>() }
+                { MessageCommands.ListNotifications, new DefaultMessageSerializer<ListNotificationsMessage>() },
+                { MessageCommands.SubscriberProfile, new DefaultMessageSerializer<SubscriberProfileMessage>() }
             };
         }
 

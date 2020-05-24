@@ -8,5 +8,6 @@
         public const string Login = "security login";
         public const string Chat = "message send";
         public const string ListNotifications = "notification list";
+        public const string SubscriberProfile = "subscriber profile";
     }
 }

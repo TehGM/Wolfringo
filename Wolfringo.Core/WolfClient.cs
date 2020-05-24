@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -192,26 +193,37 @@ namespace TehGM.Wolfringo
         /// <param name="cancellationToken"></param>
         private Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
-            // if it's a login message, we can extract current user
+            // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
-            {
-                this._usersCache?.AddOrReplace(WolfUser.FromLoginResponse(loginResponse));
                 this._currentUserID = loginResponse.UserID;
-            }
             // if it's chat message, populate with response info to get timestamp
             if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
+            // update users cache if it's user profile message
+            if (message is SubscriberProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
+            {
+                foreach (WolfUser user in userProfileResponse.UserProfiles)
+                    _usersCache.AddOrReplaceIfChanged(user);
+            }
             // TODO: handle other types
             return Task.CompletedTask;
         }
         #endregion
 
         #region Caching
-        public Task<WolfUser> GetUserAsync(uint userID, CancellationToken cancellationToken = default)
+        public async Task<WolfUser> GetUserAsync(uint userID, CancellationToken cancellationToken = default)
         {
             if (!this._client.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            return Task.FromResult(this._usersCache.Get(userID));
+            WolfUser result = _usersCache?.Get(userID);
+            if (result != null)
+                return result;
+            SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(
+                new SubscriberProfileMessage(userID, true, true), cancellationToken).ConfigureAwait(false);
+            result = response.UserProfiles.FirstOrDefault(u => u.ID == userID);
+            if (result == null)
+                throw new KeyNotFoundException();
+            return result;
         }
 
         public Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default)
