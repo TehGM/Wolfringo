@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Text;
+using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages
 {
+    [ResponseType(typeof(ChatResponse))]
     public class ChatMessage : IWolfMessage
     {
         public string Command => MessageCommands.Chat;
@@ -14,16 +16,16 @@ namespace TehGM.Wolfringo.Messages
         public Guid? FlightID { get; private set; }
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public Guid? ID { get; private set; }
-        [JsonProperty("isGroup", Required = Required.Always)]
+        [JsonProperty("isGroup")]
         public bool IsGroupMessage { get; private set; }
-        [JsonProperty("mimeType", Required = Required.Always)]
+        [JsonProperty("mimeType")]
         public string Type { get; private set; }
         [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? Timestamp { get; private set; }
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(UserIdConverter))]
         public uint? SenderID { get; private set; }
-        [JsonProperty("recipient", Required = Required.Always)]
+        [JsonProperty("recipient")]
         [JsonConverter(typeof(UserIdConverter))]
         public uint RecipientID { get; private set; }
 

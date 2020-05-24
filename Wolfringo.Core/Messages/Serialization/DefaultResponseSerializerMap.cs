@@ -12,11 +12,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
 
         public DefaultResponseSerializerMap(IResponseSerializer fallbackSerializer = null)
         {
-            this.FallbackSerializer = fallbackSerializer ?? new DefaultResponseSerializer();
+            DefaultResponseSerializer defaultSerializer = new DefaultResponseSerializer();
+            this.FallbackSerializer = fallbackSerializer ?? defaultSerializer;
             this._map = new Dictionary<Type, IResponseSerializer>()
             {
-                { typeof(LoginResponse), FallbackSerializer },
-                { typeof(WolfResponse), FallbackSerializer }
+                { typeof(WolfResponse), defaultSerializer },
+                { typeof(ChatResponse), defaultSerializer },
+                { typeof(LoginResponse), defaultSerializer }
             };
         }
 

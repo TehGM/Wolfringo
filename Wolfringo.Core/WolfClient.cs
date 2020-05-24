@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
@@ -123,7 +124,6 @@ namespace TehGM.Wolfringo
             IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
             if (response.IsError())
                 throw new MessageSendingException(response);
-            await OnMessageSentInternalAsync(message, response, cancellationToken).ConfigureAwait(false);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
             return response as TResponse;
         }
@@ -134,7 +134,7 @@ namespace TehGM.Wolfringo
             TaskCompletionSource<IWolfResponse> tcs = new TaskCompletionSource<IWolfResponse>();
             EventHandler<SocketMessageEventArgs> callback = null;
             CancellationTokenRegistration ctr = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
-            callback = (sender, e) =>
+            callback = async (sender, e) =>
             {
                 try
                 {
@@ -154,7 +154,9 @@ namespace TehGM.Wolfringo
                         _log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
                         serializer = _responseSerializers.FallbackSerializer;
                     }
-                    IWolfResponse response = serializer.Deserialize(responseType, new SerializedMessageData(e.Message.Payload, e.BinaryMessages));
+                    SerializedMessageData responseData = new SerializedMessageData(e.Message.Payload, e.BinaryMessages);
+                    IWolfResponse response = serializer.Deserialize(responseType, responseData);
+                    await OnMessageSentInternalAsync(sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
@@ -177,11 +179,14 @@ namespace TehGM.Wolfringo
         /// <param name="message">Sent message.</param>
         /// <param name="response">Response received.</param>
         /// <param name="cancellationToken"></param>
-        private Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, CancellationToken cancellationToken = default)
+        private Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             // if it's a login message, we can extract current user
             if (response is LoginResponse loginResponse)
                 this.CurrentUser = WolfUser.FromLoginResponse(loginResponse);
+            // if it's chat message, populate with response info to get timestamp
+            if (message is ChatMessage chatMsg && response is ChatResponse)
+                rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
             // TODO: handle other types
             return Task.CompletedTask;
         }
