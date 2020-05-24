@@ -200,7 +200,7 @@ namespace TehGM.Wolfringo
             if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
             // update users cache if it's user profile message
-            if (message is SubscriberProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
+            if (response is SubscriberProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
             {
                 foreach (WolfUser user in userProfileResponse.UserProfiles)
                     _usersCache.AddOrReplaceIfChanged(user);
