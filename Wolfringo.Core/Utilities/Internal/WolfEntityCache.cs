@@ -17,5 +17,8 @@ namespace TehGM.Wolfringo.Utilities.Internal
 
         public bool Remove(uint id)
             => _items.Remove(id);
+
+        public void Clear()
+            => _items.Clear();
     }
 }

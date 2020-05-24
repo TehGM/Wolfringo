@@ -107,6 +107,12 @@ namespace TehGM.Wolfringo
 
         public void Dispose()
             => (_client as IDisposable)?.Dispose();
+
+        private void Clear()
+        {
+            this._currentUserID = default;
+            this._usersCache?.Clear();
+        }
         #endregion
 
         #region Message Sending
@@ -209,7 +215,11 @@ namespace TehGM.Wolfringo
         }
 
         public Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default)
-            => this.GetUserAsync(this._currentUserID, cancellationToken);
+        {
+            if (this._currentUserID == default)
+                throw new InvalidOperationException("Not logged in");
+            return this.GetUserAsync(this._currentUserID, cancellationToken);
+        }
         #endregion
 
         #region Event handlers
@@ -273,6 +283,7 @@ namespace TehGM.Wolfringo
                 _log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
             else
                 _log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
+            this.Clear();
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
 

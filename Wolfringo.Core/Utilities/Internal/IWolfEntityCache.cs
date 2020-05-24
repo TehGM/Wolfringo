@@ -5,5 +5,6 @@
         T Get(uint id);
         void AddOrReplace(T item);
         bool Remove(uint id);
+        void Clear();
     }
 }
