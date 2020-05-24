@@ -5,6 +5,6 @@ namespace TehGM.Wolfringo.Messages.Serialization
 {
     public interface IResponseSerializer
     {
-        WolfResponse Deserialize(Type responseType, SerializedMessageData responseData);
+        IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData);
     }
 }

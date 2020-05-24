@@ -3,7 +3,7 @@ using System;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
-    public class LoginResponse : WolfResponse
+    public class LoginResponse : WolfResponse, IWolfResponse
     {
         [JsonProperty("offlineMessageTimestamp")]
         public DateTime OfflineMessageTimestamp { get; private set; }

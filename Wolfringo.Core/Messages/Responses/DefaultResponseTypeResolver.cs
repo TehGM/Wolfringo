@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages.Responses
     public class DefaultResponseTypeResolver : IResponseTypeResolver
     {
         private static readonly Type _mappingAttributeType = typeof(ResponseTypeAttribute);
-        private static readonly Type _baseResponseType = ResponseTypeAttribute.BaseResponseType;
+        private static readonly Type _baseResponseType = typeof(IWolfResponse);
         private static readonly Type _baseMessageType = typeof(IWolfMessage);
 
         private readonly IDictionary<Type, Type> _cachedMapping = new Dictionary<Type, Type>();
@@ -22,7 +22,7 @@ namespace TehGM.Wolfringo.Messages.Responses
             if (!_baseMessageType.IsAssignableFrom(messageType))
                 throw new ArgumentException($"Message type must implement {_baseMessageType.FullName}", nameof(messageType));
             if (!_baseResponseType.IsAssignableFrom(fallbackType))
-                throw new ArgumentException($"Response type must inherit from {_baseResponseType.FullName}", nameof(messageType));
+                throw new ArgumentException($"Response type must implement {_baseResponseType.FullName}", nameof(fallbackType));
 
             // check attributes
             // note: not using generics here just for compatibility with earlier .NET Framework versions

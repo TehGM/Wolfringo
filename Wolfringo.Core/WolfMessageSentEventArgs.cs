@@ -6,9 +6,9 @@ namespace TehGM.Wolfringo
     [Serializable]
     public class WolfMessageSentEventArgs : WolfMessageEventArgs
     {
-        public WolfResponse Response { get; }
+        public IWolfResponse Response { get; }
 
-        public WolfMessageSentEventArgs(IWolfMessage message, WolfResponse response) : base(message)
+        public WolfMessageSentEventArgs(IWolfMessage message, IWolfResponse response) : base(message)
         {
             this.Response = response;
         }

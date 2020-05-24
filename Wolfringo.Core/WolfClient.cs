@@ -120,17 +120,17 @@ namespace TehGM.Wolfringo
             SerializedMessageData data = serializer.Serialize(message);
 
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
-            WolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
-            if (response.IsError)
+            IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
+            if (response.IsError())
                 throw new MessageSendingException(response);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
             return response as TResponse;
         }
 
-        private Task<WolfResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
-            CancellationToken cancellationToken = default) where TResponse : WolfResponse
+        private Task<IWolfResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
+            CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
-            TaskCompletionSource<WolfResponse> tcs = new TaskCompletionSource<WolfResponse>();
+            TaskCompletionSource<IWolfResponse> tcs = new TaskCompletionSource<IWolfResponse>();
             EventHandler<SocketMessageEventArgs> callback = null;
             CancellationTokenRegistration ctr = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
             callback = (sender, e) =>
@@ -153,7 +153,7 @@ namespace TehGM.Wolfringo
                         _log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
                         serializer = _responseSerializers.FallbackSerializer;
                     }
-                    WolfResponse response = serializer.Deserialize(responseType, new SerializedMessageData(e.Message.Payload, e.BinaryMessages));
+                    IWolfResponse response = serializer.Deserialize(responseType, new SerializedMessageData(e.Message.Payload, e.BinaryMessages));
 
                     // if it's a login message, we can also extract current user
                     if (response is LoginResponse loginResponse)
