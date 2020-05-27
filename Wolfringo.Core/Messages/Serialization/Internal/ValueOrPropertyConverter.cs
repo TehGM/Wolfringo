@@ -4,24 +4,18 @@ using System;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
-    public class UserIdConverter : JsonConverter
+    public class ValueOrPropertyConverter : JsonConverter
     {
+        private readonly string _propPath;
+
+        public ValueOrPropertyConverter(string propertyPath)
+        {
+            this._propPath = propertyPath;
+        }
+
         public override bool CanConvert(Type objectType)
         {
-            switch (Type.GetTypeCode(objectType))
-            {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                    return true;
-                default:
-                    return false;
-            }
+            return (Type.GetTypeCode(objectType) != TypeCode.Object);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -31,7 +25,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         {
             JToken token = JToken.Load(reader);
             if (token.Type == JTokenType.Object)
-                token = token["id"];
+                token = token.SelectToken(_propPath);
             return token.ToObject(objectType);
         }
     }

@@ -24,10 +24,10 @@ namespace TehGM.Wolfringo.Messages
         [JsonConverter(typeof(EpochConverter))]
         public DateTime? Timestamp { get; private set; }
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(UserIdConverter))]
+        [JsonConverter(typeof(EntityIdConverter))]
         public uint? SenderID { get; private set; }
         [JsonProperty("recipient")]
-        [JsonConverter(typeof(UserIdConverter))]
+        [JsonConverter(typeof(EntityIdConverter))]
         public uint RecipientID { get; private set; }
 
         // binary data
