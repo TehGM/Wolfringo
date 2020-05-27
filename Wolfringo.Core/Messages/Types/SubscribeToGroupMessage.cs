@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Messages
     public class SubscribeToGroupMessage : IHeadersWolfMessage
     {
         [JsonIgnore]
-        public string Command => MessageCommands.SubscribeToGroup;
+        public string Command => MessageCommands.MessageGroupSubscribe;
         [JsonIgnore]
         public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
         {

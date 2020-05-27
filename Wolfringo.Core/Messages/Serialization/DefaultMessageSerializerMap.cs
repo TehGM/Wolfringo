@@ -16,13 +16,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
             this._map = new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
                 { MessageCommands.Welcome, new DefaultMessageSerializer<WelcomeMessage>() },
-                { MessageCommands.Login, new DefaultMessageSerializer<LoginMessage>() },
-                { MessageCommands.SubscribeToPm, new DefaultMessageSerializer<SubscribeToPmMessage>() },
-                { MessageCommands.SubscribeToGroup, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
-                { MessageCommands.Chat, new ChatMessageSerializer() },
-                { MessageCommands.ListNotifications, new DefaultMessageSerializer<ListNotificationsMessage>() },
+                { MessageCommands.SecurityLogin, new DefaultMessageSerializer<LoginMessage>() },
+                { MessageCommands.MessagePrivateSubscribe, new DefaultMessageSerializer<SubscribeToPmMessage>() },
+                { MessageCommands.MessageGroupSubscribe, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
+                { MessageCommands.MessageSend, new ChatMessageSerializer() },
+                { MessageCommands.NotificationList, new DefaultMessageSerializer<ListNotificationsMessage>() },
                 { MessageCommands.SubscriberProfile, new DefaultMessageSerializer<SubscriberProfileMessage>() },
-                { MessageCommands.ContactList, new DefaultMessageSerializer<ContactListMessage>() }
+                { MessageCommands.SubscriberContactList, new DefaultMessageSerializer<ContactListMessage>() }
             };
         }
 

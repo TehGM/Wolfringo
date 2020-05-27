@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(ContactListResponse))]
     public class ContactListMessage : IWolfMessage
     {
-        public string Command => MessageCommands.ContactList;
+        public string Command => MessageCommands.SubscriberContactList;
 
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }

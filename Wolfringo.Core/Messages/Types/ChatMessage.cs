@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(ChatResponse))]
     public class ChatMessage : IWolfMessage
     {
-        public string Command => MessageCommands.Chat;
+        public string Command => MessageCommands.MessageSend;
 
         // json data
         [JsonProperty("flightId", NullValueHandling = NullValueHandling.Ignore)]

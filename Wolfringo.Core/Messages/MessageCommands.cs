@@ -3,12 +3,12 @@
     public static class MessageCommands
     {
         public const string Welcome = "welcome";
-        public const string SubscribeToPm = "message private subscribe";
-        public const string SubscribeToGroup = "message group subscribe";
-        public const string Login = "security login";
-        public const string Chat = "message send";
-        public const string ListNotifications = "notification list";
+        public const string MessagePrivateSubscribe = "message private subscribe";
+        public const string MessageGroupSubscribe = "message group subscribe";
+        public const string SecurityLogin = "security login";
+        public const string MessageSend = "message send";
+        public const string NotificationList = "notification list";
         public const string SubscriberProfile = "subscriber profile";
-        public const string ContactList = "subscriber contact list";
+        public const string SubscriberContactList = "subscriber contact list";
     }
 }

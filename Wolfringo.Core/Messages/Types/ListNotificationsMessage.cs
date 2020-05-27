@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Messages.Types
     [ResponseType(typeof(ListNotificationsResponse))]
     public class ListNotificationsMessage : IWolfMessage
     {
-        public string Command => MessageCommands.ListNotifications;
+        public string Command => MessageCommands.NotificationList;
 
         private const WolfLanguage _defaultLanguage = WolfLanguage.English;
 

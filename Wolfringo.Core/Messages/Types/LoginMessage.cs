@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class LoginMessage : IWolfMessage
     {
         [JsonIgnore]
-        public string Command => MessageCommands.Login;
+        public string Command => MessageCommands.SecurityLogin;
 
         [JsonProperty("username", Required = Required.Always)]
         public string Login { get; private set; }
