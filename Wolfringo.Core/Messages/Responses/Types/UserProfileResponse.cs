@@ -4,7 +4,7 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
-    public class SubscriberProfileResponse : WolfResponse, IWolfResponse
+    public class UserProfileResponse : WolfResponse, IWolfResponse
     {
         [JsonProperty("body")]
         [JsonConverter(typeof(ExtractValuesOnlyConverter<WolfUser>))]

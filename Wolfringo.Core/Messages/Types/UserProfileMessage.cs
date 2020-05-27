@@ -5,7 +5,7 @@ using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
 {
-    [ResponseType(typeof(SubscriberProfileResponse))]
+    [ResponseType(typeof(UserProfileResponse))]
     public class UserProfileMessage : IWolfMessage, IHeadersWolfMessage
     {
         [JsonIgnore]

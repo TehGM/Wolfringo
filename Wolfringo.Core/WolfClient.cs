@@ -200,7 +200,7 @@ namespace TehGM.Wolfringo
             if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
             // update users cache if it's user profile message
-            if (response is SubscriberProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
+            if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
             {
                 foreach (WolfUser user in userProfileResponse.UserProfiles)
                     _usersCache.AddOrReplaceIfChanged(user);
@@ -231,7 +231,7 @@ namespace TehGM.Wolfringo
             }
 
             // get the ones that aren't in cache from the server
-            SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(new UserProfileMessage(
+            UserProfileResponse response = await SendAsync<UserProfileResponse>(new UserProfileMessage(
                     userIDs.Except(results.Select(u => u.ID)), 
                     true, true), cancellationToken).ConfigureAwait(false);
             results.AddRange(response.UserProfiles);
