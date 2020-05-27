@@ -31,10 +31,10 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Contacts
-        public static async Task<IEnumerable<uint>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(), cancellationToken).ConfigureAwait(false);
-            return response.ContactIDs;
+            return await client.GetUsersAsync(response.ContactIDs, cancellationToken).ConfigureAwait(false);
         }
         #endregion
     }
