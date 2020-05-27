@@ -2,10 +2,7 @@
 using Microsoft.Extensions.Logging.Console;
 using System;
 using System.Threading.Tasks;
-using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Messages;
-using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Types;
 using System.Collections.Generic;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
@@ -66,7 +63,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             IEnumerable<WolfNotification> notifications = await _client.GetNotificationsAsync();
             // user should not be cached locally - always call GetUserAsync/GetCurrentUserAsync on client!
             WolfUser botUser = await _client.GetCurrentUserAsync();
-            WolfUser gm = await _client.GetUserAsync(2644384);
+            IEnumerable<uint> contacts = await _client.GetContactListAsync();
         }
 
         private static async void OnChatMessage(ChatMessage message)

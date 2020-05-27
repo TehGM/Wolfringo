@@ -9,5 +9,6 @@
         public const string Chat = "message send";
         public const string ListNotifications = "notification list";
         public const string SubscriberProfile = "subscriber profile";
+        public const string ContactList = "subscriber contact list";
     }
 }

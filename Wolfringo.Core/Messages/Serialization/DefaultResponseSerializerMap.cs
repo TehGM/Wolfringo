@@ -20,7 +20,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(ChatResponse), defaultSerializer },
                 { typeof(LoginResponse), defaultSerializer },
                 { typeof(ListNotificationsResponse), defaultSerializer },
-                { typeof(SubscriberProfileResponse), defaultSerializer }
+                { typeof(SubscriberProfileResponse), defaultSerializer },
+                { typeof(ContactListResponse), defaultSerializer }
             };
         }
 
