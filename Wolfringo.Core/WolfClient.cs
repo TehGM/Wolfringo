@@ -211,22 +211,35 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Caching
-        public async Task<WolfUser> GetUserAsync(uint userID, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<WolfUser>> GetUsersAsync(IEnumerable<uint> userIDs, CancellationToken cancellationToken = default)
         {
             if (!this._client.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            WolfUser result = _usersCache?.Get(userID);
-            if (result != null)
+            if (userIDs?.Any() != true)
+                throw new ArgumentException("There must be at least one user ID to retrieve", nameof(userIDs));
+
+            // get as many users from cache as possible
+            List<WolfUser> results = new List<WolfUser>(userIDs.Count());
+            foreach (uint uID in userIDs)
             {
-                _log?.LogTrace("User {UserID} found in cache", userID);
-                return result;
+                WolfUser cachedUser = _usersCache?.Get(uID);
+                if (cachedUser != null)
+                {
+                    _log?.LogTrace("User {UserID} found in cache", uID);
+                    results.Add(cachedUser);
+                }
             }
-            SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(
-                new SubscriberProfileMessage(userID, true, true), cancellationToken).ConfigureAwait(false);
-            result = response.UserProfiles.FirstOrDefault(u => u.ID == userID);
-            if (result == null)
+
+            // get the ones that aren't in cache from the server
+            SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(new SubscriberProfileMessage(
+                    userIDs.Except(results.Select(u => u.ID)), 
+                    true, true), cancellationToken).ConfigureAwait(false);
+            results.AddRange(response.UserProfiles);
+
+            // return results
+            if (!results.Any())
                 throw new KeyNotFoundException();
-            return result;
+            return results;
         }
 
         public Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default)

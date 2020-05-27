@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages.Responses;
@@ -17,5 +19,11 @@ namespace TehGM.Wolfringo
             => client.AddMessageListener(new CommandMessageCallback<T>(command, listener));
         public static void RemoveMessageListener<T>(this IWolfClient client, Action<T> listener) where T : IWolfMessage
             => client.RemoveMessageListener(new TypedMessageCallback<T>(listener));
+
+        public static async Task<WolfUser> GetUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<WolfUser> users = await client.GetUsersAsync(new uint[] { userID }, cancellationToken).ConfigureAwait(false);
+            return users.FirstOrDefault();
+        }
     }
 }
