@@ -231,7 +231,7 @@ namespace TehGM.Wolfringo
             }
 
             // get the ones that aren't in cache from the server
-            SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(new SubscriberProfileMessage(
+            SubscriberProfileResponse response = await SendAsync<SubscriberProfileResponse>(new UserProfileMessage(
                     userIDs.Except(results.Select(u => u.ID)), 
                     true, true), cancellationToken).ConfigureAwait(false);
             results.AddRange(response.UserProfiles);

@@ -6,7 +6,7 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Messages
 {
     [ResponseType(typeof(SubscriberProfileResponse))]
-    public class SubscriberProfileMessage : IWolfMessage, IHeadersWolfMessage
+    public class UserProfileMessage : IWolfMessage, IHeadersWolfMessage
     {
         [JsonIgnore]
         public string Command => MessageCommands.SubscriberProfile;
@@ -24,9 +24,9 @@ namespace TehGM.Wolfringo.Messages
         public bool SubscribeToUpdates { get; private set; }
 
         [JsonConstructor]
-        private SubscriberProfileMessage() { }
+        private UserProfileMessage() { }
 
-        public SubscriberProfileMessage(IEnumerable<uint> userIDs, bool requestExtended = false, bool subscribe = true)
+        public UserProfileMessage(IEnumerable<uint> userIDs, bool requestExtended = false, bool subscribe = true)
             : this()
         {
             this.RequestUserIDs = userIDs;
@@ -34,7 +34,7 @@ namespace TehGM.Wolfringo.Messages
             this.SubscribeToUpdates = subscribe;
         }
 
-        public SubscriberProfileMessage(uint userID, bool requestExtended = false, bool subscribe = true)
+        public UserProfileMessage(uint userID, bool requestExtended = false, bool subscribe = true)
             : this(new uint[] { userID }, requestExtended, subscribe) { }
     }
 }
