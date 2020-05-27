@@ -36,6 +36,7 @@ namespace TehGM.Wolfringo
         private readonly MessageCallbackDispatcher _callbackDispatcher;
         private readonly IWolfEntityCache<WolfUser> _usersCache;
 
+        private CancellationTokenSource _cts;
         private uint _currentUserID;
 
         #region Constructors
@@ -99,9 +100,16 @@ namespace TehGM.Wolfringo
 
         #region Connection management
         public Task ConnectAsync(CancellationToken cancellationToken = default)
-            => _client.ConnectAsync(
+        {
+            if (this._client.IsConnected)
+                throw new InvalidOperationException("Already connected");
+
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            return _client.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device.ToLower()}&EIO=3&transport=websocket"),
-                cancellationToken);
+                _cts.Token);
+        }
 
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
             => _client.DisconnectAsync(cancellationToken);
@@ -111,6 +119,8 @@ namespace TehGM.Wolfringo
 
         private void Clear()
         {
+            this._cts?.Cancel();
+            this._cts?.Dispose();
             this._currentUserID = default;
             this._usersCache?.Clear();
         }
@@ -231,10 +241,13 @@ namespace TehGM.Wolfringo
             }
 
             // get the ones that aren't in cache from the server
-            UserProfileResponse response = await SendAsync<UserProfileResponse>(new UserProfileMessage(
-                    userIDs.Except(results.Select(u => u.ID)), 
-                    true, true), cancellationToken).ConfigureAwait(false);
-            results.AddRange(response.UserProfiles);
+            IEnumerable<uint> toRequest = userIDs.Except(results.Select(u => u.ID));
+            if (toRequest.Any())
+            {
+                UserProfileResponse response = await SendAsync<UserProfileResponse>(
+                    new UserProfileMessage(toRequest, true, true), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.UserProfiles);
+            }
 
             // return results
             if (!results.Any())
@@ -251,7 +264,7 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Event handlers
-        private void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
+        private async void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
             try
             {
@@ -267,7 +280,8 @@ namespace TehGM.Wolfringo
                         return;
                     }
                     // deserialize message
-                    IWolfMessage msg = serializer.Deserialize(command, new SerializedMessageData(payload, e.BinaryMessages));
+                    SerializedMessageData rawData = new SerializedMessageData(payload, e.BinaryMessages);
+                    IWolfMessage msg = serializer.Deserialize(command, rawData);
                     if (msg == null)
                         return;
                     // ignore own messages
@@ -275,6 +289,7 @@ namespace TehGM.Wolfringo
                         return;
 
                     _log?.LogDebug("Message received: {Command}", command);
+                    await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
                     this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
                     _callbackDispatcher.Invoke(msg);
                 }
@@ -285,6 +300,20 @@ namespace TehGM.Wolfringo
                 _log?.LogError(ex, "Exception occured when handling received message");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
             }
+        }
+
+        private Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
+        {
+            if (message is PresenceUpdateMessage presenceUpdate)
+            {
+                WolfUser cachedUser = _usersCache?.Get(presenceUpdate.UserID);
+                if (cachedUser != null)
+                {
+                    _log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
+                    rawMessage.Payload.PopulateObject(ref cachedUser, "body");
+                }
+            }
+            return Task.CompletedTask;
         }
 
         public void AddMessageListener(IMessageCallback listener)

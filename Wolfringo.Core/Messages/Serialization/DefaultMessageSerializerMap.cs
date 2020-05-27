@@ -22,7 +22,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.MessageSend, new ChatMessageSerializer() },
                 { MessageCommands.NotificationList, new DefaultMessageSerializer<ListNotificationsMessage>() },
                 { MessageCommands.SubscriberProfile, new DefaultMessageSerializer<UserProfileMessage>() },
-                { MessageCommands.SubscriberContactList, new DefaultMessageSerializer<ContactListMessage>() }
+                { MessageCommands.SubscriberContactList, new DefaultMessageSerializer<ContactListMessage>() },
+                { MessageCommands.PresenceUpdate, new DefaultMessageSerializer<PresenceUpdateMessage>() }
             };
         }
 

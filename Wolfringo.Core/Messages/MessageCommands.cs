@@ -10,5 +10,6 @@
         public const string NotificationList = "notification list";
         public const string SubscriberProfile = "subscriber profile";
         public const string SubscriberContactList = "subscriber contact list";
+        public const string PresenceUpdate = "presence update";
     }
 }
