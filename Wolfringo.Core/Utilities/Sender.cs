@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Types;
 
 namespace TehGM.Wolfringo
 {

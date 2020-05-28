@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TehGM.Wolfringo.Messages.Types;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {

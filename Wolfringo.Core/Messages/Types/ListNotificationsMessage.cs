@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using TehGM.Wolfringo.Messages.Responses;
 
-namespace TehGM.Wolfringo.Messages.Types
+namespace TehGM.Wolfringo.Messages
 {
     [ResponseType(typeof(ListNotificationsResponse))]
     public class ListNotificationsMessage : IWolfMessage
