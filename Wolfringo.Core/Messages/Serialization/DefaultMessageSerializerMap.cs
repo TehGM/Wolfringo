@@ -23,7 +23,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.SubscriberProfile, new DefaultMessageSerializer<UserProfileMessage>() },
                 { MessageCommands.SubscriberContactList, new DefaultMessageSerializer<ContactListMessage>() },
                 { MessageCommands.PresenceUpdate, new DefaultMessageSerializer<PresenceUpdateMessage>() },
-                { MessageCommands.SubscriberSettingsUpdate, new DefaultMessageSerializer<OnlineStateUpdateMessage>() }
+                { MessageCommands.SubscriberSettingsUpdate, new DefaultMessageSerializer<OnlineStateUpdateMessage>() },
+                { MessageCommands.SecurityLogout, new DefaultMessageSerializer<LogoutMessage>() }
             };
         }
 

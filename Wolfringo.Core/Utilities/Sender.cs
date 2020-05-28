@@ -20,6 +20,9 @@ namespace TehGM.Wolfringo
 
         public static Task SetOnlineStateAsync(this IWolfClient client, WolfOnlineState state, CancellationToken cancellationToken = default)
             => client.SendAsync(new OnlineStateUpdateMessage(state), cancellationToken);
+
+        public static Task LogoutAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync(new LogoutMessage(), cancellationToken);
         #endregion
 
         #region Notifications
