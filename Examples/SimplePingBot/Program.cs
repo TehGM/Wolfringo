@@ -64,6 +64,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             // user should not be cached locally - always call GetUserAsync/GetCurrentUserAsync on client!
             WolfUser botUser = await _client.GetCurrentUserAsync();
             IEnumerable<WolfUser> contacts = await _client.GetContactListAsync();
+            await _client.SetOnlineStateAsync(WolfOnlineState.Online);
         }
 
         private static async void OnChatMessage(ChatMessage message)

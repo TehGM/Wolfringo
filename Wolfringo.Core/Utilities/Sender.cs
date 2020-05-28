@@ -17,6 +17,9 @@ namespace TehGM.Wolfringo
             await client.SendAsync(new SubscribeToGroupMessage(), cancellationToken).ConfigureAwait(false);
             return response;
         }
+
+        public static Task SetOnlineStateAsync(this IWolfClient client, WolfOnlineState state, CancellationToken cancellationToken = default)
+            => client.SendAsync(new OnlineStateUpdateMessage(state), cancellationToken);
         #endregion
 
         #region Notifications

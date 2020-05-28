@@ -21,7 +21,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(LoginResponse), defaultSerializer },
                 { typeof(ListNotificationsResponse), defaultSerializer },
                 { typeof(UserProfileResponse), defaultSerializer },
-                { typeof(ContactListResponse), defaultSerializer }
+                { typeof(ContactListResponse), defaultSerializer },
+                { typeof(OnlineStateUpdateResponse), defaultSerializer }
             };
         }
 
