@@ -223,21 +223,25 @@ namespace TehGM.Wolfringo
                     _groupsCache?.AddOrReplaceIfChanged(group);
             }
             else if (response is ListGroupMembersResponse groupMembersResponse && message is ListGroupMembersMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
+                AddOrUpdateGroupMembers(groupMembersMessage.GroupID, groupMembersResponse.GroupMembers);
+
+            // TODO: handle other types
+            return Task.CompletedTask;
+
+            void AddOrUpdateGroupMembers(uint groupID, IEnumerable<WolfGroupMember> members)
             {
-                WolfGroup cachedGroup = _groupsCache?.Get(groupMembersMessage.GroupID);
+                WolfGroup cachedGroup = _groupsCache?.Get(groupID);
                 if (cachedGroup != null)
                 {
                     if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
                         _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     else
                     {
-                        foreach (WolfGroupMember member in groupMembersResponse.GroupMembers)
+                        foreach (WolfGroupMember member in members)
                             membersDictionary[member.UserID] = member;
                     }
                 }
             }
-            // TODO: handle other types
-            return Task.CompletedTask;
         }
         #endregion
 
