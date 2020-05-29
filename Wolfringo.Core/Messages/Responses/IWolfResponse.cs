@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
     public interface IWolfResponse
     {
-        HttpStatusCode ResponseCode { get; }
+        HttpStatusCode StatusCode { get; }
     }
 }

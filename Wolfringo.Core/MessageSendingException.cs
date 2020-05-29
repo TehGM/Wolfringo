@@ -7,10 +7,8 @@ namespace TehGM.Wolfringo
     [Serializable]
     public class MessageSendingException : Exception
     {
-        private const string _defaultMessage = "Server responded with non-success status code";
-
         public IWolfResponse Response { get; }
-        public HttpStatusCode StatusCode => this.Response.ResponseCode;
+        public HttpStatusCode StatusCode => this.Response.StatusCode;
 
         public MessageSendingException(IWolfResponse response, string message, Exception innerException) 
             : base(message, innerException)
@@ -19,12 +17,15 @@ namespace TehGM.Wolfringo
         }
 
         public MessageSendingException(IWolfResponse response, Exception innerException)
-            : this(response, _defaultMessage, innerException) { }
+            : this(response, BuildDefaultMessage(response), innerException) { }
 
         public MessageSendingException(IWolfResponse response, string message)
             : this(response, message, null) { }
 
         public MessageSendingException(IWolfResponse response)
-            : this(response, _defaultMessage) { }
+            : this(response, BuildDefaultMessage(response)) { }
+
+        private static string BuildDefaultMessage(IWolfResponse response)
+            => $"Server responded with non-success status code: {(int)response.StatusCode} ({response.StatusCode})";
     }
 }

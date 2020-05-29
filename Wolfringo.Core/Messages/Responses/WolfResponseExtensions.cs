@@ -4,7 +4,7 @@
     {
         public static bool IsSuccess(this IWolfResponse response)
         {
-            int code = (int)response.ResponseCode;
+            int code = (int)response.StatusCode;
             return code >= 200 && code <= 299;
         }
 

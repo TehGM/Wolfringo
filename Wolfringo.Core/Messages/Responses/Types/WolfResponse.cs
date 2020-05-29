@@ -8,6 +8,6 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("code")]
         private readonly int _code;
 
-        public HttpStatusCode ResponseCode => (HttpStatusCode)_code;
+        public HttpStatusCode StatusCode => (HttpStatusCode)_code;
     }
 }
