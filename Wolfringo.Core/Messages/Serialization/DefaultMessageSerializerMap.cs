@@ -30,7 +30,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupUpdate, new DefaultMessageSerializer<GroupUpdateMessage>() },
                 { MessageCommands.GroupMemberList, new DefaultMessageSerializer<ListGroupMembersMessage>() },
                 { MessageCommands.GroupMemberAdd, new DefaultMessageSerializer<GroupMemberJoinedMessage>() },
-                { MessageCommands.GroupMemberDelete, new DefaultMessageSerializer<GroupMemberLeftMessage>() }
+                { MessageCommands.GroupMemberDelete, new DefaultMessageSerializer<GroupMemberLeftMessage>() },
+                { MessageCommands.MessageGroupHistoryList, new DefaultMessageSerializer<GroupChatHistoryMessage>() },
+                { MessageCommands.MessagePrivateHistoryList, new DefaultMessageSerializer<PrivateChatHistoryMessage>() },
             };
         }
 

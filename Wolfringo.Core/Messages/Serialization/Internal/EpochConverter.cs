@@ -8,17 +8,18 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
 
     public class EpochConverter : DateTimeConverterBase
     {
-        private static readonly DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue(((DateTime)value - _epoch).TotalMilliseconds + "000");
+            double ms = ((DateTime)value - Epoch).TotalMilliseconds;
+            writer.WriteValue((long)ms);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null) { return null; }
-            return _epoch.AddMilliseconds((long)reader.Value / 1000d);
+            return Epoch.AddMilliseconds((long)reader.Value / 1000d);
         }
     }
 }
