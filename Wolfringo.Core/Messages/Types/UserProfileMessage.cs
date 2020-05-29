@@ -37,8 +37,5 @@ namespace TehGM.Wolfringo.Messages
             this.RequestExtendedDetails = requestExtended;
             this.SubscribeToUpdates = subscribe;
         }
-
-        public UserProfileMessage(uint userID, bool requestExtended = false, bool subscribe = true)
-            : this(new uint[] { userID }, requestExtended, subscribe) { }
     }
 }
