@@ -35,6 +35,7 @@ namespace TehGM.Wolfringo
         private readonly ILogger _log;
         private readonly MessageCallbackDispatcher _callbackDispatcher;
         private readonly IWolfEntityCache<WolfUser> _usersCache;
+        private readonly IWolfEntityCache<WolfGroup> _groupsCache;
 
         private CancellationTokenSource _cts;
         private uint _currentUserID;
@@ -65,6 +66,7 @@ namespace TehGM.Wolfringo
 
             // init caches
             _usersCache = new WolfEntityCache<WolfUser>();
+            _groupsCache = new WolfEntityCache<WolfGroup>();
 
             // init socket client
             this._client = new SocketClient();
@@ -260,6 +262,39 @@ namespace TehGM.Wolfringo
             if (this._currentUserID == default)
                 throw new InvalidOperationException("Not logged in");
             return this.GetUserAsync(this._currentUserID, cancellationToken);
+        }
+
+        public async Task<IEnumerable<WolfGroup>> GetGroupsAsync(IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default)
+        {
+            if (!this._client.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            if (groupIDs?.Any() != true)
+                throw new ArgumentException("There must be at least one group ID to retrieve", nameof(groupIDs));
+
+
+            // get as many users from cache as possible
+            List<WolfGroup> results = new List<WolfGroup>(groupIDs.Count());
+            foreach (uint gID in groupIDs)
+            {
+                WolfGroup cachedGroup = _groupsCache?.Get(gID);
+                if (cachedGroup != null)
+                {
+                    _log?.LogTrace("Group {GroupID} found in cache", gID);
+                    results.Add(cachedGroup);
+                }
+            }
+
+            // get the ones that aren't in cache from the server
+            IEnumerable<uint> toRequest = groupIDs.Except(results.Select(u => u.ID));
+            if (toRequest.Any())
+            {
+                throw new NotImplementedException();
+            }
+
+            // return results
+            if (!results.Any())
+                throw new KeyNotFoundException();
+            return results;
         }
         #endregion
 

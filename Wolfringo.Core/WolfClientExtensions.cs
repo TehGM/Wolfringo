@@ -25,5 +25,11 @@ namespace TehGM.Wolfringo
             IEnumerable<WolfUser> users = await client.GetUsersAsync(new uint[] { userID }, cancellationToken).ConfigureAwait(false);
             return users.FirstOrDefault();
         }
+
+        public static async Task<WolfGroup> GetGroupAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<WolfGroup> groups = await client.GetGroupsAsync(new uint[] { groupID }, cancellationToken).ConfigureAwait(false);
+            return groups.FirstOrDefault();
+        }
     }
 }
