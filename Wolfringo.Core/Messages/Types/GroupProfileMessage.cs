@@ -32,6 +32,8 @@ namespace TehGM.Wolfringo.Messages
         public GroupProfileMessage(IEnumerable<uint> groupIDs, IEnumerable<string> requestEntities, bool subscribe = true)
             : this()
         {
+            if (groupIDs?.Any() != true)
+                throw new ArgumentException("Must request at least one group ID", nameof(groupIDs));
             if (requestEntities?.Any() != true)
                 throw new ArgumentException("Must request at least one entity type", nameof(requestEntities));
 

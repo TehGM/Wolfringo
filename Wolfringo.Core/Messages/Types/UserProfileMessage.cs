@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
@@ -29,6 +31,8 @@ namespace TehGM.Wolfringo.Messages
         public UserProfileMessage(IEnumerable<uint> userIDs, bool requestExtended = false, bool subscribe = true)
             : this()
         {
+            if (userIDs?.Any() != true)
+                throw new ArgumentException("Must request at least one user ID", nameof(userIDs));
             this.RequestUserIDs = userIDs;
             this.RequestExtendedDetails = requestExtended;
             this.SubscribeToUpdates = subscribe;
