@@ -12,5 +12,8 @@ namespace TehGM.Wolfringo.Messages
         public WolfDevice Device { get; private set; }
         [JsonProperty("onlineState")]
         public WolfOnlineState OnlineState { get; private set; }
+
+        [JsonConstructor]
+        private PresenceUpdateMessage() { }
     }
 }

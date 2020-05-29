@@ -35,5 +35,8 @@ namespace TehGM.Wolfringo.Messages
             [JsonProperty("promotion")]
             public IDictionary<string, string> PromotionEndpoints { get; private set; }
         }
+
+        [JsonConstructor]
+        private WelcomeMessage() { }
     }
 }
