@@ -355,6 +355,16 @@ namespace TehGM.Wolfringo
                     rawMessage.Payload.PopulateObject(ref cachedUser, "body");
                 }
             }
+            if (message is GroupAudioCountUpdateMessage groupAudioUpdate)
+            {
+                WolfGroup cachedGroup = _groupsCache?.Get(groupAudioUpdate.GroupID);
+                if (cachedGroup != null)
+                {
+                    _log?.LogTrace("Updating cached group {GroupID} presence", cachedGroup.ID);
+                    WolfGroup.WolfGroupAudioCounts counts = cachedGroup.AudioCounts;
+                    rawMessage.Payload.PopulateObject(ref counts, "body");
+                }
+            }
             return Task.CompletedTask;
         }
 

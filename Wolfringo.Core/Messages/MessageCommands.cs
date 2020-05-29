@@ -14,5 +14,6 @@
         public const string SubscriberContactList = "subscriber contact list";
         public const string PresenceUpdate = "presence update";
         public const string SubscriberSettingsUpdate = "subscriber settings update";
+        public const string GroupAudioCountUpdate = "group audio count update";
     }
 }
