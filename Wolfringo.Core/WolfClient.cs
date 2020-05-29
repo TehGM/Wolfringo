@@ -208,22 +208,40 @@ namespace TehGM.Wolfringo
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
                 this._currentUserID = loginResponse.UserID;
+
             // if it's chat message, populate with response info to get timestamp
             else if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
+
             // update users cache if it's user profile message
             else if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
             {
                 foreach (WolfUser user in userProfileResponse.UserProfiles)
                     _usersCache?.AddOrReplaceIfChanged(user);
             }
+
+            // update groups cache if it's group profile message
             else if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
             {
                 foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
                     _groupsCache?.AddOrReplaceIfChanged(group);
             }
+
+            // update group member list if one was requested
             else if (response is ListGroupMembersResponse groupMembersResponse && message is ListGroupMembersMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
-                AddOrUpdateGroupMembers(groupMembersMessage.GroupID, groupMembersResponse.GroupMembers);
+            {
+                WolfGroup cachedGroup = _groupsCache?.Get(groupMembersMessage.GroupID);
+                if (cachedGroup != null)
+                {
+                    if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
+                        _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                    else
+                    {
+                        foreach (WolfGroupMember member in groupMembersResponse.GroupMembers)
+                            membersDictionary[member.UserID] = member;
+                    }
+                }
+            }
 
             // TODO: handle other types
             return Task.CompletedTask;
@@ -368,6 +386,7 @@ namespace TehGM.Wolfringo
 
         private async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
+            // update user presence
             if (message is PresenceUpdateMessage presenceUpdate)
             {
                 WolfUser cachedUser = _usersCache?.Get(presenceUpdate.UserID);
@@ -377,6 +396,8 @@ namespace TehGM.Wolfringo
                     rawMessage.Payload.PopulateObject(ref cachedUser, "body");
                 }
             }
+
+            // update group audio count
             else if (message is GroupAudioCountUpdateMessage groupAudioUpdate)
             {
                 WolfGroup cachedGroup = _groupsCache?.Get(groupAudioUpdate.GroupID);
@@ -387,6 +408,8 @@ namespace TehGM.Wolfringo
                     rawMessage.Payload.PopulateObject(ref counts, "body");
                 }
             }
+
+            // update group when change event by requesting group profile
             else if (message is GroupUpdateMessage groupUpdate)
             {
                 // trigger group download only if cached group has different hash
@@ -395,6 +418,32 @@ namespace TehGM.Wolfringo
                 {
                     await SendAsync<GroupProfileResponse>(
                         new GroupProfileMessage(new uint[] { groupUpdate.GroupID }), cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            // update group member list when one joined
+            else if (message is GroupMemberJoinedMessage groupMemberJoined)
+            {
+                WolfGroup cachedGroup = _groupsCache?.Get(groupMemberJoined.GroupID);
+                if (cachedGroup != null)
+                {
+                    if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
+                        _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                    else
+                        membersDictionary[groupMemberJoined.UserID] = groupMemberJoined.GetGroupMember();
+                }
+            }
+
+            // update group member list if one left
+            else if (message is GroupMemberLeftMessage groupMemberLeft)
+            {
+                WolfGroup cachedGroup = _groupsCache?.Get(groupMemberLeft.GroupID);
+                if (cachedGroup != null)
+                {
+                    if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
+                        _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                    else
+                        membersDictionary.Remove(groupMemberLeft.UserID);
                 }
             }
         }
