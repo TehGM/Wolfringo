@@ -18,5 +18,6 @@
         public const string GroupUpdate = "group update";
         public const string GroupMemberList = "group member list";
         public const string GroupMemberAdd = "group member add";
+        public const string GroupMemberDelete = "group member delete";
     }
 }

@@ -29,7 +29,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupAudioCountUpdate, new DefaultMessageSerializer<GroupAudioCountUpdateMessage>() },
                 { MessageCommands.GroupUpdate, new DefaultMessageSerializer<GroupUpdateMessage>() },
                 { MessageCommands.GroupMemberList, new DefaultMessageSerializer<ListGroupMembersMessage>() },
-                { MessageCommands.GroupMemberAdd, new DefaultMessageSerializer<GroupMemberJoinedMessage>() }
+                { MessageCommands.GroupMemberAdd, new DefaultMessageSerializer<GroupMemberJoinedMessage>() },
+                { MessageCommands.GroupMemberDelete, new DefaultMessageSerializer<GroupMemberLeftMessage>() }
             };
         }
 
