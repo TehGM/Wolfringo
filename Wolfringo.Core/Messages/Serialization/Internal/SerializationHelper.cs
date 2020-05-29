@@ -36,6 +36,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             token.PopulateObject(ref target, "body");
             token.PopulateObject(ref target, "headers");
             token.PopulateObject(ref target, "body.extended");
+            token.PopulateObject(ref target, "body.base");
         }
     }
 }
