@@ -344,7 +344,7 @@ namespace TehGM.Wolfringo
             }
         }
 
-        private Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
+        private async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             if (message is PresenceUpdateMessage presenceUpdate)
             {
@@ -355,7 +355,7 @@ namespace TehGM.Wolfringo
                     rawMessage.Payload.PopulateObject(ref cachedUser, "body");
                 }
             }
-            if (message is GroupAudioCountUpdateMessage groupAudioUpdate)
+            else if (message is GroupAudioCountUpdateMessage groupAudioUpdate)
             {
                 WolfGroup cachedGroup = _groupsCache?.Get(groupAudioUpdate.GroupID);
                 if (cachedGroup != null)
@@ -365,7 +365,16 @@ namespace TehGM.Wolfringo
                     rawMessage.Payload.PopulateObject(ref counts, "body");
                 }
             }
-            return Task.CompletedTask;
+            else if (message is GroupUpdateMessage groupUpdate)
+            {
+                // trigger group download only if cached group has different hash
+                WolfGroup cachedGroup = _groupsCache?.Get(groupUpdate.GroupID);
+                if (cachedGroup != null && cachedGroup.Hash != groupUpdate.Hash)
+                {
+                    await SendAsync<GroupProfileResponse>(
+                        new GroupProfileMessage(new uint[] { groupUpdate.GroupID }), cancellationToken).ConfigureAwait(false);
+                }
+            }
         }
 
         public void AddMessageListener(IMessageCallback listener)

@@ -15,5 +15,6 @@
         public const string PresenceUpdate = "presence update";
         public const string SubscriberSettingsUpdate = "subscriber settings update";
         public const string GroupAudioCountUpdate = "group audio count update";
+        public const string GroupUpdate = "group update";
     }
 }
