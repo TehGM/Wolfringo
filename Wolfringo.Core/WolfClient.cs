@@ -215,7 +215,12 @@ namespace TehGM.Wolfringo
             if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
             {
                 foreach (WolfUser user in userProfileResponse.UserProfiles)
-                    _usersCache.AddOrReplaceIfChanged(user);
+                    _usersCache?.AddOrReplaceIfChanged(user);
+            }
+            if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
+            {
+                foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
+                    _groupsCache?.AddOrReplaceIfChanged(group);
             }
             // TODO: handle other types
             return Task.CompletedTask;
