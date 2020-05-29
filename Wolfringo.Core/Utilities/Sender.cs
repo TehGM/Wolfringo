@@ -76,6 +76,14 @@ namespace TehGM.Wolfringo
             => client.GetGroupMessageHistoryAsync(groupID, null, oldestFirst, cancellationToken);
         public static Task<IEnumerable<ChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, null, false, cancellationToken);
+
+        // recent conversations
+        public static async Task<IEnumerable<ChatMessage>> GetRecentConversationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            RecentConversationsResponse response = await client.SendAsync<RecentConversationsResponse>(
+                new RecentConversationsMessage(), cancellationToken).ConfigureAwait(false);
+            return response.Messages;
+        }
         #endregion
     }
 }

@@ -33,6 +33,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupMemberDelete, new DefaultMessageSerializer<GroupMemberLeftMessage>() },
                 { MessageCommands.MessageGroupHistoryList, new DefaultMessageSerializer<GroupChatHistoryMessage>() },
                 { MessageCommands.MessagePrivateHistoryList, new DefaultMessageSerializer<PrivateChatHistoryMessage>() },
+                { MessageCommands.MessageConversationList, new DefaultMessageSerializer<RecentConversationsMessage>() },
             };
         }
 
