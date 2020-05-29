@@ -27,7 +27,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.SecurityLogout, new DefaultMessageSerializer<LogoutMessage>() },
                 { MessageCommands.GroupProfile, new DefaultMessageSerializer<GroupProfileMessage>() },
                 { MessageCommands.GroupAudioCountUpdate, new DefaultMessageSerializer<GroupAudioCountUpdateMessage>() },
-                { MessageCommands.GroupUpdate, new DefaultMessageSerializer<GroupUpdateMessage>() }
+                { MessageCommands.GroupUpdate, new DefaultMessageSerializer<GroupUpdateMessage>() },
+                { MessageCommands.GroupMemberList, new DefaultMessageSerializer<ListGroupMembersMessage>() }
             };
         }
 

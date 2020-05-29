@@ -21,6 +21,8 @@ namespace TehGM.Wolfringo
         public uint OwnerID { get; private set; }
         [JsonProperty("members")]
         public uint MembersCount { get; private set; }
+        [JsonIgnore]
+        public IReadOnlyDictionary<uint, WolfGroupMember> Members { get; private set; } = new Dictionary<uint, WolfGroupMember>();
 
         [JsonProperty("official")]
         public bool IsOfficial { get; private set; }
@@ -60,7 +62,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("id")]
             public uint GroupID { get; private set; }
             [JsonProperty("stageId")]
-            public uint StageID { get; private set; }
+            public uint? StageID { get; private set; }
         }
 
         public class WolfGroupAudioCounts

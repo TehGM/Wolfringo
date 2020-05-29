@@ -16,5 +16,6 @@
         public const string SubscriberSettingsUpdate = "subscriber settings update";
         public const string GroupAudioCountUpdate = "group audio count update";
         public const string GroupUpdate = "group update";
+        public const string GroupMemberList = "group member list";
     }
 }

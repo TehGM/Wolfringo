@@ -209,18 +209,32 @@ namespace TehGM.Wolfringo
             if (response is LoginResponse loginResponse)
                 this._currentUserID = loginResponse.UserID;
             // if it's chat message, populate with response info to get timestamp
-            if (message is ChatMessage chatMsg && response is ChatResponse)
+            else if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
             // update users cache if it's user profile message
-            if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
+            else if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
             {
                 foreach (WolfUser user in userProfileResponse.UserProfiles)
                     _usersCache?.AddOrReplaceIfChanged(user);
             }
-            if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
+            else if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
             {
                 foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
                     _groupsCache?.AddOrReplaceIfChanged(group);
+            }
+            else if (response is ListGroupMembersResponse groupMembersResponse && message is ListGroupMembersMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
+            {
+                WolfGroup cachedGroup = _groupsCache?.Get(groupMembersMessage.GroupID);
+                if (cachedGroup != null)
+                {
+                    if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
+                        _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                    else
+                    {
+                        foreach (WolfGroupMember member in groupMembersResponse.GroupMembers)
+                            membersDictionary[member.UserID] = member;
+                    }
+                }
             }
             // TODO: handle other types
             return Task.CompletedTask;
@@ -301,6 +315,10 @@ namespace TehGM.Wolfringo
             // return results
             if (!results.Any())
                 throw new KeyNotFoundException();
+
+            for (int i = 0; i < results.Count; i++)
+                await SendAsync<ListGroupMembersResponse>(new ListGroupMembersMessage(results[i].ID), cancellationToken).ConfigureAwait(false);
+
             return results;
         }
         #endregion
