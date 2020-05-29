@@ -288,7 +288,9 @@ namespace TehGM.Wolfringo
             IEnumerable<uint> toRequest = groupIDs.Except(results.Select(u => u.ID));
             if (toRequest.Any())
             {
-                throw new NotImplementedException();
+                GroupProfileResponse response = await SendAsync<GroupProfileResponse>(
+                    new GroupProfileMessage(toRequest, true), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.GroupProfiles);
             }
 
             // return results

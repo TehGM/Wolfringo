@@ -10,6 +10,7 @@
         public const string MessageSend = "message send";
         public const string NotificationList = "notification list";
         public const string SubscriberProfile = "subscriber profile";
+        public const string GroupProfile = "group profile";
         public const string SubscriberContactList = "subscriber contact list";
         public const string PresenceUpdate = "presence update";
         public const string SubscriberSettingsUpdate = "subscriber settings update";

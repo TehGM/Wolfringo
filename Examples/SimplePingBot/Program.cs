@@ -65,6 +65,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             WolfUser botUser = await _client.GetCurrentUserAsync();
             IEnumerable<WolfUser> contacts = await _client.GetContactListAsync();
             await _client.SetOnlineStateAsync(WolfOnlineState.Online);
+            WolfGroup group = await _client.GetGroupAsync(2);
         }
 
         private static async void OnChatMessage(ChatMessage message)

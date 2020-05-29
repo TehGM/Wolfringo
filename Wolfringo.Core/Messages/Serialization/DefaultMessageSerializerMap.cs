@@ -24,7 +24,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.SubscriberContactList, new DefaultMessageSerializer<ContactListMessage>() },
                 { MessageCommands.PresenceUpdate, new DefaultMessageSerializer<PresenceUpdateMessage>() },
                 { MessageCommands.SubscriberSettingsUpdate, new DefaultMessageSerializer<OnlineStateUpdateMessage>() },
-                { MessageCommands.SecurityLogout, new DefaultMessageSerializer<LogoutMessage>() }
+                { MessageCommands.SecurityLogout, new DefaultMessageSerializer<LogoutMessage>() },
+                { MessageCommands.GroupProfile, new DefaultMessageSerializer<GroupProfileMessage>() }
             };
         }
 
