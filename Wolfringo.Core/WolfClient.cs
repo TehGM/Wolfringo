@@ -203,7 +203,7 @@ namespace TehGM.Wolfringo
         /// <param name="message">Sent message.</param>
         /// <param name="response">Response received.</param>
         /// <param name="cancellationToken"></param>
-        private Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
+        protected virtual Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
@@ -384,7 +384,7 @@ namespace TehGM.Wolfringo
             }
         }
 
-        private async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
+        protected virtual async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             // update user presence
             if (message is PresenceUpdateMessage presenceUpdate)
@@ -486,7 +486,7 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Internal helpers
-        private bool TryParseCommandEvent(SocketMessage message, out string command, out JToken payload)
+        protected static bool TryParseCommandEvent(SocketMessage message, out string command, out JToken payload)
         {
             if ((message.Type == SocketMessageType.BinaryEvent || message.Type == SocketMessageType.Event)
                 && message.Payload is JArray array)
@@ -503,7 +503,7 @@ namespace TehGM.Wolfringo
             }
         }
 
-        private void TryLogMessageTrace(SocketMessageEventArgs e, string keyword)
+        protected void TryLogMessageTrace(SocketMessageEventArgs e, string keyword)
         {
             if (_log?.IsEnabled(LogLevel.Trace) == true)
             {
