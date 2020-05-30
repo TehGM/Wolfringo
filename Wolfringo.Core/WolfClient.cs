@@ -147,7 +147,7 @@ namespace TehGM.Wolfringo
             uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
             IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
             if (response.IsError())
-                throw new MessageSendingException(response);
+                throw new MessageSendingException(message, response);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
             return response as TResponse;
         }
