@@ -25,10 +25,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
             foreach (JToken responseChatMessage in responseBody)
             {
                 Guid msgId = responseChatMessage["id"].ToObject<Guid>();
-                ChatMessage msg = result.Messages.First(m => m.ID == msgId);
+                IChatMessage msg = result.Messages.First(m => m.ID == msgId);
                 JToken numProp = responseChatMessage["data"]["num"];
                 int binaryIndex = numProp.ToObject<int>(SerializationHelper.DefaultSerializer);
-                msg.RawData = responseData.BinaryMessages.ElementAt(binaryIndex).Skip(1).ToArray();
+                ChatMessageSerializer.PopulateMessageData(ref msg, responseData.BinaryMessages.ElementAt(binaryIndex));
             }
 
             return result;

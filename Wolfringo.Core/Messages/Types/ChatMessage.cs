@@ -1,70 +1,63 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages
 {
     [ResponseType(typeof(ChatResponse))]
-    public class ChatMessage : IWolfMessage
+    public class ChatMessage : IChatMessage, IWolfMessage
     {
         public string Command => MessageCommands.MessageSend;
 
         // json data
-        [JsonProperty("flightId", NullValueHandling = NullValueHandling.Ignore)]
-        public string FlightID { get; private set; }
-        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
-        public Guid? ID { get; private set; }
-        [JsonProperty("isGroup")]
-        public bool IsGroupMessage { get; private set; }
-        [JsonProperty("mimeType")]
-        public string Type { get; private set; }
-        [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(EpochConverter))]
-        public DateTime? Timestamp { get; private set; }
-        [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(EntityIdConverter))]
-        public uint? SenderID { get; private set; }
-        [JsonProperty("recipient")]
-        [JsonConverter(typeof(EntityIdConverter))]
+        public string FlightID { get; protected set; }
+        public Guid? ID { get; protected set; }
+        public bool IsGroupMessage { get; protected set; }
+        public string MimeType { get; protected set; }
+        public DateTime? Timestamp { get; protected set; }
+        public uint? SenderID { get; protected set; }
         public uint RecipientID { get; private set; }
 
         // binary data
         [JsonIgnore]
-        public byte[] RawData { get; set; }
+        public IReadOnlyCollection<byte> RawData { get; protected set; }
 
-        // helper props
-        [JsonIgnore]
-        public string Text => Encoding.UTF8.GetString(RawData);
-        [JsonIgnore]
-        public bool IsText => this.Type == ChatMessageTypes.Text;
-        [JsonIgnore]
-        public bool IsImage => this.Type == ChatMessageTypes.ImageLink || this.Type == ChatMessageTypes.Image;
-        [JsonIgnore]
-        public bool IsVoice => this.Type == ChatMessageTypes.VoiceLink || this.Type == ChatMessageTypes.Voice;
+        // helper props 
         [JsonIgnore]
         public bool IsPrivateMessage => !this.IsGroupMessage;
+        [JsonIgnore]
+        public string Text => Encoding.UTF8.GetString(this.RawData.ToArray());
+        [JsonIgnore]
+        public bool IsText => this.MimeType == ChatMessageTypes.Text;
+        [JsonIgnore]
+        public bool IsImage => this.MimeType == ChatMessageTypes.ImageLink || this.MimeType == ChatMessageTypes.Image;
+        [JsonIgnore]
+        public bool IsVoice => this.MimeType == ChatMessageTypes.VoiceLink || this.MimeType == ChatMessageTypes.Voice;
 
-        // cosntructors
         [JsonConstructor]
-        private ChatMessage() { }
-        public ChatMessage(uint recipientID, bool groupMessage, string type, byte[] data)
-            : this()
+        protected ChatMessage()
+        {
+            this.RawData = new List<byte>();
+        }
+
+        public ChatMessage(uint recipientID, bool groupMessage, string type, IEnumerable<byte> data) : this()
         {
             this.RecipientID = recipientID;
-            this.Type = type;
-            this.RawData = data;
+            this.MimeType = type;
             this.IsGroupMessage = groupMessage;
             this.FlightID = Guid.NewGuid().ToString();
+            this.RawData = (data as IReadOnlyCollection<byte>) ?? new List<byte>(data);
         }
 
         // helper create static methods
         public static ChatMessage TextMessage(uint recipientID, bool groupMessage, string text)
             => new ChatMessage(recipientID, groupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text));
-        public static ChatMessage ImageMessage(uint recipientID, bool groupMessage, byte[] imageData)
+        public static ChatMessage ImageMessage(uint recipientID, bool groupMessage, IEnumerable<byte> imageData)
             => new ChatMessage(recipientID, groupMessage, ChatMessageTypes.Image, imageData);
-        public static ChatMessage VoiceMessage(uint recipientID, bool groupMessage, byte[] voiceData)
+        public static ChatMessage VoiceMessage(uint recipientID, bool groupMessage, IEnumerable<byte> voiceData)
             => new ChatMessage(recipientID, groupMessage, ChatMessageTypes.Voice, voiceData);
     }
 }

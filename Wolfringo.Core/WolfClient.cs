@@ -369,14 +369,9 @@ namespace TehGM.Wolfringo
                     IWolfMessage msg = serializer.Deserialize(command, rawData);
                     if (msg == null)
                         return;
-                    // ignore own messages
-                    if (msg is ChatMessage chatMessage && chatMessage.SenderID.Value == this._currentUserID)
-                        return;
 
                     _log?.LogDebug("Message received: {Command}", command);
                     await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
-                    this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
-                    _callbackDispatcher.Invoke(msg);
                 }
             }
             catch (Exception ex)
@@ -450,6 +445,12 @@ namespace TehGM.Wolfringo
                         membersDictionary.Remove(groupMemberLeft.UserID.Value);
                 }
             }
+
+            // invoke events, unless this message is a self-sent chat message
+            if (message is IChatMessage chatMessage && chatMessage.SenderID.Value == this._currentUserID)
+                return;
+            this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(message));
+            _callbackDispatcher.Invoke(message);
         }
 
         public void AddMessageListener(IMessageCallback listener)

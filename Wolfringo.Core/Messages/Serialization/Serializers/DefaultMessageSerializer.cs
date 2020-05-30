@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Linq;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
+﻿using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
@@ -16,17 +14,6 @@ namespace TehGM.Wolfringo.Messages.Serialization
         }
 
         public virtual SerializedMessageData Serialize(IWolfMessage message)
-            => new SerializedMessageData(GetJsonPayload(message));
-
-        public static JObject GetJsonPayload(IWolfMessage message)
-        {
-            JObject payload = new JObject();
-            JToken body = JToken.FromObject(message, SerializationHelper.DefaultSerializer);
-            if (body.HasValues)
-                payload.Add(new JProperty("body", body));
-            if (message is IHeadersWolfMessage headersMessage && headersMessage.Headers?.Any() == true)
-                payload.Add(new JProperty("headers", JToken.FromObject(headersMessage.Headers, SerializationHelper.DefaultSerializer)));
-            return payload;
-        }
+            => new SerializedMessageData(message.SerializeJsonPayload());
     }
 }

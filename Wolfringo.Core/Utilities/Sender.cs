@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -47,7 +46,7 @@ namespace TehGM.Wolfringo
 
         #region History
         // private history
-        public static async Task<IEnumerable<ChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
+        public static async Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
         {
             ChatHistoryResponse response = await client.SendAsync<ChatHistoryResponse>(
                 new PrivateChatHistoryMessage(userID, beforeTime), cancellationToken).ConfigureAwait(false);
@@ -55,15 +54,15 @@ namespace TehGM.Wolfringo
                 response.Messages.OrderBy(msg => msg.Timestamp) :
                 response.Messages.OrderByDescending(msg => msg.Timestamp);
         }
-        public static Task<IEnumerable<ChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, CancellationToken cancellationToken = default)
+        public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, beforeTime, false, cancellationToken);
-        public static Task<IEnumerable<ChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, bool oldestFirst, CancellationToken cancellationToken = default)
+        public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, bool oldestFirst, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, null, oldestFirst, cancellationToken);
-        public static Task<IEnumerable<ChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, null, false, cancellationToken);
 
         // group history
-        public static async Task<IEnumerable<ChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
+        public static async Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
         {
             ChatHistoryResponse response = await client.SendAsync<ChatHistoryResponse>(
                 new GroupChatHistoryMessage(groupID, beforeTime, oldestFirst), cancellationToken).ConfigureAwait(false);
@@ -71,15 +70,15 @@ namespace TehGM.Wolfringo
                 response.Messages.OrderBy(msg => msg.Timestamp) :
                 response.Messages.OrderByDescending(msg => msg.Timestamp);
         }
-        public static Task<IEnumerable<ChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, DateTime? beforeTime, CancellationToken cancellationToken = default)
+        public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, DateTime? beforeTime, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, beforeTime, false, cancellationToken);
-        public static Task<IEnumerable<ChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, bool oldestFirst, CancellationToken cancellationToken = default)
+        public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, bool oldestFirst, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, null, oldestFirst, cancellationToken);
-        public static Task<IEnumerable<ChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
+        public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, null, false, cancellationToken);
 
         // recent conversations
-        public static async Task<IEnumerable<ChatMessage>> GetRecentConversationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        public static async Task<IEnumerable<IChatMessage>> GetRecentConversationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             RecentConversationsResponse response = await client.SendAsync<RecentConversationsResponse>(
                 new RecentConversationsMessage(), cancellationToken).ConfigureAwait(false);
