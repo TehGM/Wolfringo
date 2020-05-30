@@ -45,15 +45,15 @@ namespace TehGM.Wolfringo
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
         private readonly ISocketClient _client;
-        private readonly ISerializerMap<string, IMessageSerializer> _messageSerializers;
-        private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
-        private readonly IResponseTypeResolver _responseTypeResolver;
-        private readonly ILogger _log;
         private readonly MessageCallbackDispatcher _callbackDispatcher;
+        protected ISerializerMap<string, IMessageSerializer> MessageSerializers { get; }
+        protected ISerializerMap<Type, IResponseSerializer> ResponseSerializers { get; }
+        protected IResponseTypeResolver ResponseTypeResolver { get; }
+        protected ILogger Log { get; }
         protected WolfEntityCacheContainer Caches { get; set; }
 
         private CancellationTokenSource _cts;
-        private uint _currentUserID;
+        protected uint CurrentUserID { get; set; }
 
         #region Constructors
         public WolfClient(string url, string device, string token, ILogger logger = null, 
@@ -71,10 +71,10 @@ namespace TehGM.Wolfringo
             this.Url = url;
             this.Device = device;
             this.Token = token;
-            this._log = logger;
-            this._responseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
-            this._messageSerializers = messageSerializers ?? new DefaultMessageSerializerMap();
-            this._responseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
+            this.Log = logger;
+            this.ResponseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
+            this.MessageSerializers = messageSerializers ?? new DefaultMessageSerializerMap();
+            this.ResponseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
 
             // init dispatcher
             this._callbackDispatcher = new MessageCallbackDispatcher();
@@ -130,14 +130,14 @@ namespace TehGM.Wolfringo
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
             => _client.DisconnectAsync(cancellationToken);
 
-        public void Dispose()
+        public virtual void Dispose()
             => (_client as IDisposable)?.Dispose();
 
-        private void Clear()
+        protected virtual void Clear()
         {
             this._cts?.Cancel();
             this._cts?.Dispose();
-            this._currentUserID = default;
+            this.CurrentUserID = default;
             this.Caches?.ClearAll();
         }
         #endregion
@@ -150,11 +150,11 @@ namespace TehGM.Wolfringo
             if (string.IsNullOrWhiteSpace(message.Command))
                 throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
 
-            if (!_messageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
+            if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
             {
                 // try fallback simple serialization
-                _log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
-                serializer = _messageSerializers.FallbackSerializer;
+                Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
+                serializer = MessageSerializers.FallbackSerializer;
             }
             SerializedMessageData data = serializer.Serialize(message);
 
@@ -186,11 +186,11 @@ namespace TehGM.Wolfringo
                         return;
 
                     // parse response
-                    Type responseType = _responseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
-                    if (!_responseSerializers.TryFindMappedSerializer(responseType, out IResponseSerializer serializer))
+                    Type responseType = ResponseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
+                    if (!ResponseSerializers.TryFindMappedSerializer(responseType, out IResponseSerializer serializer))
                     {
-                        _log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
-                        serializer = _responseSerializers.FallbackSerializer;
+                        Log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
+                        serializer = ResponseSerializers.FallbackSerializer;
                     }
                     SerializedMessageData responseData = new SerializedMessageData(e.Message.Payload, e.BinaryMessages);
                     IWolfResponse response = serializer.Deserialize(responseType, responseData);
@@ -205,7 +205,7 @@ namespace TehGM.Wolfringo
                 catch (Exception ex)
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
-                    _log?.LogError(ex, "Exception has occured when handling socket response");
+                    Log?.LogError(ex, "Exception has occured when handling socket response");
                     tcs.TrySetException(ex);
                 }
             };
@@ -221,7 +221,7 @@ namespace TehGM.Wolfringo
         {
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
-                this._currentUserID = loginResponse.UserID;
+                this.CurrentUserID = loginResponse.UserID;
 
             // if it's chat message, populate with response info to get timestamp
             else if (message is ChatMessage chatMsg && response is ChatResponse)
@@ -253,7 +253,7 @@ namespace TehGM.Wolfringo
                     if (cachedGroup != null)
                     {
                         if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                            _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                         else
                         {
                             foreach (WolfGroupMember member in groupMembersResponse.GroupMembers)
@@ -263,7 +263,7 @@ namespace TehGM.Wolfringo
                 }
 
                 // remove group from cache when leaving it
-                else if (message is GroupLeaveMessage groupLeaveMessage && groupLeaveMessage.UserID == _currentUserID)
+                else if (message is GroupLeaveMessage groupLeaveMessage && groupLeaveMessage.UserID == CurrentUserID)
                     this.Caches?.GroupsCache?.Remove(groupLeaveMessage.GroupID);
             }
 
@@ -284,7 +284,7 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Caching
-        public async Task<IEnumerable<WolfUser>> GetUsersAsync(IEnumerable<uint> userIDs, CancellationToken cancellationToken = default)
+        public virtual async Task<IEnumerable<WolfUser>> GetUsersAsync(IEnumerable<uint> userIDs, CancellationToken cancellationToken = default)
         {
             if (!this._client.IsConnected)
                 throw new InvalidOperationException("Not connected");
@@ -300,7 +300,7 @@ namespace TehGM.Wolfringo
                     WolfUser cachedUser = this.Caches?.UsersCache?.Get(uID);
                     if (cachedUser != null)
                     {
-                        _log?.LogTrace("User {UserID} found in cache", uID);
+                        Log?.LogTrace("User {UserID} found in cache", uID);
                         results.Add(cachedUser);
                     }
                 }
@@ -323,12 +323,12 @@ namespace TehGM.Wolfringo
 
         public Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default)
         {
-            if (this._currentUserID == default)
+            if (this.CurrentUserID == default)
                 throw new InvalidOperationException("Not logged in");
-            return this.GetUserAsync(this._currentUserID, cancellationToken);
+            return this.GetUserAsync(this.CurrentUserID, cancellationToken);
         }
 
-        public async Task<IEnumerable<WolfGroup>> GetGroupsAsync(IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default)
+        public virtual async Task<IEnumerable<WolfGroup>> GetGroupsAsync(IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default)
         {
             if (!this._client.IsConnected)
                 throw new InvalidOperationException("Not connected");
@@ -345,7 +345,7 @@ namespace TehGM.Wolfringo
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(gID);
                     if (cachedGroup != null)
                     {
-                        _log?.LogTrace("Group {GroupID} found in cache", gID);
+                        Log?.LogTrace("Group {GroupID} found in cache", gID);
                         results.Add(cachedGroup);
                     }
                 }
@@ -384,7 +384,7 @@ namespace TehGM.Wolfringo
             return results;
         }
 
-        public async Task<IEnumerable<WolfCharm>> GetCharmsAsync(IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
+        public virtual async Task<IEnumerable<WolfCharm>> GetCharmsAsync(IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
         {
             if (!this._client.IsConnected)
                 throw new InvalidOperationException("Not connected");
@@ -401,7 +401,7 @@ namespace TehGM.Wolfringo
                     WolfCharm cachedGroup = this.Caches?.CharmsCache?.Get(cID);
                     if (cachedGroup != null)
                     {
-                        _log?.LogTrace("Charm {CharmID} found in cache", cID);
+                        Log?.LogTrace("Charm {CharmID} found in cache", cID);
                         results.Add(cachedGroup);
                     }
                 }
@@ -433,10 +433,10 @@ namespace TehGM.Wolfringo
                 if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
                 {
                     // find serializer for command
-                    if (!_messageSerializers.TryFindMappedSerializer(command, out IMessageSerializer serializer))
+                    if (!MessageSerializers.TryFindMappedSerializer(command, out IMessageSerializer serializer))
                     {
                         // don't throw exception here, as doing so will kill the socket client loop
-                        _log?.LogError("Serializer for command {Command} not found", command);
+                        Log?.LogError("Serializer for command {Command} not found", command);
                         return;
                     }
                     // deserialize message
@@ -445,14 +445,14 @@ namespace TehGM.Wolfringo
                     if (msg == null)
                         return;
 
-                    _log?.LogDebug("Message received: {Command}", command);
+                    Log?.LogDebug("Message received: {Command}", command);
                     await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
             {
                 // don't rethrow exception here, as doing so will kill the socket client loop
-                _log?.LogError(ex, "Exception occured when handling received message");
+                Log?.LogError(ex, "Exception occured when handling received message");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
             }
         }
@@ -467,7 +467,7 @@ namespace TehGM.Wolfringo
                     WolfUser cachedUser = this.Caches?.UsersCache?.Get(presenceUpdate.UserID);
                     if (cachedUser != null)
                     {
-                        _log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
+                        Log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
                         rawMessage.Payload.PopulateObject(ref cachedUser, "body");
                     }
                 }
@@ -481,7 +481,7 @@ namespace TehGM.Wolfringo
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdate.GroupID);
                     if (cachedGroup != null)
                     {
-                        _log?.LogTrace("Updating cached group {GroupID} presence", cachedGroup.ID);
+                        Log?.LogTrace("Updating cached group {GroupID} presence", cachedGroup.ID);
                         WolfGroup.WolfGroupAudioCounts counts = cachedGroup.AudioCounts;
                         rawMessage.Payload.PopulateObject(ref counts, "body");
                     }
@@ -506,7 +506,7 @@ namespace TehGM.Wolfringo
                     if (cachedGroup != null)
                     {
                         if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                            _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                         else
                             membersDictionary[groupMemberJoined.UserID.Value] =
                                 new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value);
@@ -520,7 +520,7 @@ namespace TehGM.Wolfringo
                     if (cachedGroup != null)
                     {
                         if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                            _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                         else
                             membersDictionary.Remove(groupMemberLeft.UserID.Value);
                     }
@@ -528,7 +528,7 @@ namespace TehGM.Wolfringo
             }
 
             // invoke events, unless this message is a self-sent chat message
-            if (message is IChatMessage chatMessage && chatMessage.SenderID.Value == this._currentUserID)
+            if (message is IChatMessage chatMessage && chatMessage.SenderID.Value == this.CurrentUserID)
                 return;
             this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(message));
             _callbackDispatcher.Invoke(message);
@@ -543,21 +543,21 @@ namespace TehGM.Wolfringo
         {
             TryLogMessageTrace(e, "Sent");
             if (TryParseCommandEvent(e.Message, out string command, out _))
-                _log?.LogDebug("Message sent: {Command}", command);
+                Log?.LogDebug("Message sent: {Command}", command);
         }
 
         private void OnClientConnected(object sender, EventArgs e)
         {
-            _log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
+            Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
         {
             if (e.CloseStatus == System.Net.WebSockets.WebSocketCloseStatus.NormalClosure)
-                _log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
+                Log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
             else
-                _log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
+                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
             this.Clear();
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
@@ -565,8 +565,8 @@ namespace TehGM.Wolfringo
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
-                _log?.LogError(ex, "Socket client error: {Error}", ex.Message);
-            else _log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+                Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
+            else Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
             this.ErrorRaised?.Invoke(this, e);
         }
         #endregion
@@ -591,15 +591,15 @@ namespace TehGM.Wolfringo
 
         protected void TryLogMessageTrace(SocketMessageEventArgs e, string keyword)
         {
-            if (_log?.IsEnabled(LogLevel.Trace) == true)
+            if (Log?.IsEnabled(LogLevel.Trace) == true)
             {
                 if (e.BinaryMessages?.Any() == true)
                 {
                     string binaryMessages = string.Join("\n", e.BinaryMessages.Where(msg => msg?.Any() == true).Select(msg => Encoding.UTF8.GetString(msg)));
-                    _log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}\n{{BinaryMessages}}", e.Message.Type.ToString(), e.Message.ToString(), binaryMessages);
+                    Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}\n{{BinaryMessages}}", e.Message.Type.ToString(), e.Message.ToString(), binaryMessages);
                 }
                 else
-                    _log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
+                    Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
             }
         }
         #endregion
