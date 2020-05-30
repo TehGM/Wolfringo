@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo
 {
-    public class WolfCharm : IWolfEntity
+    public class WolfCharm : IWolfEntity, IEquatable<WolfCharm>
     {
         [JsonProperty("id")]
         public uint ID { get; private set; }
@@ -26,5 +27,20 @@ namespace TehGM.Wolfringo
         public IReadOnlyDictionary<WolfLanguage, string> TranslatedDescriptions { get; private set; }
         [JsonProperty("descriptionPhraseId")]
         public uint? DescriptionPhraseID { get; private set; }
+
+        public override bool Equals(object obj)
+            => Equals(obj as WolfCharm);
+
+        public bool Equals(WolfCharm other)
+            => other != null && ID == other.ID && string.Equals(this.Name, other.Name, StringComparison.OrdinalIgnoreCase);
+
+        public override int GetHashCode()
+            => 1213502048 + ID.GetHashCode();
+
+        public static bool operator ==(WolfCharm left, WolfCharm right)
+            => EqualityComparer<WolfCharm>.Default.Equals(left, right);
+
+        public static bool operator !=(WolfCharm left, WolfCharm right)
+            => !(left == right);
     }
 }

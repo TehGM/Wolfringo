@@ -36,6 +36,7 @@ namespace TehGM.Wolfringo
         private readonly MessageCallbackDispatcher _callbackDispatcher;
         private readonly IWolfEntityCache<WolfUser> _usersCache;
         private readonly IWolfEntityCache<WolfGroup> _groupsCache;
+        private readonly IWolfEntityCache<WolfCharm> _charmsCache;
 
         private CancellationTokenSource _cts;
         private uint _currentUserID;
@@ -67,6 +68,7 @@ namespace TehGM.Wolfringo
             // init caches
             _usersCache = new WolfEntityCache<WolfUser>();
             _groupsCache = new WolfEntityCache<WolfGroup>();
+            _charmsCache = new WolfEntityCache<WolfCharm>();
 
             // init socket client
             this._client = new SocketClient();
@@ -228,6 +230,13 @@ namespace TehGM.Wolfringo
                     _groupsCache?.AddOrReplaceIfChanged(group);
             }
 
+            // update charms cache if it's charms list
+            else if (response is ListCharmsResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
+            {
+                foreach (WolfCharm charm in listCharmsResponse.Charms)
+                    _charmsCache?.AddOrReplace(charm);
+            }
+
             // update group member list if one was requested
             else if (response is ListGroupMembersResponse groupMembersResponse && message is ListGroupMembersMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
             {
@@ -340,6 +349,44 @@ namespace TehGM.Wolfringo
                             throw;
                     }
                 }
+            }
+
+            // return results
+            if (!results.Any())
+                throw new KeyNotFoundException();
+            return results;
+        }
+
+        public async Task<IEnumerable<WolfCharm>> GetCharmsAsync(IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
+        {
+            if (!this._client.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            if (charmIDs != null && !charmIDs.Any())
+                charmIDs = null;
+
+
+            // get as many users from cache as possible
+            List<WolfCharm> results = new List<WolfCharm>(charmIDs?.Count() ?? 600);
+            if (charmIDs != null)
+            {
+                foreach (uint cID in charmIDs)
+                {
+                    WolfCharm cachedGroup = _charmsCache?.Get(cID);
+                    if (cachedGroup != null)
+                    {
+                        _log?.LogTrace("Charm {CharmID} found in cache", cID);
+                        results.Add(cachedGroup);
+                    }
+                }
+            }
+
+            // get the ones that aren't in cache from the server
+            IEnumerable<uint> toRequest = charmIDs?.Except(results.Select(u => u.ID));
+            if (toRequest == null || toRequest.Any())
+            {
+                ListCharmsResponse response = await SendAsync<ListCharmsResponse>(
+                    new ListCharmsMessage(toRequest), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.Charms);
             }
 
             // return results
