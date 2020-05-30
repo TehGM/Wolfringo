@@ -27,5 +27,6 @@ namespace TehGM.Wolfringo
         Task<IEnumerable<WolfUser>> GetUsersAsync(IEnumerable<uint> userIDs, CancellationToken cancellationToken = default);
         Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default);
         Task<IEnumerable<WolfGroup>> GetGroupsAsync(IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default);
+        //Task<IEnumerable<WolfCharm>> GetCharmsAsync(IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -28,6 +29,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(GroupProfileResponse), defaultSerializer },
                 { typeof(ListGroupMembersResponse), defaultSerializer },
                 { typeof(ListUserGroupsResponse), defaultSerializer },
+                { typeof(ListCharmsResponse), defaultSerializer },
                 // chat history
                 { typeof(ChatHistoryResponse), chatHistorySerializer },
                 { typeof(RecentConversationsResponse), chatHistorySerializer }

@@ -110,5 +110,23 @@ namespace TehGM.Wolfringo
             return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
         }
         #endregion
+
+        #region Charms and Achievements
+        // charms
+        public static async Task<IEnumerable<WolfCharm>> GetCharmsAsync(this IWolfClient client, IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
+        {
+            ListCharmsResponse response = await client.SendAsync<ListCharmsResponse>(
+                new ListCharmsMessage(charmIDs), cancellationToken).ConfigureAwait(false);
+            return response.Charms;
+        }
+        public static Task<IEnumerable<WolfCharm>> GetAllCharmsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.GetCharmsAsync(null, cancellationToken);
+        public static async Task<WolfCharm> GetCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<WolfCharm> result = await client.GetCharmsAsync(new uint[] { charmID }, cancellationToken).ConfigureAwait(false);
+            return result.FirstOrDefault();
+        }
+
+        #endregion
     }
 }
