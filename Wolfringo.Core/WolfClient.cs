@@ -125,6 +125,7 @@ namespace TehGM.Wolfringo
             this._cts?.Dispose();
             this._currentUserID = default;
             this._usersCache?.Clear();
+            this._groupsCache?.Clear();
         }
         #endregion
 
