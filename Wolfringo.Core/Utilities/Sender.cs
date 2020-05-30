@@ -40,7 +40,7 @@ namespace TehGM.Wolfringo
         #region Contacts
         public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
-            ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(), cancellationToken).ConfigureAwait(false);
+            ListContactsResponse response = await client.SendAsync<ListContactsResponse>(new ListContactsMessage(), cancellationToken).ConfigureAwait(false);
             return await client.GetUsersAsync(response.ContactIDs, cancellationToken).ConfigureAwait(false);
         }
         #endregion
