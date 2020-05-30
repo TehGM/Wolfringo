@@ -13,7 +13,7 @@ namespace TehGM.Wolfringo.Messages
 
         // json data
         [JsonProperty("flightId", NullValueHandling = NullValueHandling.Ignore)]
-        public Guid? FlightID { get; private set; }
+        public string FlightID { get; private set; }
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public Guid? ID { get; private set; }
         [JsonProperty("isGroup")]
@@ -56,7 +56,7 @@ namespace TehGM.Wolfringo.Messages
             this.Type = type;
             this.RawData = data;
             this.IsGroupMessage = groupMessage;
-            this.FlightID = Guid.NewGuid();
+            this.FlightID = Guid.NewGuid().ToString();
         }
 
         // helper create static methods
