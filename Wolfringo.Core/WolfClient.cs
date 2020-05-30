@@ -22,6 +22,37 @@ namespace TehGM.Wolfringo
         public string Token { get; }
         public string Device { get; }
 
+        public bool UsersCachingEnabled
+        {
+            get => _enableUsersCaching;
+            set
+            {
+                _enableUsersCaching = value;
+                if (!value)
+                    _usersCache?.Clear();
+            }
+        }
+        public bool GroupsCachingEnabled
+        {
+            get => _enableGroupsCaching;
+            set
+            {
+                _enableGroupsCaching = value;
+                if (!value)
+                    _groupsCache?.Clear();
+            }
+        }
+        public bool CharmsCachingEnabled
+        {
+            get => _enableCharmsCaching;
+            set
+            {
+                _enableCharmsCaching = value;
+                if (!value)
+                    _charmsCache?.Clear();
+            }
+        }
+
         public event EventHandler Connected;
         public event EventHandler Disconnected;
         public event EventHandler<WolfMessageEventArgs> MessageReceived;
@@ -40,6 +71,9 @@ namespace TehGM.Wolfringo
 
         private CancellationTokenSource _cts;
         private uint _currentUserID;
+        private bool _enableUsersCaching;
+        private bool _enableGroupsCaching;
+        private bool _enableCharmsCaching;
 
         #region Constructors
         public WolfClient(string url, string device, string token, ILogger logger = null, 
@@ -66,9 +100,12 @@ namespace TehGM.Wolfringo
             _callbackDispatcher = new MessageCallbackDispatcher();
 
             // init caches
-            _usersCache = new WolfEntityCache<WolfUser>();
-            _groupsCache = new WolfEntityCache<WolfGroup>();
-            _charmsCache = new WolfEntityCache<WolfCharm>();
+            this._usersCache = new WolfEntityCache<WolfUser>();
+            this._groupsCache = new WolfEntityCache<WolfGroup>();
+            this._charmsCache = new WolfEntityCache<WolfCharm>();
+            this._enableUsersCaching = true;
+            this._enableGroupsCaching = true;
+            this._enableCharmsCaching = true;
 
             // init socket client
             this._client = new SocketClient();
@@ -217,21 +254,21 @@ namespace TehGM.Wolfringo
                 rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
 
             // update users cache if it's user profile message
-            else if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
+            else if (this._enableUsersCaching && response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
             {
                 foreach (WolfUser user in userProfileResponse.UserProfiles)
                     _usersCache?.AddOrReplaceIfChanged(user);
             }
 
             // update groups cache if it's group profile message
-            else if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
+            else if (this._enableGroupsCaching && response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
             {
                 foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
                     _groupsCache?.AddOrReplaceIfChanged(group);
             }
 
             // update charms cache if it's charms list
-            else if (response is ListCharmsResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
+            else if (this._enableCharmsCaching && response is ListCharmsResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
             {
                 foreach (WolfCharm charm in listCharmsResponse.Charms)
                     _charmsCache?.AddOrReplace(charm);
@@ -272,13 +309,16 @@ namespace TehGM.Wolfringo
 
             // get as many users from cache as possible
             List<WolfUser> results = new List<WolfUser>(userIDs.Count());
-            foreach (uint uID in userIDs)
+            if (this._enableUsersCaching)
             {
-                WolfUser cachedUser = _usersCache?.Get(uID);
-                if (cachedUser != null)
+                foreach (uint uID in userIDs)
                 {
-                    _log?.LogTrace("User {UserID} found in cache", uID);
-                    results.Add(cachedUser);
+                    WolfUser cachedUser = _usersCache?.Get(uID);
+                    if (cachedUser != null)
+                    {
+                        _log?.LogTrace("User {UserID} found in cache", uID);
+                        results.Add(cachedUser);
+                    }
                 }
             }
 
@@ -314,13 +354,16 @@ namespace TehGM.Wolfringo
 
             // get as many users from cache as possible
             List<WolfGroup> results = new List<WolfGroup>(groupIDs.Count());
-            foreach (uint gID in groupIDs)
+            if (this._enableGroupsCaching)
             {
-                WolfGroup cachedGroup = _groupsCache?.Get(gID);
-                if (cachedGroup != null)
+                foreach (uint gID in groupIDs)
                 {
-                    _log?.LogTrace("Group {GroupID} found in cache", gID);
-                    results.Add(cachedGroup);
+                    WolfGroup cachedGroup = _groupsCache?.Get(gID);
+                    if (cachedGroup != null)
+                    {
+                        _log?.LogTrace("Group {GroupID} found in cache", gID);
+                        results.Add(cachedGroup);
+                    }
                 }
             }
 
@@ -367,7 +410,7 @@ namespace TehGM.Wolfringo
 
             // get as many users from cache as possible
             List<WolfCharm> results = new List<WolfCharm>(charmIDs?.Count() ?? 600);
-            if (charmIDs != null)
+            if (charmIDs != null && this._enableCharmsCaching)
             {
                 foreach (uint cID in charmIDs)
                 {
