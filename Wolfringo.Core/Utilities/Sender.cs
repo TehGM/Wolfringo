@@ -87,7 +87,7 @@ namespace TehGM.Wolfringo
         }
         #endregion
 
-        #region Group Joining and leaving
+        #region Groups
         // join
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, string password, CancellationToken cancellationToken = default)
         {
@@ -102,6 +102,14 @@ namespace TehGM.Wolfringo
             => client.SendAsync(new GroupLeaveMessage(groupID), cancellationToken);
         public static Task LeaveGroupAsync(this IWolfClient client, WolfGroup group, CancellationToken cancellationToken = default)
             => client.LeaveGroupAsync(group.ID, cancellationToken);
+
+        // get groups list
+        public static async Task<IEnumerable<WolfGroup>> GetCurrentUserGroupsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            ListUserGroupsResponse response = await client.SendAsync<ListUserGroupsResponse>(
+                new ListUserGroupsMessage(), cancellationToken).ConfigureAwait(false);
+            return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
+        }
         #endregion
     }
 }

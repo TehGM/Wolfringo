@@ -61,7 +61,9 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             Config config = Config.Load();
             await _client.LoginAsync(config.Username, config.Password);
             // user should not be cached locally - always call GetUserAsync/GetCurrentUserAsync on client!
-            WolfUser botUser = await _client.GetCurrentUserAsync();
+            WolfUser user = await _client.GetCurrentUserAsync();
+            // same applies to groups - always call GetGroupsAsync!
+            IEnumerable<WolfGroup> groups = await _client.GetCurrentUserGroupsAsync();
         }
 
         private static async void OnChatMessage(ChatMessage message)

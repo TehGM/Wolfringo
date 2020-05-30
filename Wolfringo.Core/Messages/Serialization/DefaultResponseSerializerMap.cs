@@ -17,6 +17,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             this.FallbackSerializer = fallbackSerializer ?? defaultSerializer;
             this._map = new Dictionary<Type, IResponseSerializer>()
             {
+                // default
                 { typeof(WolfResponse), defaultSerializer },
                 { typeof(ChatResponse), defaultSerializer },
                 { typeof(LoginResponse), defaultSerializer },
@@ -26,6 +27,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(OnlineStateUpdateResponse), defaultSerializer },
                 { typeof(GroupProfileResponse), defaultSerializer },
                 { typeof(ListGroupMembersResponse), defaultSerializer },
+                { typeof(ListUserGroupsResponse), defaultSerializer },
+                // chat history
                 { typeof(ChatHistoryResponse), chatHistorySerializer },
                 { typeof(RecentConversationsResponse), chatHistorySerializer }
             };

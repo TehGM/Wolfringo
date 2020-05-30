@@ -32,6 +32,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.MessageGroupHistoryList, new DefaultMessageSerializer<GroupChatHistoryMessage>() },
                 { MessageCommands.MessagePrivateHistoryList, new DefaultMessageSerializer<PrivateChatHistoryMessage>() },
                 { MessageCommands.MessageConversationList, new DefaultMessageSerializer<RecentConversationsMessage>() },
+                { MessageCommands.SubscriberGroupList, new DefaultMessageSerializer<ListUserGroupsMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

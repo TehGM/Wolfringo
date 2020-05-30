@@ -22,5 +22,6 @@
         public const string MessagePrivateHistoryList = "message private history list";
         public const string MessageGroupHistoryList = "message group history list";
         public const string MessageConversationList = "message conversation list";
+        public const string SubscriberGroupList = "subscriber group list";
     }
 }
