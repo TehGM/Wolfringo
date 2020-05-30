@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(GroupProfileResponse))]
     public class GroupProfileMessage : IWolfMessage, IHeadersWolfMessage
     {
-        public static readonly IEnumerable<string> DefaultRequestEntities = new string[] { "base", "audioConfig", "audioCounts" };
+        public static readonly IEnumerable<string> DefaultRequestEntities = new string[] { "base", "audioConfig", "audioCounts", "extended" };
 
         [JsonIgnore]
         public string Command => MessageCommands.GroupProfile;

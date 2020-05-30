@@ -38,6 +38,22 @@ namespace TehGM.Wolfringo
         [JsonProperty("audioCounts")]
         public WolfGroupAudioCounts AudioCounts { get; private set; }
 
+        // data from "extended" prop
+        [JsonProperty("advancedAdmin", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? IsExtendedAdminEnabled { get; private set; }
+        [JsonProperty("discoverable", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? IsDiscoverable { get; private set; }
+        [JsonProperty("entryLevel", NullValueHandling = NullValueHandling.Ignore)]
+        public double? EntryReputationLevel { get; private set; }
+        [JsonProperty("language", NullValueHandling = NullValueHandling.Ignore)]
+        public WolfLanguage? Language { get; private set; }
+        [JsonProperty("locked", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? IsLocked { get; private set; }
+        [JsonProperty("passworded", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? IsPassworded { get; private set; }
+        [JsonProperty("questionable", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? IsQuestionable { get; private set; }
+
         public override bool Equals(object obj)
             => Equals(obj as WolfGroup);
 

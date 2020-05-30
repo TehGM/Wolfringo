@@ -28,7 +28,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonConstructor]
         private UserProfileMessage() { }
 
-        public UserProfileMessage(IEnumerable<uint> userIDs, bool requestExtended = false, bool subscribe = true)
+        public UserProfileMessage(IEnumerable<uint> userIDs, bool requestExtended = true, bool subscribe = true)
             : this()
         {
             if (userIDs?.Any() != true)

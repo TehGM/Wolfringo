@@ -321,15 +321,29 @@ namespace TehGM.Wolfringo
                 GroupProfileResponse response = await SendAsync<GroupProfileResponse>(
                     new GroupProfileMessage(toRequest, true), cancellationToken).ConfigureAwait(false);
                 results.AddRange(response.GroupProfiles);
+
+                foreach (WolfGroup group in response.GroupProfiles)
+                {
+                    // request members list for groups not present in cache
+                    try
+                    {
+                        await SendAsync<ListGroupMembersResponse>(new ListGroupMembersMessage(group.ID), cancellationToken).ConfigureAwait(false);
+                    }
+                    // handle case when requesting profiles for group the user is not in
+                    catch (MessageSendingException ex)
+                    {
+                        // remove group from cache 
+                        _groupsCache?.Remove(group.ID);
+                        // throw if failed for other reason than user not being inside the group
+                        if (ex.StatusCode != System.Net.HttpStatusCode.Forbidden)
+                            throw;
+                    }
+                }
             }
 
             // return results
             if (!results.Any())
                 throw new KeyNotFoundException();
-
-            for (int i = 0; i < results.Count; i++)
-                await SendAsync<ListGroupMembersResponse>(new ListGroupMembersMessage(results[i].ID), cancellationToken).ConfigureAwait(false);
-
             return results;
         }
         #endregion
