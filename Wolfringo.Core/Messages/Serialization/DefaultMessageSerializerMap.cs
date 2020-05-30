@@ -14,11 +14,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
             this.FallbackSerializer = fallbackSerializer ?? new DefaultMessageSerializer<IWolfMessage>();
             this._map = new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
+                // default ones
                 { MessageCommands.Welcome, new DefaultMessageSerializer<WelcomeMessage>() },
                 { MessageCommands.SecurityLogin, new DefaultMessageSerializer<LoginMessage>() },
                 { MessageCommands.MessagePrivateSubscribe, new DefaultMessageSerializer<SubscribeToPmMessage>() },
                 { MessageCommands.MessageGroupSubscribe, new DefaultMessageSerializer<SubscribeToGroupMessage>() },
-                { MessageCommands.MessageSend, new ChatMessageSerializer() },
                 { MessageCommands.NotificationList, new DefaultMessageSerializer<ListNotificationsMessage>() },
                 { MessageCommands.SubscriberProfile, new DefaultMessageSerializer<UserProfileMessage>() },
                 { MessageCommands.SubscriberContactList, new DefaultMessageSerializer<ContactListMessage>() },
@@ -29,11 +29,14 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupAudioCountUpdate, new DefaultMessageSerializer<GroupAudioCountUpdateMessage>() },
                 { MessageCommands.GroupUpdate, new DefaultMessageSerializer<GroupUpdateMessage>() },
                 { MessageCommands.GroupMemberList, new DefaultMessageSerializer<ListGroupMembersMessage>() },
-                { MessageCommands.GroupMemberAdd, new DefaultMessageSerializer<GroupMemberJoinedMessage>() },
-                { MessageCommands.GroupMemberDelete, new DefaultMessageSerializer<GroupMemberLeftMessage>() },
                 { MessageCommands.MessageGroupHistoryList, new DefaultMessageSerializer<GroupChatHistoryMessage>() },
                 { MessageCommands.MessagePrivateHistoryList, new DefaultMessageSerializer<PrivateChatHistoryMessage>() },
                 { MessageCommands.MessageConversationList, new DefaultMessageSerializer<RecentConversationsMessage>() },
+                // group join and leave
+                { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
+                { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
+                // chat message
+                { MessageCommands.MessageSend, new ChatMessageSerializer() },
             };
         }
 

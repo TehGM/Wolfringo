@@ -243,23 +243,12 @@ namespace TehGM.Wolfringo
                 }
             }
 
+            // remove group from cache when leaving it
+            else if (message is GroupLeaveMessage groupLeaveMessage && groupLeaveMessage.UserID == _currentUserID)
+                _groupsCache?.Remove(groupLeaveMessage.GroupID);
+
             // TODO: handle other types
             return Task.CompletedTask;
-
-            void AddOrUpdateGroupMembers(uint groupID, IEnumerable<WolfGroupMember> members)
-            {
-                WolfGroup cachedGroup = _groupsCache?.Get(groupID);
-                if (cachedGroup != null)
-                {
-                    if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                        _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    else
-                    {
-                        foreach (WolfGroupMember member in members)
-                            membersDictionary[member.UserID] = member;
-                    }
-                }
-            }
         }
         #endregion
 
@@ -422,7 +411,7 @@ namespace TehGM.Wolfringo
             }
 
             // update group member list when one joined
-            else if (message is GroupMemberJoinedMessage groupMemberJoined)
+            else if (message is GroupJoinMessage groupMemberJoined)
             {
                 WolfGroup cachedGroup = _groupsCache?.Get(groupMemberJoined.GroupID);
                 if (cachedGroup != null)
@@ -430,12 +419,13 @@ namespace TehGM.Wolfringo
                     if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
                         _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     else
-                        membersDictionary[groupMemberJoined.UserID] = groupMemberJoined.GetGroupMember();
+                        membersDictionary[groupMemberJoined.UserID.Value] =
+                            new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value);
                 }
             }
 
             // update group member list if one left
-            else if (message is GroupMemberLeftMessage groupMemberLeft)
+            else if (message is GroupLeaveMessage groupMemberLeft)
             {
                 WolfGroup cachedGroup = _groupsCache?.Get(groupMemberLeft.GroupID);
                 if (cachedGroup != null)
@@ -443,7 +433,7 @@ namespace TehGM.Wolfringo
                     if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
                         _log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     else
-                        membersDictionary.Remove(groupMemberLeft.UserID);
+                        membersDictionary.Remove(groupMemberLeft.UserID.Value);
                 }
             }
         }

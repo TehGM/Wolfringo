@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -84,6 +85,23 @@ namespace TehGM.Wolfringo
                 new RecentConversationsMessage(), cancellationToken).ConfigureAwait(false);
             return response.Messages;
         }
+        #endregion
+
+        #region Group Joining and leaving
+        // join
+        public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, string password, CancellationToken cancellationToken = default)
+        {
+            await client.SendAsync(new GroupJoinMessage(groupID, password), cancellationToken).ConfigureAwait(false);
+            return await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
+        }
+        public static Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
+            => client.JoinGroupAsync(groupID, string.Empty, cancellationToken);
+
+        // leave
+        public static Task LeaveGroupAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupLeaveMessage(groupID), cancellationToken);
+        public static Task LeaveGroupAsync(this IWolfClient client, WolfGroup group, CancellationToken cancellationToken = default)
+            => client.LeaveGroupAsync(group.ID, cancellationToken);
         #endregion
     }
 }
