@@ -24,5 +24,6 @@
         public const string MessageConversationList = "message conversation list";
         public const string SubscriberGroupList = "subscriber group list";
         public const string CharmList = "charm list";
+        public const string CharmSubscriberStatistics = "charm subscriber statistics";
     }
 }

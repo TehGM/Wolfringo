@@ -30,6 +30,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(ListGroupMembersResponse), defaultSerializer },
                 { typeof(ListUserGroupsResponse), defaultSerializer },
                 { typeof(ListCharmsResponse), defaultSerializer },
+                { typeof(CharmStatisticsResponse), defaultSerializer },
                 // chat history
                 { typeof(ChatHistoryResponse), chatHistorySerializer },
                 { typeof(RecentConversationsResponse), chatHistorySerializer }
