@@ -36,6 +36,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.CharmList, new DefaultMessageSerializer<ListCharmsMessage>() },
                 { MessageCommands.CharmSubscriberStatistics, new DefaultMessageSerializer<CharmStatisticsMessage>() },
                 { MessageCommands.GroupMemberUpdate, new DefaultMessageSerializer<GroupMemberUpdateMessage>() },
+                { MessageCommands.GroupAdmin, new DefaultMessageSerializer<GroupAdminMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

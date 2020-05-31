@@ -199,6 +199,7 @@ namespace TehGM.Wolfringo
         }
         #endregion
 
+
         /** CHARMS **/
         #region Charms
         // charms
@@ -232,6 +233,23 @@ namespace TehGM.Wolfringo
 
         public static Task<CharmStatisticsResponse> GetUserCharmStatsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync<CharmStatisticsResponse>(new CharmStatisticsMessage(userID), cancellationToken);
+        #endregion
+
+
+        /** ADMIN ACTIONS **/
+        #region Admin Actions
+        public static Task AdminUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Admin), cancellationToken);
+        public static Task ModUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Mod), cancellationToken);
+        public static Task ResetUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.User), cancellationToken);
+        public static Task SilenceUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Silenced), cancellationToken);
+        public static Task KickUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.NotMember), cancellationToken);
+        public static Task BanUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Banned), cancellationToken);
         #endregion
     }
 }
