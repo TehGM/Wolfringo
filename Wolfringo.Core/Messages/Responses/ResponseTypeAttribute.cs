@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ResponseTypeAttribute : Attribute
     {
         public static readonly Type BaseResponseType = typeof(IWolfResponse);
