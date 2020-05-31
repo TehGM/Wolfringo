@@ -19,6 +19,7 @@
         public const string GroupMemberList = "group member list";
         public const string GroupMemberAdd = "group member add";
         public const string GroupMemberDelete = "group member delete";
+        public const string GroupMemberUpdate = "group member update";
         public const string MessagePrivateHistoryList = "message private history list";
         public const string MessageGroupHistoryList = "message group history list";
         public const string MessageConversationList = "message conversation list";

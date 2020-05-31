@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -255,23 +256,12 @@ namespace TehGM.Wolfringo
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
                     try
                     {
-                        EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
+                        if (cachedGroup != null)
+                            EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
                     }
                     catch (NotSupportedException)
                     {
                         Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
-                }
-
-                else if (message is GroupLeaveMessage groupLeaveMessage)
-                {
-                    // remove group from cache when leaving it
-                    if (groupLeaveMessage.UserID == CurrentUserID)
-                        this.Caches?.GroupsCache?.Remove(groupLeaveMessage.GroupID);
-                    // if it was someone else, remove that user
-                    else if (groupLeaveMessage.UserID != null)
-                    {
-                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupLeaveMessage.GroupID);
                     }
                 }
             }
@@ -419,7 +409,6 @@ namespace TehGM.Wolfringo
                 else if (message is GroupJoinMessage groupMemberJoined)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID);
-
                     try
                     {
                         if (cachedGroup != null)
@@ -440,6 +429,22 @@ namespace TehGM.Wolfringo
                     {
                         if (cachedGroup != null)
                             EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                    }
+                }
+
+                // update group member capabilities if member was updated
+                else if (message is GroupMemberUpdateMessage groupMemberUpdated)
+                {
+                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberUpdated.GroupID);
+                    try
+                    {
+                        if (cachedGroup != null)
+                            EntityModificationHelper.SetGroupMember(cachedGroup,
+                                new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
                     }
                     catch (NotSupportedException)
                     {
