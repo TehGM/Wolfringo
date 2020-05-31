@@ -16,11 +16,12 @@ using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
 {
-    public class WolfClient : IWolfClient, IDisposable
+    public class WolfClient : IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
         public string Url { get; }
         public string Token { get; }
         public string Device { get; }
+        public bool IsConnected => this._client?.IsConnected == true;
 
         public bool UsersCachingEnabled
         {
@@ -53,7 +54,7 @@ namespace TehGM.Wolfringo
         protected WolfEntityCacheContainer Caches { get; set; }
 
         private CancellationTokenSource _cts;
-        protected uint CurrentUserID { get; set; }
+        public uint? CurrentUserID { get; protected set; }
 
         #region Constructors
         public WolfClient(string url, string device, string token, ILogger logger = null, 
@@ -117,7 +118,7 @@ namespace TehGM.Wolfringo
         #region Connection management
         public Task ConnectAsync(CancellationToken cancellationToken = default)
         {
-            if (this._client.IsConnected)
+            if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -149,6 +150,8 @@ namespace TehGM.Wolfringo
                 throw new ArgumentNullException(nameof(message));
             if (string.IsNullOrWhiteSpace(message.Command))
                 throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
 
             if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
             {
@@ -250,21 +253,27 @@ namespace TehGM.Wolfringo
                 else if (response is ListGroupMembersResponse groupMembersResponse && message is ListGroupMembersMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
-                    if (cachedGroup != null)
+                    try
                     {
-                        if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                        else
-                        {
-                            foreach (WolfGroupMember member in groupMembersResponse.GroupMembers)
-                                membersDictionary[member.UserID] = member;
-                        }
+                        EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     }
                 }
 
-                // remove group from cache when leaving it
-                else if (message is GroupLeaveMessage groupLeaveMessage && groupLeaveMessage.UserID == CurrentUserID)
-                    this.Caches?.GroupsCache?.Remove(groupLeaveMessage.GroupID);
+                else if (message is GroupLeaveMessage groupLeaveMessage)
+                {
+                    // remove group from cache when leaving it
+                    if (groupLeaveMessage.UserID == CurrentUserID)
+                        this.Caches?.GroupsCache?.Remove(groupLeaveMessage.GroupID);
+                    // if it was someone else, remove that user
+                    else if (groupLeaveMessage.UserID != null)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupLeaveMessage.GroupID);
+                    }
+                }
             }
 
 
@@ -284,142 +293,50 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Caching
-        public virtual async Task<IEnumerable<WolfUser>> GetUsersAsync(IEnumerable<uint> userIDs, CancellationToken cancellationToken = default)
+        // doubling the methods as below allows for hiding interface members
+        // while at once allowing overriding the implementations
+
+        // interface proxies
+        WolfUser IWolfClientCacheAccessor.GetCachedUser(uint id)
+            => GetCachedUserInternal(id);
+        WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
+            => GetCachedGroupInternal(id);
+        WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
+            => GetCachedCharmInternal(id);
+
+        // overridable methods
+        protected virtual WolfUser GetCachedUserInternal(uint id)
         {
-            if (!this._client.IsConnected)
+            if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            if (userIDs?.Any() != true)
-                throw new ArgumentException("There must be at least one user ID to retrieve", nameof(userIDs));
-
-            // get as many users from cache as possible
-            List<WolfUser> results = new List<WolfUser>(userIDs.Count());
-            if (this.UsersCachingEnabled)
-            {
-                foreach (uint uID in userIDs)
-                {
-                    WolfUser cachedUser = this.Caches?.UsersCache?.Get(uID);
-                    if (cachedUser != null)
-                    {
-                        Log?.LogTrace("User {UserID} found in cache", uID);
-                        results.Add(cachedUser);
-                    }
-                }
-            }
-
-            // get the ones that aren't in cache from the server
-            IEnumerable<uint> toRequest = userIDs.Except(results.Select(u => u.ID));
-            if (toRequest.Any())
-            {
-                UserProfileResponse response = await SendAsync<UserProfileResponse>(
-                    new UserProfileMessage(toRequest, true, true), cancellationToken).ConfigureAwait(false);
-                results.AddRange(response.UserProfiles);
-            }
-
-            // return results
-            if (!results.Any())
-                throw new KeyNotFoundException();
-            return results;
+            if (!this.UsersCachingEnabled)
+                return null;
+            WolfUser result = this.Caches?.UsersCache?.Get(id);
+            if (result != null)
+                Log?.LogTrace("User {UserID} found in cache", id);
+            return result;
         }
-
-        public Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default)
+        protected virtual WolfGroup GetCachedGroupInternal(uint id)
         {
-            if (this.CurrentUserID == default)
-                throw new InvalidOperationException("Not logged in");
-            return this.GetUserAsync(this.CurrentUserID, cancellationToken);
-        }
-
-        public virtual async Task<IEnumerable<WolfGroup>> GetGroupsAsync(IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default)
-        {
-            if (!this._client.IsConnected)
+            if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            if (groupIDs?.Any() != true)
-                throw new ArgumentException("There must be at least one group ID to retrieve", nameof(groupIDs));
-
-
-            // get as many users from cache as possible
-            List<WolfGroup> results = new List<WolfGroup>(groupIDs.Count());
-            if (this.GroupsCachingEnabled)
-            {
-                foreach (uint gID in groupIDs)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(gID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Group {GroupID} found in cache", gID);
-                        results.Add(cachedGroup);
-                    }
-                }
-            }
-
-            // get the ones that aren't in cache from the server
-            IEnumerable<uint> toRequest = groupIDs.Except(results.Select(u => u.ID));
-            if (toRequest.Any())
-            {
-                GroupProfileResponse response = await SendAsync<GroupProfileResponse>(
-                    new GroupProfileMessage(toRequest, true), cancellationToken).ConfigureAwait(false);
-                results.AddRange(response.GroupProfiles);
-
-                foreach (WolfGroup group in response.GroupProfiles)
-                {
-                    // request members list for groups not present in cache
-                    try
-                    {
-                        await SendAsync<ListGroupMembersResponse>(new ListGroupMembersMessage(group.ID), cancellationToken).ConfigureAwait(false);
-                    }
-                    // handle case when requesting profiles for group the user is not in
-                    catch (MessageSendingException ex)
-                    {
-                        // remove group from cache 
-                        this.Caches?.GroupsCache?.Remove(group.ID);
-                        // throw if failed for other reason than user not being inside the group
-                        if (ex.StatusCode != System.Net.HttpStatusCode.Forbidden)
-                            throw;
-                    }
-                }
-            }
-
-            // return results
-            if (!results.Any())
-                throw new KeyNotFoundException();
-            return results;
+            if (!this.GroupsCachingEnabled)
+                return null;
+            WolfGroup result = this.Caches?.GroupsCache?.Get(id);
+            if (result != null)
+                Log?.LogTrace("Group {GroupID} found in cache", id);
+            return result;
         }
-
-        public virtual async Task<IEnumerable<WolfCharm>> GetCharmsAsync(IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
+        protected virtual WolfCharm GetCachedCharmInternal(uint id)
         {
-            if (!this._client.IsConnected)
+            if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            if (charmIDs != null && !charmIDs.Any())
-                charmIDs = null;
-
-
-            // get as many users from cache as possible
-            List<WolfCharm> results = new List<WolfCharm>(charmIDs?.Count() ?? 600);
-            if (charmIDs != null && this.CharmsCachingEnabled)
-            {
-                foreach (uint cID in charmIDs)
-                {
-                    WolfCharm cachedGroup = this.Caches?.CharmsCache?.Get(cID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Charm {CharmID} found in cache", cID);
-                        results.Add(cachedGroup);
-                    }
-                }
-            }
-
-            // get the ones that aren't in cache from the server
-            IEnumerable<uint> toRequest = charmIDs?.Except(results.Select(u => u.ID));
-            if (toRequest == null || toRequest.Any())
-            {
-                ListCharmsResponse response = await SendAsync<ListCharmsResponse>(
-                    new ListCharmsMessage(toRequest), cancellationToken).ConfigureAwait(false);
-                results.AddRange(response.Charms);
-            }
-
-            // return results
-            if (!results.Any())
-                throw new KeyNotFoundException();
-            return results;
+            if (!this.CharmsCachingEnabled)
+                return null;
+            WolfCharm result = this.Caches?.CharmsCache?.Get(id);
+            if (result != null)
+                Log?.LogTrace("Charm {CharmID} found in cache", id);
+            return result;
         }
         #endregion
 
@@ -502,13 +419,16 @@ namespace TehGM.Wolfringo
                 else if (message is GroupJoinMessage groupMemberJoined)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID);
-                    if (cachedGroup != null)
+
+                    try
                     {
-                        if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                        else
-                            membersDictionary[groupMemberJoined.UserID.Value] =
-                                new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value);
+                        if (cachedGroup != null)
+                            EntityModificationHelper.SetGroupMember(cachedGroup,
+                                new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
+                    }
+                    catch (NotSupportedException)
+                    {
+                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     }
                 }
 
@@ -516,12 +436,14 @@ namespace TehGM.Wolfringo
                 else if (message is GroupLeaveMessage groupMemberLeft)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberLeft.GroupID);
-                    if (cachedGroup != null)
+                    try
                     {
-                        if (!(cachedGroup.Members is IDictionary<uint, WolfGroupMember> membersDictionary) || membersDictionary.IsReadOnly)
-                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                        else
-                            membersDictionary.Remove(groupMemberLeft.UserID.Value);
+                        if (cachedGroup != null)
+                            EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     }
                 }
             }

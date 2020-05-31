@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages.Responses;
@@ -9,6 +8,8 @@ namespace TehGM.Wolfringo
 {
     public interface IWolfClient
     {
+        uint? CurrentUserID { get; }
+
         Task ConnectAsync(CancellationToken cancellationToken = default);
         Task DisconnectAsync(CancellationToken cancellationToken = default);
         Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : WolfResponse;
@@ -23,10 +24,5 @@ namespace TehGM.Wolfringo
 
         void AddMessageListener(IMessageCallback listener);
         void RemoveMessageListener(IMessageCallback listener);
-
-        Task<IEnumerable<WolfUser>> GetUsersAsync(IEnumerable<uint> userIDs, CancellationToken cancellationToken = default);
-        Task<WolfUser> GetCurrentUserAsync(CancellationToken cancellationToken = default);
-        Task<IEnumerable<WolfGroup>> GetGroupsAsync(IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default);
-        Task<IEnumerable<WolfCharm>> GetCharmsAsync(IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default);
     }
 }

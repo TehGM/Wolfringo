@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
 {
     public static class Sender
     {
+        /** LOGGING IN AND OUT **/
         #region Logging in and out
         public static async Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, bool isPasswordAlreadyHashed = false, CancellationToken cancellationToken = default)
         {
@@ -27,6 +28,8 @@ namespace TehGM.Wolfringo
             => client.SendAsync(new LogoutMessage(), cancellationToken);
         #endregion
 
+
+        /** NOTIFICATIONS **/
         #region Notifications
         public static async Task<IEnumerable<WolfNotification>> GetNotificationsAsync(this IWolfClient client, WolfLanguage language, WolfDevice device, CancellationToken cancellationToken = default)
         {
@@ -37,7 +40,43 @@ namespace TehGM.Wolfringo
             => client.GetNotificationsAsync(WolfLanguage.English, WolfDevice.Bot, cancellationToken);
         #endregion
 
-        #region Contacts
+
+        /** USERS **/
+        #region Users
+        public static async Task<IEnumerable<WolfUser>> GetUsersAsync(this IWolfClient client, IEnumerable<uint> userIDs, CancellationToken cancellationToken = default)
+        {
+            if (userIDs?.Any() != true)
+                throw new ArgumentException("There must be at least one user ID to retrieve", nameof(userIDs));
+
+            // get as many users from cache as possible
+            List<WolfUser> results = new List<WolfUser>(userIDs.Count());
+            if (client is IWolfClientCacheAccessor cache)
+                results.AddRange(userIDs.Select(uID => cache.GetCachedUser(uID)));
+
+            // get the ones that aren't in cache from the server
+            IEnumerable<uint> toRequest = userIDs.Except(results.Select(u => u.ID));
+            if (toRequest.Any())
+            {
+                UserProfileResponse response = await client.SendAsync<UserProfileResponse>(
+                    new UserProfileMessage(toRequest, true, true), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.UserProfiles);
+            }
+            return results;
+        }
+
+        public static Task<WolfUser> GetCurrentUserAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            if (client.CurrentUserID == null)
+                throw new InvalidOperationException("Not logged in");
+            return client.GetUserAsync(client.CurrentUserID.Value, cancellationToken);
+        }
+
+        public static async Task<WolfUser> GetUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<WolfUser> users = await client.GetUsersAsync(new uint[] { userID }, cancellationToken).ConfigureAwait(false);
+            return users.FirstOrDefault();
+        }
+
         public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             ListContactsResponse response = await client.SendAsync<ListContactsResponse>(new ListContactsMessage(), cancellationToken).ConfigureAwait(false);
@@ -45,6 +84,8 @@ namespace TehGM.Wolfringo
         }
         #endregion
 
+        
+        /** HISTORY **/
         #region History
         // private history
         public static async Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
@@ -87,6 +128,8 @@ namespace TehGM.Wolfringo
         }
         #endregion
 
+        
+        /** GROUPS **/
         #region Groups
         // join
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, string password, CancellationToken cancellationToken = default)
@@ -103,7 +146,51 @@ namespace TehGM.Wolfringo
         public static Task LeaveGroupAsync(this IWolfClient client, WolfGroup group, CancellationToken cancellationToken = default)
             => client.LeaveGroupAsync(group.ID, cancellationToken);
 
-        // get groups list
+        // get groups
+        public static async Task<IEnumerable<WolfGroup>> GetGroupsAsync(this IWolfClient client, IEnumerable<uint> groupIDs, CancellationToken cancellationToken = default)
+        {
+            if (groupIDs?.Any() != true)
+                throw new ArgumentException("There must be at least one group ID to retrieve", nameof(groupIDs));
+
+            // get as many groups from cache as possible
+            List<WolfGroup> results = new List<WolfGroup>(groupIDs.Count());
+            if (client is IWolfClientCacheAccessor cache)
+                results.AddRange(groupIDs.Select(gID => cache.GetCachedGroup(gID)));
+
+            // get the ones that aren't in cache from the server
+            IEnumerable<uint> toRequest = groupIDs.Except(results.Select(u => u.ID));
+            if (toRequest.Any())
+            {
+                GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
+                    new GroupProfileMessage(toRequest, true), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.GroupProfiles);
+
+                foreach (WolfGroup group in response.GroupProfiles)
+                {
+                    // request members list for groups not present in cache
+                    try
+                    {
+                        ListGroupMembersResponse membersResponse = await client.SendAsync<ListGroupMembersResponse>(
+                            new ListGroupMembersMessage(group.ID), cancellationToken).ConfigureAwait(false);
+                        // client should be configured to intercept this response
+                        // however, just in case it's not (like when caching is disabled), do it here as well
+                        if (membersResponse?.GroupMembers != null)
+                            EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                    }
+                    // handle case when requesting profiles for group the user is not in
+                    catch (MessageSendingException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden) { }
+                    catch (NotSupportedException) { }
+                }
+            }
+            return results;
+        }
+
+        public static async Task<WolfGroup> GetGroupAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<WolfGroup> groups = await client.GetGroupsAsync(new uint[] { groupID }, cancellationToken).ConfigureAwait(false);
+            return groups.FirstOrDefault();
+        }
+
         public static async Task<IEnumerable<WolfGroup>> GetCurrentUserGroupsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             ListUserGroupsResponse response = await client.SendAsync<ListUserGroupsResponse>(
@@ -112,8 +199,29 @@ namespace TehGM.Wolfringo
         }
         #endregion
 
-        #region Charms and Achievements
+        /** CHARMS **/
+        #region Charms
         // charms
+        public static async Task<IEnumerable<WolfCharm>> GetCharmsAsync(this IWolfClient client, IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
+        {
+            if (charmIDs != null && !charmIDs.Any())
+                charmIDs = null;
+
+            // get as many charms from cache as possible
+            List<WolfCharm> results = new List<WolfCharm>(charmIDs?.Count() ?? 600);
+            if (charmIDs != null && client is IWolfClientCacheAccessor cache)
+                results.AddRange(charmIDs.Select(cID => cache.GetCachedCharm(cID)));
+
+            // get the ones that aren't in cache from the server
+            IEnumerable<uint> toRequest = charmIDs?.Except(results.Select(u => u.ID));
+            if (toRequest == null || toRequest.Any())
+            {
+                ListCharmsResponse response = await client.SendAsync<ListCharmsResponse>(
+                    new ListCharmsMessage(toRequest), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.Charms);
+            }
+            return results;
+        }
         public static Task<IEnumerable<WolfCharm>> GetAllCharmsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.GetCharmsAsync(null, cancellationToken);
         public static async Task<WolfCharm> GetCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
