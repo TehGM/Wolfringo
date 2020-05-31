@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             DefaultSerializer = JsonSerializer.CreateDefault(SerializerSettings);
         }
 
-        public static void PopulateObject<T>(this JToken token, ref T target, string childPath = null)
+        public static void PopulateObject<T>(this JToken token, T target, string childPath = null)
         {
             JToken source = childPath != null ? token.SelectToken(childPath) : token;
             // sometimes body can be an array - if target is not an enumerable, ignore
@@ -32,12 +32,12 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                 SerializationHelper.DefaultSerializer.Populate(reader, target);
         }
 
-        public static void FlattenCommonProperties<T>(this JToken token, ref T target)
+        public static void FlattenCommonProperties<T>(this JToken token, T target)
         {
-            token.PopulateObject(ref target, "body");
-            token.PopulateObject(ref target, "headers");
-            token.PopulateObject(ref target, "body.extended");
-            token.PopulateObject(ref target, "body.base");
+            token.PopulateObject(target, "body");
+            token.PopulateObject(target, "headers");
+            token.PopulateObject(target, "body.extended");
+            token.PopulateObject(target, "body.base");
         }
 
         public static JObject SerializeJsonPayload<T>(this T message) where T : IWolfMessage

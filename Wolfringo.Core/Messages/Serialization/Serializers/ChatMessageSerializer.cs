@@ -13,7 +13,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             // deserialize message
             Type msgType = GetMessageType(messageData.Payload["body"]);
             IChatMessage result = (IChatMessage)messageData.Payload.ToObject(msgType, SerializationHelper.DefaultSerializer);
-            messageData.Payload.FlattenCommonProperties(ref result);
+            messageData.Payload.FlattenCommonProperties(result);
 
             // parse and populate binary data
             PopulateMessageData(ref result, messageData.BinaryMessages.First());

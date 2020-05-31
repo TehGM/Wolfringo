@@ -27,7 +27,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                 return default;
 
             object result = jsonObject.ToObject(msgType, serializer);
-            jsonObject.FlattenCommonProperties(ref result);
+            jsonObject.FlattenCommonProperties(result);
             return result;
         }
     }

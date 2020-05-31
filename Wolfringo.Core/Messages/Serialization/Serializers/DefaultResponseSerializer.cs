@@ -16,7 +16,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             JToken responseJson = GetResponseJson(responseData);
             object result = responseJson.ToObject(responseType, SerializationHelper.DefaultSerializer);
             // if response has body or headers, further use it to populate the response entity
-            responseJson.FlattenCommonProperties(ref result);
+            responseJson.FlattenCommonProperties(result);
             return (IWolfResponse)result;
         }
 

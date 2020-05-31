@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         public virtual IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
             IWolfMessage result = messageData.Payload.ToObject<T>(SerializationHelper.DefaultSerializer);
-            messageData.Payload.FlattenCommonProperties(ref result);
+            messageData.Payload.FlattenCommonProperties(result);
             return result;
         }
 

@@ -225,7 +225,7 @@ namespace TehGM.Wolfringo
 
             // if it's chat message, populate with response info to get timestamp
             else if (message is ChatMessage chatMsg && response is ChatResponse)
-                rawResponse?.Payload?.First?.PopulateObject(ref chatMsg, "body");
+                rawResponse?.Payload?.First?.PopulateObject(chatMsg, "body");
 
             if (this.UsersCachingEnabled)
             {
@@ -468,7 +468,7 @@ namespace TehGM.Wolfringo
                     if (cachedUser != null)
                     {
                         Log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
-                        rawMessage.Payload.PopulateObject(ref cachedUser, "body");
+                        rawMessage.Payload.PopulateObject(cachedUser, "body");
                     }
                 }
             }
@@ -482,8 +482,7 @@ namespace TehGM.Wolfringo
                     if (cachedGroup != null)
                     {
                         Log?.LogTrace("Updating cached group {GroupID} presence", cachedGroup.ID);
-                        WolfGroup.WolfGroupAudioCounts counts = cachedGroup.AudioCounts;
-                        rawMessage.Payload.PopulateObject(ref counts, "body");
+                        rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
                     }
                 }
 
