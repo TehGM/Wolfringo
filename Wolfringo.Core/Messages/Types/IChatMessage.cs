@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages
 {
+    [ResponseType(typeof(ChatResponse))]
     public interface IChatMessage : IWolfMessage
     {
         // json data
