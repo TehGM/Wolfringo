@@ -51,7 +51,7 @@ namespace TehGM.Wolfringo
             // get as many users from cache as possible
             List<WolfUser> results = new List<WolfUser>(userIDs.Count());
             if (client is IWolfClientCacheAccessor cache)
-                results.AddRange(userIDs.Select(uID => cache.GetCachedUser(uID)));
+                results.AddRange(userIDs.Select(uID => cache.GetCachedUser(uID)).Where(u => u != null));
 
             // get the ones that aren't in cache from the server
             IEnumerable<uint> toRequest = userIDs.Except(results.Select(u => u.ID));
@@ -155,7 +155,7 @@ namespace TehGM.Wolfringo
             // get as many groups from cache as possible
             List<WolfGroup> results = new List<WolfGroup>(groupIDs.Count());
             if (client is IWolfClientCacheAccessor cache)
-                results.AddRange(groupIDs.Select(gID => cache.GetCachedGroup(gID)));
+                results.AddRange(groupIDs.Select(gID => cache.GetCachedGroup(gID)).Where(g => g != null));
 
             // get the ones that aren't in cache from the server
             IEnumerable<uint> toRequest = groupIDs.Except(results.Select(u => u.ID));
@@ -211,7 +211,7 @@ namespace TehGM.Wolfringo
             // get as many charms from cache as possible
             List<WolfCharm> results = new List<WolfCharm>(charmIDs?.Count() ?? 600);
             if (charmIDs != null && client is IWolfClientCacheAccessor cache)
-                results.AddRange(charmIDs.Select(cID => cache.GetCachedCharm(cID)));
+                results.AddRange(charmIDs.Select(cID => cache.GetCachedCharm(cID)).Where(c => c != null));
 
             // get the ones that aren't in cache from the server
             IEnumerable<uint> toRequest = charmIDs?.Except(results.Select(u => u.ID));
