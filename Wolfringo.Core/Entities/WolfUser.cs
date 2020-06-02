@@ -12,7 +12,7 @@ namespace TehGM.Wolfringo
         [JsonProperty("hash", NullValueHandling = NullValueHandling.Ignore)]
         public string Hash { get; private set; }
         [JsonProperty("nickname")]
-        public string Username { get; private set; }
+        public string Nickname { get; private set; }
         [JsonProperty("status")]
         public string Status { get; private set; }
         [JsonProperty("email", NullValueHandling = NullValueHandling.Ignore)]
