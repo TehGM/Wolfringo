@@ -40,6 +40,8 @@ namespace TehGM.Wolfringo
         public WolfGender? Gender { get; private set; }
         [JsonProperty("lookingFor", NullValueHandling = NullValueHandling.Ignore)]
         public WolfLookingFor? LookingFor { get; private set; }
+        [JsonProperty("relationship", NullValueHandling = NullValueHandling.Ignore)]
+        public WolfRelationship? Relationship { get; private set; }
         [JsonProperty("urls", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<string> Links { get; private set; }
         [JsonProperty("utcOffset", NullValueHandling = NullValueHandling.Ignore)]
