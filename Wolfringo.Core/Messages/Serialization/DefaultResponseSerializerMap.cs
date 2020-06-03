@@ -33,7 +33,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(CharmStatisticsResponse), defaultSerializer },
                 // chat history
                 { typeof(ChatHistoryResponse), chatHistorySerializer },
-                { typeof(RecentConversationsResponse), chatHistorySerializer }
+                { typeof(RecentConversationsResponse), chatHistorySerializer },
+                // entity updates
+                { typeof(UserUpdateResponse), new UserUpdateResponseSerializer() }
             };
         }
 

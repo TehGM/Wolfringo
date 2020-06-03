@@ -251,5 +251,24 @@ namespace TehGM.Wolfringo
         public static Task BanUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Banned), cancellationToken);
         #endregion
+
+
+        /** PROFILE UPDATES **/
+        #region Profile Updates
+        public static async Task<WolfUser> UpdateProfileAsync(this IWolfClient client, Action<UserUpdateMessage.Builder> update, CancellationToken cancellationToken = default)
+        {
+            WolfUser currentUser = await client.GetCurrentUserAsync(cancellationToken).ConfigureAwait(false);
+            UserUpdateMessage.Builder updateBuilder = new UserUpdateMessage.Builder(currentUser);
+            update?.Invoke(updateBuilder);
+            UserUpdateResponse response = await client.SendAsync<UserUpdateResponse>(updateBuilder.Build(), cancellationToken).ConfigureAwait(false);
+            return response.UserProfile;
+        }
+
+        public static Task<WolfUser> UpdateNicknameAsync(this IWolfClient client, string newNickname, CancellationToken cancellationToken = default)
+            => client.UpdateProfileAsync(user => user.Nickname = newNickname, cancellationToken);
+
+        public static Task<WolfUser> UpdateStatusAsync(this IWolfClient client, string newStatus, CancellationToken cancellationToken = default)
+            => client.UpdateProfileAsync(user => user.Status = newStatus, cancellationToken);
+        #endregion
     }
 }

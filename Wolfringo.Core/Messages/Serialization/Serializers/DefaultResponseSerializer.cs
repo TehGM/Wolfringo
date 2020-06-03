@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         protected static JToken GetResponseJson(SerializedMessageData responseData)
             => (responseData.Payload is JArray) ? responseData.Payload.First : responseData.Payload;
 
-        protected static void ThrowIfInvalidType(Type responseType)
+        protected virtual void ThrowIfInvalidType(Type responseType)
         {
             if (!_baseResponseType.IsAssignableFrom(responseType))
                 throw new ArgumentException($"Response type must implement {_baseResponseType.FullName}", nameof(responseType));

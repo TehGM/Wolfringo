@@ -42,6 +42,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
                 // chat message
                 { MessageCommands.MessageSend, new ChatMessageSerializer() },
+                // entity updates
+                { MessageCommands.SubscriberProfileUpdate, new UserUpdateMessageSerializer() }
             };
         }
 

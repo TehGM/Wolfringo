@@ -12,9 +12,6 @@ namespace TehGM.Wolfringo.Messages.Serialization
 
         public override IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData)
         {
-            if (!_chatHistoryResponseType.IsAssignableFrom(responseType))
-                throw new ArgumentException($"{typeof(ChatHistoryResponseSerializer).Name} only works with responses of type {_chatHistoryResponseType.FullName}", nameof(responseType));
-
             // first deserialize the json message
             ChatHistoryResponse result = (ChatHistoryResponse)base.Deserialize(responseType, responseData);
 
@@ -32,6 +29,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
             }
 
             return result;
+        }
+
+        protected override void ThrowIfInvalidType(Type responseType)
+        {
+            base.ThrowIfInvalidType(responseType);
+            if (!_chatHistoryResponseType.IsAssignableFrom(responseType))
+                throw new ArgumentException($"{typeof(ChatHistoryResponseSerializer).Name} only works with responses of type {_chatHistoryResponseType.FullName}", nameof(responseType));
         }
     }
 }
