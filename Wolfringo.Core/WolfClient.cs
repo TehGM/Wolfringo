@@ -143,7 +143,7 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Message Sending
-        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : WolfResponse
+        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
