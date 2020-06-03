@@ -165,7 +165,7 @@ namespace TehGM.Wolfringo
             if (response.IsError())
                 throw new MessageSendingException(message, response);
             this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
-            return response as TResponse;
+            return (TResponse)response;
         }
 
         private Task<IWolfResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
