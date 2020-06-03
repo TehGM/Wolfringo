@@ -30,5 +30,7 @@
         public const string SubscriberProfileUpdate = "subscriber profile update";
         public const string SubscriberUpdate = "subscriber update";
         public const string NotificationListClear = "notification list clear";
+        public const string MessageGroupUnsubscribe = "message group unsubscribe";
+        public const string MessagePrivateUnsubscribe = "message private unsubscribe";
     }
 }

@@ -39,6 +39,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupAdmin, new DefaultMessageSerializer<GroupAdminMessage>() },
                 { MessageCommands.SubscriberUpdate, new DefaultMessageSerializer<UserUpdateEvent>() },
                 { MessageCommands.NotificationListClear, new DefaultMessageSerializer<ClearNotificationsMessage>() },
+                { MessageCommands.MessageGroupUnsubscribe, new DefaultMessageSerializer<UnsubscribeFromGroupMessage>() },
+                { MessageCommands.MessagePrivateUnsubscribe, new DefaultMessageSerializer<UnsubscribeFromPrivateMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
