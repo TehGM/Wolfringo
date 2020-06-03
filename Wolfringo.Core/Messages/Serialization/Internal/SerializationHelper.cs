@@ -50,5 +50,14 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                 payload.Add(new JProperty("headers", JToken.FromObject(headersMessage.Headers, SerializationHelper.DefaultSerializer)));
             return payload;
         }
+
+        public static void MovePropertyIfExists(ref JObject source, ref JObject target, string propertyName)
+        {
+            if (!source.ContainsKey(propertyName))
+                return;
+            JToken value = source[propertyName];
+            source.Remove(propertyName);
+            target.Add(new JProperty(propertyName, value));
+        }
     }
 }

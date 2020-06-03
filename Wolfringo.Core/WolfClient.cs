@@ -221,6 +221,10 @@ namespace TehGM.Wolfringo
         /// <param name="cancellationToken"></param>
         protected virtual Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
+            // don't do anything if response is not successful
+            if (response.IsError())
+                return Task.CompletedTask;
+
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
                 this.CurrentUserID = loginResponse.UserID;
@@ -262,6 +266,10 @@ namespace TehGM.Wolfringo
                         Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
                     }
                 }
+
+                // add group if it was created
+                else if (response is GroupEditResponse groupEditResponse && message is GroupCreateMessage)
+                    this.Caches?.GroupsCache.AddOrReplaceIfChanged(groupEditResponse.GroupProfile);
             }
 
 

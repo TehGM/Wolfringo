@@ -54,7 +54,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 // chat message
                 { MessageCommands.MessageSend, new ChatMessageSerializer() },
                 // entity updates
-                { MessageCommands.SubscriberProfileUpdate, new UserUpdateMessageSerializer() }
+                { MessageCommands.SubscriberProfileUpdate, new UserUpdateMessageSerializer() },
+                { MessageCommands.GroupCreate, new GroupEditMessageSerializer<GroupCreateMessage>() },
+                { MessageCommands.GroupProfileUpdate, new GroupEditMessageSerializer<GroupUpdateMessage>() }
             };
         }
 

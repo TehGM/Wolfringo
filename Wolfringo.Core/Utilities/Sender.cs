@@ -109,9 +109,25 @@ namespace TehGM.Wolfringo
 
         public static Task UnblockUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync(new BlockDeleteMessage(userID), cancellationToken);
+
+        // updating
+        public static async Task<WolfUser> UpdateProfileAsync(this IWolfClient client, Action<UserUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        {
+            WolfUser currentUser = await client.GetCurrentUserAsync(cancellationToken).ConfigureAwait(false);
+            UserUpdateMessage.Builder updateBuilder = new UserUpdateMessage.Builder(currentUser);
+            updates?.Invoke(updateBuilder);
+            UserUpdateResponse response = await client.SendAsync<UserUpdateResponse>(updateBuilder.Build(), cancellationToken).ConfigureAwait(false);
+            return response.UserProfile;
+        }
+
+        public static Task<WolfUser> UpdateNicknameAsync(this IWolfClient client, string newNickname, CancellationToken cancellationToken = default)
+            => client.UpdateProfileAsync(user => user.Nickname = newNickname, cancellationToken);
+
+        public static Task<WolfUser> UpdateStatusAsync(this IWolfClient client, string newStatus, CancellationToken cancellationToken = default)
+            => client.UpdateProfileAsync(user => user.Status = newStatus, cancellationToken);
         #endregion
 
-        
+
         /** HISTORY **/
         #region History
         // private history
@@ -224,6 +240,33 @@ namespace TehGM.Wolfringo
                 new GroupListMessage(), cancellationToken).ConfigureAwait(false);
             return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
         }
+
+        // create
+        public static async Task<WolfGroup> CreateGroupAsync(this IWolfClient client, string groupName, string groupDescription, Action<GroupCreateMessage.Builder> groupSettings, CancellationToken cancellationToken = default)
+        {
+            GroupCreateMessage.Builder builder = new GroupCreateMessage.Builder(groupName, groupDescription);
+            groupSettings?.Invoke(builder);
+            GroupEditResponse response = await client.SendAsync<GroupEditResponse>(builder.Build(), cancellationToken).ConfigureAwait(false);
+            return response.GroupProfile;
+        }
+
+        public static Task<WolfGroup> CreateGroupAsync(this IWolfClient client, string groupName, string groupDescription, CancellationToken cancellationToken = default)
+            => client.CreateGroupAsync(groupName, groupDescription, null, cancellationToken);
+
+        // update
+        public static async Task<WolfGroup> UpdateGroupAsync(this IWolfClient client, WolfGroup group, Action<GroupUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        {
+            GroupUpdateMessage.Builder builder = new GroupUpdateMessage.Builder(group);
+            updates?.Invoke(builder);
+            GroupEditResponse response = await client.SendAsync<GroupEditResponse>(builder.Build(), cancellationToken).ConfigureAwait(false);
+            return response.GroupProfile;
+        }
+
+        public static async Task<WolfGroup> UpdateGroupAsync(this IWolfClient client, uint groupID, Action<GroupUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        {
+            WolfGroup group = await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
+            return await client.UpdateGroupAsync(group, updates, cancellationToken).ConfigureAwait(false);
+        }
         #endregion
 
 
@@ -277,25 +320,6 @@ namespace TehGM.Wolfringo
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.NotMember), cancellationToken);
         public static Task BanUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Banned), cancellationToken);
-        #endregion
-
-
-        /** PROFILE UPDATES **/
-        #region Profile Updates
-        public static async Task<WolfUser> UpdateProfileAsync(this IWolfClient client, Action<UserUpdateMessage.Builder> update, CancellationToken cancellationToken = default)
-        {
-            WolfUser currentUser = await client.GetCurrentUserAsync(cancellationToken).ConfigureAwait(false);
-            UserUpdateMessage.Builder updateBuilder = new UserUpdateMessage.Builder(currentUser);
-            update?.Invoke(updateBuilder);
-            UserUpdateResponse response = await client.SendAsync<UserUpdateResponse>(updateBuilder.Build(), cancellationToken).ConfigureAwait(false);
-            return response.UserProfile;
-        }
-
-        public static Task<WolfUser> UpdateNicknameAsync(this IWolfClient client, string newNickname, CancellationToken cancellationToken = default)
-            => client.UpdateProfileAsync(user => user.Nickname = newNickname, cancellationToken);
-
-        public static Task<WolfUser> UpdateStatusAsync(this IWolfClient client, string newStatus, CancellationToken cancellationToken = default)
-            => client.UpdateProfileAsync(user => user.Status = newStatus, cancellationToken);
         #endregion
     }
 }

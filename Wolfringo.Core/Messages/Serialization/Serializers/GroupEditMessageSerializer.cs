@@ -3,7 +3,7 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
-    public class UserUpdateMessageSerializer : DefaultMessageSerializer<UserUpdateMessage>
+    public class GroupEditMessageSerializer<T> : DefaultMessageSerializer<T> where T : IGroupEditMessage, IWolfMessage
     {
         public override SerializedMessageData Serialize(IWolfMessage message)
         {
@@ -13,13 +13,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 return result;
             // extended props
             JObject extended = new JObject();
-            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "name");
-            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "about");
-            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "lookingFor");
-            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "gender");
-            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "relationship");
+            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "advancedAdmin");
+            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "discoverable");
+            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "entryLevel");
             SerializationHelper.MovePropertyIfExists(ref body, ref extended, "language");
-            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "urls");
+            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "longDescription");
             if (extended.HasValues)
                 body.Add(new JProperty("extended", extended));
             return result;

@@ -37,5 +37,7 @@
         public const string SubscriberBlockList = "subscriber block list";
         public const string SubscriberBlockAdd = "subscriber block add";
         public const string SubscriberBlockDelete = "subscriber block delete";
+        public const string GroupCreate = "group create";
+        public const string GroupProfileUpdate = "group profile update";
     }
 }

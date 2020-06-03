@@ -44,7 +44,7 @@ namespace TehGM.Wolfringo
         [JsonProperty("discoverable", NullValueHandling = NullValueHandling.Ignore)]
         public bool? IsDiscoverable { get; private set; }
         [JsonProperty("entryLevel", NullValueHandling = NullValueHandling.Ignore)]
-        public double? EntryReputationLevel { get; private set; }
+        public int? EntryReputationLevel { get; private set; }
         [JsonProperty("language", NullValueHandling = NullValueHandling.Ignore)]
         public WolfLanguage? Language { get; private set; }
         [JsonProperty("locked", NullValueHandling = NullValueHandling.Ignore)]
@@ -53,6 +53,8 @@ namespace TehGM.Wolfringo
         public bool? IsPassworded { get; private set; }
         [JsonProperty("questionable", NullValueHandling = NullValueHandling.Ignore)]
         public bool? IsQuestionable { get; private set; }
+        [JsonProperty("longDescription", NullValueHandling = NullValueHandling.Ignore)]
+        public string LongDescription { get; private set; }
 
         public override bool Equals(object obj)
             => Equals(obj as WolfGroup);
