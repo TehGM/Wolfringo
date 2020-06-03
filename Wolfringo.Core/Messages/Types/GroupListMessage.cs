@@ -2,8 +2,8 @@
 
 namespace TehGM.Wolfringo.Messages
 {
-    [ResponseType(typeof(ListUserGroupsResponse))]
-    public class ListUserGroupsMessage : IWolfMessage
+    [ResponseType(typeof(GroupListResponse))]
+    public class GroupListMessage : IWolfMessage
     {
         public string Command => MessageCommands.SubscriberGroupList;
     }

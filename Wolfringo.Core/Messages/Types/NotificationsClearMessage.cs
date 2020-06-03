@@ -1,6 +1,6 @@
 ﻿namespace TehGM.Wolfringo.Messages
 {
-    public class ClearNotificationsMessage : IWolfMessage
+    public class NotificationsClearMessage : IWolfMessage
     {
         public string Command => MessageCommands.NotificationListClear;
     }

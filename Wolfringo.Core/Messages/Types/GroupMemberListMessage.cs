@@ -4,8 +4,8 @@ using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
 {
-    [ResponseType(typeof(ListGroupMembersResponse))]
-    public class ListGroupMembersMessage : IWolfMessage, IHeadersWolfMessage
+    [ResponseType(typeof(GroupMembersListResponse))]
+    public class GroupMemberListMessage : IWolfMessage, IHeadersWolfMessage
     {
         [JsonIgnore]
         public string Command => MessageCommands.GroupMemberList;
@@ -21,9 +21,9 @@ namespace TehGM.Wolfringo.Messages
         public bool SubscribeToUpdates { get; private set; }
 
         [JsonConstructor]
-        private ListGroupMembersMessage() { }
+        private GroupMemberListMessage() { }
 
-        public ListGroupMembersMessage(uint groupID, bool subscribe = true)
+        public GroupMemberListMessage(uint groupID, bool subscribe = true)
             : this()
         {
             this.GroupID = groupID;

@@ -249,7 +249,7 @@ namespace TehGM.Wolfringo
                 }
 
                 // update group member list if one was requested
-                else if (response is ListGroupMembersResponse groupMembersResponse && message is ListGroupMembersMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
+                else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMemberListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
                     try
@@ -268,7 +268,7 @@ namespace TehGM.Wolfringo
             if (this.CharmsCachingEnabled)
             {
                 // update charms cache if it's charms list
-                if (response is ListCharmsResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
+                if (response is CharmListResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
                 {
                     foreach (WolfCharm charm in listCharmsResponse.Charms)
                         this.Caches?.CharmsCache?.AddOrReplace(charm);

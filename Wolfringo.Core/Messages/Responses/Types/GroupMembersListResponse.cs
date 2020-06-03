@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
-    public class ListCharmsResponse : WolfResponse, IWolfResponse
+    public class GroupMembersListResponse : WolfResponse, IWolfResponse
     {
         [JsonProperty("body")]
-        public IEnumerable<WolfCharm> Charms { get; private set; }
+        public IEnumerable<WolfGroupMember> GroupMembers { get; private set; }
     }
 }

@@ -3,8 +3,8 @@ using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
 {
-    [ResponseType(typeof(ListNotificationsResponse))]
-    public class ListNotificationsMessage : IWolfMessage
+    [ResponseType(typeof(NotificationsListResponse))]
+    public class NotificationsListMessage : IWolfMessage
     {
         public string Command => MessageCommands.NotificationList;
 
@@ -15,13 +15,13 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("deviceType")]
         public WolfDevice Device { get; private set; }
 
-        public ListNotificationsMessage(WolfLanguage language = _defaultLanguage, WolfDevice device = WolfDevice.Bot)
+        public NotificationsListMessage(WolfLanguage language = _defaultLanguage, WolfDevice device = WolfDevice.Bot)
         {
             this.Language = language;
             this.Device = device;
         }
 
-        public ListNotificationsMessage(WolfDevice device)
+        public NotificationsListMessage(WolfDevice device)
             : this(_defaultLanguage, device: device) { }
     }
 }

@@ -33,14 +33,14 @@ namespace TehGM.Wolfringo
         #region Notifications
         public static async Task<IEnumerable<WolfNotification>> GetNotificationsAsync(this IWolfClient client, WolfLanguage language, WolfDevice device, CancellationToken cancellationToken = default)
         {
-            ListNotificationsResponse response = await client.SendAsync<ListNotificationsResponse>(new ListNotificationsMessage(language, device), cancellationToken).ConfigureAwait(false);
+            NotificationsListResponse response = await client.SendAsync<NotificationsListResponse>(new NotificationsListMessage(language, device), cancellationToken).ConfigureAwait(false);
             return response.Notifications?.Any() == true ? response.Notifications : Enumerable.Empty<WolfNotification>();
         }
         public static Task<IEnumerable<WolfNotification>> GetNotificationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.GetNotificationsAsync(WolfLanguage.English, WolfDevice.Bot, cancellationToken);
 
         public static Task ClearNotificationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
-            => client.SendAsync(new ClearNotificationsMessage(), cancellationToken);
+            => client.SendAsync(new NotificationsClearMessage(), cancellationToken);
         #endregion
 
 
@@ -82,7 +82,7 @@ namespace TehGM.Wolfringo
 
         public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
-            ListContactsResponse response = await client.SendAsync<ListContactsResponse>(new ListContactsMessage(), cancellationToken).ConfigureAwait(false);
+            ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(), cancellationToken).ConfigureAwait(false);
             return await client.GetUsersAsync(response.ContactIDs, cancellationToken).ConfigureAwait(false);
         }
 
@@ -179,8 +179,8 @@ namespace TehGM.Wolfringo
                     // request members list for groups not present in cache
                     try
                     {
-                        ListGroupMembersResponse membersResponse = await client.SendAsync<ListGroupMembersResponse>(
-                            new ListGroupMembersMessage(group.ID), cancellationToken).ConfigureAwait(false);
+                        GroupMembersListResponse membersResponse = await client.SendAsync<GroupMembersListResponse>(
+                            new GroupMemberListMessage(group.ID), cancellationToken).ConfigureAwait(false);
                         // client should be configured to intercept this response
                         // however, just in case it's not (like when caching is disabled), do it here as well
                         if (membersResponse?.GroupMembers != null)
@@ -202,8 +202,8 @@ namespace TehGM.Wolfringo
 
         public static async Task<IEnumerable<WolfGroup>> GetCurrentUserGroupsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
-            ListUserGroupsResponse response = await client.SendAsync<ListUserGroupsResponse>(
-                new ListUserGroupsMessage(), cancellationToken).ConfigureAwait(false);
+            GroupListResponse response = await client.SendAsync<GroupListResponse>(
+                new GroupListMessage(), cancellationToken).ConfigureAwait(false);
             return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
         }
         #endregion
@@ -226,8 +226,8 @@ namespace TehGM.Wolfringo
             IEnumerable<uint> toRequest = charmIDs?.Except(results.Select(u => u.ID));
             if (toRequest == null || toRequest.Any())
             {
-                ListCharmsResponse response = await client.SendAsync<ListCharmsResponse>(
-                    new ListCharmsMessage(toRequest), cancellationToken).ConfigureAwait(false);
+                CharmListResponse response = await client.SendAsync<CharmListResponse>(
+                    new CharmListMessage(toRequest), cancellationToken).ConfigureAwait(false);
                 results.AddRange(response.Charms);
             }
             return results;

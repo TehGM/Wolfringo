@@ -4,8 +4,8 @@ using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
 {
-    [ResponseType(typeof(ListCharmsResponse))]
-    public class ListCharmsMessage : IWolfMessage
+    [ResponseType(typeof(CharmListResponse))]
+    public class CharmListMessage : IWolfMessage
     {
         [JsonIgnore]
         public string Command => MessageCommands.CharmList;
@@ -14,9 +14,9 @@ namespace TehGM.Wolfringo.Messages
         public IEnumerable<uint> CharmIDs { get; private set; }
 
         [JsonConstructor]
-        private ListCharmsMessage() { }
+        private CharmListMessage() { }
 
-        public ListCharmsMessage(IEnumerable<uint> charmIDs)
+        public CharmListMessage(IEnumerable<uint> charmIDs)
         {
             this.CharmIDs = charmIDs;
         }
