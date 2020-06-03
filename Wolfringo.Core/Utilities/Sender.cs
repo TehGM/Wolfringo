@@ -46,6 +46,7 @@ namespace TehGM.Wolfringo
 
         /** USERS **/
         #region Users
+        // retrieving
         public static async Task<IEnumerable<WolfUser>> GetUsersAsync(this IWolfClient client, IEnumerable<uint> userIDs, CancellationToken cancellationToken = default)
         {
             if (userIDs?.Any() != true)
@@ -80,6 +81,7 @@ namespace TehGM.Wolfringo
             return users.FirstOrDefault();
         }
 
+        // contacts
         public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(), cancellationToken).ConfigureAwait(false);
@@ -91,6 +93,22 @@ namespace TehGM.Wolfringo
 
         public static Task DeleteContactAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync(new ContactDeleteMessage(userID), cancellationToken);
+
+        // blocking
+        public static async Task<IEnumerable<WolfUser>> GetBlockedUsersAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            BlockListResponse response = await client.SendAsync<BlockListResponse>(
+                new BlockListMessage(), cancellationToken).ConfigureAwait(false);
+            if (response.BlockedUsersIDs?.Any() != true)
+                return Enumerable.Empty<WolfUser>();
+            return await client.GetUsersAsync(response.BlockedUsersIDs, cancellationToken).ConfigureAwait(false);
+        }
+
+        public static Task BlockUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new BlockAddMessage(userID), cancellationToken);
+
+        public static Task UnblockUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new BlockDeleteMessage(userID), cancellationToken);
         #endregion
 
         
@@ -180,7 +198,7 @@ namespace TehGM.Wolfringo
                     try
                     {
                         GroupMembersListResponse membersResponse = await client.SendAsync<GroupMembersListResponse>(
-                            new GroupMemberListMessage(group.ID), cancellationToken).ConfigureAwait(false);
+                            new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
                         // client should be configured to intercept this response
                         // however, just in case it's not (like when caching is disabled), do it here as well
                         if (membersResponse?.GroupMembers != null)

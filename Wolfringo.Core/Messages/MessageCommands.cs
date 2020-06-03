@@ -34,5 +34,8 @@
         public const string MessagePrivateUnsubscribe = "message private unsubscribe";
         public const string SubscriberContactAdd = "subscriber contact add";
         public const string SubscriberContactDelete = "subscriber contact delete";
+        public const string SubscriberBlockList = "subscriber block list";
+        public const string SubscriberBlockAdd = "subscriber block add";
+        public const string SubscriberBlockDelete = "subscriber block delete";
     }
 }

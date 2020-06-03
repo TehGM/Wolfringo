@@ -5,7 +5,7 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Messages
 {
     [ResponseType(typeof(GroupMembersListResponse))]
-    public class GroupMemberListMessage : IWolfMessage, IHeadersWolfMessage
+    public class GroupMembersListMessage : IWolfMessage, IHeadersWolfMessage
     {
         [JsonIgnore]
         public string Command => MessageCommands.GroupMemberList;
@@ -21,9 +21,9 @@ namespace TehGM.Wolfringo.Messages
         public bool SubscribeToUpdates { get; private set; }
 
         [JsonConstructor]
-        private GroupMemberListMessage() { }
+        private GroupMembersListMessage() { }
 
-        public GroupMemberListMessage(uint groupID, bool subscribe = true)
+        public GroupMembersListMessage(uint groupID, bool subscribe = true)
             : this()
         {
             this.GroupID = groupID;

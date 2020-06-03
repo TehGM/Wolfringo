@@ -249,7 +249,7 @@ namespace TehGM.Wolfringo
                 }
 
                 // update group member list if one was requested
-                else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMemberListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
+                else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMembersListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
                     try

@@ -29,7 +29,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupProfile, new DefaultMessageSerializer<GroupProfileMessage>() },
                 { MessageCommands.GroupAudioCountUpdate, new DefaultMessageSerializer<GroupAudioCountUpdateEvent>() },
                 { MessageCommands.GroupUpdate, new DefaultMessageSerializer<GroupUpdateEvent>() },
-                { MessageCommands.GroupMemberList, new DefaultMessageSerializer<GroupMemberListMessage>() },
+                { MessageCommands.GroupMemberList, new DefaultMessageSerializer<GroupMembersListMessage>() },
                 { MessageCommands.MessageGroupHistoryList, new DefaultMessageSerializer<GroupChatHistoryMessage>() },
                 { MessageCommands.MessagePrivateHistoryList, new DefaultMessageSerializer<PrivateChatHistoryMessage>() },
                 { MessageCommands.MessageConversationList, new DefaultMessageSerializer<RecentConversationsMessage>() },
@@ -42,6 +42,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.NotificationListClear, new DefaultMessageSerializer<NotificationsClearMessage>() },
                 { MessageCommands.MessageGroupUnsubscribe, new DefaultMessageSerializer<UnsubscribeFromGroupMessage>() },
                 { MessageCommands.MessagePrivateUnsubscribe, new DefaultMessageSerializer<UnsubscribeFromPrivateMessage>() },
+                { MessageCommands.SubscriberBlockList, new DefaultMessageSerializer<BlockListMessage>() },
+                { MessageCommands.SubscriberBlockAdd, new DefaultMessageSerializer<BlockAddMessage>() },
+                { MessageCommands.SubscriberBlockDelete, new DefaultMessageSerializer<BlockDeleteMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
