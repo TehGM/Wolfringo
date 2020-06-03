@@ -270,6 +270,17 @@ namespace TehGM.Wolfringo
                 // add group if it was created
                 else if (response is GroupEditResponse groupEditResponse && message is GroupCreateMessage)
                     this.Caches?.GroupsCache.AddOrReplaceIfChanged(groupEditResponse.GroupProfile);
+
+                // update group audio config
+                else if (message is GroupAudioUpdateResponse groupAudioUpdateResponse && groupAudioUpdateResponse.AudioConfig != null)
+                {
+                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdateResponse.AudioConfig.GroupID);
+                    if (cachedGroup != null)
+                    {
+                        Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
+                        rawResponse.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
+                    }
+                }
             }
 
 
@@ -400,13 +411,24 @@ namespace TehGM.Wolfringo
             if (this.GroupsCachingEnabled)
             {
                 // update group audio count
-                if (message is GroupAudioCountUpdateEvent groupAudioUpdate)
+                if (message is GroupAudioCountUpdateEvent groupAudioCountUpdate)
+                {
+                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioCountUpdate.GroupID);
+                    if (cachedGroup != null)
+                    {
+                        Log?.LogTrace("Updating cached group {GroupID} audio counts", cachedGroup.ID);
+                        rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
+                    }
+                }
+
+                // update group audio config
+                if (message is GroupAudioUpdateMessage groupAudioUpdate)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdate.GroupID);
                     if (cachedGroup != null)
                     {
-                        Log?.LogTrace("Updating cached group {GroupID} presence", cachedGroup.ID);
-                        rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
+                        Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
+                        rawMessage.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
                     }
                 }
 

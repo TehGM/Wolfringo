@@ -39,5 +39,6 @@
         public const string SubscriberBlockDelete = "subscriber block delete";
         public const string GroupCreate = "group create";
         public const string GroupProfileUpdate = "group profile update";
+        public const string GroupAudioUpdate = "group audio update";
     }
 }

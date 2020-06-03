@@ -64,11 +64,6 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             WolfUser user = await _client.GetCurrentUserAsync();
             // same applies to groups - always call GetGroupsAsync!
             IEnumerable<WolfGroup> groups = await _client.GetCurrentUserGroupsAsync();
-            WolfGroup updated = await _client.UpdateGroupAsync(18212414, settings =>
-            {
-                settings.EntryReputationLevel = 2;
-                settings.Language = WolfLanguage.Polish;
-            });
         }
 
         private static async void OnChatMessage(ChatMessage message)

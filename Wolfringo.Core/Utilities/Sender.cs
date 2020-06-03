@@ -171,7 +171,7 @@ namespace TehGM.Wolfringo
         }
         #endregion
 
-        
+
         /** GROUPS **/
         #region Groups
         // join
@@ -254,7 +254,8 @@ namespace TehGM.Wolfringo
             => client.CreateGroupAsync(groupName, groupDescription, null, cancellationToken);
 
         // update
-        public static async Task<WolfGroup> UpdateGroupAsync(this IWolfClient client, WolfGroup group, Action<GroupUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        public static async Task<WolfGroup> UpdateGroupAsync(this IWolfClient client, WolfGroup group,
+            Action<GroupUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
         {
             GroupUpdateMessage.Builder builder = new GroupUpdateMessage.Builder(group);
             updates?.Invoke(builder);
@@ -262,10 +263,28 @@ namespace TehGM.Wolfringo
             return response.GroupProfile;
         }
 
-        public static async Task<WolfGroup> UpdateGroupAsync(this IWolfClient client, uint groupID, Action<GroupUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        public static async Task<WolfGroup> UpdateGroupAsync(this IWolfClient client, uint groupID,
+            Action<GroupUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
         {
             WolfGroup group = await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
             return await client.UpdateGroupAsync(group, updates, cancellationToken).ConfigureAwait(false);
+        }
+
+        public static async Task<WolfGroup.WolfGroupAudioConfig> UpdateGroupAudioConfigAsync(this IWolfClient client, WolfGroup group,
+            Action<GroupAudioUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        {
+            GroupAudioUpdateMessage.Builder builder = new GroupAudioUpdateMessage.Builder(group.AudioConfig);
+            updates?.Invoke(builder);
+            GroupAudioUpdateResponse response = await client.SendAsync<GroupAudioUpdateResponse>(
+                builder.Build(), cancellationToken).ConfigureAwait(false);
+            return response.AudioConfig;
+        }
+
+        public static async Task<WolfGroup.WolfGroupAudioConfig> UpdateGroupAudioConfigAsync(this IWolfClient client, uint groupID,
+            Action<GroupAudioUpdateMessage.Builder> updates, CancellationToken cancellationToken = default)
+        {
+            WolfGroup group = await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
+            return await client.UpdateGroupAudioConfigAsync(group, updates, cancellationToken).ConfigureAwait(false);
         }
         #endregion
 

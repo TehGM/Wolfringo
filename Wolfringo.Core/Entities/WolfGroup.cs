@@ -76,7 +76,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("enabled")]
             public bool IsEnabled { get; private set; }
             [JsonProperty("minRepLevel")]
-            public double MinimumReputationLevel { get; private set; }
+            public int? MinimumReputationLevel { get; private set; }
             [JsonProperty("id")]
             public uint GroupID { get; private set; }
             [JsonProperty("stageId")]
