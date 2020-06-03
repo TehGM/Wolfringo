@@ -38,6 +38,9 @@ namespace TehGM.Wolfringo
         }
         public static Task<IEnumerable<WolfNotification>> GetNotificationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.GetNotificationsAsync(WolfLanguage.English, WolfDevice.Bot, cancellationToken);
+
+        public static Task ClearNotificationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync(new ClearNotificationsMessage(), cancellationToken);
         #endregion
 
 
