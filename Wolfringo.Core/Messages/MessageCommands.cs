@@ -28,5 +28,6 @@
         public const string CharmList = "charm list";
         public const string CharmSubscriberStatistics = "charm subscriber statistics";
         public const string SubscriberProfileUpdate = "subscriber profile update";
+        public const string SubscriberUpdate = "subscriber update";
     }
 }

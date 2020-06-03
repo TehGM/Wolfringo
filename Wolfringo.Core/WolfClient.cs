@@ -376,6 +376,17 @@ namespace TehGM.Wolfringo
                         rawMessage.Payload.PopulateObject(cachedUser, "body");
                     }
                 }
+                else if (message is UserUpdatedEventMessage userUpdatedEvent)
+                {
+                    WolfUser cachedUser = this.Caches?.UsersCache?.Get(userUpdatedEvent.UserID);
+                    if (cachedUser == null || string.IsNullOrWhiteSpace(userUpdatedEvent.Hash) || cachedUser.Hash != userUpdatedEvent.Hash)
+                    {
+                        Log?.LogTrace("Updating user {UserID}", userUpdatedEvent.UserID);
+                        await SendAsync<UserProfileResponse>(
+                            new UserProfileMessage(new uint[] { userUpdatedEvent.UserID }, true, true),
+                            cancellationToken).ConfigureAwait(false);
+                    }
+                }
             }
 
             if (this.GroupsCachingEnabled)
