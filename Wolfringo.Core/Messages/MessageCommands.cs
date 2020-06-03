@@ -32,5 +32,7 @@
         public const string NotificationListClear = "notification list clear";
         public const string MessageGroupUnsubscribe = "message group unsubscribe";
         public const string MessagePrivateUnsubscribe = "message private unsubscribe";
+        public const string SubscriberContactAdd = "subscriber contact add";
+        public const string SubscriberContactDelete = "subscriber contact delete";
     }
 }

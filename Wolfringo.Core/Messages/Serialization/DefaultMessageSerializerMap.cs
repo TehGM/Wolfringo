@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Messages.Serialization.Serializers;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
@@ -44,6 +45,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
+                // contact add and delete
+                { MessageCommands.SubscriberContactAdd, new ContactAddDeleteMessageSerializer<ContactAddMessage>() },
+                { MessageCommands.SubscriberContactDelete, new ContactAddDeleteMessageSerializer<ContactDeleteMessage>() },
                 // chat message
                 { MessageCommands.MessageSend, new ChatMessageSerializer() },
                 // entity updates

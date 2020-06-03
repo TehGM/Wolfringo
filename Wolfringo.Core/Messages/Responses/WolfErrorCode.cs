@@ -10,7 +10,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         TosViolations = 2,
         HigherLevelRequired = 4,
         GroupNameTaken = 8,
-        GroupNameForbidden = 9,
+        // oh look, another error code with double meaning...
+        AlreadyContactOrGroupNameForbidden = 9,
         GroupNameTooShort = 15,
         GroupFull = 100,
         MaxGroupsReached = 101,
@@ -34,19 +35,24 @@ namespace TehGM.Wolfringo.Messages.Responses
             {
                 case WolfErrorCode.NoSuchUser:
                     return "User does not exist";
-                case WolfErrorCode.LoginIncorrectOrCannotSendToGroup when 
-                sentCommand != null && !string.Equals(sentCommand, MessageCommands.SecurityLogin, StringComparison.OrdinalIgnoreCase):
-                    return "Incorrect login credentials";
                 case WolfErrorCode.LoginIncorrectOrCannotSendToGroup:
-                    return "Silenced, banned, or not in group";
+                    {
+                        if (sentCommand != null && !string.Equals(sentCommand, MessageCommands.SecurityLogin, StringComparison.OrdinalIgnoreCase))
+                            return "Incorrect login credentials";
+                        return "Silenced, banned, or not in group";
+                    }
                 case WolfErrorCode.TosViolations:
                     return "Terms of Service violations";
                 case WolfErrorCode.HigherLevelRequired:
                     return "Higher level required";
                 case WolfErrorCode.GroupNameTaken:
                     return "Group name is already taken";
-                case WolfErrorCode.GroupNameForbidden:
-                    return "Group name is not allowed";
+                case WolfErrorCode.AlreadyContactOrGroupNameForbidden:
+                    {
+                        if (sentCommand != null && !string.Equals(sentCommand, MessageCommands.SubscriberContactAdd, StringComparison.OrdinalIgnoreCase))
+                            return "Group name is not allowed";
+                        return "Contact already added";
+                    }
                 case WolfErrorCode.GroupNameTooShort:
                     return "Group name is too short";
                 case WolfErrorCode.GroupFull:
