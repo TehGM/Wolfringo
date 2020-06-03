@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class UserUpdatedEventMessage : IWolfMessage
+    public class UserUpdateEvent : IWolfMessage
     {
         public string Command => MessageCommands.SubscriberUpdate;
 
@@ -10,5 +10,8 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
         [JsonProperty("hash")]
         public string Hash { get; private set; }
+
+        [JsonConstructor]
+        private UserUpdateEvent() { }
     }
 }

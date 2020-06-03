@@ -4,7 +4,7 @@ using System.Net;
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class WelcomeMessage : IWolfMessage
+    public class WelcomeEvent : IWolfMessage
     {
         [JsonIgnore]
         public string Command => MessageCommands.Welcome;
@@ -37,6 +37,6 @@ namespace TehGM.Wolfringo.Messages
         }
 
         [JsonConstructor]
-        private WelcomeMessage() { }
+        private WelcomeEvent() { }
     }
 }

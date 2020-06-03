@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
 
             _client = new WolfClient(log);
             _client.MessageReceived += OnMessageReceived;
-            _client.AddMessageListener<WelcomeMessage>(OnWelcome);
+            _client.AddMessageListener<WelcomeEvent>(OnWelcome);
             _client.AddMessageListener<ChatMessage>(OnChatMessage);
             await _client.ConnectAsync();
             await Task.Delay(-1);
@@ -56,7 +56,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             }
         }
 
-        private static async void OnWelcome(WelcomeMessage message)
+        private static async void OnWelcome(WelcomeEvent message)
         {
             Config config = Config.Load();
             await _client.LoginAsync(config.Username, config.Password);

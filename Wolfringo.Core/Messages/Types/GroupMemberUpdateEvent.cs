@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class GroupMemberUpdateMessage : IWolfMessage
+    public class GroupMemberUpdateEvent : IWolfMessage
     {
         public string Command => MessageCommands.GroupMemberUpdate;
 
@@ -14,6 +14,6 @@ namespace TehGM.Wolfringo.Messages
         public WolfGroupCapabilities Capabilities { get; private set; }
 
         [JsonConstructor]
-        private GroupMemberUpdateMessage() { }
+        private GroupMemberUpdateEvent() { }
     }
 }

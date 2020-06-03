@@ -7,7 +7,7 @@ using System.Text;
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class GroupActionChatMessage : IChatMessage, IWolfMessage
+    public class GroupActionChatEvent : IChatMessage, IWolfMessage
     {
         private uint? _invokerID;
         private GroupActionType? _type;
@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo.Messages
         public bool IsPrivateMessage => !this.IsGroupMessage;
 
         [JsonConstructor]
-        protected GroupActionChatMessage()
+        protected GroupActionChatEvent()
         {
             this.RawData = new List<byte>();
         }

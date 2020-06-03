@@ -367,7 +367,7 @@ namespace TehGM.Wolfringo
             // update user presence
             if (this.UsersCachingEnabled)
             {
-                if (message is PresenceUpdateMessage presenceUpdate)
+                if (message is PresenceUpdateEvent presenceUpdate)
                 {
                     WolfUser cachedUser = this.Caches?.UsersCache?.Get(presenceUpdate.UserID);
                     if (cachedUser != null)
@@ -376,7 +376,7 @@ namespace TehGM.Wolfringo
                         rawMessage.Payload.PopulateObject(cachedUser, "body");
                     }
                 }
-                else if (message is UserUpdatedEventMessage userUpdatedEvent)
+                else if (message is UserUpdateEvent userUpdatedEvent)
                 {
                     WolfUser cachedUser = this.Caches?.UsersCache?.Get(userUpdatedEvent.UserID);
                     if (cachedUser == null || string.IsNullOrWhiteSpace(userUpdatedEvent.Hash) || cachedUser.Hash != userUpdatedEvent.Hash)
@@ -392,7 +392,7 @@ namespace TehGM.Wolfringo
             if (this.GroupsCachingEnabled)
             {
                 // update group audio count
-                if (message is GroupAudioCountUpdateMessage groupAudioUpdate)
+                if (message is GroupAudioCountUpdateEvent groupAudioUpdate)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdate.GroupID);
                     if (cachedGroup != null)
@@ -403,7 +403,7 @@ namespace TehGM.Wolfringo
                 }
 
                 // update group when change event by requesting group profile
-                else if (message is GroupUpdateMessage groupUpdate)
+                else if (message is GroupUpdateEvent groupUpdate)
                 {
                     // trigger group download only if cached group has different hash
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupUpdate.GroupID);
@@ -446,7 +446,7 @@ namespace TehGM.Wolfringo
                 }
 
                 // update group member capabilities if member was updated
-                else if (message is GroupMemberUpdateMessage groupMemberUpdated)
+                else if (message is GroupMemberUpdateEvent groupMemberUpdated)
                 {
                     WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberUpdated.GroupID);
                     try

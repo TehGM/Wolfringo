@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class GroupAudioCountUpdateMessage : IWolfMessage
+    public class GroupAudioCountUpdateEvent : IWolfMessage
     {
         public string Command => MessageCommands.GroupAudioCountUpdate;
 
@@ -14,6 +14,6 @@ namespace TehGM.Wolfringo.Messages
         public int ListenersCount { get; private set; }
 
         [JsonConstructor]
-        private GroupAudioCountUpdateMessage() { }
+        private GroupAudioCountUpdateEvent() { }
     }
 }

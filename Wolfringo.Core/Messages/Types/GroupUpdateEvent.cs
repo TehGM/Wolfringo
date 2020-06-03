@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class GroupUpdateMessage : IWolfMessage
+    public class GroupUpdateEvent : IWolfMessage
     {
         [JsonIgnore]
         public string Command => MessageCommands.GroupUpdate;
@@ -13,6 +13,6 @@ namespace TehGM.Wolfringo.Messages
         public string Hash { get; private set; }
 
         [JsonConstructor]
-        private GroupUpdateMessage() { }
+        private GroupUpdateEvent() { }
     }
 }

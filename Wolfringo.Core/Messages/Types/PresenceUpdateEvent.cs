@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages
 {
-    public class PresenceUpdateMessage : IWolfMessage
+    public class PresenceUpdateEvent : IWolfMessage
     {
         public string Command => MessageCommands.PresenceUpdate;
 
@@ -14,6 +14,6 @@ namespace TehGM.Wolfringo.Messages
         public WolfOnlineState OnlineState { get; private set; }
 
         [JsonConstructor]
-        private PresenceUpdateMessage() { }
+        private PresenceUpdateEvent() { }
     }
 }

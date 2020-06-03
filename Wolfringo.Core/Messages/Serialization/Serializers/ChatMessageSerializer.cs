@@ -42,7 +42,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 return null;
             // special case: group action
             if (string.Equals(mimeType, ChatMessageTypes.GroupAction, StringComparison.OrdinalIgnoreCase))
-                return typeof(GroupActionChatMessage);
+                return typeof(GroupActionChatEvent);
             // normal case: chat message
             return typeof(ChatMessage);
         }
