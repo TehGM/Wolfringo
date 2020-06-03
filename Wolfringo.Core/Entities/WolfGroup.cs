@@ -78,7 +78,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("id")]
             public uint GroupID { get; private set; }
             [JsonProperty("stageId")]
-            public uint? StageID { get; private set; }
+            public WolfStageType? StageType { get; private set; }
         }
 
         public class WolfGroupAudioCounts
