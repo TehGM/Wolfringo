@@ -17,6 +17,7 @@
     <None Remove="IWolfClient.cs~RF21a0863.TMP" />
     <None Remove="Messages\MessageCommands.cs~RF2758d29.TMP" />
     <None Remove="Messages\Serialization\Internal\UserIdConverter.cs~RF85dc853.TMP" />
+    <None Remove="Messages\Serialization\Internal\ValueOrPropertyConverter.cs~RF2c6f4d2.TMP" />
   </ItemGroup>
 
   <ItemGroup>

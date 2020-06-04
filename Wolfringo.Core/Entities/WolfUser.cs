@@ -29,6 +29,10 @@ namespace TehGM.Wolfringo
         [JsonProperty("privileges")]
         public int Privileges { get; private set; }
 
+        [JsonProperty("charms")]
+        [JsonConverter(typeof(ValueOrPropertyConverter), "selectedList[0].charmId")]
+        public uint? ActiveCharmID { get; private set; }
+
         // data from "extended" prop - should be populated by converter
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; private set; }

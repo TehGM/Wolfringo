@@ -329,6 +329,16 @@ namespace TehGM.Wolfringo
 
         public static Task<CharmStatisticsResponse> GetUserCharmStatsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync<CharmStatisticsResponse>(new CharmStatisticsMessage(userID), cancellationToken);
+
+        public static async Task<WolfCharm> GetUserCurrentCharm(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        {
+            WolfUser user = await client.GetUserAsync(userID, cancellationToken).ConfigureAwait(false);
+            if (user == null)
+                throw new KeyNotFoundException($"User {userID} not found");
+            if (user.ActiveCharmID == null)
+                return null;
+            return await client.GetCharmAsync(user.ActiveCharmID.Value, cancellationToken).ConfigureAwait(false);
+        }
         #endregion
 
 

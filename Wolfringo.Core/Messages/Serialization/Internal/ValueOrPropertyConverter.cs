@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             JToken token = JToken.Load(reader);
             if (token.Type == JTokenType.Object)
                 token = token.SelectToken(_propPath);
-            return token.ToObject(objectType);
+            return token?.ToObject(objectType, serializer);
         }
     }
 }
