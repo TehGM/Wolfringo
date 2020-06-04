@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {
@@ -20,6 +21,11 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             _client.MessageReceived += OnMessageReceived;
             _client.AddMessageListener<WelcomeEvent>(OnWelcome);
             _client.AddMessageListener<ChatMessage>(OnChatMessage);
+
+            // reconnector is part of Wolfringo.Utilities package
+            WolfClientReconnector reconnector = new WolfClientReconnector(_client);
+            reconnector.FailedToReconnect += OnFailedToReconnect;
+
             await _client.ConnectAsync();
             await Task.Delay(-1);
         }
@@ -36,15 +42,14 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            try
-            {
-                ILogger log = CreateLogger<Program>();
-                log.LogCritical(e.ExceptionObject as Exception, "An exception was unhandled");
-            }
-            catch
-            {
-                Console.WriteLine("ERROR: " + e.ExceptionObject.ToString());
-            }
+            ILogger log = CreateLogger<Program>();
+            log.LogCritical(e.ExceptionObject as Exception, "An exception was unhandled");
+        }
+
+        private static void OnFailedToReconnect(object sender, UnhandledExceptionEventArgs e)
+        {
+            ILogger log = CreateLogger<WolfClientReconnector>();
+            log.LogCritical(e.ExceptionObject as Exception, "Failed to reconnect");
         }
 
         private static async void OnMessageReceived(object sender, WolfMessageEventArgs e)

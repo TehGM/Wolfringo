@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Wolfringo.Core\Wolfringo.Core.csproj" />
+    <ProjectReference Include="..\..\Wolfringo.Utilities\Wolfringo.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
