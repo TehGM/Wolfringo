@@ -19,8 +19,6 @@ namespace TehGM.Wolfringo
         [JsonProperty("owner")]
         [JsonConverter(typeof(EntityIdConverter))]
         public uint OwnerID { get; private set; }
-        [JsonProperty("members")]
-        public uint MembersCount { get; private set; }
         [JsonIgnore]
         public IReadOnlyDictionary<uint, WolfGroupMember> Members { get; private set; } = new Dictionary<uint, WolfGroupMember>();
 
