@@ -327,6 +327,8 @@ namespace TehGM.Wolfringo
             return result.FirstOrDefault();
         }
 
+
+        // charm ownership
         public static Task<CharmStatisticsResponse> GetUserCharmStatsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync<CharmStatisticsResponse>(new CharmStatisticsMessage(userID), cancellationToken);
 
@@ -351,6 +353,12 @@ namespace TehGM.Wolfringo
                 new UserExpiredCharmsListMessage(userID), cancellationToken).ConfigureAwait(false);
             return response.Charms;
         }
+
+        // setting charm
+        public static Task SetActiveCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
+            => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>() { { 0, charmID } }), cancellationToken);
+        public static Task RemoveActiveCharmAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>()), cancellationToken);
         #endregion
 
 

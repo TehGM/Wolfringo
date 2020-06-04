@@ -45,5 +45,6 @@
         public const string GroupStats = "group stats";
         public const string CharmSubscriberExpiredList = "charm subscriber expired list";
         public const string CharmSubscriberActiveList = "charm subscriber active list";
+        public const string CharmSubscriberSetSelected = "charm subscriber set selected";
     }
 }
