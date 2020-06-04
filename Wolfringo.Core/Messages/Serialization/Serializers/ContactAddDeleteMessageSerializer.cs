@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 
-namespace TehGM.Wolfringo.Messages.Serialization.Serializers
+namespace TehGM.Wolfringo.Messages.Serialization
 {
     // this protocol just can't stay consistent... when you send contact add or delete, you put their
     // ID in "id" prop. And then you receive an event where their ID is "targetId", cause "id" is your own
