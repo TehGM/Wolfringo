@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         {
             base.ThrowIfInvalidType(responseType);
             if (!_groupUpdateResponseType.IsAssignableFrom(responseType))
-                throw new ArgumentException($"{typeof(ChatHistoryResponseSerializer).Name} only works with responses of type {_groupUpdateResponseType.FullName}", nameof(responseType));
+                throw new ArgumentException($"{this.GetType().Name} only works with responses of type {_groupUpdateResponseType.FullName}", nameof(responseType));
         }
     }
 }
