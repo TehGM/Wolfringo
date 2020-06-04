@@ -48,6 +48,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.GroupAudioUpdate, new DefaultMessageSerializer<GroupAudioUpdateMessage>() },
                 { MessageCommands.AchievementList, new DefaultMessageSerializer<AchievementListMessage>() },
                 { MessageCommands.AchievementSubscriberList, new DefaultMessageSerializer<UserAchievementListMessage>() },
+                { MessageCommands.GroupStats, new DefaultMessageSerializer<GroupStatisticsMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

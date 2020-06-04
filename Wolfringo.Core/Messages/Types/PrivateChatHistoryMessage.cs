@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint UserID { get; private set; }
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(EpochConverter))]
+        [JsonConverter(typeof(MillisecondsEpochConverter))]
         public DateTime? BeforeTime { get; private set; }
 
         [JsonConstructor]

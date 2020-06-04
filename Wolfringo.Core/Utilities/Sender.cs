@@ -241,6 +241,13 @@ namespace TehGM.Wolfringo
             return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
         }
 
+        public static async Task<WolfGroupStatistics> GetGroupStatisticsAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
+        {
+            GroupStatisticsResponse response = await client.SendAsync<GroupStatisticsResponse>(
+                new GroupStatisticsMessage(groupID), cancellationToken).ConfigureAwait(false);
+            return response.GroupStatistics;
+        }
+
         // create
         public static async Task<WolfGroup> CreateGroupAsync(this IWolfClient client, string groupName, string groupDescription, Action<GroupCreateMessage.Builder> groupSettings, CancellationToken cancellationToken = default)
         {

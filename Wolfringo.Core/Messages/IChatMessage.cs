@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("mimeType")]
         string MimeType { get; }
         [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(EpochConverter))]
+        [JsonConverter(typeof(MillisecondsEpochConverter))]
         DateTime? Timestamp { get; }
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(EntityIdConverter))]

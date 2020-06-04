@@ -69,8 +69,11 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         private static async void OnChatMessage(ChatMessage message)
         {
             if (message.IsPrivateMessage)
+            {
                 await _client.SendAsync(ChatMessage.TextMessage(message.SenderID.Value, message.IsGroupMessage, "Hello there (using dispatcher)!!!"));
-            _client.RemoveMessageListener<ChatMessage>(OnChatMessage);
+                // an example showing how listener can be removed
+                _client.RemoveMessageListener<ChatMessage>(OnChatMessage);
+            }
         }
     }
 }

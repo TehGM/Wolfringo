@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("uuid")]
         public Guid ID { get; private set; }
         [JsonProperty("timestamp")]
-        [JsonConverter(typeof(EpochConverter))]
+        [JsonConverter(typeof(MillisecondsEpochConverter))]
         public DateTime Timestamp { get; private set; }
         [JsonProperty("isSpam")]
         public bool SpamFiltered { get; private set; }

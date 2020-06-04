@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -35,6 +34,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(GroupAudioUpdateResponse), defaultSerializer },
                 { typeof(AchievementListResponse), defaultSerializer },
                 { typeof(UserAchievementListResponse), defaultSerializer },
+                // group stats
+                { typeof(GroupStatisticsResponse), new GroupStatisticsResponseSerializer() },
                 // chat history
                 { typeof(ChatHistoryResponse), chatHistorySerializer },
                 { typeof(RecentConversationsResponse), chatHistorySerializer },

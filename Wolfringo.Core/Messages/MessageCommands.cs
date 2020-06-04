@@ -42,5 +42,6 @@
         public const string GroupAudioUpdate = "group audio update";
         public const string AchievementList = "achievement list";
         public const string AchievementSubscriberList = "achievement subscriber list";
+        public const string GroupStats = "group stats";
     }
 }

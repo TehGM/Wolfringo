@@ -20,10 +20,10 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint GroupID { get; private set; }
         [JsonProperty("timestampBegin")]
-        [JsonConverter(typeof(EpochConverter))]
+        [JsonConverter(typeof(MillisecondsEpochConverter))]
         public DateTime AfterTime { get; private set; }
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(EpochConverter))]
+        [JsonConverter(typeof(MillisecondsEpochConverter))]
         public DateTime? BeforeTime { get; private set; }
         [JsonProperty("chronological")]
         public bool RequestChronologicalOrder { get; private set; }
@@ -35,7 +35,7 @@ namespace TehGM.Wolfringo.Messages
         {
             this.GroupID = groupId;
             this.BeforeTime = before;
-            this.AfterTime = EpochConverter.Epoch.AddMilliseconds(1);
+            this.AfterTime = MillisecondsEpochConverter.Epoch.AddMilliseconds(1);
             this.RequestChronologicalOrder = chronological;
         }
     }
