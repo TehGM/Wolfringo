@@ -361,6 +361,24 @@ namespace TehGM.Wolfringo
                 new AchievementListMessage(language), cancellationToken).ConfigureAwait(false);
             return response.GetFlattenedAchievementList();
         }
+
+        public static async Task<IReadOnlyDictionary<WolfAchievement, DateTime>> GetUserAchievementsAsync(this IWolfClient client, uint userID, 
+            WolfLanguage language, CancellationToken cancellationToken = default)
+        {
+            UserAchievementListResponse response = await client.SendAsync<UserAchievementListResponse>(
+                new UserAchievementListMessage(userID), cancellationToken).ConfigureAwait(false);
+            Dictionary<WolfAchievement, DateTime> results = new Dictionary<WolfAchievement, DateTime>(response?.UserAchievements?.Count ?? 0);
+            if (response?.UserAchievements != null)
+            {
+                // get all achievements first
+                IEnumerable<WolfAchievement> achivs =
+                    await client.GetAchievementsAsync(language, response.UserAchievements.Keys, cancellationToken).ConfigureAwait(false);
+                // map user achievements to retrieved achievement objects
+                foreach (WolfAchievement a in achivs)
+                    results.Add(a, response.UserAchievements[a.ID]);
+            }
+            return results;
+        }
         #endregion
 
 

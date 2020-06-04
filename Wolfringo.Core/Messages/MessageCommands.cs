@@ -41,5 +41,6 @@
         public const string GroupProfileUpdate = "group profile update";
         public const string GroupAudioUpdate = "group audio update";
         public const string AchievementList = "achievement list";
+        public const string AchievementSubscriberList = "achievement subscriber list";
     }
 }

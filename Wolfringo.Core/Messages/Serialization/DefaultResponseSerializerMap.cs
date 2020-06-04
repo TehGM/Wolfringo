@@ -34,6 +34,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(BlockListResponse), defaultSerializer },
                 { typeof(GroupAudioUpdateResponse), defaultSerializer },
                 { typeof(AchievementListResponse), defaultSerializer },
+                { typeof(UserAchievementListResponse), defaultSerializer },
                 // chat history
                 { typeof(ChatHistoryResponse), chatHistorySerializer },
                 { typeof(RecentConversationsResponse), chatHistorySerializer },
