@@ -339,6 +339,18 @@ namespace TehGM.Wolfringo
                 return null;
             return await client.GetCharmAsync(user.ActiveCharmID.Value, cancellationToken).ConfigureAwait(false);
         }
+
+        public static async Task<IEnumerable<WolfCharmSubscription>> GetUserActiveCharmsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        {
+            UserCharmsListResponse response = await client.SendAsync<UserCharmsListResponse>(
+                new UserActiveCharmsListMessage(userID), cancellationToken).ConfigureAwait(false);
+            return response.Charms;
+        } public static async Task<IEnumerable<WolfCharmSubscription>> GetUserExpiredCharmsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        {
+            UserCharmsListResponse response = await client.SendAsync<UserCharmsListResponse>(
+                new UserExpiredCharmsListMessage(userID), cancellationToken).ConfigureAwait(false);
+            return response.Charms;
+        }
         #endregion
 
 

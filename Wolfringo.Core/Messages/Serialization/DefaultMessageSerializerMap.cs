@@ -49,6 +49,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.AchievementList, new DefaultMessageSerializer<AchievementListMessage>() },
                 { MessageCommands.AchievementSubscriberList, new DefaultMessageSerializer<UserAchievementListMessage>() },
                 { MessageCommands.GroupStats, new DefaultMessageSerializer<GroupStatisticsMessage>() },
+                { MessageCommands.CharmSubscriberExpiredList, new DefaultMessageSerializer<UserExpiredCharmsListMessage>() },
+                { MessageCommands.CharmSubscriberActiveList, new DefaultMessageSerializer<UserActiveCharmsListMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

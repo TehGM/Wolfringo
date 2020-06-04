@@ -43,5 +43,7 @@
         public const string AchievementList = "achievement list";
         public const string AchievementSubscriberList = "achievement subscriber list";
         public const string GroupStats = "group stats";
+        public const string CharmSubscriberExpiredList = "charm subscriber expired list";
+        public const string CharmSubscriberActiveList = "charm subscriber active list";
     }
 }
