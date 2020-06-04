@@ -46,6 +46,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.SubscriberBlockAdd, new DefaultMessageSerializer<BlockAddMessage>() },
                 { MessageCommands.SubscriberBlockDelete, new DefaultMessageSerializer<BlockDeleteMessage>() },
                 { MessageCommands.GroupAudioUpdate, new DefaultMessageSerializer<GroupAudioUpdateMessage>() },
+                { MessageCommands.AchievementList, new DefaultMessageSerializer<AchievementListMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

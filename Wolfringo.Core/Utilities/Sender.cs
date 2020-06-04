@@ -325,6 +325,45 @@ namespace TehGM.Wolfringo
         #endregion
 
 
+        /** ACHIEVEMENTS **/
+        #region Achievements
+        public static async Task<IEnumerable<WolfAchievement>> GetAchievementsAsync(this IWolfClient client, WolfLanguage language,
+            IEnumerable<uint> achievementIDs, CancellationToken cancellationToken = default)
+        {
+            if (achievementIDs == null || !achievementIDs.Any())
+                return await client.GetAllAchievementsAsync(language, cancellationToken).ConfigureAwait(false);
+
+            // get as many achievements from cache as possible
+            List<WolfAchievement> results = new List<WolfAchievement>(achievementIDs?.Count() ?? 600);
+            if (client is IWolfClientCacheAccessor cache)
+                results.AddRange(achievementIDs.Select(aID => cache.GetCachedAchievement(language, aID)).Where(a => a != null));
+
+            // get the ones that aren't in cache from the server
+            IEnumerable<uint> toRequest = achievementIDs?.Except(results.Select(a => a.ID));
+            if (toRequest != null && toRequest.Any())
+            {
+                IEnumerable<WolfAchievement> allAchievements = await client.GetAllAchievementsAsync(language, cancellationToken).ConfigureAwait(false);
+                results.AddRange(allAchievements?.Where(a => a != null && toRequest.Contains(a.ID)));
+            }
+
+            return results;
+        }
+
+        public static async Task<WolfAchievement> GetAchievementAsync(this IWolfClient client, WolfLanguage language, uint id, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<WolfAchievement> result = await client.GetAchievementsAsync(language, new uint[] { id }, cancellationToken).ConfigureAwait(false);
+            return result.FirstOrDefault();
+        }
+
+        public static async Task<IEnumerable<WolfAchievement>> GetAllAchievementsAsync(this IWolfClient client, WolfLanguage language, CancellationToken cancellationToken = default)
+        {
+            AchievementListResponse response = await client.SendAsync<AchievementListResponse>(
+                new AchievementListMessage(language), cancellationToken).ConfigureAwait(false);
+            return response.GetFlattenedAchievementList();
+        }
+        #endregion
+
+
         /** ADMIN ACTIONS **/
         #region Admin Actions
         public static Task AdminUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)

@@ -32,14 +32,26 @@
                     this.CharmsCache.Clear();
             }
         }
+        public bool AchievementsCachingEnabled
+        {
+            get => _enableAchievementsCaching;
+            set
+            {
+                this._enableAchievementsCaching = value;
+                if (!value)
+                    this.AchievementsCache.ClearAll();
+            }
+        }
 
         private bool _enableUsersCaching;
         private bool _enableGroupsCaching;
         private bool _enableCharmsCaching;
+        private bool _enableAchievementsCaching;
 
         public IWolfEntityCache<WolfUser> UsersCache { get; }
         public IWolfEntityCache<WolfGroup> GroupsCache { get; }
         public IWolfEntityCache<WolfCharm> CharmsCache { get; }
+        public IWolfEntityCache<WolfLanguage, WolfAchievement> AchievementsCache { get; }
 
         public WolfEntityCacheContainer()
         {
@@ -47,18 +59,21 @@
             this.UsersCache = new WolfEntityCache<WolfUser>();
             this.GroupsCache = new WolfEntityCache<WolfGroup>();
             this.CharmsCache = new WolfEntityCache<WolfCharm>();
+            this.AchievementsCache = new WolfEntityCache<WolfLanguage, WolfAchievement>();
 
             // mark caches as enabled
             this._enableUsersCaching = true;
             this._enableGroupsCaching = true;
             this._enableCharmsCaching = true;
+            this._enableAchievementsCaching = true;
         }
 
         public virtual void ClearAll()
         {
-            this.UsersCache.Clear();
-            this.GroupsCache.Clear();
-            this.CharmsCache.Clear();
+            this.UsersCache?.Clear();
+            this.GroupsCache?.Clear();
+            this.CharmsCache?.Clear();
+            this.AchievementsCache?.ClearAll();
         }
     }
 }

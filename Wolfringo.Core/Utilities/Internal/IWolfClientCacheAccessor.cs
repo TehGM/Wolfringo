@@ -5,5 +5,6 @@
         WolfUser GetCachedUser(uint id);
         WolfGroup GetCachedGroup(uint id);
         WolfCharm GetCachedCharm(uint id);
+        WolfAchievement GetCachedAchievement(WolfLanguage language, uint id);
     }
 }

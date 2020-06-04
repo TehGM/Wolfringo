@@ -37,6 +37,11 @@ namespace TehGM.Wolfringo
             get => this.Caches?.CharmsCachingEnabled == true;
             set => this.Caches.CharmsCachingEnabled = value;
         }
+        public bool AchievementsCachingEnabled
+        {
+            get => this.Caches?.AchievementsCachingEnabled == true;
+            set => this.Caches.AchievementsCachingEnabled = value;
+        }
 
         public event EventHandler Connected;
         public event EventHandler Disconnected;
@@ -294,6 +299,16 @@ namespace TehGM.Wolfringo
                 }
             }
 
+            if (this.AchievementsCachingEnabled)
+            {
+                if (response is AchievementListResponse achievementListResponse && achievementListResponse.Achievements?.Any() == true &&
+                    message is AchievementListMessage achievementListMessage)
+                {
+                    foreach (WolfAchievement achiv in achievementListResponse.GetFlattenedAchievementList())
+                        this.Caches?.AchievementsCache?.AddOrReplace(achievementListMessage.Language, achiv);
+                }
+            }
+
             // TODO: handle other types
             return Task.CompletedTask;
         }
@@ -310,6 +325,8 @@ namespace TehGM.Wolfringo
             => GetCachedGroupInternal(id);
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
             => GetCachedCharmInternal(id);
+        WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
+            => GetCachedAchievementInternal(language, id);
 
         // overridable methods
         protected virtual WolfUser GetCachedUserInternal(uint id)
@@ -343,6 +360,17 @@ namespace TehGM.Wolfringo
             WolfCharm result = this.Caches?.CharmsCache?.Get(id);
             if (result != null)
                 Log?.LogTrace("Charm {CharmID} found in cache", id);
+            return result;
+        }
+        protected virtual WolfAchievement GetCachedAchievementInternal(WolfLanguage language, uint id)
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            if (!this.AchievementsCachingEnabled)
+                return null;
+            WolfAchievement result = this.Caches?.AchievementsCache?.Get(language, id);
+            if (result != null)
+                Log?.LogTrace("Achievement {AchievementID} found in cache", id);
             return result;
         }
         #endregion
