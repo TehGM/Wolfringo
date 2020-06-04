@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TehGM.Wolfringo.Utilities.Internal
 {
-    internal static class EntityModificationHelper
+    public static class EntityModificationHelper
     {
         //Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
         public static void ReplaceAllGroupMembers(this WolfGroup group, IEnumerable<WolfGroupMember> members)
