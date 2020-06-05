@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -433,6 +435,37 @@ namespace TehGM.Wolfringo
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.NotMember), cancellationToken);
         public static Task BanUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Banned), cancellationToken);
+        #endregion
+
+
+        /** CHAT **/
+        #region Chat messages
+        // sending
+        public static Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        public static Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+
+        public static Task<ChatResponse> SendPrivateImageMessageAsync(this IWolfClient client, uint userID, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Image, imageBytes), cancellationToken);
+        public static Task<ChatResponse> SendGroupImageMessageAsync(this IWolfClient client, uint groupID, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Image, imageBytes), cancellationToken);
+
+        public static Task<ChatResponse> SendPrivateVoiceMessageAsync(this IWolfClient client, uint userID, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
+        public static Task<ChatResponse> SendGroupVoiceMessageAsync(this IWolfClient client, uint groupID, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
+
+        // responding
+        public static Task<ChatResponse> RespondWithTextAsync(this IWolfClient client, ChatMessage incomingMessage, string text, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(
+                incomingMessage.SenderID.Value, incomingMessage.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        public static Task<ChatResponse> RespondWithImageAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(
+                incomingMessage.SenderID.Value, incomingMessage.IsGroupMessage, ChatMessageTypes.Image, imageBytes), cancellationToken);
+        public static Task<ChatResponse> RespondWithVoiceAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatResponse>(new ChatMessage(
+                incomingMessage.SenderID.Value, incomingMessage.IsGroupMessage, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
         #endregion
     }
 }

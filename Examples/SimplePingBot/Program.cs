@@ -57,7 +57,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             if (e.Message is ChatMessage msg)
             {
                 if (msg.IsPrivateMessage)
-                    await _client.SendAsync(ChatMessage.TextMessage(msg.SenderID.Value, msg.IsGroupMessage, "Hello there!"));
+                    await _client.RespondWithTextAsync(msg, "Hello there!");
             }
         }
 
@@ -75,7 +75,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         {
             if (message.IsPrivateMessage)
             {
-                await _client.SendAsync(ChatMessage.TextMessage(message.SenderID.Value, message.IsGroupMessage, "Hello there (using dispatcher)!!!"));
+                await _client.RespondWithTextAsync(message, "Hello there (using dispatcher)!!!");
                 // an example showing how listener can be removed
                 _client.RemoveMessageListener<ChatMessage>(OnChatMessage);
             }

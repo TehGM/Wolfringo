@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Examples.HostedPingBot
         private async void OnChatMessage(ChatMessage message)
         {
             if (message.IsPrivateMessage)
-                await _client.SendAsync(ChatMessage.TextMessage(message.SenderID.Value, message.IsGroupMessage, "Hello there!"));
+                await _client.RespondWithTextAsync(message, "Hello there!").ConfigureAwait(false);
         }
 
         Task IHostedService.StartAsync(CancellationToken cancellationToken)
