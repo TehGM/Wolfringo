@@ -26,9 +26,9 @@ namespace TehGM.Wolfringo.Utilities
         /// <remarks>The object will be disposed after this event executes.</remarks>
         public event EventHandler<UnhandledExceptionEventArgs> FailedToReconnect;
 
-        /// <summary>Creates</summary>
-        /// <param name="client"></param>
-        /// <param name="connectionCancellationToken"></param>
+        /// <summary>Creates instance of reconnector.</summary>
+        /// <param name="client">Client to automatically reconnect.</param>
+        /// <param name="connectionCancellationToken">Cancellation token to use for new connections.</param>
         public WolfClientReconnector(IWolfClient client, CancellationToken connectionCancellationToken = default)
         {
             this._client = client;
