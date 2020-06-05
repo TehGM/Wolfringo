@@ -15,55 +15,103 @@ using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
 {
+    /// <summary>A default base wolf client implementation.</summary>
+    /// <remarks><para>This implementation, together with IHostedWolfClient from Wolfringo.Hosting package, is the default intended way to 
+    /// use Wolfringo library. It's based on message and response serializers, which combined with constructor Dependency Injection
+    /// provide high degree of customizability.</para>
+    /// <para>Custom SocketIO client <see cref="SocketClient"/> is used by this library. This client only provides functionality required for
+    /// Wolf, and may not be suitable for other scenarios.</para>
+    /// <para>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
+    /// For this reason, it's important to be careful when overriding 
+    /// <see cref="OnMessageSentInternalAsync(IWolfMessage, IWolfResponse, SerializedMessageData, CancellationToken)"/> and
+    /// <see cref="OnMessageReceivedInternalAsync(IWolfMessage, SerializedMessageData, CancellationToken)"/>, as not calling base
+    /// implementation (or not implementing replacement behaviour) might cause functionality loss.</para></remarks>
     public class WolfClient : IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
+        /// <summary>Default Wolf server URL.</summary>
         public const string DefaultServerURL = "wss://v3-rc.palringo.com:3051";
+        /// <summary>Default device string to pass to the server when connecting.</summary>
         public const string DefaultDevice = "bot";
 
+        /// <summary>URL of the server.</summary>
         public string Url { get; }
+        /// <summary>Token used with the connection.</summary>
         public string Token { get; }
+        /// <summary>Device string to pass to the server when connecting.</summary>
         public string Device { get; }
+        /// <summary>Is this client currently connected?</summary>
         public bool IsConnected => this._client?.IsConnected == true;
+        /// <inheritdoc/>
+        public uint? CurrentUserID { get; protected set; }
 
+        /// <summary>Enable or disable users cache.</summary>
         public bool UsersCachingEnabled
         {
             get => this.Caches?.UsersCachingEnabled == true;
             set => this.Caches.UsersCachingEnabled = value;
         }
+        /// <summary>Enable or disable groups cache.</summary>
         public bool GroupsCachingEnabled
         {
             get => this.Caches?.GroupsCachingEnabled == true;
             set => this.Caches.GroupsCachingEnabled = value;
         }
+        /// <summary>Enable or disable charms cache.</summary>
         public bool CharmsCachingEnabled
         {
             get => this.Caches?.CharmsCachingEnabled == true;
             set => this.Caches.CharmsCachingEnabled = value;
         }
+        /// <summary>Enable or disable achievements cache.</summary>
         public bool AchievementsCachingEnabled
         {
             get => this.Caches?.AchievementsCachingEnabled == true;
             set => this.Caches.AchievementsCachingEnabled = value;
         }
 
+        /// <inheritdoc/>
         public event EventHandler Connected;
+        /// <inheritdoc/>
         public event EventHandler Disconnected;
+        /// <inheritdoc/>
         public event EventHandler<WolfMessageEventArgs> MessageReceived;
+        /// <inheritdoc/>
         public event EventHandler<WolfMessageSentEventArgs> MessageSent;
+        /// <inheritdoc/>
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
         private readonly ISocketClient _client;
         private readonly MessageCallbackDispatcher _callbackDispatcher;
+        /// <summary>Message serializers mapping used when serializing and deserializing messages.</summary>
         protected ISerializerMap<string, IMessageSerializer> MessageSerializers { get; }
+        /// <summary>Response serializers mapping used when deserializing responses.</summary>
         protected ISerializerMap<Type, IResponseSerializer> ResponseSerializers { get; }
+        /// <summary>Response type resolver used when deserializing responses.</summary>
         protected IResponseTypeResolver ResponseTypeResolver { get; }
+        /// <summary>Logger for all log messages.</summary>
         protected ILogger Log { get; }
+        /// <summary>Caches container.</summary>
         protected WolfEntityCacheContainer Caches { get; set; }
 
         private CancellationTokenSource _cts;
-        public uint? CurrentUserID { get; protected set; }
 
         #region Constructors
+        /// <summary>Creates a new wolf client instance.</summary>
+        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
+        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
+        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
+        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
+        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
+        /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
+        /// <param name="device">Device string to use when connecting.</param>
+        /// <param name="token">Token to use for connection.</param>
+        /// <param name="logger">Logger for logging logs.</param>
+        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
+        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
+        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(string url, string device, string token, ILogger logger = null, 
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
         {
@@ -99,16 +147,52 @@ namespace TehGM.Wolfringo
             this._client.ErrorRaised += OnClientError;
         }
 
+        /// <summary>Creates a new wolf client instance.</summary>
+        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
+        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
+        /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
+        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
+        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
+        /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
+        /// <param name="device">Device string to use when connecting.</param>
+        /// <param name="logger">Logger for logging logs.</param>
+        /// <param name="tokenProvider">Token provider used to generate the token.</param>
+        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
+        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
+        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(string url, string device, ILogger logger = null, 
             ITokenProvider tokenProvider = null, 
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
 
+        /// <summary>Creates a new wolf client instance.</summary>
+        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
+        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
+        /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
+        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
+        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
+        /// <param name="logger">Logger for logging logs.</param>
+        /// <param name="tokenProvider">Token provider used to generate the token.</param>
+        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
+        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
+        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(ILogger logger = null, 
             ITokenProvider tokenProvider = null,
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
 
+        /// <summary>Generates a new token using token provider.</summary>
+        /// <remarks>If token provider is null, <see cref="DefaultWolfTokenProvider"/> will be used.</remarks>
+        /// <param name="tokenProvider">Token provider to use when generating token.</param>
+        /// <returns>Generated connection token.</returns>
         private static string GetNewToken(ITokenProvider tokenProvider = null)
         {
             if (tokenProvider == null)
@@ -118,6 +202,7 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Connection management
+        /// <inheritdoc/>
         public Task ConnectAsync(CancellationToken cancellationToken = default)
         {
             if (this.IsConnected)
@@ -130,22 +215,26 @@ namespace TehGM.Wolfringo
                 _cts.Token);
         }
 
+        /// <inheritdoc/>
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
             => _client.DisconnectAsync(cancellationToken);
 
+        /// <inheritdoc/>
         public virtual void Dispose()
             => (_client as IDisposable)?.Dispose();
 
+        /// <summary>Clears all connection-bound variables.</summary>
         protected virtual void Clear()
         {
             this._cts?.Cancel();
             this._cts?.Dispose();
-            this.CurrentUserID = default;
+            this.CurrentUserID = null;
             this.Caches?.ClearAll();
         }
         #endregion
 
         #region Message Sending
+        /// <inheritdoc/>
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
             if (message == null)
@@ -171,6 +260,15 @@ namespace TehGM.Wolfringo
             return (TResponse)response;
         }
 
+        /// <summary>Waits for response for sent message.</summary>
+        /// <remarks><para>If client uses <see cref="DefaultResponseTypeResolver"/>, the type of response provided with 
+        /// <see cref="ResponseTypeAttribute"/> on <paramref name="message"/> will be used for deserialization, 
+        /// and <typeparamref name="TResponse"/> will be used only for casting. If <see cref="ResponseTypeAttribute"/> is not set on
+        /// <paramref name="message"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
+        /// <typeparam name="TResponse">Response type to cast response to.</typeparam>
+        /// <param name="messageId">Sent message ID.</param>
+        /// <param name="sentMessage">Sent message.</param>
+        /// <returns>Server's response.</returns>
         private Task<IWolfResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
             CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
@@ -219,9 +317,12 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Internal method for handling additional actions on sent message.</summary>
+        /// <remarks>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
+        /// For this reason, it's important to be careful when overriding this method, as not calling base
+        /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
         /// <param name="message">Sent message.</param>
         /// <param name="response">Response received.</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="rawResponse">Raw response data.</param>
         protected virtual Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             // don't do anything if response is not successful
@@ -231,6 +332,10 @@ namespace TehGM.Wolfringo
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
                 this.CurrentUserID = loginResponse.UserID;
+
+            // when logging out, null the user ID.
+            else if (message is LogoutMessage)
+                this.CurrentUserID = null;
 
             // if it's chat message, populate with response info to get timestamp
             else if (message is ChatMessage chatMsg && response is ChatResponse)
@@ -317,16 +422,24 @@ namespace TehGM.Wolfringo
         // while at once allowing overriding the implementations
 
         // interface proxies
+        /// <inheritdoc/>
         WolfUser IWolfClientCacheAccessor.GetCachedUser(uint id)
             => GetCachedUserInternal(id);
+        /// <inheritdoc/>
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
             => GetCachedGroupInternal(id);
+        /// <inheritdoc/>
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
             => GetCachedCharmInternal(id);
+        /// <inheritdoc/>
         WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
             => GetCachedAchievementInternal(language, id);
 
         // overridable methods
+        /// <summary>Get user from cache.</summary>
+        /// <param name="id">ID of the user.</param>
+        /// <returns>Cached user if found; otherwise null.</returns>
+        /// <exception cref="InvalidOperationException">Not connected.</exception>
         protected virtual WolfUser GetCachedUserInternal(uint id)
         {
             if (!this.IsConnected)
@@ -338,6 +451,10 @@ namespace TehGM.Wolfringo
                 Log?.LogTrace("User {UserID} found in cache", id);
             return result;
         }
+        /// <summary>Get group from cache.</summary>
+        /// <param name="id">ID of the group.</param>
+        /// <returns>Cached group if found; otherwise null.</returns>
+        /// <exception cref="InvalidOperationException">Not connected.</exception>
         protected virtual WolfGroup GetCachedGroupInternal(uint id)
         {
             if (!this.IsConnected)
@@ -349,6 +466,10 @@ namespace TehGM.Wolfringo
                 Log?.LogTrace("Group {GroupID} found in cache", id);
             return result;
         }
+        /// <summary>Get charm from cache.</summary>
+        /// <param name="id">ID of the charm.</param>
+        /// <returns>Cached charm if found; otherwise null.</returns>
+        /// <exception cref="InvalidOperationException">Not connected.</exception>
         protected virtual WolfCharm GetCachedCharmInternal(uint id)
         {
             if (!this.IsConnected)
@@ -360,6 +481,10 @@ namespace TehGM.Wolfringo
                 Log?.LogTrace("Charm {CharmID} found in cache", id);
             return result;
         }
+        /// <summary>Get achievement from cache.</summary>
+        /// <param name="id">ID of the achievement.</param>
+        /// <returns>Cached achievement if found; otherwise null.</returns>
+        /// <exception cref="InvalidOperationException">Not connected.</exception>
         protected virtual WolfAchievement GetCachedAchievementInternal(WolfLanguage language, uint id)
         {
             if (!this.IsConnected)
@@ -374,6 +499,8 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Event handlers
+        /// <summary>Deserializes received message and raises events and callbacks.</summary>
+        /// <remarks>This method is invoked when underlying socket client receives a socket message.</remarks>
         private async void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
             try
@@ -407,6 +534,13 @@ namespace TehGM.Wolfringo
             }
         }
 
+        /// <summary>Internal method for handling additional actions on received message.</summary>
+        /// <remarks>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
+        /// Additionally, this method also raises events and callbacks, unless received message is a chat message sent by <see cref="CurrentUserID"/>.
+        /// For this reason, it's important to be careful when overriding this method, as not calling base
+        /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
+        /// <param name="message">Received message.</param>
+        /// <param name="rawMessage">Raw received message.</param>
         protected virtual async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             // update user presence
@@ -525,11 +659,14 @@ namespace TehGM.Wolfringo
             _callbackDispatcher.Invoke(message);
         }
 
+        /// <inheritdoc/>
         public void AddMessageListener(IMessageCallback listener)
             => _callbackDispatcher.Add(listener);
+        /// <inheritdoc/>
         public void RemoveMessageListener(IMessageCallback listener)
             => _callbackDispatcher.Remove(listener);
 
+        /// <summary>Logs sent message. Invoked when underlying client sends a message.</summary>
         private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
         {
             TryLogMessageTrace(e, "Sent");
@@ -537,12 +674,14 @@ namespace TehGM.Wolfringo
                 Log?.LogDebug("Message sent: {Command}", command);
         }
 
+        /// <summary>Logs connected and raises event. Invoked when underlying client connects to the server.</summary>
         private void OnClientConnected(object sender, EventArgs e)
         {
             Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>Logs disconnected and raises event. Invoked when underlying client disconnects from the server.</summary>
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
         {
             if (e.CloseStatus == System.Net.WebSockets.WebSocketCloseStatus.NormalClosure)
@@ -553,6 +692,7 @@ namespace TehGM.Wolfringo
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>Logs error and raises event. Invoked when underlying client raises error event.</summary>
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
@@ -563,6 +703,11 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Internal helpers
+        /// <summary>Tries to parse command and payload object.</summary>
+        /// <param name="message">Received socket message.</param>
+        /// <param name="command">Parsed message command; null if not a command message.</param>
+        /// <param name="payload">Extracted payload.</param>
+        /// <returns>True if command parsed and is not null; otherwise false.</returns>
         protected static bool TryParseCommandEvent(SocketMessage message, out string command, out JToken payload)
         {
             if ((message.Type == SocketMessageType.BinaryEvent || message.Type == SocketMessageType.Event)
@@ -580,6 +725,9 @@ namespace TehGM.Wolfringo
             }
         }
 
+        /// <summary>Logs socket message event with trace log level.</summary>
+        /// <param name="e">Received socket event.</param>
+        /// <param name="keyword">Keyword to prepend in log message, for example "Sent" or "Received".</param>
         protected void TryLogMessageTrace(SocketMessageEventArgs e, string keyword)
         {
             if (Log?.IsEnabled(LogLevel.Trace) == true)
