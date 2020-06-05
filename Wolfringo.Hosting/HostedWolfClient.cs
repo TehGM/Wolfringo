@@ -284,7 +284,7 @@ namespace TehGM.Wolfringo.Hosting
             lock (this._callbacks)
             {
                 this._callbacks.Add(listener);
-                _client.AddMessageListener(listener);
+                _client?.AddMessageListener(listener);
             }
         }
         public void RemoveMessageListener(IMessageCallback listener)
@@ -292,7 +292,7 @@ namespace TehGM.Wolfringo.Hosting
             lock (this._callbacks)
             {
                 this._callbacks.Remove(listener);
-                _client.RemoveMessageListener(listener);
+                _client?.RemoveMessageListener(listener);
             }
         }
 
