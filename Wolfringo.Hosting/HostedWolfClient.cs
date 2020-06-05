@@ -90,8 +90,11 @@ namespace TehGM.Wolfringo.Hosting
                 this._client = new WolfClient(options.ServerURL, options.Device, token, _log, _messageSerializers, _responseSerializers, _responseTypeResolver);
 
             // if there are any callbacks from previous client, reuse them as well
-            for (int i = 0; i < _callbacks.Count; i++)
-                this._callbacks.Add(_callbacks[i]);
+            lock (this._callbacks)
+            {
+                for (int i = 0; i < _callbacks.Count; i++)
+                    this._client.AddMessageListener(_callbacks[i]);
+            }
 
             // set caching options
             this._client.GroupsCachingEnabled = options.GroupsCachingEnabled;
