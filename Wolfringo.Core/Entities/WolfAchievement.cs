@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace TehGM.Wolfringo
 {
-    public class WolfAchievement : IWolfEntity
+    public class WolfAchievement : IWolfEntity, IEquatable<WolfAchievement>
     {
         [JsonProperty("children")]
         public IEnumerable<WolfAchievement> ChildAchievements { get; private set; }
@@ -27,5 +28,20 @@ namespace TehGM.Wolfringo
         public int? Weight { get; private set; }
         [JsonProperty("client")]
         public int? Client { get; private set; }
+
+        public override bool Equals(object obj)
+            => Equals(obj as WolfAchievement);
+
+        public bool Equals(WolfAchievement other)
+            => other != null && ID == other.ID;
+
+        public override int GetHashCode()
+            => 1213502048 + ID.GetHashCode();
+
+        public static bool operator ==(WolfAchievement left, WolfAchievement right)
+            => EqualityComparer<WolfAchievement>.Default.Equals(left, right);
+
+        public static bool operator !=(WolfAchievement left, WolfAchievement right)
+            => !(left == right);
     }
 }
