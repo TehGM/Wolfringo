@@ -6,10 +6,13 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for chat history responses.</summary>
+    /// <remarks>This special serializer parses binary messages for all nested chat messages in chat history array.</remarks>
     public class ChatHistoryResponseSerializer : DefaultResponseSerializer, IResponseSerializer
     {
         private static readonly Type _chatHistoryResponseType = typeof(ChatHistoryResponse);
 
+        /// <inheritdoc/>
         public override IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData)
         {
             // first deserialize the json message
@@ -31,6 +34,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return result;
         }
 
+        /// <inheritdoc/>
         protected override void ThrowIfInvalidType(Type responseType)
         {
             base.ThrowIfInvalidType(responseType);

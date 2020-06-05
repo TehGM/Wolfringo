@@ -4,12 +4,22 @@ using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Default response type to response serializer map.</summary>
+    /// <remarks><para>This class contains all Wolfringo library default response mappings, and will be used by default clients
+    /// if no other map is provided.</para>
+    /// <para>This class can be easily extended without inheritance. To provide custom mappings, call <see cref="MapSerializer(Type, IResponseSerializer)"/>, 
+    /// or pass custom mappings dictionary via the constructor. However, usage with .NET Core Host might require inheriting 
+    /// and registering as a service in the service container - in this case, simply call <see cref="MapSerializer(Type, IResponseSerializer)"/>
+    /// in child class constructor for each custom mapping that needs to be made.</para></remarks>
     public class DefaultResponseSerializerMap : ISerializerMap<Type, IResponseSerializer>
     {
+        /// <inheritdoc/>
         public IResponseSerializer FallbackSerializer { get; set; }
 
         private IDictionary<Type, IResponseSerializer> _map;
 
+        /// <summary>Creates default response serializer map.</summary>
+        /// <param name="fallbackSerializer">Serializer to use as fallback. If null, <see cref="DefaultResponseSerializer"/> will be used.</param>
         public DefaultResponseSerializerMap(IResponseSerializer fallbackSerializer = null)
         {
             DefaultResponseSerializer defaultSerializer = new DefaultResponseSerializer();
@@ -46,6 +56,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
             };
         }
 
+        /// <summary>Creates default response serializer map.</summary>
+        /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
+        /// <param name="fallbackSerializer">Serializer to use as fallback. If null, <see cref="DefaultResponseSerializer"/> will be used.</param>
         public DefaultResponseSerializerMap(IEnumerable<KeyValuePair<Type, IResponseSerializer>> additionalMappings, 
             IResponseSerializer fallbackSerializer = null) : this(fallbackSerializer)
         {
@@ -53,12 +66,14 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 this.MapSerializer(pair.Key, pair.Value);
         }
 
+        /// <inheritdoc/>
         public IResponseSerializer FindMappedSerializer(Type key)
         {
             this._map.TryGetValue(key, out IResponseSerializer result);
             return result;
         }
 
+        /// <inheritdoc/>
         public void MapSerializer(Type key, IResponseSerializer serializer)
             => this._map[key] = serializer;
     }

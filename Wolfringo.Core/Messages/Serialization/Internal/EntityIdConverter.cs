@@ -2,6 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
+    /// <summary>Json converter for retrieving "id" property if the token is an object.</summary>
     public class EntityIdConverter : ValueOrPropertyConverter
     {
         public EntityIdConverter()

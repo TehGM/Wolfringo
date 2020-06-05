@@ -3,12 +3,24 @@ using System.Collections.Generic;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Default message command to message serializer map.</summary>
+    /// <remarks><para>This class contains all Wolfringo library default message mappings, and will be used by default clients
+    /// if no other map is provided.</para>
+    /// <para>This class can be easily extended without inheritance. To provide custom mappings, call <see cref="MapSerializer(string, IMessageSerializer)"/>, 
+    /// or pass custom mappings dictionary via the constructor. However, usage with .NET Core Host might require inheriting 
+    /// and registering as a service in the service container - in this case, simply call <see cref="MapSerializer(string, IMessageSerializer)"/>
+    /// in child class constructor for each custom mapping that needs to be made.</para></remarks>
     public class DefaultMessageSerializerMap : ISerializerMap<string, IMessageSerializer>
     {
+        /// <summary>Fallback serializer that can be used if key has no mapped serializer. 
+        /// Note that this serializer cannot be used for deserialization, and will be used only for serialization.</summary>
         public IMessageSerializer FallbackSerializer { get; set; }
 
         private IDictionary<string, IMessageSerializer> _map;
 
+        /// <summary>Creates default message serializer map.</summary>
+        /// <param name="fallbackSerializer">Serializer to use as fallback. If null, 
+        /// <see cref="DefaultMessageSerializer{T}"/> for <see cref="IWolfMessage"/> will be used.</param>
         public DefaultMessageSerializerMap(IMessageSerializer fallbackSerializer = null)
         {
             this.FallbackSerializer = fallbackSerializer ?? new DefaultMessageSerializer<IWolfMessage>();
@@ -66,6 +78,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
             };
         }
 
+        /// <summary>Creates default message serializer map.</summary>
+        /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
+        /// <param name="fallbackSerializer">Serializer to use as fallback. If null, 
+        /// <see cref="DefaultMessageSerializer{T}"/> for <see cref="IWolfMessage"/> will be used.</param>
         public DefaultMessageSerializerMap(IEnumerable<KeyValuePair<string, IMessageSerializer>> additionalMappings, 
             IMessageSerializer fallbackSerializer = null) : this(fallbackSerializer)
         {
@@ -73,12 +89,14 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 this.MapSerializer(pair.Key, pair.Value);
         }
 
+        /// <inheritdoc/>
         public IMessageSerializer FindMappedSerializer(string key)
         {
             this._map.TryGetValue(key, out IMessageSerializer result);
             return result;
         }
 
+        /// <inheritdoc/>
         public void MapSerializer(string key, IMessageSerializer serializer)
             => this._map[key] = serializer;
     }

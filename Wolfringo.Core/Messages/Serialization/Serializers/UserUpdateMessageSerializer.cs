@@ -3,8 +3,11 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for user update message.</summary>
+    /// <remarks>This special serializer moves "extended" properties into "extended" object to match the protocol.</remarks>
     public class UserUpdateMessageSerializer : DefaultMessageSerializer<UserUpdateMessage>
     {
+        /// <inheritdoc/>
         public override SerializedMessageData Serialize(IWolfMessage message)
         {
             SerializedMessageData result = base.Serialize(message);

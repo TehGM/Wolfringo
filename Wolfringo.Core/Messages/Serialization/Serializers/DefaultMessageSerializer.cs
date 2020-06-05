@@ -3,9 +3,10 @@
 namespace TehGM.Wolfringo.Messages.Serialization
 {
     /// <summary>Serializer for basic messages that don't have binary data.</summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of message for this serializer.</typeparam>
     public class DefaultMessageSerializer<T> : IMessageSerializer where T : IWolfMessage
     {
+        /// <inheritdoc/>
         public virtual IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
             IWolfMessage result = messageData.Payload.ToObject<T>(SerializationHelper.DefaultSerializer);
@@ -13,6 +14,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return result;
         }
 
+        /// <inheritdoc/>
         public virtual SerializedMessageData Serialize(IWolfMessage message)
             => new SerializedMessageData(message.SerializeJsonPayload());
     }

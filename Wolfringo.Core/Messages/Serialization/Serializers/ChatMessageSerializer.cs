@@ -6,8 +6,12 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for chat messages with binary data.</summary>
+    /// <remarks>This special serializer populates chat message's binary data collection when serializing. When deserializing,
+    /// it inserts data placeholders into payload body object, and adds it to serialized message's binary data.</remarks>
     public class ChatMessageSerializer : IMessageSerializer
     {
+        /// <inheritdoc/>
         public IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
             // deserialize message
@@ -21,6 +25,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return result;
         }
 
+        /// <inheritdoc/>
         public SerializedMessageData Serialize(IWolfMessage message)
         {
             JObject payload = message.SerializeJsonPayload();
@@ -33,6 +38,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return new SerializedMessageData(payload);
         }
 
+        /// <summary>Determines which type of chat message it is.</summary>
+        /// <param name="messageBody">Raw body object of the message payload.</param>
+        /// <returns>Type of the chat message.</returns>
         public static Type GetMessageType(JToken messageBody)
         {
             string mimeType = messageBody["mimeType"].ToObject<string>();
@@ -47,6 +55,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return typeof(ChatMessage);
         }
 
+        /// <summary>Populates chat message's raw data.</summary>
+        /// <typeparam name="T">Type of chat message.</typeparam>
+        /// <param name="message">Chat message.</param>
+        /// <param name="data">Binary data.</param>
         public static void PopulateMessageData<T>(ref T message, IEnumerable<byte> data) where T : IChatMessage
         {
             if (message == null)

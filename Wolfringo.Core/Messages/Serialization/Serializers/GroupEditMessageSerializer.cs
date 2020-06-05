@@ -3,6 +3,9 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for group edit message, such as group creation or update.</summary>
+    /// <remarks>This special serializer moves "extended" properties into "extended" object to match the protocol.</remarks>
+    /// <typeparam name="T">Type of group edit message.</typeparam>
     public class GroupEditMessageSerializer<T> : DefaultMessageSerializer<T> where T : IGroupEditMessage, IWolfMessage
     {
         public override SerializedMessageData Serialize(IWolfMessage message)

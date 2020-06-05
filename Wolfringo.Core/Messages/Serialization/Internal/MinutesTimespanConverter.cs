@@ -3,6 +3,7 @@ using System;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
+    /// <summary>Json converter for turning minutes into timespan.</summary>
     public class MinutesTimespanConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)

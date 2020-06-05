@@ -5,10 +5,12 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for basic responses that don't have binary data.</summary>
     public class DefaultResponseSerializer : IResponseSerializer
     {
         private static readonly Type _baseResponseType = typeof(IWolfResponse);
 
+        /// <inheritdoc/>
         public virtual IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData)
         {
             ThrowIfInvalidType(responseType);
@@ -19,10 +21,15 @@ namespace TehGM.Wolfringo.Messages.Serialization
             responseJson.FlattenCommonProperties(result);
             return (IWolfResponse)result;
         }
-
+        
+        /// <summary>Gets response json, stripping off wrapping array.</summary>
+        /// <param name="responseData">Serialized response data.</param>
+        /// <returns>Core response payload.</returns>
         protected static JToken GetResponseJson(SerializedMessageData responseData)
             => (responseData.Payload is JArray) ? responseData.Payload.First : responseData.Payload;
 
+        /// <summary>Throws if response type is not supported by this serializer.</summary>
+        /// <param name="responseType">Type of the response.</param>
         protected virtual void ThrowIfInvalidType(Type responseType)
         {
             if (!_baseResponseType.IsAssignableFrom(responseType))

@@ -4,10 +4,13 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for group statistics responses.</summary>
+    /// <remarks>This special serializer populates response's <see cref="WolfGroupStatistics"/> entity with the properties in details object.</remarks>
     public class GroupStatisticsResponseSerializer : DefaultResponseSerializer
     {
         private static readonly Type _groupStatsResponseType = typeof(GroupStatisticsResponse);
 
+        /// <inheritdoc/>
         public override IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData)
         {
             GroupStatisticsResponse result = (GroupStatisticsResponse)base.Deserialize(responseType, responseData);
@@ -15,6 +18,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return result;
         }
 
+        /// <inheritdoc/>
         protected override void ThrowIfInvalidType(Type responseType)
         {
             base.ThrowIfInvalidType(responseType);

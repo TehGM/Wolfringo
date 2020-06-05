@@ -5,6 +5,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
 {
     // this protocol is stupid, and uses "groupId" for receiving and "id" for sending, while they're the same thing
     // this serializer will detect when the message is being sent, and replace "groupId" with "id"
+    /// <summary>Serializer for group join and leave messages.</summary>
+    /// <remarks>This special serializer will replace "id" with "groupId" and vice versa (depending on whether sending or receiving the message)
+    /// to handle inconsistencies within the protocol.</remarks>
+    /// <typeparam name="T">Type of the message.</typeparam>
     public class GroupJoinLeaveMessageSerializer<T> : DefaultMessageSerializer<T> where T : IWolfMessage
     {
         private static readonly Type _joinMessageType = typeof(GroupJoinMessage);
@@ -15,6 +19,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             ThrowIfInvalidMessageType(typeof(T));
         }
 
+        /// <inheritdoc/>
         public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
             if (messageData.Payload["body"]?["id"] == null)
@@ -30,6 +35,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             }
         }
 
+        /// <inheritdoc/>
         public override SerializedMessageData Serialize(IWolfMessage message)
         {
             ThrowIfInvalidMessageType(message.GetType());
