@@ -1,5 +1,6 @@
 ﻿namespace TehGM.Wolfringo
 {
+    /// <summary>Wolf group audio stage type.</summary>
     public enum WolfStageType
     {
         Basic = 0,

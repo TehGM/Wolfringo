@@ -1,5 +1,6 @@
 ﻿namespace TehGM.Wolfringo
 {
+    /// <summary>Language as recognized by Wolf.</summary>
     public enum WolfLanguage
     {
         // values borrowed from https://github.com/dewwalters/Wolf.Net/blob/master/Wolf.Net/Enums/Language.cs

@@ -5,12 +5,16 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo
 {
+    /// <summary>Wolf Charm.</summary>
     public class WolfCharm : IWolfEntity, IEquatable<WolfCharm>
     {
+        /// <summary>Charm ID.</summary>
         [JsonProperty("id")]
         public uint ID { get; private set; }
+        /// <summary>URL of charm image.</summary>
         [JsonProperty("imageUrl")]
         public string ImageURL { get; private set; }
+        /// <summary>Code name of the charm.</summary>
         [JsonProperty("name")]
         public string Name { get; private set; }
 
@@ -19,9 +23,11 @@ namespace TehGM.Wolfringo
         [JsonProperty("productId")]
         public uint? ProductID { get; private set; }
 
+        /// <summary>Charm's translated names.</summary>
         [JsonProperty("nameTranslationList")]
         [JsonConverter(typeof(ObjectPropertiesDictionaryConverter<WolfLanguage, string>), "languageId", "text")]
         public IReadOnlyDictionary<WolfLanguage, string> TranslatedNames { get; private set; }
+        /// <summary>Charm's translated descriptions.</summary>
         [JsonProperty("descriptionList")]
         [JsonConverter(typeof(ObjectPropertiesDictionaryConverter<WolfLanguage, string>), "languageId", "text")]
         public IReadOnlyDictionary<WolfLanguage, string> TranslatedDescriptions { get; private set; }
