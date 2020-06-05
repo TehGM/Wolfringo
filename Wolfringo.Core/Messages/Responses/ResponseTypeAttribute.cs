@@ -2,12 +2,18 @@
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
+    /// <summary>Sets preferred type of response for a message.</summary>
+    /// <remarks>This attribute is honoured by <see cref="DefaultResponseTypeResolver"/>. The default resolver will 
+    /// return type set by this attribute, regardless of the response type requested by user when sending the message.</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ResponseTypeAttribute : Attribute
     {
         public static readonly Type BaseResponseType = typeof(IWolfResponse);
+        /// <summary>Preferred type of the response.</summary>
         public Type ResponseType { get; }
 
+        /// <summary>Sets preferred type of response for a message.</summary>
+        /// <param name="responseType">Response type for the message. Must implement <see cref="IWolfResponse"/> in it's inheritance chain.</param>
         public ResponseTypeAttribute(Type responseType)
             : base()
         {

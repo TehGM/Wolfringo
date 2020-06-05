@@ -2,6 +2,7 @@
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
+    /// <summary>Represents wolf error codes.</summary>
     public enum WolfErrorCode
     {
         NoSuchUser = 0,
@@ -26,6 +27,10 @@ namespace TehGM.Wolfringo.Messages.Responses
 
     public static class WolfErrorCodeExtensions
     {
+        /// <summary>Gets error code description based on sent command.</summary>
+        /// <param name="code">Error code.</param>
+        /// <param name="sentCommand">Sent command.</param>
+        /// <returns>Error code description.</returns>
         public static string GetDescription(this WolfErrorCode code, string sentCommand = null)
         {
             if (!Enum.IsDefined(code.GetType(), code))

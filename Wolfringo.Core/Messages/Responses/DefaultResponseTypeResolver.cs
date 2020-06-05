@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
+    /// <inheritdoc/>
+    /// <remarks>This default resolver makes use of <see cref="ResponseTypeAttribute"/> to check if message type
+    /// has a preferred type of response. If so, this type will be returned.</remarks>
     public class DefaultResponseTypeResolver : IResponseTypeResolver
     {
         private static readonly Type _mappingAttributeType = typeof(ResponseTypeAttribute);
@@ -12,6 +15,7 @@ namespace TehGM.Wolfringo.Messages.Responses
 
         private readonly IDictionary<Type, Type> _cachedMapping = new Dictionary<Type, Type>();
 
+        /// <inheritdoc/>
         public Type GetMessageResponseType(Type messageType, Type fallbackType = null)
         {
             // check cache first for quick short circuit
