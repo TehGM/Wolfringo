@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -101,7 +103,10 @@ namespace TehGM.Wolfringo
                     Gender = this.Gender,
                     Language = this.Language,
                     Relationship = this.Relationship,
-                    Links = this.Links
+                    Links = new ReadOnlyCollection<string>(
+                        (this.Links as IList<string>) 
+                        ?? this.Links?.ToArray() 
+                        ?? Enumerable.Empty<string>().ToArray())
                 };
             }
         }

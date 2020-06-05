@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -50,8 +51,8 @@ namespace TehGM.Wolfringo.Messages
             if (requestEntities?.Any() != true)
                 throw new ArgumentException("Must request at least one entity type", nameof(requestEntities));
 
-            this.RequestEntities = requestEntities;
-            this.RequestGroupIDs = groupIDs;
+            this.RequestEntities = new ReadOnlyCollection<string>((requestEntities as IList<string>) ?? requestEntities.ToArray());
+            this.RequestGroupIDs = new ReadOnlyCollection<uint>((groupIDs as IList<uint>) ?? groupIDs.ToArray());
             this.SubscribeToUpdates = subscribe;
         }
 

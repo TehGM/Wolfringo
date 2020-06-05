@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace TehGM.Wolfringo.Messages
 {
@@ -21,7 +23,8 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="groupID">ID of the group to unsubscribe from.</param>
         public UnsubscribeFromGroupMessage(IEnumerable<uint> groupIDs) : this()
         {
-            this.GroupIDs = groupIDs;
+            if (groupIDs != null)
+                this.GroupIDs = new ReadOnlyCollection<uint>((groupIDs as IList<uint>) ?? groupIDs.ToArray());
         }
     }
 }

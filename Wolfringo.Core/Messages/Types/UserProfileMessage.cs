@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -44,7 +45,7 @@ namespace TehGM.Wolfringo.Messages
         {
             if (userIDs?.Any() != true)
                 throw new ArgumentException("Must request at least one user ID", nameof(userIDs));
-            this.RequestUserIDs = userIDs;
+            this.RequestUserIDs = new ReadOnlyCollection<uint>((userIDs as IList<uint>) ?? userIDs.ToArray());
             this.RequestExtendedDetails = requestExtended;
             this.SubscribeToUpdates = subscribe;
         }
