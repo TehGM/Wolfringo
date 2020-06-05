@@ -16,9 +16,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePingBot", "Examples\S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F765215F-98D7-4199-8124-1FF254A35A21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfringo.Utilities", "Wolfringo.Utilities\Wolfringo.Utilities.csproj", "{E1B420D8-2E46-41F1-921D-0AC40F477FEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Utilities", "Wolfringo.Utilities\Wolfringo.Utilities.csproj", "{E1B420D8-2E46-41F1-921D-0AC40F477FEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfringo.Hosting", "Wolfringo.Hosting\Wolfringo.Hosting.csproj", "{8F157C62-E915-4273-9C2E-E1940265C878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Hosting", "Wolfringo.Hosting\Wolfringo.Hosting.csproj", "{8F157C62-E915-4273-9C2E-E1940265C878}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostedPingBot", "Examples\HostedPingBot\HostedPingBot.csproj", "{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,12 +44,17 @@ Global
 		{8F157C62-E915-4273-9C2E-E1940265C878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F157C62-E915-4273-9C2E-E1940265C878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F157C62-E915-4273-9C2E-E1940265C878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6F0C05BE-73E6-44FB-859A-EA3595F6B955} = {F765215F-98D7-4199-8124-1FF254A35A21}
+		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B} = {F765215F-98D7-4199-8124-1FF254A35A21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}
