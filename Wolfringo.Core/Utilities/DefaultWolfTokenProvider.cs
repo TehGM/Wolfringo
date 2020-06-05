@@ -3,12 +3,14 @@ using System.Text;
 
 namespace TehGM.Wolfringo.Utilities
 {
+    /// <summary>Provides a token used by Wolf client when connecting.</summary>
     public class DefaultWolfTokenProvider : ITokenProvider
     {
         private const string _charset = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPSADFGHJKLZXCVBNM1234567890";
         private static readonly Random _random = new Random();
         private const int _minLength = 2;
 
+        /// <inheritdoc/>
         public string GenerateToken(int length)
         {
             if (length < _minLength)
