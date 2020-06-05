@@ -63,8 +63,12 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
 
         private static async void OnWelcome(WelcomeEvent message)
         {
-            Config config = Config.Load();
-            await _client.LoginAsync(config.Username, config.Password);
+            // if reusing the token, user might be already logged in, so check that before requesting login
+            if (message.LoggedInUser == null)
+            {
+                Config config = Config.Load();
+                await _client.LoginAsync(config.Username, config.Password);
+            }
             // user should not be cached locally - always call GetUserAsync/GetCurrentUserAsync on client!
             WolfUser user = await _client.GetCurrentUserAsync();
             // same applies to groups - always call GetGroupsAsync!

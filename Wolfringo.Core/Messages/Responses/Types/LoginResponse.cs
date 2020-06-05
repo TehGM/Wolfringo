@@ -16,7 +16,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         public uint UserID { get; private set; }
         /// <summary>Logged in user display name.</summary>
         [JsonProperty("nickname")]
-        public string Username { get; private set; }
+        public string Nickname { get; private set; }
         /// <summary>Logged in user status.</summary>
         [JsonProperty("status")]
         public string UserStatus { get; private set; }

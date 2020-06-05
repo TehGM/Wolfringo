@@ -180,30 +180,41 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="welcome">The welcome event received from the client.</param>
         private async void OnWelcome(WelcomeEvent welcome)
         {
-            // check if auto login is enabled
-            HostedWolfClientOptions options = this._options.CurrentValue;
-            if (!options.AutoLogin)
-                return;
-            // check all values are valid
-            if (string.IsNullOrWhiteSpace(options.LoginEmail))
-            {
-                _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginEmail));
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(options.LoginPassword))
-            {
-                _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginPassword));
-                return;
-            }
-            // send login
-            _log?.LogDebug("Auto-login: {Login}", options.LoginEmail);
             try
             {
-                await this.SendAsync<LoginResponse>(
-                    new LoginMessage(options.LoginEmail, options.LoginPassword, false), _connectionCancellationToken).ConfigureAwait(false);
+                HostedWolfClientOptions options = this._options.CurrentValue;
+                string loggedInNickname;
+
+                // if user is not logged in with this token, need to do the login!
+                if (welcome.LoggedInUser == null)
+                {
+                    // check if auto login is enabled
+                    if (!options.AutoLogin)
+                        return;
+                    // check all values are valid
+                    if (string.IsNullOrWhiteSpace(options.LoginEmail))
+                    {
+                        _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginEmail));
+                        return;
+                    }
+                    if (string.IsNullOrWhiteSpace(options.LoginPassword))
+                    {
+                        _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginPassword));
+                        return;
+                    }
+
+                    // send login
+                    _log?.LogDebug("Auto-login: {Login}", options.LoginEmail);
+                    LoginResponse response = await this.SendAsync<LoginResponse>(
+                        new LoginMessage(options.LoginEmail, options.LoginPassword, false), _connectionCancellationToken).ConfigureAwait(false);
+                    loggedInNickname = response.Nickname;
+                }
+                else loggedInNickname = welcome.LoggedInUser.Nickname;
+
+                // subscribe to all the things
                 await this.SendAsync(new SubscribeToPmMessage(), _connectionCancellationToken).ConfigureAwait(false);
                 await this.SendAsync(new SubscribeToGroupMessage(), _connectionCancellationToken).ConfigureAwait(false);
-                _log?.LogInformation("Automatically logged in as {Login}", options.LoginEmail);
+                _log?.LogInformation("Automatically logged in as {Nickname}", loggedInNickname);
             }
             catch (Exception ex)
             {

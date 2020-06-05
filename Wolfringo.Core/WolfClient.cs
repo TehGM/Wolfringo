@@ -543,6 +543,10 @@ namespace TehGM.Wolfringo
         /// <param name="rawMessage">Raw received message.</param>
         protected virtual async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
+            // if welcome is already logged in, we can populate userID
+            if (message is WelcomeEvent welcome && welcome.LoggedInUser != null)
+                this.CurrentUserID = welcome.LoggedInUser.ID;
+
             // update user presence
             if (this.UsersCachingEnabled)
             {

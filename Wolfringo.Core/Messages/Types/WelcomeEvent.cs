@@ -24,6 +24,10 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("endpointConfig")]
         public EndpointConfig Endpoints { get; private set; }
 
+        /// <summary>User if already logged in with provided token.</summary>
+        [JsonProperty("loggedInUser")]
+        public WolfUser LoggedInUser { get; private set; }
+
         /// <summary>Wolf endpoint configuration.</summary>
         public class EndpointConfig
         {
