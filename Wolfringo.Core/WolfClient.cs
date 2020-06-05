@@ -17,6 +17,9 @@ namespace TehGM.Wolfringo
 {
     public class WolfClient : IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
+        public const string DefaultServerURL = "wss://v3-rc.palringo.com:3051";
+        public const string DefaultDevice = "bot";
+
         public string Url { get; }
         public string Token { get; }
         public string Device { get; }
@@ -101,15 +104,10 @@ namespace TehGM.Wolfringo
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
 
-        public WolfClient(WolfClientOptions options, ILogger logger = null, 
-            ITokenProvider tokenProvider = null,
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(options.ServerURL, options.Device, options.Token ?? GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
-
         public WolfClient(ILogger logger = null, 
             ITokenProvider tokenProvider = null,
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(WolfClientOptions.DefaultServerURL, WolfClientOptions.DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
+            : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         private static string GetNewToken(ITokenProvider tokenProvider = null)
         {

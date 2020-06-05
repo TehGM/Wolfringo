@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;
@@ -18,12 +19,13 @@ namespace TehGM.Wolfringo.Hosting
         private WolfClient _client;
         private readonly SemaphoreSlim _clientLock = new SemaphoreSlim(1, 1);
         private CancellationToken _connectionCancellationToken;
-        private readonly List<IMessageCallback> _callbacks;
-        private bool _autoReconnect = false;
+        private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
+        private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
+        private string _token;                                  // keep token cached so it's reused when client is recreates
 
         // services
         private readonly ILogger _log;
-        private readonly IOptionsMonitor<WolfClientOptions> _options;
+        private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
         private readonly ISerializerMap<string, IMessageSerializer> _messageSerializers;
         private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
@@ -36,8 +38,9 @@ namespace TehGM.Wolfringo.Hosting
         public event EventHandler<WolfMessageSentEventArgs> MessageSent;
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
         public uint? CurrentUserID => this._client?.CurrentUserID;
+        public bool IsConnected => this._client != null && this._client.IsConnected;
 
-        public HostedWolfClient(IOptionsMonitor<WolfClientOptions> options, ILogger<WolfClient> logger, ITokenProvider tokenProvider,
+        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ITokenProvider tokenProvider,
             ISerializerMap<string, IMessageSerializer> messageSerializers, ISerializerMap<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver)
         {
@@ -50,51 +53,160 @@ namespace TehGM.Wolfringo.Hosting
             this._responseTypeResolver = responseTypeResolver;
             this._tokenProvider = tokenProvider;
 
+            // when options change, we need to dispose existing client, and create new one with new options
             _options.OnChange(async (opts) =>
             {
-                if (_client == null)
-                    return;
-                await StripDownClientAsync().ConfigureAwait(false);
-                if (this._autoReconnect)
-                    await this.ConnectAsync(_connectionCancellationToken).ConfigureAwait(false);
+                // lock to avoid race conditions
+                await _clientLock.WaitAsync().ConfigureAwait(false);
+                try
+                {
+                    if (_client == null)
+                        return;
+                    _log?.LogDebug("Options changed, recreting client");
+                    await DisposeClientAsync().ConfigureAwait(false);
+                    // if it wasn't manually disconnected, reconnect it
+                    if (!this._manuallyDisconnected)
+                        await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _clientLock.Release();
+                }
             });
         }
 
-        private async Task CreateClientAsync()
+        /** CLIENT CREATING AND STRIPPING DOWN **/
+        private void CreateClient()
         {
-            await _clientLock.WaitAsync().ConfigureAwait(false);
-            try
-            {
-                this._client = new WolfClient(_options.CurrentValue, _log, _tokenProvider,
-                    _messageSerializers, _responseSerializers, _responseTypeResolver);
-                for (int i = 0; i < _callbacks.Count; i++)
-                    _callbacks.Add(_callbacks[i]);
-                this._client.Disconnected += OnClientDisconnected;
-                this._client.Connected += OnClientConntected;
-                this._client.ErrorRaised += OnClientErrorRaised;
-                this._client.MessageReceived += OnClientMessageReceived;
-                this._client.MessageSent += OnClientMessageSent;
-            }
-            finally
-            {
-                _clientLock.Release();
-            }
+            _log?.LogTrace("Creating underlying client");
+            HostedWolfClientOptions options = this._options.CurrentValue;
+            string token = this.GetCurrentToken();
+
+            // if token is null, use default client behaviour for token with token provider
+            if (token == null)
+                this._client = new WolfClient(options.ServerURL, options.Device, _log, _tokenProvider, _messageSerializers, _responseSerializers, _responseTypeResolver);
+            // otherwise, reuse the token for new client
+            else
+                this._client = new WolfClient(options.ServerURL, options.Device, token, _log, _messageSerializers, _responseSerializers, _responseTypeResolver);
+
+            // if there are any callbacks from previous client, reuse them as well
+            for (int i = 0; i < _callbacks.Count; i++)
+                this._callbacks.Add(_callbacks[i]);
+
+            // set caching options
+            this._client.GroupsCachingEnabled = options.GroupsCachingEnabled;
+            this._client.UsersCachingEnabled = options.UsersCachingEnabled;
+            this._client.CharmsCachingEnabled = options.CharmsCachingEnabled;
+            this._client.AchievementsCachingEnabled = options.AchievementsCachingEnabled;
+
+            // sub to events
+            this._client.Disconnected += OnClientDisconnected;
+            this._client.Connected += OnClientConntected;
+            this._client.ErrorRaised += OnClientErrorRaised;
+            this._client.MessageReceived += OnClientMessageReceived;
+            this._client.MessageSent += OnClientMessageSent;
+            this._client.AddMessageListener<WelcomeEvent>(OnWelcome);
+
+            // store token for reconnections
+            this._token = this._client.Token;
         }
 
-        private async Task StripDownClientAsync()
+        private string GetCurrentToken()
+            => this._client?.Token ?? this._options.CurrentValue.Token ?? this._token;
+
+        private async Task DisposeClientAsync()
         {
-            await _clientLock.WaitAsync().ConfigureAwait(false);
+            if (this._client == null)
+                return;
+            _log?.LogTrace("Disposing underlying client");
+            // null it first so auto reconnection does not happen
+            WolfClient disposingClient = this._client;
+            this._client = null;
+            // disconnect and dispose it
             try
             {
-                if (this._client == null)
-                    return;
-                // null it first so auto reconnection does not happen
-                WolfClient disposingClient = this._client;
-                this._client = null;
-                // disconnect and dispose it
                 if (disposingClient.IsConnected)
                     await disposingClient.DisconnectAsync().ConfigureAwait(false);
+            }
+            finally
+            {
                 disposingClient.Dispose();
+            }
+        }
+
+        /** AUTO-LOGIN **/
+        private async void OnWelcome(WelcomeEvent welcome)
+        {
+            // check if auto login is enabled
+            HostedWolfClientOptions options = this._options.CurrentValue;
+            if (!options.AutoLogin)
+                return;
+            // check all values are valid
+            if (string.IsNullOrWhiteSpace(options.LoginEmail))
+            {
+                _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginEmail));
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(options.LoginPassword))
+            {
+                _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginPassword));
+                return;
+            }
+            // send login
+            _log?.LogDebug("Auto-login: {Login}", options.LoginEmail);
+            try
+            {
+                await this.SendAsync<LoginResponse>(
+                    new LoginMessage(options.LoginEmail, options.LoginPassword, false), _connectionCancellationToken).ConfigureAwait(false);
+                _log?.LogInformation("Automatically logged in as {Login}", options.LoginEmail);
+            }
+            catch (Exception ex)
+            {
+                _log?.LogCritical(ex, "Exception occured when automatically logging in");
+                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+            }
+        }
+
+        /** IHostedService **/
+        Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                // only connect if not already connected
+                if (!this.IsConnected)
+                    return this.ConnectAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _log?.LogCritical(ex, "Exception occured when trying to connect as a hosted client");
+                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+            }
+            return Task.CompletedTask;
+        }
+        Task IHostedService.StopAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                // only disconnect if connected
+                if (this.IsConnected)
+                    return this.DisconnectAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _log?.LogCritical(ex, "Exception occured when trying to disconnect as a hosted client");
+                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+            }
+            return Task.CompletedTask;
+        }
+
+        /** CONNECT AND DISCONNECT **/
+        public async Task ConnectAsync(CancellationToken cancellationToken = default)
+        {
+            // public connection should always be done with locking to avoid race conditions
+            await _clientLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                await this.ConnectInternalAsync(cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -102,31 +214,71 @@ namespace TehGM.Wolfringo.Hosting
             }
         }
 
-        Task IHostedService.StartAsync(CancellationToken cancellationToken)
-            => this.ConnectAsync(cancellationToken);
-
-        Task IHostedService.StopAsync(CancellationToken cancellationToken)
-            => this.DisconnectAsync(cancellationToken);
-
-        #region Proxy methods
-        public async Task ConnectAsync(CancellationToken cancellationToken = default)
+        // connect without locking first
+        // this method is required in case client is already locked as part of connection process
+        // it should always be called by a method that already locked the client
+        private Task ConnectInternalAsync(CancellationToken cancellationToken = default)
         {
+            ThrowIfConnected();
             if (_client == null)
-                await CreateClientAsync().ConfigureAwait(false);
-            if (_client?.IsConnected == true)
-                throw new InvalidOperationException("Already connected");
+                CreateClient();
 
             this._connectionCancellationToken = cancellationToken;
-            this._autoReconnect = true;
-            await _client.ConnectAsync(cancellationToken).ConfigureAwait(false);
+            this._manuallyDisconnected = false;
+            return _client.ConnectAsync(cancellationToken);
         }
 
-        public Task DisconnectAsync(CancellationToken cancellationToken = default)
+        public async Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
-            this._autoReconnect = false;
-            return _client?.DisconnectAsync(cancellationToken);
+            // public disconnection should always be done with locking to avoid race conditions
+            await _clientLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                ThrowIfNotConnected();
+                this._manuallyDisconnected = true;
+                await _client.DisconnectAsync(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                _clientLock.Release();
+            }
         }
 
+        private async void OnClientDisconnected(object sender, EventArgs e)
+        {
+            // lock first to avoid race conditions
+            await _clientLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
+                if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
+                    return;
+                await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // strip client and retry
+                _log?.LogWarning(ex, "Failed to auto-reconnect, recreating underlying client");
+                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
+                try
+                {
+                    await DisposeClientAsync().ConfigureAwait(false);
+                    await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex2)
+                {
+                    _log?.LogCritical(ex2, "Exception occured when attempting to reconnect with recreated client");
+                    this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
+                }
+            }
+            finally
+            {
+                this.Disconnected?.Invoke(this, e);
+                _clientLock.Release();
+            }
+        }
+
+        /** EVENTS **/
         public void AddMessageListener(IMessageCallback listener)
         {
             lock (this._callbacks)
@@ -135,7 +287,6 @@ namespace TehGM.Wolfringo.Hosting
                 _client.AddMessageListener(listener);
             }
         }
-
         public void RemoveMessageListener(IMessageCallback listener)
         {
             lock (this._callbacks)
@@ -145,69 +296,56 @@ namespace TehGM.Wolfringo.Hosting
             }
         }
 
-        private async void OnClientDisconnected(object sender, EventArgs e)
+        private void OnClientMessageSent(object sender, WolfMessageSentEventArgs e)
+            => this.MessageSent?.Invoke(this, e);
+        private void OnClientMessageReceived(object sender, WolfMessageEventArgs e)
+            => this.MessageReceived?.Invoke(this, e);
+        private void OnClientErrorRaised(object sender, UnhandledExceptionEventArgs e)
+            => this.ErrorRaised?.Invoke(this, e);
+        private void OnClientConntected(object sender, EventArgs e)
+            => this.Connected?.Invoke(this, e);
+
+        /** SENDING **/
+        public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
+            await _clientLock.WaitAsync().ConfigureAwait(false);
             try
             {
-                if (this._client == null || !this._autoReconnect)
-                    return;
-                await this.ConnectAsync(_connectionCancellationToken).ConfigureAwait(false);
-            }
-            catch
-            {
-                // strip client and retry
-                await StripDownClientAsync().ConfigureAwait(false);
-                await this.ConnectAsync(_connectionCancellationToken).ConfigureAwait(false);
+                ThrowIfNotConnected();
             }
             finally
             {
-                this.Disconnected?.Invoke(this, e);
+                _clientLock.Release();
             }
+            return await _client.SendAsync<TResponse>(message, cancellationToken).ConfigureAwait(false);
         }
-        #endregion
 
-        #region Simple proxy methods
-        public Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
-            => _client.SendAsync<TResponse>(message, cancellationToken);
-
-        // cache
+        /** CACHES **/
         WolfUser IWolfClientCacheAccessor.GetCachedUser(uint id)
             => (_client as IWolfClientCacheAccessor).GetCachedUser(id);
-
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
             => (_client as IWolfClientCacheAccessor).GetCachedGroup(id);
-
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
             => (_client as IWolfClientCacheAccessor).GetCachedCharm(id);
-
         WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
             => (_client as IWolfClientCacheAccessor).GetCachedAchievement(language, id);
 
-        // events
-        private void OnClientMessageSent(object sender, WolfMessageSentEventArgs e)
+        /** UTILS **/
+        private void ThrowIfNotConnected()
         {
-            this.MessageSent?.Invoke(this, e);
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
         }
 
-        private void OnClientMessageReceived(object sender, WolfMessageEventArgs e)
+        private void ThrowIfConnected()
         {
-            this.MessageReceived?.Invoke(this, e);
+            if (this.IsConnected)
+                throw new InvalidOperationException("Already connected");
         }
-
-        private void OnClientErrorRaised(object sender, UnhandledExceptionEventArgs e)
-        {
-            this.ErrorRaised?.Invoke(this, e);
-        }
-
-        private void OnClientConntected(object sender, EventArgs e)
-        {
-            this.Connected?.Invoke(this, e);
-        }
-        #endregion
 
         public void Dispose()
         {
-            _autoReconnect = false;
+            _manuallyDisconnected = true;
             _client?.Dispose();
             _client = null;
             _callbacks?.Clear();
