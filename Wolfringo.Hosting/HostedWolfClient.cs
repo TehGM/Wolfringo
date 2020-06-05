@@ -161,6 +161,8 @@ namespace TehGM.Wolfringo.Hosting
             {
                 await this.SendAsync<LoginResponse>(
                     new LoginMessage(options.LoginEmail, options.LoginPassword, false), _connectionCancellationToken).ConfigureAwait(false);
+                await this.SendAsync(new SubscribeToPmMessage(), _connectionCancellationToken).ConfigureAwait(false);
+                await this.SendAsync(new SubscribeToGroupMessage(), _connectionCancellationToken).ConfigureAwait(false);
                 _log?.LogInformation("Automatically logged in as {Login}", options.LoginEmail);
             }
             catch (Exception ex)
