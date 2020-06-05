@@ -12,7 +12,7 @@ namespace TehGM.Wolfringo.Messages
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]
-        public uint CharmID { get; private set; }
+        public uint UserID { get; private set; }
 
         [JsonConstructor]
         private UserExpiredCharmsListMessage() { }
@@ -21,7 +21,7 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="userID">ID of the user to get expired charms of.</param>
         public UserExpiredCharmsListMessage(uint userID) : this()
         {
-            this.CharmID = userID;
+            this.UserID = userID;
         }
     }
 }

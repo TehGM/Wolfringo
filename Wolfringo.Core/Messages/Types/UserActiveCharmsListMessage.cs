@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]
-        public uint CharmID { get; private set; }
+        public uint UserID { get; private set; }
 
         [JsonConstructor]
         private UserActiveCharmsListMessage() { }
@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="userID">ID of the user to get active charms of.</param>
         public UserActiveCharmsListMessage(uint userID) : this()
         {
-            this.CharmID = userID;
+            this.UserID = userID;
         }
     }
 }
