@@ -7,6 +7,9 @@ using System.Text;
 
 namespace TehGM.Wolfringo.Messages
 {
+    /// <summary>A group action embedded in chat.</summary>
+    /// <seealso cref="ChatMessage"/>
+    /// <seealso cref="GroupAdminMessage"/>
     public class GroupActionChatEvent : IChatMessage, IWolfMessage
     {
         private uint? _invokerID;
@@ -14,20 +17,31 @@ namespace TehGM.Wolfringo.Messages
         private bool NeedsParsing => _type == null;
 
 
+        /// <inheritdoc/>
+        [JsonIgnore]
         public string Command => MessageCommands.MessageSend;
 
         // json data
+        /// <inheritdoc/>
         public string FlightID { get; protected set; }
+        /// <inheritdoc/>
         public Guid? ID { get; protected set; }
+        /// <inheritdoc/>
         public bool IsGroupMessage { get; protected set; }
+        /// <inheritdoc/>
         public string MimeType { get; protected set; }
+        /// <inheritdoc/>
         public DateTime? Timestamp { get; protected set; }
+        /// <inheritdoc/>
         public uint? SenderID { get; protected set; }
+        /// <inheritdoc/>
         public uint RecipientID { get; private set; }
 
         // binary data
+        /// <inheritdoc/>
         [JsonIgnore]
         public IReadOnlyCollection<byte> RawData { get; protected set; }
+        /// <summary>ID of the user that invoked the group action.</summary>
         [JsonIgnore]
         public uint? ActionInvokerID
         {
@@ -38,6 +52,7 @@ namespace TehGM.Wolfringo.Messages
                 return _invokerID;
             }
         }
+        /// <summary>Type of group action.</summary>
         [JsonIgnore]
         public GroupActionType ActionType
         {
@@ -59,6 +74,7 @@ namespace TehGM.Wolfringo.Messages
             this.RawData = new List<byte>();
         }
 
+        /// <summary>Parses invoker ID and action type from raw data.</summary>
         protected void ParseRawData()
         {
             if (this.RawData?.Any() != true)
@@ -74,6 +90,9 @@ namespace TehGM.Wolfringo.Messages
             this._type = ParseActionType(actionInfo["type"].ToObject<string>());
         }
 
+        /// <summary>Parses action type.</summary>
+        /// <param name="type">String type of action.</param>
+        /// <returns>Parsed action type.</returns>
         private GroupActionType ParseActionType(string type)
         {
             switch (type.ToLower())
@@ -100,15 +119,24 @@ namespace TehGM.Wolfringo.Messages
         }
     }
 
+    /// <summary>Group action type.</summary>
     public enum GroupActionType
     {
+        /// <summary>User joined the group.</summary>
         UserJoined, // join
+        /// <summary>User left the group.</summary>
         UserLeft,   // leave
+        /// <summary>User was banned from the group.</summary>
         Ban,        // ban
-        Kick,       // leave
+        /// <summary>User was kicked from the group.</summary>
+        Kick,       // 
+        /// <summary>User was silenced in the group.</summary>
         Silence,    // silence
+        /// <summary>User was reset in the group.</summary>
         Reset,      // reset
+        /// <summary>User was modded the group.</summary>
         Mod,        // mod
+        /// <summary>User was admined the group.</summary>
         Admin       // admin
     }
 }
