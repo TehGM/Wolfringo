@@ -1,4 +1,6 @@
-﻿namespace TehGM.Wolfringo.Hosting
+﻿using System;
+
+namespace TehGM.Wolfringo.Hosting
 {
     public class HostedWolfClientOptions
     {
@@ -13,6 +15,7 @@
 
         // auto-reconnection
         public bool AutoReconnect { get; set; } = true;
+        public TimeSpan AutoReconnectDelay { get; set; } = TimeSpan.FromSeconds(0.5);
 
         // caching
         public bool UsersCachingEnabled { get; set; } = true;

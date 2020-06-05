@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -258,6 +259,9 @@ namespace TehGM.Wolfringo.Hosting
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
                 if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
                     return;
+                TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
+                if (delay > TimeSpan.Zero)
+                    await Task.Delay(delay).ConfigureAwait(false);
                 await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
