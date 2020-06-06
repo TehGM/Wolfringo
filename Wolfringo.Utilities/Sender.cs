@@ -136,7 +136,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="DeleteContactAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
-            ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(), cancellationToken).ConfigureAwait(false);
+            ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(true), cancellationToken).ConfigureAwait(false);
             return await client.GetUsersAsync(response.ContactIDs, cancellationToken).ConfigureAwait(false);
         }
 
