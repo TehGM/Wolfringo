@@ -1,6 +1,6 @@
 
 # Wolfringo
-[![GitHub](https://img.shields.io/github/license/TehGM/Wolfringo)](LICENSE) [![Releases](https://img.shields.io/github/v/release/TehGM/Wolfringo?sort=semver)](https://github.com/TehGM/Wolfringo/releases)
+[![GitHub](https://img.shields.io/github/license/TehGM/Wolfringo)](LICENSE) [![Releases](https://img.shields.io/github/v/release/TehGM/Wolfringo?include_prereleases&sort=semver)](https://github.com/TehGM/Wolfringo/releases)
 
 This is a .NET library for WOLF (previously Palringo).
 
