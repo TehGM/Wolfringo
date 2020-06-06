@@ -1,18 +1,20 @@
 
 # Wolfringo
-[![GitHub](https://img.shields.io/github/license/TehGM/Wolfringo)](LICENSE)
+[![GitHub](https://img.shields.io/github/license/TehGM/Wolfringo)](LICENSE) [![Releases](https://img.shields.io/github/v/release/TehGM/Wolfringo?sort=semver)]
 
 This is a .NET library for WOLF (previously Palringo).
 
-This library is designed with extensibility through Dependancy Injection in mind, and is compatible with ASP.NET Core and other .NET Core Hosting scenarios through [Wolfringo.Hosting](Wolfringo.Hosting) package.
+This library is designed with extensibility through Dependancy Injection in mind, and is compatible with ASP.NET Core and other .NET Core Hosting scenarios through [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package.
 
-Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](Wolfringo.Utilities) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with Wolfringo package.
+Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](https://github.com/TehGM/Wolfringo/packages/257846) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with Wolfringo package.
 
 ### Download
 
 This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library.
 
-Preview version of this library is available as a github package. Later versions will be available on nuget.org.
+Preview version of this library is available as a [GitHub Package](https://github.com/TehGM/Wolfringo/packages/257862). Later versions will be available on nuget.org.
+
+See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) installation instructions to learn how to install a package hosted on GitHub.
 
 ## Usage example
 
@@ -75,7 +77,7 @@ If the reconnector behaviour is not sufficent for your use-case, listen to clien
 
 ### .NET Core Host
 
-For use with .NET Core Host, install [Wolfringo.Hosting](Wolfringo.Hosting) package in addition to the main Wolfringo package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
+For use with .NET Core Host, install [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package in addition to the main Wolfringo package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
 
 ```csharp
 using TehGM.Wolfringo.Hosting;
