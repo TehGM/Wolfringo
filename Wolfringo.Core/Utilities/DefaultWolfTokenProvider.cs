@@ -3,7 +3,7 @@ using System.Text;
 
 namespace TehGM.Wolfringo.Utilities
 {
-    /// <summary>Provides a token used by Wolf client when connecting.</summary>
+    /// <inheritdoc/>
     public class DefaultWolfTokenProvider : ITokenProvider
     {
         private const string _charset = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPSADFGHJKLZXCVBNM1234567890";

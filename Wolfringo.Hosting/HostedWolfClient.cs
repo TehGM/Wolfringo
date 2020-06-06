@@ -273,9 +273,6 @@ namespace TehGM.Wolfringo.Hosting
             }
         }
 
-        // connect without locking first
-        // this method is required in case client is already locked as part of connection process
-        // it should always be called by a method that already locked the client
         /// <summary>Connect without using the client lock.</summary>
         /// <remarks><para>This method is called by internal processes that attempt to establish a connection. 
         /// These processes usually lock the client, and for that reason cannot use <see cref="ConnectAsync(CancellationToken)"/>.</para>
