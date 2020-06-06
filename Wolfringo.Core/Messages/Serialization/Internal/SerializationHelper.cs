@@ -29,9 +29,10 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         /// <typeparam name="T">Type of the object.</typeparam>
         /// <param name="token">Token to use for populating.</param>
         /// <param name="target">Object to populate.</param>
-        /// <param name="childPath">Selector of the child token in the <paramref name="token"/>. 
+        /// <param name="childPath">Selector of the child token in the <paramref name="token"/>.</param>
+        /// <param name="serializer">Serializer to use. If null, <see cref="DefaultSerializer"/> will be used.</param>
         /// If null, <paramref name="token"/> will be used directly.</param>
-        public static void PopulateObject<T>(this JToken token, T target, string childPath = null)
+        public static void PopulateObject<T>(this JToken token, T target, string childPath = null, JsonSerializer serializer = null)
         {
             JToken source = childPath != null ? token.SelectToken(childPath) : token;
             // sometimes body can be an array - if target is not an enumerable, ignore
@@ -40,7 +41,12 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             if (source == null)
                 return;
             using (JsonReader reader = source.CreateReader())
-                SerializationHelper.DefaultSerializer.Populate(reader, target);
+            {
+                if (serializer == null)
+                    SerializationHelper.DefaultSerializer.Populate(reader, target);
+                else
+                    serializer.Populate(reader, target);
+            }
         }
 
         /// <summary>Populates object by "flattening" common properties like "body" or "body.extended" into target object.</summary>
@@ -48,27 +54,29 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         /// <typeparam name="T">Type of the object.</typeparam>
         /// <param name="token">Token to use for populating.</param>
         /// <param name="target">Object to populate.</param>
-        public static void FlattenCommonProperties<T>(this JToken token, T target)
+        /// <param name="serializer">Serializer to use. If null, <see cref="DefaultSerializer"/> will be used.</param>
+        public static void FlattenCommonProperties<T>(this JToken token, T target, JsonSerializer serializer = null)
         {
-            token.PopulateObject(target, "body");
-            token.PopulateObject(target, "headers");
-            token.PopulateObject(target, "body.extended");
-            token.PopulateObject(target, "body.base");
+            token.PopulateObject(target, "body", serializer);
+            token.PopulateObject(target, "headers", serializer);
+            token.PopulateObject(target, "body.extended", serializer);
+            token.PopulateObject(target, "body.base", serializer);
         }
 
         /// <summary>Serializes Wolf message.</summary>
         /// <remarks>It's not recommended to use this class unless it's required for writing a custom serializer implementation.</remarks>
         /// <typeparam name="T">Type of the message.</typeparam>
         /// <param name="message">Message to serialize.</param>
+        /// <param name="serializer">Serializer to use. If null, <see cref="DefaultSerializer"/> will be used.</param>
         /// <returns>Serialized message object.</returns>
-        public static JObject SerializeJsonPayload<T>(this T message) where T : IWolfMessage
+        public static JObject SerializeJsonPayload<T>(this T message, JsonSerializer serializer = null) where T : IWolfMessage
         {
             JObject payload = new JObject();
-            JToken body = JToken.FromObject(message, SerializationHelper.DefaultSerializer);
+            JToken body = JToken.FromObject(message, serializer ?? SerializationHelper.DefaultSerializer);
             if (body.HasValues)
                 payload.Add(new JProperty("body", body));
             if (message is IHeadersWolfMessage headersMessage && headersMessage.Headers?.Any() == true)
-                payload.Add(new JProperty("headers", JToken.FromObject(headersMessage.Headers, SerializationHelper.DefaultSerializer)));
+                payload.Add(new JProperty("headers", JToken.FromObject(headersMessage.Headers, serializer ?? SerializationHelper.DefaultSerializer)));
             return payload;
         }
 
