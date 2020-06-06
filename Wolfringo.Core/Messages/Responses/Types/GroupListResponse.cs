@@ -10,5 +10,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>IDs of groups the user is in.</summary>
         [JsonProperty("body", ItemConverterType = typeof(EntityIdConverter))]
         public IEnumerable<uint> UserGroupIDs { get; private set; }
+
+        [JsonConstructor]
+        protected GroupListResponse() : base() { }
     }
 }

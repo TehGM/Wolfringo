@@ -9,5 +9,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>User's charms active or expired subscriptions.</summary>
         [JsonProperty("body")]
         public IEnumerable<WolfCharmSubscription> Charms { get; private set; }
+
+        [JsonConstructor]
+        protected UserCharmsListResponse() : base() { }
     }
 }

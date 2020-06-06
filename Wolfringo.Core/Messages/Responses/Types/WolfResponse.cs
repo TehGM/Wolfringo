@@ -15,5 +15,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Nested error message.</summary>
         [JsonProperty("subMessage", NullValueHandling = NullValueHandling.Ignore)]
         public string ErrorMessage { get; private set; }
+
+        [JsonConstructor]
+        protected WolfResponse() { }
     }
 }

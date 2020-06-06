@@ -40,5 +40,8 @@ namespace TehGM.Wolfringo.Messages.Responses
                     AddWithChildren(ref resultsList, achiv.ChildAchievements);
             }
         }
+
+        [JsonConstructor]
+        protected AchievementListResponse() : base() { }
     }
 }

@@ -8,5 +8,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Most recent group statistics.</summary>
         [JsonProperty("body")]
         public WolfGroupStatistics GroupStatistics { get; private set; }
+
+        [JsonConstructor]
+        protected GroupStatisticsResponse() : base() { }
     }
 }

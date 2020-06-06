@@ -8,5 +8,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>New audio config.</summary>
         [JsonProperty("body")]
         public WolfGroup.WolfGroupAudioConfig AudioConfig { get; private set; }
+
+        [JsonConstructor]
+        protected GroupAudioUpdateResponse() : base() { }
     }
 }

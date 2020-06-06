@@ -17,5 +17,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Was the message spam filtered?</summary>
         [JsonProperty("isSpam")]
         public bool SpamFiltered { get; private set; }
+
+        [JsonConstructor]
+        protected ChatResponse() : base() { }
     }
 }

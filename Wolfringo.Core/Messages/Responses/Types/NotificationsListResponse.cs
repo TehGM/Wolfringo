@@ -9,5 +9,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Notifications.</summary>
         [JsonProperty("body")]
         public IEnumerable<WolfNotification> Notifications { get; private set; }
+
+        [JsonConstructor]
+        protected NotificationsListResponse() : base() { }
     }
 }

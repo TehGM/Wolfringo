@@ -9,5 +9,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Charms.</summary>
         [JsonProperty("body")]
         public IEnumerable<WolfCharm> Charms { get; private set; }
+
+        [JsonConstructor]
+        protected CharmListResponse() : base() { }
     }
 }

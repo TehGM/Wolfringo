@@ -11,5 +11,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("body")]
         [JsonConverter(typeof(ExtractValuesOnlyConverter<WolfUser>))]
         public IEnumerable<WolfUser> UserProfiles { get; private set; }
+
+        [JsonConstructor]
+        protected UserProfileResponse() : base() { }
     }
 }

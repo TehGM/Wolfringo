@@ -8,5 +8,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Updated or created group profile.</summary>
         [JsonProperty("body")]
         public WolfGroup GroupProfile { get; private set; }
+
+        [JsonConstructor]
+        protected GroupEditResponse() : base() { }
     }
 }

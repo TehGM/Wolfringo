@@ -10,5 +10,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>IDs of contacts.</summary>
         [JsonProperty("body", ItemConverterType = typeof(EntityIdConverter))]
         public IEnumerable<uint> ContactIDs { get; private set; }
+
+        [JsonConstructor]
+        protected ContactListResponse() : base() { }
     }
 }

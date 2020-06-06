@@ -42,6 +42,9 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("privileges")]
         public int Privileges { get; private set; }
 
+        [JsonConstructor]
+        protected LoginResponse() : base() { }
+
         // TODO: not implemented yet: contactListBlockedState, groupMemeberCapabilities, contactListAuthState, charms
     }
 }

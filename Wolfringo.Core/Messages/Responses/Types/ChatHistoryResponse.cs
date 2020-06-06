@@ -10,5 +10,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Messages from history.</summary>
         [JsonProperty("body", ItemConverterType = typeof(ChatMessageConverter))]
         public IEnumerable<IChatMessage> Messages { get; private set; }
+
+        [JsonConstructor]
+        protected ChatHistoryResponse() : base() { }
     }
 }

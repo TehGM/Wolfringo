@@ -12,5 +12,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("body")]
         [JsonConverter(typeof(ObjectPropertiesDictionaryConverter<uint, DateTime>), "achievementId", "updateTime")]
         public IReadOnlyDictionary<uint, DateTime> UserAchievements { get; private set; }
+
+        [JsonConstructor]
+        protected UserAchievementListResponse() : base() { }
     }
 }

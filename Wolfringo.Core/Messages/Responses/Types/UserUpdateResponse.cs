@@ -8,5 +8,8 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Updated user profile.</summary>
         [JsonProperty("body")]
         public WolfUser UserProfile { get; private set; }
+
+        [JsonConstructor]
+        protected UserUpdateResponse() : base() { }
     }
 }
