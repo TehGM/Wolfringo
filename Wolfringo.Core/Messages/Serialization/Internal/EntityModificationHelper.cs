@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TehGM.Wolfringo.Utilities.Internal
+namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
     /// <summary>Internal utility class for modifying entities state.</summary>
     /// <remarks>It's not recommended to use this class at all, unless it's required for writing a custom client or serializer implementation.</remarks>
