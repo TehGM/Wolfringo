@@ -16,8 +16,6 @@ namespace TehGM.Wolfringo.Examples.HostedPingBot
             IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    // add example json - just as a presentation
-                    config.AddJsonFile("appsecrets-example.json", optional: true);
                     // add actual app secrets if exist - secrets should not be included in git repositories!
                     config.AddJsonFile("appsecrets.json", optional: true);
                     config.AddJsonFile($"appsecrets.{context.HostingEnvironment.EnvironmentName}.json", optional: true);

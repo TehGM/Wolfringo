@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Hosting;
@@ -25,7 +26,7 @@ namespace TehGM.Wolfringo.Examples.HostedPingBot
 
         private async void OnChatMessage(ChatMessage message)
         {
-            if (message.IsPrivateMessage)
+            if (message.IsPrivateMessage && message.IsText && message.Text.StartsWith("hello", StringComparison.OrdinalIgnoreCase))
                 await _client.RespondWithTextAsync(message, "Hello there!").ConfigureAwait(false);
         }
 
