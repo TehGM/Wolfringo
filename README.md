@@ -21,10 +21,12 @@ Preview version of this library is available as a [GitHub Package](https://githu
     ```
 3. Install package in your project
     ```cli
-    Install-Package Wolfringo
+    Install-Package Wolfringo -Source "TehGM's Github"
     ```
 
 See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) for more information about installing GitHub packages.
+
+> Note: The initial version of the package is published on nuget.org as unlisted to reserve name. However, other versions between 0.1.0 and 1.0.0 will not be published to nuget.org. For this reason, it's important to specify `-Source "TehGM's Github"` when installing the preview version.
 
 ## Usage example
 
