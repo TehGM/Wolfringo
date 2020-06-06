@@ -10,11 +10,21 @@ Library works with strongly-typed messages and responses, that are serialized wh
 
 ### Download
 
-This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library.
+> This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library.
 
 Preview version of this library is available as a [GitHub Package](https://github.com/TehGM/Wolfringo/packages/257862). Later versions will be available on nuget.org.
 
-See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) installation instructions to learn how to install a package hosted on GitHub.
+1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
+2. Run following commands to authenticate with GitHub Packages, replacing `<GithubUsername>` and `<GithubToken>` with your github username and generated PAT, respectively:
+    ```cli
+    dotnet nuget add aource https://nuget.pkg.github.com/TehGM/index.json-name -n "TehGM's Github" -u <GithubUsername> -p <GithubToken>
+    ```
+3. Install package in your project
+    ```cli
+    Install-Package Wolfringo
+    ```
+
+See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) for more information about installing GitHub packages.
 
 ## Usage example
 
