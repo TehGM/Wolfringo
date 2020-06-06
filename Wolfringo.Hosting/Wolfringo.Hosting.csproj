@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -8,6 +8,9 @@
     <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <RootNamespace>TehGM.Wolfringo.Hosting</RootNamespace>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
