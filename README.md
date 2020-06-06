@@ -17,11 +17,11 @@ Preview version of this library is available as a [GitHub Package](https://githu
 1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
 2. Run following commands to authenticate with GitHub Packages, replacing `<GithubUsername>` and `<GithubToken>` with your github username and generated PAT, respectively:
     ```cli
-    dotnet nuget add aource https://nuget.pkg.github.com/TehGM/index.json-name -n "TehGM's Github" -u <GithubUsername> -p <GithubToken>
+    dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json-name -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
     ```
 3. Install package in your project
     ```cli
-    Install-Package Wolfringo -Source "TehGM's Github"
+    Install-Package Wolfringo -Source "TehGM's GitHub"
     ```
 
 See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) for more information about installing GitHub packages.
