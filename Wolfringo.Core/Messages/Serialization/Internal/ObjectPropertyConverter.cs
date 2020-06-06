@@ -34,7 +34,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         {
             JToken token = JToken.Load(reader);
             token = token[_propName];
-            return token.ToObject(objectType);
+            return token.ToObject(objectType, serializer);
         }
     }
 }

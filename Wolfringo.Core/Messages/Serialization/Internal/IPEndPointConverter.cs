@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             IPEndPoint ep = (IPEndPoint)value;
             JObject jo = new JObject();
             jo.Add("Address", JToken.FromObject(ep.Address, serializer));
-            jo.Add("Port", ep.Port);
+            jo.Add("Port", JToken.FromObject(ep.Port, serializer));
             jo.WriteTo(writer);
         }
 
