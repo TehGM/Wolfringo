@@ -77,6 +77,9 @@ namespace TehGM.Wolfringo
         [JsonConverter(typeof(MinutesTimespanConverter))]
         public TimeSpan? UtcOffset { get; private set; }
 
+        [JsonConstructor]
+        protected WolfUser() { }
+
         public override bool Equals(object obj)
             => Equals(obj as WolfUser);
 

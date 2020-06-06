@@ -21,5 +21,8 @@ namespace TehGM.Wolfringo
         /// <summary>Charm ownership's expiration time.</summary>
         [JsonProperty("expireTime")]
         public DateTime? ExpirationTime { get; private set; }
+
+        [JsonConstructor]
+        protected WolfCharmSubscription() { }
     }
 }

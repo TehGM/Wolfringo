@@ -34,6 +34,9 @@ namespace TehGM.Wolfringo
         [JsonProperty("descriptionPhraseId")]
         public uint? DescriptionPhraseID { get; private set; }
 
+        [JsonConstructor]
+        protected WolfCharm() { }
+
         public override bool Equals(object obj)
             => Equals(obj as WolfCharm);
 

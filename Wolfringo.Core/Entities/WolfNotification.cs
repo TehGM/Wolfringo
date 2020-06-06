@@ -45,5 +45,8 @@ namespace TehGM.Wolfringo
         public int NewsStreamType { get; private set; }
         [JsonProperty("type")]
         public int Type { get; private set; }
+
+        [JsonConstructor]
+        protected WolfNotification() { }
     }
 }

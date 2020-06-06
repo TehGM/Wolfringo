@@ -116,6 +116,9 @@ namespace TehGM.Wolfringo
         [JsonProperty("topAction")]
         public IEnumerable<MessageStat> TopActionSenders { get; private set; }
 
+        [JsonConstructor]
+        protected WolfGroupStatistics() { }
+
         /// <summary>Group statistics trend.</summary>
         public interface ITrend
         {
@@ -132,6 +135,9 @@ namespace TehGM.Wolfringo
             public int Hour { get; private set; }
             /// <inheritdoc/>
             public int LinesCount { get; private set; }
+
+            [JsonConstructor]
+            protected HourlyTrend() { }
         }
 
         /// <summary>Messages trend per day.</summary>
@@ -142,6 +148,9 @@ namespace TehGM.Wolfringo
             public int Day { get; private set; }
             /// <inheritdoc/>
             public int LinesCount { get; private set; }
+
+            [JsonConstructor]
+            protected DailyTrend() { }
         }
 
         /// <summary>Group member statistic.</summary>
@@ -202,6 +211,9 @@ namespace TehGM.Wolfringo
             public int SadEmoticonsCount { get; private set; }
             [JsonProperty("packCount")]
             public int PacksCount { get; private set; }
+
+            [JsonConstructor]
+            protected MemberStats() { }
         }
 
         /// <summary>Word-per-line quantified statistic.</summary>
@@ -216,6 +228,9 @@ namespace TehGM.Wolfringo
             [JsonProperty("wpl")]
             // this is botched, and returns the same as text message percentage
             public double WordsPerLine { get; private set; }
+
+            [JsonConstructor]
+            protected WordPerLineStat() { }
         }
 
         /// <summary>Message quantified statistic.</summary>
@@ -228,6 +243,9 @@ namespace TehGM.Wolfringo
             /// <summary>Percentage of all messages.</summary>
             [JsonProperty("percentage")]
             public double Percentage { get; private set; }
+
+            [JsonConstructor]
+            protected MessageStat() { }
         }
 
         /// <summary>Text message quantified statistic.</summary>
@@ -236,6 +254,9 @@ namespace TehGM.Wolfringo
             /// <summary>Random related message.</summary>
             [JsonProperty("randomQuote")]
             public string RandomQuote { get; private set; }
+
+            [JsonConstructor]
+            protected TextMessageStat() : base() { }
         }
     }
 }

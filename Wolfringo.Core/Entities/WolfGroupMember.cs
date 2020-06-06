@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo
         public bool HasModPrivileges => HasAdminPrivileges || Capabilities == WolfGroupCapabilities.Mod;
 
         [JsonConstructor]
-        private WolfGroupMember() { }
+        protected WolfGroupMember() { }
 
         public WolfGroupMember(uint userID, WolfGroupCapabilities capabilities) : this()
         {

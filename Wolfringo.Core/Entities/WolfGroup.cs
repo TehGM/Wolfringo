@@ -82,6 +82,9 @@ namespace TehGM.Wolfringo
         [JsonProperty("longDescription", NullValueHandling = NullValueHandling.Ignore)]
         public string LongDescription { get; private set; }
 
+        [JsonConstructor]
+        protected WolfGroup() { }
+
         public override bool Equals(object obj)
             => Equals(obj as WolfGroup);
 
@@ -112,6 +115,9 @@ namespace TehGM.Wolfringo
             /// <summary>Type of the stage.</summary>
             [JsonProperty("stageId")]
             public WolfStageType? StageType { get; private set; }
+
+            [JsonConstructor]
+            protected WolfGroupAudioConfig() { }
         }
 
         /// <summary>Group audio channel active members count.</summary>
@@ -126,6 +132,9 @@ namespace TehGM.Wolfringo
             /// <summary>Count of users currently listening.</summary>
             [JsonProperty("consumerCount")]
             public int ListenersCount { get; private set; }
+
+            [JsonConstructor]
+            protected WolfGroupAudioCounts() { }
         }
     }
 }

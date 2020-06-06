@@ -37,6 +37,9 @@ namespace TehGM.Wolfringo
         [JsonProperty("client")]
         public int? Client { get; private set; }
 
+        [JsonConstructor]
+        protected WolfAchievement() { }
+
         public override bool Equals(object obj)
             => Equals(obj as WolfAchievement);
 
