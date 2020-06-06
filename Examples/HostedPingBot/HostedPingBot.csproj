@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TehGM.Wolfringo.Examples.HostedPingBot</RootNamespace>
+    <AssemblyName>Example_HostedPingBot</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsecrets-example.json" />
+    <None Remove="appsecrets.json" />
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsecrets-example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsecrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Wolfringo.Core\Wolfringo.Core.csproj" />
+    <ProjectReference Include="..\..\Wolfringo.Hosting\Wolfringo.Hosting.csproj" />
+    <ProjectReference Include="..\..\Wolfringo.Utilities\Wolfringo.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>

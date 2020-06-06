@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TehGM.Wolfringo.Examples.SimplePingBot</RootNamespace>
+    <AssemblyName>Example_SimplePingBot</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsecrets-example.json" />
+    <None Remove="appsecrets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsecrets-example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsecrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Wolfringo.Core\Wolfringo.Core.csproj" />
+    <ProjectReference Include="..\..\Wolfringo.Utilities\Wolfringo.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>
