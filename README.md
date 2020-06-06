@@ -122,7 +122,7 @@ Client automatically caches the entities based on message/response type. If you 
 #### Determining response type for sent message
 [WolfClient](Wolfringo.Core/WolfClient.cs) needs to know how to deserialize message's response, and to determine the type, it uses an [IResponseTypeResolver](Wolfringo.Core/Messages/Responses/IResponseTypeResolver.cs) to select the type that will be used with response serializer mappings. This interface can be passed into the client constructor. If null or none is passed in, [DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) will be used automatically.
 
-[IResponseTypeResolver](Wolfringo.Core/Messages/Responses/IResponseTypeResolver.cs) respects [ResponseType](Wolfringo.Core/Messages/Responses/ResponseTypeAttribute.cs) attribute on the message type, and will ignore the generic type passed in with `SendAsync` method. If the attribute is missing, default client implementation will instruct the type resolver to use provided generic type. Client will attempt to cast the response to the provided generic type regardless of the actual response type, and might return null.
+[DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) respects [ResponseType](Wolfringo.Core/Messages/Responses/ResponseTypeAttribute.cs) attribute on the message type, and will ignore the generic type passed in with `SendAsync` method. If the attribute is missing, default client implementation will instruct the type resolver to use provided generic type. Client will attempt to cast the response to the provided generic type regardless of the actual response type, and might return null.
 
 ## Further development
 > This library is still in preview, so breaking changes might be introduced with any version until 1.0.0 release.
@@ -134,7 +134,7 @@ Client automatically caches the entities based on message/response type. If you 
 - Avatar setting is not supported, due to Wolf protocol not supporting it yet.
 - Spam filter settings is not supported.
 
-### Reporting a bug or requesting a feature?
+### Contributing
 In case you want to report a bug or request a feature, open a new [Issue](https://github.com/TehGM/Wolfringo/issues).
 
 ## License
