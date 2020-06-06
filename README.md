@@ -4,9 +4,9 @@
 
 This is a .NET library for WOLF (previously Palringo).
 
-This library is designed with extensibility through Dependancy Injection in mind, and is compatible with ASP.NET Core and other .NET Core Hosting scenarios through [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package.
+This library is designed with extensibility through Dependency Injection in mind, and is compatible with ASP.NET Core and other .NET Core Hosting scenarios through [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package.
 
-Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](https://github.com/TehGM/Wolfringo/packages/257846) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with Wolfringo package.
+Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](https://github.com/TehGM/Wolfringo/packages/257846) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with [Wolfringo](https://github.com/TehGM/Wolfringo/packages/257862) meta-package.
 
 ### Download
 
@@ -17,7 +17,7 @@ Preview version of this library is available as a [GitHub Package](https://githu
 1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
 2. Run following commands to authenticate with GitHub Packages, replacing `<GithubUsername>` and `<GithubToken>` with your github username and generated PAT, respectively:
     ```cli
-    dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json-name -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
+    dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
     ```
 3. Install package in your project
     ```cli
@@ -85,7 +85,7 @@ The reconnector class will automatically reconnect the client until reconnection
 
 If the reconnector behaviour is not sufficent for your use-case, listen to client's Disconnected event to implement own behaviour.
 
-> Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](Wolfringo.Hosting) package. This wrapper has reconnection logic built-in.
+> Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package. This wrapper has reconnection logic built-in.
 
 ### .NET Core Host
 
