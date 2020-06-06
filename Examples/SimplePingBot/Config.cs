@@ -4,6 +4,8 @@ using System.Text.Json;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {
+    /// <summary>Example simple configuration class.</summary>
+    /// <remarks>Pushing application secrets to a repository is a bad idea, therefore it's recommended to have a configuration class that reads configuration file instead.</remarks>
     class Config
     {
         [JsonProperty("username")]

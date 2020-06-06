@@ -6,6 +6,12 @@ using TehGM.Wolfringo.Messages;
 
 namespace TehGM.Wolfringo.Examples.HostedPingBot
 {
+    /// <summary>Example message handler.</summary>
+    /// <remarks><para>In .NET Core Host scenario, classes that use <see cref="IHostedWolfClient"/> should be registered as services. This allows other services, like <see cref="IHostedWolfClient"/> or
+    /// others to be injected via constructor. This class shows a simple example how this can be achieved.</para>
+    /// <para>This class implements <see cref="IHostedService"/>, even though it's start and stop methods do nothing. This allows for registration of the service using AddHostedService (look at code of <see cref="Program"/> for an example.
+    /// Services added as hosted service will be created when the host starts - otherwise this service wouldn't be created at all, and thus not work.
+    /// For more info on hosted services, see <see href="https://docs.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/background-tasks-with-ihostedservice">Microsoft Docs</see>.</para></remarks>
     public class HostedMessageHandler : IHostedService
     {
         private readonly IHostedWolfClient _client;
@@ -23,9 +29,9 @@ namespace TehGM.Wolfringo.Examples.HostedPingBot
                 await _client.RespondWithTextAsync(message, "Hello there!").ConfigureAwait(false);
         }
 
+        // Implementing IHostedService ensures this class is created on start
         Task IHostedService.StartAsync(CancellationToken cancellationToken)
             => Task.CompletedTask;
-
         Task IHostedService.StopAsync(CancellationToken cancellationToken)
             => Task.CompletedTask;
     }
