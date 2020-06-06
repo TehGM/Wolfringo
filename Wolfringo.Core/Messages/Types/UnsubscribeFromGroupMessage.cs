@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public IEnumerable<uint> GroupIDs { get; private set; }
 
         [JsonConstructor]
-        private UnsubscribeFromGroupMessage() { }
+        protected UnsubscribeFromGroupMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to unsubscribe from.</param>

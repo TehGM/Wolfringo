@@ -21,7 +21,7 @@ namespace TehGM.Wolfringo.Messages
         public WolfGroupCapabilities Capabilities { get; private set; }
 
         [JsonConstructor]
-        private GroupAdminMessage() { }
+        protected GroupAdminMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of group member to perform action on.</param>

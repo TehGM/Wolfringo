@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Messages
         public IEnumerable<uint> CharmIDs { get; private set; }
 
         [JsonConstructor]
-        private CharmListMessage() { }
+        protected CharmListMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="charmIDs">List of charms IDs to request. Use null to request all.</param>

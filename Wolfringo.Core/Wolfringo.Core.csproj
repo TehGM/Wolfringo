@@ -20,6 +20,7 @@
     <None Remove="Messages\MessageCommands.cs~RF2758d29.TMP" />
     <None Remove="Messages\Serialization\Internal\UserIdConverter.cs~RF85dc853.TMP" />
     <None Remove="Messages\Serialization\Internal\ValueOrPropertyConverter.cs~RF2c6f4d2.TMP" />
+    <None Remove="Messages\Types\ContactListMessage.cs~RF5225c22.TMP" />
   </ItemGroup>
 
   <ItemGroup>

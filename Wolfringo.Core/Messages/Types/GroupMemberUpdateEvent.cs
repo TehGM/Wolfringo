@@ -20,6 +20,6 @@ namespace TehGM.Wolfringo.Messages
         public WolfGroupCapabilities Capabilities { get; private set; }
 
         [JsonConstructor]
-        private GroupMemberUpdateEvent() { }
+        protected GroupMemberUpdateEvent() { }
     }
 }

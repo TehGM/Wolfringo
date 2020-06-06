@@ -23,24 +23,24 @@ namespace TehGM.Wolfringo.Messages
 
         // json data
         /// <inheritdoc/>
-        public string FlightID { get; protected set; }
+        public string FlightID { get; private set; }
         /// <inheritdoc/>
-        public Guid? ID { get; protected set; }
+        public Guid? ID { get; private set; }
         /// <inheritdoc/>
-        public bool IsGroupMessage { get; protected set; }
+        public bool IsGroupMessage { get; private set; }
         /// <inheritdoc/>
-        public string MimeType { get; protected set; }
+        public string MimeType { get; private set; }
         /// <inheritdoc/>
-        public DateTime? Timestamp { get; protected set; }
+        public DateTime? Timestamp { get; private set; }
         /// <inheritdoc/>
-        public uint? SenderID { get; protected set; }
+        public uint? SenderID { get; private set; }
         /// <inheritdoc/>
         public uint RecipientID { get; private set; }
 
         // binary data
         /// <inheritdoc/>
         [JsonIgnore]
-        public IReadOnlyCollection<byte> RawData { get; protected set; }
+        public IReadOnlyCollection<byte> RawData { get; private set; }
         /// <summary>ID of the user that invoked the group action.</summary>
         [JsonIgnore]
         public uint? ActionInvokerID

@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
 
         [JsonConstructor]
-        private UserAchievementListMessage() { }
+        protected UserAchievementListMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of the user to get achievements of.</param>

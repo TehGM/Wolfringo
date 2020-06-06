@@ -37,7 +37,7 @@ namespace TehGM.Wolfringo.Messages
         public IEnumerable<string> RequestEntities { get; private set; }
 
         [JsonConstructor]
-        private GroupProfileMessage() { }
+        protected GroupProfileMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupIDs">IDs of groups to request.</param>

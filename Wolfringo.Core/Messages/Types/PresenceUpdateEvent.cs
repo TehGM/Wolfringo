@@ -20,6 +20,6 @@ namespace TehGM.Wolfringo.Messages
         public WolfOnlineState OnlineState { get; private set; }
 
         [JsonConstructor]
-        private PresenceUpdateEvent() { }
+        protected PresenceUpdateEvent() { }
     }
 }

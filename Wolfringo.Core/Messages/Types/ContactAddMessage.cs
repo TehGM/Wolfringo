@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
 
         [JsonConstructor]
-        private ContactAddMessage() { }
+        protected ContactAddMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of the user to add.</param>

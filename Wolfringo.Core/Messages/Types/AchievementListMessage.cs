@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public WolfLanguage Language { get; private set; }
 
         [JsonConstructor]
-        private AchievementListMessage() { }
+        protected AchievementListMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="language">Language of achievements.</param>

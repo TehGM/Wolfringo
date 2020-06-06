@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Messages
         public WolfOnlineState OnlineState { get; private set; }
 
         [JsonConstructor]
-        private OnlineStateUpdateMessage() { }
+        protected OnlineStateUpdateMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="onlineState">Online state to set.</param>

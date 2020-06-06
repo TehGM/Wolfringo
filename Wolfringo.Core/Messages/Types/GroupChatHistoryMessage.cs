@@ -37,7 +37,7 @@ namespace TehGM.Wolfringo.Messages
         public bool RequestChronologicalOrder { get; private set; }
 
         [JsonConstructor]
-        private GroupChatHistoryMessage() { }
+        protected GroupChatHistoryMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupId">ID of the group.</param>

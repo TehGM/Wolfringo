@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Messages
         public uint? UserID { get; private set; }
 
         [JsonConstructor]
-        private GroupLeaveMessage() { }
+        protected GroupLeaveMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to leave.</param>

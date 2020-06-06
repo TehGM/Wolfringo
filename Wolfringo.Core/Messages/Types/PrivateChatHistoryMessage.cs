@@ -30,7 +30,7 @@ namespace TehGM.Wolfringo.Messages
         public DateTime? BeforeTime { get; private set; }
 
         [JsonConstructor]
-        private PrivateChatHistoryMessage() { }
+        protected PrivateChatHistoryMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of the user.</param>

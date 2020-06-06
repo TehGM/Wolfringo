@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public uint GroupID { get; private set; }
 
         [JsonConstructor]
-        private GroupStatisticsMessage() { }
+        protected GroupStatisticsMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to get statistics of.</param>

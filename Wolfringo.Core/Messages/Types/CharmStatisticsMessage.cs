@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
 
         [JsonConstructor]
-        private CharmStatisticsMessage() { }
+        protected CharmStatisticsMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userId">ID of user to request charms statistics of.</param>

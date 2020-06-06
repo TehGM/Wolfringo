@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Messages
         public IReadOnlyDictionary<int, uint> SelectedCharmsIDs { get; private set; }
 
         [JsonConstructor]
-        private UserCharmsSelectMessage() { }
+        protected UserCharmsSelectMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="charmsPositionsAndIDs">Positions and IDs of charms to set as selected.</param>

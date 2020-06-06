@@ -27,7 +27,7 @@ namespace TehGM.Wolfringo.Messages
         public uint? UpdatingUserID { get; private set; }
 
         [JsonConstructor]
-        private GroupAudioUpdateMessage() { }
+        protected GroupAudioUpdateMessage() { }
 
         public class Builder
         {

@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
 
         [JsonConstructor]
-        private BlockDeleteMessage() { }
+        protected BlockDeleteMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of user to unblock.</param>

@@ -16,9 +16,12 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }
 
+        [JsonConstructor]
+        protected ContactListMessage() { }
+
         /// <summary>Creates a message instance.</summary>
         /// <param name="subscribe">Subscribe to contacts' profile updates?</param>
-        public ContactListMessage(bool subscribe = true)
+        public ContactListMessage(bool subscribe) : this()
         {
             this.SubscribeToUpdates = subscribe;
         }

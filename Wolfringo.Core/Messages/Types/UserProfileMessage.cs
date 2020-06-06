@@ -34,7 +34,7 @@ namespace TehGM.Wolfringo.Messages
         public bool SubscribeToUpdates { get; private set; }
 
         [JsonConstructor]
-        private UserProfileMessage() { }
+        protected UserProfileMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userIDs">IDs of users to request.</param>

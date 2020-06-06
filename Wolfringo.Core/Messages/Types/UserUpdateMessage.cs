@@ -47,7 +47,7 @@ namespace TehGM.Wolfringo
         public IEnumerable<string> Links { get; private set; }
 
         [JsonConstructor]
-        private UserUpdateMessage() { }
+        protected UserUpdateMessage() { }
 
         public class Builder
         {

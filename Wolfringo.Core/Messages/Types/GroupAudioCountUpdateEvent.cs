@@ -20,6 +20,6 @@ namespace TehGM.Wolfringo.Messages
         public int ListenersCount { get; private set; }
 
         [JsonConstructor]
-        private GroupAudioCountUpdateEvent() { }
+        protected GroupAudioCountUpdateEvent() { }
     }
 }

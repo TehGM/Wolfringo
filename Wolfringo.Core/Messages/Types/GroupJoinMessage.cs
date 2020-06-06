@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo.Messages
         public WolfGroupCapabilities? Capabilities { get; private set; }
 
         [JsonConstructor]
-        private GroupJoinMessage() { }
+        protected GroupJoinMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to join.</param>

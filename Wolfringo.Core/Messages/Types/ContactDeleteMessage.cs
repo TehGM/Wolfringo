@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
 
         [JsonConstructor]
-        private ContactDeleteMessage() { }
+        protected ContactDeleteMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of the user to remove.</param>

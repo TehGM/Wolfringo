@@ -41,7 +41,7 @@ namespace TehGM.Wolfringo.Messages
         public string LongDescription { get; private set; }
 
         [JsonConstructor]
-        private GroupCreateMessage() { }
+        protected GroupCreateMessage() { }
 
         public class Builder
         {

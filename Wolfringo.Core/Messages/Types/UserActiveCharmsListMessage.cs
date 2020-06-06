@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
 
         [JsonConstructor]
-        private UserActiveCharmsListMessage() { }
+        protected UserActiveCharmsListMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of the user to get active charms of.</param>

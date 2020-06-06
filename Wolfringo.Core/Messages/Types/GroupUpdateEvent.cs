@@ -17,6 +17,6 @@ namespace TehGM.Wolfringo.Messages
         public string Hash { get; private set; }
 
         [JsonConstructor]
-        private GroupUpdateEvent() { }
+        protected GroupUpdateEvent() { }
     }
 }

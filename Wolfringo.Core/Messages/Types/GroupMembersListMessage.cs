@@ -27,7 +27,7 @@ namespace TehGM.Wolfringo.Messages
         public bool SubscribeToUpdates { get; private set; }
 
         [JsonConstructor]
-        private GroupMembersListMessage() { }
+        protected GroupMembersListMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to get members of.</param>

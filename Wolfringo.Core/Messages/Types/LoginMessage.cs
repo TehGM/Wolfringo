@@ -24,13 +24,16 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("md5Password")]
         private readonly bool _useMd5 = true;
         [JsonProperty("type")]
-        private string _loginType = "email";
+        private readonly string _loginType = "email";
+
+        [JsonConstructor]
+        protected LoginMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="login">Email to login with.</param>
         /// <param name="password">Password to use when logging in.</param>
         /// <param name="isPasswordAlreadyHashed">If false, constructor will hash the provided password; if false, password will be sent as provided.</param>
-        public LoginMessage(string login, string password, bool isPasswordAlreadyHashed = false)
+        public LoginMessage(string login, string password, bool isPasswordAlreadyHashed = false) : this()
         {
             if (string.IsNullOrWhiteSpace(login))
                 throw new ArgumentNullException(nameof(login));

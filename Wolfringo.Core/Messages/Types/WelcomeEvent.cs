@@ -53,6 +53,6 @@ namespace TehGM.Wolfringo.Messages
         }
 
         [JsonConstructor]
-        private WelcomeEvent() { }
+        protected WelcomeEvent() { }
     }
 }
