@@ -11,6 +11,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
+    <Description>Extension for Wolfringo library, providing support for ASP.NET Core and other .NET Core Hosting scenarios.</Description>
   </PropertyGroup>
 
   <ItemGroup>
