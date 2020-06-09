@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TehGM.Wolfringo.Utilities
+namespace TehGM.Wolfringo.Utilities.Interactive
 {
     /// <summary>Listener allowing to await next message that matches specified conditions.</summary>
     /// <typeparam name="T">Type of message</typeparam>

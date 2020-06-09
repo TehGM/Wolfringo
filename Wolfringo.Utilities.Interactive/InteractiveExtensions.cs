@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Utilities.Interactive;
 
 namespace TehGM.Wolfringo.Utilities
 {
