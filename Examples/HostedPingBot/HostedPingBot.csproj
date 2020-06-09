@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Wolfringo.Core\Wolfringo.Core.csproj" />
     <ProjectReference Include="..\..\Wolfringo.Hosting\Wolfringo.Hosting.csproj" />
+    <ProjectReference Include="..\..\Wolfringo.Utilities.Interactive\Wolfringo.Utilities.Interactive.csproj" />
     <ProjectReference Include="..\..\Wolfringo.Utilities\Wolfringo.Utilities.csproj" />
   </ItemGroup>
 

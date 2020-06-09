@@ -107,7 +107,7 @@ See [Example project](Examples/HostedPingBot) for a full example.
 ### Errors when sending
 If server responds with an error, [MessageSendingException](Wolfringo.Core/MessageSendingException.cs) will be thrown and provide a error details. To handle errors, use try-catch block when sending any message.
 
-If logging is configured in the client, the client will log the error regardless of how the exception gets handled by the caller.
+This exception will not be logged automatically by the client.
 
 ## Extending the client
 #### Serializer maps

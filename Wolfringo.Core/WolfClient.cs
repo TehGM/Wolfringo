@@ -221,7 +221,10 @@ namespace TehGM.Wolfringo
 
         /// <inheritdoc/>
         public virtual void Dispose()
-            => (_client as IDisposable)?.Dispose();
+        {
+            this.Clear();
+            (_client as IDisposable)?.Dispose();
+        }
 
         /// <summary>Clears all connection-bound variables.</summary>
         protected virtual void Clear()
