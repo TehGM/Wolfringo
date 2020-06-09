@@ -15,7 +15,7 @@
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <dependencies>
         <group>
-            <dependency id="Wolfringo.Core" version="0.1.1" />
+            <dependency id="Wolfringo.Core" version="0.1.2" />
             <dependency id="Wolfringo.Utilities" version="0.1.1" />
             <dependency id="Wolfringo.Hosting" version="0.1.0" />
             <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
