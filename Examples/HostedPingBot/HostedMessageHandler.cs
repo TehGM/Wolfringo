@@ -27,7 +27,7 @@ namespace TehGM.Wolfringo.Examples.HostedPingBot
         private async void OnChatMessage(ChatMessage message)
         {
             if (message.IsPrivateMessage && message.IsText && message.Text.StartsWith("hello", StringComparison.OrdinalIgnoreCase))
-                await _client.RespondWithTextAsync(message, "Hello there!").ConfigureAwait(false);
+                await _client.ReplyTextAsync(message, "Hello there!").ConfigureAwait(false);
         }
 
         // Implementing IHostedService ensures this class is created on start
