@@ -2,11 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
-    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities and Hosting libraries.</description>
+    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities, Utilities.Interactive and Hosting libraries.</description>
     <tags>wolf palringo</tags>
     <projectUrl>https://github.com/TehGM/Wolfringo</projectUrl>
     <repository type="git" url="https://github.com/TehGM/Wolfringo" />
@@ -16,7 +16,7 @@
     <dependencies>
         <group>
             <dependency id="Wolfringo.Core" version="0.1.2" />
-            <dependency id="Wolfringo.Utilities" version="0.1.1" />
+            <dependency id="Wolfringo.Utilities" version="0.1.2" />
             <dependency id="Wolfringo.Hosting" version="0.1.0" />
             <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
         </group>
