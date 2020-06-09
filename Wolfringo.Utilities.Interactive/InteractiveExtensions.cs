@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 
-namespace TehGM.Wolfringo.Utilities.Interactive
+namespace TehGM.Wolfringo.Utilities
 {
-    /// <summary>Set of helper methods to make work with <see cref="IInteractiveListener{T}"/> easier.</summary>
+    /// <summary>Set of helper methods to make work with <see cref="IWolfClient"/> combined with <see cref="IInteractiveListener{T}"/> easier.</summary>
     public static class InteractiveExtensions
     {
         #region CancellationToken versions
