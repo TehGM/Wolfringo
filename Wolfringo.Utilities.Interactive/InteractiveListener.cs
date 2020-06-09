@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Utilities.Interactive
         }
 
         /// <inheritdoc/>
-        public async Task<T> WaitNextAsync(IWolfClient client, CancellationToken cancellationToken = default)
+        public async Task<T> AwaitNextAsync(IWolfClient client, CancellationToken cancellationToken = default)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))

@@ -10,6 +10,6 @@ namespace TehGM.Wolfringo.Utilities.Interactive
         /// <summary>Awaits next message of given type.</summary>
         /// <param name="client">Client to await message from.</param>
         /// <returns>Next message.</returns>
-        Task<T> WaitNextAsync(IWolfClient client, CancellationToken cancellationToken = default);
+        Task<T> AwaitNextAsync(IWolfClient client, CancellationToken cancellationToken = default);
     }
 }
