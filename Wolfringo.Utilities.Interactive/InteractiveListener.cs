@@ -8,13 +8,13 @@ namespace TehGM.Wolfringo.Utilities
     /// <typeparam name="T">Type of message</typeparam>
     public class InteractiveListener<T> : IInteractiveListener<T> where T : IWolfMessage
     {
-        private readonly Func<T, bool> _match;
+        private readonly Func<T, bool> _conditions;
 
         /// <summary>Creates a new interactive listener.</summary>
-        /// <param name="match">Conditions that received message needs to match.</param>
-        public InteractiveListener(Func<T, bool> match)
+        /// <param name="conditions">Conditions that received message needs to match.</param>
+        public InteractiveListener(Func<T, bool> conditions)
         {
-            this._match = match;
+            this._conditions = conditions;
         }
 
         /// <inheritdoc/>
@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo.Utilities
                 Action<T> callback = null;
                 callback = message =>
                 {
-                    if (!this._match(message))
+                    if (!this._conditions(message))
                         return;
                     client.RemoveMessageListener<T>(callback);
                     tcs.TrySetResult(message);
