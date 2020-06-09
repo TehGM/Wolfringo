@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities.Interactive;
 
-namespace TehGM.Wolfringo.Utilities
+namespace TehGM.Wolfringo
 {
     /// <summary>Set of helper methods to make work with <see cref="IWolfClient"/> combined with <see cref="IInteractiveListener{T}"/> easier.</summary>
     public static class InteractiveExtensions
