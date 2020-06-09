@@ -14,7 +14,9 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="conditions">Conditions that received message needs to match.</param>
         /// <returns>Next message.</returns>
-        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan)"/>
+        /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task<T> AwaitNextAsync<T>(this IWolfClient client, Func<T, bool> conditions, 
             CancellationToken cancellationToken = default) where T : IWolfMessage
         {
@@ -26,6 +28,9 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="userID">User ID to await the message from.</param>
         /// <returns>Next message.</returns>
+        /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, CancellationToken)"/>
         public static Task<ChatMessage> AwaitNextPrivateByUserAsync(this IWolfClient client, uint userID, 
             CancellationToken cancellationToken = default)
             => AwaitNextAsync<ChatMessage>(client, 
@@ -38,6 +43,9 @@ namespace TehGM.Wolfringo
         /// <param name="userID">User ID to await the message from.</param>
         /// <param name="groupID">Group ID to await the message from.</param>
         /// <returns>Next message.</returns>
+        /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, CancellationToken)"/>
         public static Task<ChatMessage> AwaitNextGroupByUserAsync(this IWolfClient client, uint userID, uint groupID,
             CancellationToken cancellationToken = default)
             => AwaitNextAsync<ChatMessage>(client,
@@ -49,6 +57,9 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="groupID">Group ID to await the message from.</param>
         /// <returns>Next message.</returns>
+        /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
+        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, CancellationToken)"/>
         public static Task<ChatMessage> AwaitNextInGroupAsync(this IWolfClient client, uint groupID,
             CancellationToken cancellationToken = default)
             => AwaitNextAsync<ChatMessage>(client,
@@ -67,7 +78,9 @@ namespace TehGM.Wolfringo
         /// <param name="conditions">Conditions that received message needs to match.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
         /// <returns>Next message.</returns>
-        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, CancellationToken)"/>
+        /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
         public static async Task<T> AwaitNextAsync<T>(this IWolfClient client, Func<T, bool> conditions,
             TimeSpan timeout, CancellationToken cancellationToken = default) where T : IWolfMessage
         {
@@ -95,6 +108,9 @@ namespace TehGM.Wolfringo
         /// <param name="userID">User ID to await the message from.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
         /// <returns>Next message.</returns>
+        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
         public static Task<ChatMessage> AwaitNextPrivateByUserAsync(this IWolfClient client, uint userID,
             TimeSpan timeout, CancellationToken cancellationToken = default)
             => AwaitNextAsync<ChatMessage>(client,
@@ -112,6 +128,9 @@ namespace TehGM.Wolfringo
         /// <param name="groupID">Group ID to await the message from.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
         /// <returns>Next message.</returns>
+        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
         public static Task<ChatMessage> AwaitNextGroupByUserAsync(this IWolfClient client, uint userID, uint groupID,
             TimeSpan timeout, CancellationToken cancellationToken = default)
             => AwaitNextAsync<ChatMessage>(client,
@@ -128,6 +147,9 @@ namespace TehGM.Wolfringo
         /// <param name="groupID">Group ID to await the message from.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
         /// <returns>Next message.</returns>
+        /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, TimeSpan, CancellationToken)"/>
+        /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
         public static Task<ChatMessage> AwaitNextInGroupAsync(this IWolfClient client, uint groupID,
             TimeSpan timeout, CancellationToken cancellationToken = default)
             => AwaitNextAsync<ChatMessage>(client,
