@@ -825,21 +825,21 @@ namespace TehGM.Wolfringo
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
         /// <param name="text">Content of the message.</param>
         /// <returns>Message sending response.</returns>
-        public static Task<ChatResponse> RespondWithTextAsync(this IWolfClient client, ChatMessage incomingMessage, string text, CancellationToken cancellationToken = default)
+        public static Task<ChatResponse> ReplyTextAsync(this IWolfClient client, ChatMessage incomingMessage, string text, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
         /// <summary>Sends an image response message to group or user.</summary>
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>
         /// <returns>Message sending response.</returns>
-        public static Task<ChatResponse> RespondWithImageAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
+        public static Task<ChatResponse> ReplyImageAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Image, imageBytes), cancellationToken);
         /// <summary>Sends a voice response message to group or user.</summary>
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
         /// <param name="voiceBytes">Bytes of the voice to send.</param>
         /// <returns>Message sending response.</returns>
-        public static Task<ChatResponse> RespondWithVoiceAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
+        public static Task<ChatResponse> ReplyVoiceAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
         #endregion

@@ -66,7 +66,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             {
                 // reply only to private text messages that start with "hello"
                 if (msg.IsPrivateMessage && msg.IsText && msg.Text.StartsWith("hello", StringComparison.OrdinalIgnoreCase))
-                    await _client.RespondWithTextAsync(msg, "Hello there!");
+                    await _client.ReplyTextAsync(msg, "Hello there!");
             }
         }
 
@@ -89,7 +89,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             // reply only to private text messages that start with "hello"
             if (message.IsPrivateMessage && message.IsText && message.Text.StartsWith("hello", StringComparison.OrdinalIgnoreCase))
             {
-                await _client.RespondWithTextAsync(message, "Hello there (using dispatcher)!!!");
+                await _client.ReplyTextAsync(message, "Hello there (using dispatcher)!!!");
                 // an example showing how listener can be removed
                 _client.RemoveMessageListener<ChatMessage>(OnChatMessage);
             }
