@@ -122,7 +122,7 @@ namespace TehGM.Wolfringo.Hosting
                 this._client = new WolfClient(options.ServerURL, options.Device, token, _log, _messageSerializers, _responseSerializers, _responseTypeResolver);
 
             // sub to events
-            this._client.AddMessageListener<WelcomeEvent>(OnWelcome);
+            this._client.AddMessageListener((Action<WelcomeEvent>)this.OnWelcome);
             this._client.Disconnected += OnClientDisconnected;
             this._client.Connected += OnClientConntected;
             this._client.ErrorRaised += OnClientErrorRaised;
@@ -212,8 +212,8 @@ namespace TehGM.Wolfringo.Hosting
                 else loggedInNickname = welcome.LoggedInUser.Nickname;
 
                 // subscribe to all the things
-                await this.SendAsync(new SubscribeToPmMessage(), _connectionCancellationToken).ConfigureAwait(false);
-                await this.SendAsync(new SubscribeToGroupMessage(), _connectionCancellationToken).ConfigureAwait(false);
+                await (this).SendAsync(new SubscribeToPmMessage(), _connectionCancellationToken).ConfigureAwait(false);
+                await (this).SendAsync(new SubscribeToGroupMessage(), _connectionCancellationToken).ConfigureAwait(false);
                 _log?.LogInformation("Automatically logged in as {Nickname}", loggedInNickname);
             }
             catch (Exception ex)
@@ -410,6 +410,8 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
             => (_client as IWolfClientCacheAccessor)?.GetCachedAchievement(language, id);
+        WolfGroup IWolfClientCacheAccessor.GetCachedGroup(string name)
+            => (_client as IWolfClientCacheAccessor)?.GetCachedGroup(name);
 
         /* UTILS */
         /// <summary>Throws exception if underlying client is not connected.</summary>
