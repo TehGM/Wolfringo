@@ -165,12 +165,12 @@ namespace TehGM.Wolfringo.Hosting
             // disconnect and dispose it
             try
             {
-                if (disposingClient.IsConnected)
+                if (disposingClient?.IsConnected == true)
                     await disposingClient.DisconnectAsync().ConfigureAwait(false);
             }
             finally
             {
-                disposingClient.Dispose();
+                disposingClient?.Dispose();
             }
         }
 
