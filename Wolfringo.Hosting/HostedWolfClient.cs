@@ -313,6 +313,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <see cref="HostedWolfClientOptions.AutoReconnect"/> is set to false.</para></remarks>
         private async void OnClientDisconnected(object sender, EventArgs e)
         {
+            TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
             // lock first to avoid race conditions
             await _clientLock.WaitAsync().ConfigureAwait(false);
             try
@@ -320,7 +321,6 @@ namespace TehGM.Wolfringo.Hosting
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
                 if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
                     return;
-                TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
                 if (delay > TimeSpan.Zero)
                     await Task.Delay(delay).ConfigureAwait(false);
                 await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
@@ -335,6 +335,7 @@ namespace TehGM.Wolfringo.Hosting
                 while (reconnectAttempts < _options.CurrentValue.AutoReconnectAttempts)
                 {
                     reconnectAttempts++;
+                    await Task.Delay(delay).ConfigureAwait(false);
                     try
                     {
                         await DisposeClientAsync().ConfigureAwait(false);
