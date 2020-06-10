@@ -43,7 +43,7 @@ namespace TehGM.Wolfringo.Messages
         protected GroupProfileMessage() { }
 
         /// <summary>Creates a message instance.</summary>
-        /// <param name="groupIDs">IDs of groups to request.</param>
+        /// <param name="groupIDs">IDs of the groups to request.</param>
         /// <param name="requestEntities">Names of entities to request.</param>
         /// <param name="subscribe">Subscribe to groups' profile updates?</param>
         public GroupProfileMessage(IEnumerable<uint> groupIDs, IEnumerable<string> requestEntities, bool subscribe = true)
@@ -66,7 +66,11 @@ namespace TehGM.Wolfringo.Messages
         public GroupProfileMessage(IEnumerable<uint> groupIDs, bool subscribe = true)
             : this(groupIDs, DefaultRequestEntities, subscribe) { }
 
-        public GroupProfileMessage(string groupName, IEnumerable<string> requestEntities, bool subscribe = true)
+        /// <summary>Creates a message instance.</summary>
+        /// <param name="groupName">Name of the group to request.</param>
+        /// <param name="requestEntities">Names of entities to request.</param>
+        /// <param name="subscribe">Subscribe to groups' profile updates?</param>
+        public GroupProfileMessage(string groupName, IEnumerable<string> requestEntities, bool subscribe = true) : this()
         {
             if (string.IsNullOrWhiteSpace(groupName))
                 throw new ArgumentNullException(nameof(groupName));
@@ -79,6 +83,9 @@ namespace TehGM.Wolfringo.Messages
             this.RequestGroupName = groupName ;
         }
 
+        /// <summary>Creates a message instance.</summary>
+        /// <param name="groupName">Name of the group to request.</param>
+        /// <param name="subscribe">Subscribe to groups' profile updates?</param>
         public GroupProfileMessage(string groupName, bool subscribe = true)
             : this(groupName, DefaultRequestEntities, subscribe) { }
     }
