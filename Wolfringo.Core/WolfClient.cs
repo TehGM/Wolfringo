@@ -231,6 +231,7 @@ namespace TehGM.Wolfringo
         {
             this._cts?.Cancel();
             this._cts?.Dispose();
+            this._cts = null;
             this.CurrentUserID = null;
             this.Caches?.ClearAll();
         }

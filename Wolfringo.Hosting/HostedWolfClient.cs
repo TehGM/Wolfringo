@@ -433,6 +433,7 @@ namespace TehGM.Wolfringo.Hosting
         {
             _manuallyDisconnected = true;
             _client?.Dispose();
+            _client = null;
             _callbacks?.Clear();
             _clientLock?.Dispose();
         }
