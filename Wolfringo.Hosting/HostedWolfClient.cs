@@ -262,7 +262,7 @@ namespace TehGM.Wolfringo.Hosting
         public async Task ConnectAsync(CancellationToken cancellationToken = default)
         {
             // public connection should always be done with locking to avoid race conditions
-            await _clientLock.WaitAsync().ConfigureAwait(false);
+            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 await this.ConnectInternalAsync(cancellationToken).ConfigureAwait(false);
@@ -292,7 +292,7 @@ namespace TehGM.Wolfringo.Hosting
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
             // public disconnection should always be done with locking to avoid race conditions
-            await _clientLock.WaitAsync().ConfigureAwait(false);
+            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 ThrowIfNotConnected();
@@ -385,7 +385,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
-            await _clientLock.WaitAsync().ConfigureAwait(false);
+            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 ThrowIfNotConnected();
