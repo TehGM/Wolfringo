@@ -180,7 +180,7 @@ namespace TehGM.Wolfringo.Hosting
 
         /// <summary>Disposes underlying client.</summary>
         /// <remarks>If underlying client is still connected, a disconnection will be attempted. Auto-reconnection won't be attempted.</remarks>
-        private async Task DisposeClientAsync()
+        private async Task DisposeClientAsync(CancellationToken cancellationToken = default)
         {
             if (this._client == null)
                 return;
@@ -192,7 +192,7 @@ namespace TehGM.Wolfringo.Hosting
             try
             {
                 if (disposingClient?.IsConnected == true)
-                    await disposingClient.DisconnectAsync().ConfigureAwait(false);
+                    await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -343,14 +343,14 @@ namespace TehGM.Wolfringo.Hosting
         {
             TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
             // lock first to avoid race conditions
-            await _clientLock.WaitAsync().ConfigureAwait(false);
+            await _clientLock.WaitAsync(_connectionCancellationToken).ConfigureAwait(false);
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
                 if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
                     return;
                 if (delay > TimeSpan.Zero)
-                    await Task.Delay(delay).ConfigureAwait(false);
+                    await Task.Delay(delay, _connectionCancellationToken).ConfigureAwait(false);
                 await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -363,10 +363,10 @@ namespace TehGM.Wolfringo.Hosting
                 while (reconnectAttempts < _options.CurrentValue.AutoReconnectAttempts)
                 {
                     reconnectAttempts++;
-                    await Task.Delay(delay).ConfigureAwait(false);
+                    await Task.Delay(delay, _connectionCancellationToken).ConfigureAwait(false);
                     try
                     {
-                        await DisposeClientAsync().ConfigureAwait(false);
+                        await DisposeClientAsync(_connectionCancellationToken).ConfigureAwait(false);
                         await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
                     }
                     catch (Exception ex2)
