@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TehGM.Wolfringo.Utilities.Internal
 {
@@ -17,6 +19,10 @@ namespace TehGM.Wolfringo.Utilities.Internal
             _items.TryGetValue(id, out TEntity result);
             return result;
         }
+
+        /// <inheritdoc/>
+        public IEnumerable<TEntity> Find(Func<TEntity, bool> selector)
+            => _items.Values.Where(selector);
 
         /// <inheritdoc/>
         public void Remove(uint id)
@@ -63,6 +69,14 @@ namespace TehGM.Wolfringo.Utilities.Internal
             if (_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache) && subCache != null)
                 return subCache.Get(id);
             return default;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<TEntity> Find(TKey key, Func<TEntity, bool> selector)
+        {
+            if (_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache) && subCache != null)
+                return subCache.Find(selector);
+            return Enumerable.Empty<TEntity>();
         }
 
         /// <inheritdoc/>

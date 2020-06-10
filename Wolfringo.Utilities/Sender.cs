@@ -401,6 +401,34 @@ namespace TehGM.Wolfringo
             return groups.FirstOrDefault();
         }
 
+        /// <summary>Get profile of specified group.</summary>
+        /// <remarks><para>If group is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para>
+        /// <para>Group will be retrieved with members list populated.</para></remarks>
+        /// <param name="groupID">ID of group to retrieve.</param>
+        /// <returns>Retrieved group.</returns>
+        /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
+        /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetGroupStatisticsAsync(IWolfClient, uint, CancellationToken)"/>
+        public static async Task<WolfGroup> GetGroupAsync(this IWolfClient client, string groupName, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(groupName))
+                throw new ArgumentNullException(nameof(groupName));
+
+            string trimmedName = groupName.Trim();
+
+            // check cache first
+            WolfGroup result = null;
+            if (client is IWolfClientCacheAccessor cache)
+                result = cache.GetCachedGroup(trimmedName);
+            if (result != null)
+                return result;
+
+            // if cache misses, need to request from the server
+            GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
+                new GroupProfileMessage(trimmedName), cancellationToken).ConfigureAwait(false);
+            return response?.GroupProfiles?.FirstOrDefault();
+        }
+
         /// <summary>Retrieve profiles of groups current user is in.</summary>
         /// <remarks><para>Groups already cached will be retrieved from cache. Others will be requested from the server.</para>
         /// <para>Groups will be retrieved with members list populated.</para></remarks>

@@ -27,8 +27,11 @@ namespace TehGM.Wolfringo.Messages
         };
 
         /// <summary>IDs of requested groups.</summary>
-        [JsonProperty("idList")]
+        [JsonProperty("idList", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<uint> RequestGroupIDs { get; private set; }
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        public string RequestGroupName { get; private set; }
+
         /// <summary>Subscribe to groups' profile updates?</summary>
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }
@@ -54,6 +57,7 @@ namespace TehGM.Wolfringo.Messages
             this.RequestEntities = new ReadOnlyCollection<string>((requestEntities as IList<string>) ?? requestEntities.ToArray());
             this.RequestGroupIDs = new ReadOnlyCollection<uint>((groupIDs as IList<uint>) ?? groupIDs.ToArray());
             this.SubscribeToUpdates = subscribe;
+            this.RequestGroupName = null;
         }
 
         /// <summary>Creates a message instance.</summary>
@@ -61,5 +65,21 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="subscribe">Subscribe to groups' profile updates?</param>
         public GroupProfileMessage(IEnumerable<uint> groupIDs, bool subscribe = true)
             : this(groupIDs, DefaultRequestEntities, subscribe) { }
+
+        public GroupProfileMessage(string groupName, IEnumerable<string> requestEntities, bool subscribe = true)
+        {
+            if (string.IsNullOrWhiteSpace(groupName))
+                throw new ArgumentNullException(nameof(groupName));
+            if (requestEntities?.Any() != true)
+                throw new ArgumentException("Must request at least one entity type", nameof(requestEntities));
+
+            this.RequestEntities = new ReadOnlyCollection<string>((requestEntities as IList<string>) ?? requestEntities.ToArray());
+            this.RequestGroupIDs = null;
+            this.SubscribeToUpdates = subscribe;
+            this.RequestGroupName = groupName ;
+        }
+
+        public GroupProfileMessage(string groupName, bool subscribe = true)
+            : this(groupName, DefaultRequestEntities, subscribe) { }
     }
 }
