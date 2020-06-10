@@ -34,6 +34,10 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>How many times should client attempt to reconnect.</summary>
         /// <remarks>Defaults to 10 times.</remarks>
         public int AutoReconnectAttempts { get; set; } = 10;
+        /// <summary>Whether the application should close on critical error.</summary>
+        /// <remarks><para>Setting this to true might be useful if the application is running as a service, so it's auto-restarted.</para>
+        /// <para>Defaults to false.</para></remarks>
+        public bool CloseOnCriticalError { get; set; } = false;
 
         // caching
         /// <summary>Whether users caching should be enabled.</summary>

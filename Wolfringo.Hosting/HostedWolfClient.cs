@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿#if !NETCOREAPP3_0
+using Microsoft.AspNetCore.Hosting;
+#endif
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -44,6 +47,15 @@ namespace TehGM.Wolfringo.Hosting
         private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ITokenProvider _tokenProvider;
+#if NETCOREAPP3_0
+        private readonly IHostApplicationLifetime _hostLifetime;
+#else
+        private readonly IApplicationLifetime _hostLifetime;
+#endif
+
+        // event registrations
+        private readonly IDisposable _exitingEventRegistration;
+        private readonly IDisposable _optionsChangeEventRegistration;
 
         // IWolfClient
         /// <inheritdoc/>
@@ -70,7 +82,13 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ITokenProvider tokenProvider,
             ISerializerMap<string, IMessageSerializer> messageSerializers, ISerializerMap<Type, IResponseSerializer> responseSerializers,
-            IResponseTypeResolver responseTypeResolver)
+            IResponseTypeResolver responseTypeResolver,
+#if NETCOREAPP3_0
+            IHostApplicationLifetime hostLifetime
+#else
+            IApplicationLifetime hostLifetime
+#endif
+            )
         {
             this._callbacks = new List<IMessageCallback>();
 
@@ -80,9 +98,17 @@ namespace TehGM.Wolfringo.Hosting
             this._responseSerializers = responseSerializers;
             this._responseTypeResolver = responseTypeResolver;
             this._tokenProvider = tokenProvider;
+            this._hostLifetime = hostLifetime;
+
+            // disconnect when closing
+            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(() =>
+            {
+                if (this.IsConnected)
+                    _ = this.DisconnectAsync();
+            });
 
             // when options change, we need to dispose existing client, and create new one with new options
-            _options.OnChange(async (opts) =>
+            this._optionsChangeEventRegistration = _options.OnChange(async (opts) =>
             {
                 // lock to avoid race conditions
                 await _clientLock.WaitAsync().ConfigureAwait(false);
@@ -218,7 +244,7 @@ namespace TehGM.Wolfringo.Hosting
             }
             catch (Exception ex)
             {
-                _log?.LogCritical(ex, "Exception occured when automatically logging in");
+                _log?.LogError(ex, "Exception occured when automatically logging in");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
             }
         }
@@ -237,6 +263,8 @@ namespace TehGM.Wolfringo.Hosting
             {
                 _log?.LogCritical(ex, "Exception occured when trying to connect as a hosted client");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+                if (_options.CurrentValue.CloseOnCriticalError)
+                    _hostLifetime?.StopApplication();
             }
             return Task.CompletedTask;
         }
@@ -251,7 +279,7 @@ namespace TehGM.Wolfringo.Hosting
             }
             catch (Exception ex)
             {
-                _log?.LogCritical(ex, "Exception occured when trying to disconnect as a hosted client");
+                _log?.LogError(ex, "Exception occured when trying to disconnect as a hosted client");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
             }
             return Task.CompletedTask;
@@ -349,6 +377,8 @@ namespace TehGM.Wolfringo.Hosting
                         {
                             _log?.LogCritical(ex2, message + ", this was the last attempt");
                             this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
+                            if (_options.CurrentValue.CloseOnCriticalError)
+                                _hostLifetime?.StopApplication();
                         }
                         else
                             _log.LogWarning(ex2, message);
@@ -448,6 +478,8 @@ namespace TehGM.Wolfringo.Hosting
         public void Dispose()
         {
             _manuallyDisconnected = true;
+            _optionsChangeEventRegistration?.Dispose();
+            _exitingEventRegistration?.Dispose();
             _client?.Dispose();
             _client = null;
             _callbacks?.Clear();
