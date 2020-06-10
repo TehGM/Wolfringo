@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Utilities;
+using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Examples.SimplePingBot
 {

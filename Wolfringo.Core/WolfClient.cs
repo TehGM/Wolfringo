@@ -231,6 +231,7 @@ namespace TehGM.Wolfringo
         {
             this._cts?.Cancel();
             this._cts?.Dispose();
+            this._cts = null;
             this.CurrentUserID = null;
             this.Caches?.ClearAll();
         }
@@ -432,6 +433,9 @@ namespace TehGM.Wolfringo
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
             => GetCachedGroupInternal(id);
         /// <inheritdoc/>
+        WolfGroup IWolfClientCacheAccessor.GetCachedGroup(string name)
+            => GetCachedGroupInternal(name);
+        /// <inheritdoc/>
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
             => GetCachedCharmInternal(id);
         /// <inheritdoc/>
@@ -467,6 +471,21 @@ namespace TehGM.Wolfringo
             WolfGroup result = this.Caches?.GroupsCache?.Get(id);
             if (result != null)
                 Log?.LogTrace("Group {GroupID} found in cache", id);
+            return result;
+        }
+        /// <summary>Get group from cache.</summary>
+        /// <param name="name">ID of the group.</param>
+        /// <returns>Cached group if found; otherwise null.</returns>
+        /// <exception cref="InvalidOperationException">Not connected.</exception>
+        protected virtual WolfGroup GetCachedGroupInternal(string name)
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            if (!this.GroupsCachingEnabled)
+                return null;
+            WolfGroup result = this.Caches?.GroupsCache?.Find(group => group.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (result != null)
+                Log?.LogTrace("Group {GroupName} found in cache", name);
             return result;
         }
         /// <summary>Get charm from cache.</summary>
@@ -614,7 +633,7 @@ namespace TehGM.Wolfringo
                 // update group member list when one joined
                 else if (message is GroupJoinMessage groupMemberJoined)
                 {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID);
+                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
                     try
                     {
                         if (cachedGroup != null)

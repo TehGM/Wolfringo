@@ -307,7 +307,7 @@ namespace TehGM.Wolfringo
         /* GROUPS */
         #region Groups
         // join
-        /// <summary>Join group.</summary>
+        /// <summary>Join a group.</summary>
         /// <param name="groupID">ID of group to join.</param>
         /// <param name="password">Password to use when joining.</param>
         /// <returns>Joined group's profile.</returns>
@@ -320,7 +320,7 @@ namespace TehGM.Wolfringo
             await client.SendAsync(new GroupJoinMessage(groupID, password), cancellationToken).ConfigureAwait(false);
             return await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
         }
-        /// <summary>Join group.</summary>
+        /// <summary>Join a group.</summary>
         /// <param name="groupID">ID of group to join.</param>
         /// <returns>Joined group's profile.</returns>
         /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -329,9 +329,31 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         public static Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
             => client.JoinGroupAsync(groupID, string.Empty, cancellationToken);
+        /// <summary>Join group.</summary>
+        /// <param name="groupName">ID of the group to join.</param>
+        /// <param name="password">Password to use when joining.</param>
+        /// <returns>Joined group's profile.</returns>
+        /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
+        public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, string groupName, string password, CancellationToken cancellationToken = default)
+        {
+            await client.SendAsync(new GroupJoinMessage(groupName, password), cancellationToken).ConfigureAwait(false);
+            return await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
+        }
+        /// <summary>Join a group.</summary>
+        /// <param name="groupName">Name of the group to join.</param>
+        /// <returns>Joined group's profile.</returns>
+        /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
+        public static Task<WolfGroup> JoinGroupAsync(this IWolfClient client, string groupName, CancellationToken cancellationToken = default)
+            => client.JoinGroupAsync(groupName, string.Empty, cancellationToken);
 
         // leave
-        /// <summary>Leave group.</summary>
+        /// <summary>Leave a group.</summary>
         /// <param name="groupID">ID of group to leave.</param>
         /// <seealso cref="JoinGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -399,6 +421,34 @@ namespace TehGM.Wolfringo
         {
             IEnumerable<WolfGroup> groups = await client.GetGroupsAsync(new uint[] { groupID }, cancellationToken).ConfigureAwait(false);
             return groups.FirstOrDefault();
+        }
+
+        /// <summary>Get profile of specified group.</summary>
+        /// <remarks><para>If group is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para>
+        /// <para>Group will be retrieved with members list populated.</para></remarks>
+        /// <param name="groupID">ID of group to retrieve.</param>
+        /// <returns>Retrieved group.</returns>
+        /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
+        /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetGroupStatisticsAsync(IWolfClient, uint, CancellationToken)"/>
+        public static async Task<WolfGroup> GetGroupAsync(this IWolfClient client, string groupName, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(groupName))
+                throw new ArgumentNullException(nameof(groupName));
+
+            string trimmedName = groupName.Trim();
+
+            // check cache first
+            WolfGroup result = null;
+            if (client is IWolfClientCacheAccessor cache)
+                result = cache.GetCachedGroup(trimmedName);
+            if (result != null)
+                return result;
+
+            // if cache misses, need to request from the server
+            GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
+                new GroupProfileMessage(trimmedName), cancellationToken).ConfigureAwait(false);
+            return response?.GroupProfiles?.FirstOrDefault();
         }
 
         /// <summary>Retrieve profiles of groups current user is in.</summary>

@@ -11,6 +11,10 @@
         /// <param name="id">ID of the group.</param>
         /// <returns>Cached group if found; otherwise null.</returns>
         WolfGroup GetCachedGroup(uint id);
+        /// <summary>Get group from cache.</summary>
+        /// <param name="name">Name of the group.</param>
+        /// <returns>Cached group if found; otherwise null.</returns>
+        WolfGroup GetCachedGroup(string name);
         /// <summary>Get charm from cache.</summary>
         /// <param name="id">ID of the charm.</param>
         /// <returns>Cached charm if found; otherwise null.</returns>

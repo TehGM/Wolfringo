@@ -1,4 +1,7 @@
-﻿namespace TehGM.Wolfringo.Utilities.Internal
+﻿using System;
+using System.Collections.Generic;
+
+namespace TehGM.Wolfringo.Utilities.Internal
 {
     /// <summary>Caches Wolf entities.</summary>
     /// <typeparam name="TEntity">Type of cached entity.</typeparam>
@@ -8,6 +11,10 @@
         /// <param name="id">ID of entity to retrieve.</param>
         /// <returns>Retrieved entity if found; otherwise null (or default).</returns>
         TEntity Get(uint id);
+        /// <summary>Retrieves cached entities.</summary>
+        /// <param name="selector">Query to select entities by.</param>
+        /// <returns>Enumerable of entities matching <paramref name="selector"/>.</returns>
+        IEnumerable<TEntity> Find(Func<TEntity, bool> selector);
         /// <summary>Stores entity in cache, replacing any entity with the same ID.</summary>
         /// <param name="item">Entity to store.</param>
         void AddOrReplace(TEntity item);
@@ -28,6 +35,11 @@
         /// <param name="id">ID of entity to retrieve.</param>
         /// <returns>Retrieved entity if found; otherwise null (or default).</returns>
         TEntity Get(TKey key, uint id);
+        /// <summary>Retrieves cached entities.</summary>
+        /// <param name="selector">Query to select entities by.</param>
+        /// <param name="key">Key of the group for the entities.</param>
+        /// <returns>Enumerable of entities matching <paramref name="selector"/>.</returns>
+        IEnumerable<TEntity> Find(TKey key, Func<TEntity, bool> selector);
         /// <summary>Stores entity in cache, replacing any entity with the same ID and Key.</summary>
         /// <param name="key">Key of the group for the entity.</param>
         /// <param name="item">Entity to store.</param>

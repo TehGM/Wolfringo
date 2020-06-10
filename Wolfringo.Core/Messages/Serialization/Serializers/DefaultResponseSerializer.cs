@@ -21,12 +21,18 @@ namespace TehGM.Wolfringo.Messages.Serialization
             responseJson.FlattenCommonProperties(result);
             return (IWolfResponse)result;
         }
-        
+
         /// <summary>Gets response json, stripping off wrapping array.</summary>
         /// <param name="responseData">Serialized response data.</param>
         /// <returns>Core response payload.</returns>
         protected static JToken GetResponseJson(SerializedMessageData responseData)
-            => (responseData.Payload is JArray) ? responseData.Payload.First : responseData.Payload;
+            => GetResponseJson(responseData.Payload);
+
+        /// <summary>Gets response json, stripping off wrapping array.</summary>
+        /// <param name="responseData">Serialized raw response payload.</param>
+        /// <returns>Core response payload.</returns>
+        protected static JToken GetResponseJson(JToken payload)
+            => payload is JArray ? payload.First : payload;
 
         /// <summary>Throws if response type is not supported by this serializer.</summary>
         /// <param name="responseType">Type of the response.</param>
