@@ -157,6 +157,7 @@ namespace TehGM.Wolfringo.Socket
                 }
             }
             catch (TaskCanceledException) { }
+            catch (WebSocketException ex) when (ex.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely) { }
             catch (Exception ex)
             {
                 ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
