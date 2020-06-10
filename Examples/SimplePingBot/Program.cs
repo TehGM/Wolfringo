@@ -83,6 +83,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             WolfUser user = await _client.GetCurrentUserAsync();
             // same applies to groups - always call GetGroupsAsync!
             IEnumerable<WolfGroup> groups = await _client.GetCurrentUserGroupsAsync();
+
+            WolfGroup g = await _client.JoinGroupAsync("gm test");
         }
 
         private static async void OnChatMessage(ChatMessage message)

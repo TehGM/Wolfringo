@@ -10,8 +10,11 @@ namespace TehGM.Wolfringo.Messages
         public string Command => MessageCommands.GroupMemberAdd;
 
         /// <summary>ID of the group.</summary>
-        [JsonProperty("groupId")]
-        public uint GroupID { get; private set; }
+        [JsonProperty("groupId", NullValueHandling = NullValueHandling.Ignore)]
+        public uint? GroupID { get; private set; }
+        /// <summary>Name of the group.</summary>
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        public string GroupName { get; private set; }
 
         // sending only
         /// <summary>Group password.</summary>
@@ -34,6 +37,17 @@ namespace TehGM.Wolfringo.Messages
         public GroupJoinMessage(uint groupID, string password = null) : this()
         {
             this.GroupID = groupID;
+            this.GroupName = null;
+            this.Password = password ?? string.Empty;
+        }
+
+        /// <summary>Creates a message instance.</summary>
+        /// <param name="groupID">ID of the group to join.</param>
+        /// <param name="password">Password to use when joining the group.</param>
+        public GroupJoinMessage(string groupName, string password = null) : this()
+        {
+            this.GroupID = null;
+            this.GroupName = groupName;
             this.Password = password ?? string.Empty;
         }
     }

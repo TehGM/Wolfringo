@@ -633,7 +633,7 @@ namespace TehGM.Wolfringo
                 // update group member list when one joined
                 else if (message is GroupJoinMessage groupMemberJoined)
                 {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID);
+                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
                     try
                     {
                         if (cachedGroup != null)
