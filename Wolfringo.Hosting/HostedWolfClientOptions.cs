@@ -31,6 +31,9 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>How long the client should wait before automatically reconnecting.</summary>
         /// <remarks>Defaults to 500ms.</remarks>
         public TimeSpan AutoReconnectDelay { get; set; } = TimeSpan.FromSeconds(0.5);
+        /// <summary>How many times should client attempt to reconnect.</summary>
+        /// <remarks>Defaults to 10 times.</remarks>
+        public int AutoReconnectAttempts { get; set; } = 10;
 
         // caching
         /// <summary>Whether users caching should be enabled.</summary>

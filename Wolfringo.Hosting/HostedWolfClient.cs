@@ -330,15 +330,28 @@ namespace TehGM.Wolfringo.Hosting
                 // strip client and retry
                 _log?.LogWarning(ex, "Failed to auto-reconnect, recreating underlying client");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
-                try
+
+                int reconnectAttempts = 1;
+                while (reconnectAttempts < _options.CurrentValue.AutoReconnectAttempts)
                 {
-                    await DisposeClientAsync().ConfigureAwait(false);
-                    await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex2)
-                {
-                    _log?.LogCritical(ex2, "Exception occured when attempting to reconnect with recreated client");
-                    this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
+                    reconnectAttempts++;
+                    try
+                    {
+                        await DisposeClientAsync().ConfigureAwait(false);
+                        await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception ex2)
+                    {
+                        bool lastAttempt = reconnectAttempts == _options.CurrentValue.AutoReconnectAttempts;
+                        const string message = "Exception occured when attempting to reconnect with recreated client";
+                        if (lastAttempt)
+                        {
+                            _log?.LogCritical(ex2, message + ", this was the last attempt");
+                            this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
+                        }
+                        else
+                            _log.LogWarning(ex2, message);
+                    }
                 }
             }
             finally
