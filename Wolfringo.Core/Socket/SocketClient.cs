@@ -158,7 +158,6 @@ namespace TehGM.Wolfringo.Socket
             }
             catch (TaskCanceledException) { }
             catch (OperationCanceledException) { }
-            catch (WebSocketException ex) when (ex.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely) { }
             catch (Exception ex)
             {
                 ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
@@ -194,11 +193,7 @@ namespace TehGM.Wolfringo.Socket
             WebSocketReceiveResult result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
             // cancel further execution if connection was closed
             if (result.MessageType == WebSocketMessageType.Close)
-            {
-                if (result.CloseStatus != WebSocketCloseStatus.NormalClosure)
-                    throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely, result.CloseStatusDescription);
                 return null;
-            }
 
             byte[] contents = null;
             int bytesRead = 0;
