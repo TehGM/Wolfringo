@@ -118,7 +118,7 @@ namespace TehGM.Wolfringo.Socket
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     // trigger cancellation if client has been disposed or is in closed state
-                    if (_websocketClient == null || _websocketClient.State == WebSocketState.Closed)
+                    if (_websocketClient == null || _websocketClient.State == WebSocketState.Closed || _websocketClient.State == WebSocketState.Aborted)
                         _connectionCts?.Cancel();
                     // if closing was initiated by the server, acknowledge it before cancelling
                     else if (_websocketClient?.State == WebSocketState.CloseReceived)
