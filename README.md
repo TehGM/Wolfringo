@@ -54,7 +54,7 @@ async void OnChatMessage(ChatMessage message)
         // get user profile
         WolfUser user = await client.GetUserAsync(message.SenderID.Value);
         // respond to the user (in group if it's a group message, in PM if it's a private message)
-        await client.RespondWithTextAsync(message, $"Hello, {user.Nickname}!");
+        await client.ReplyTextAsync(message, $"Hello, {user.Nickname}!");
         // message someone bragging about being hello'ed!
         if (message.IsGroupMessage)
         {
