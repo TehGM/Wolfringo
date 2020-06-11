@@ -94,6 +94,7 @@ namespace TehGM.Wolfringo
         protected WolfEntityCacheContainer Caches { get; set; }
 
         private CancellationTokenSource _cts;
+        private readonly SemaphoreSlim _lock;
 
         #region Constructors
         /// <summary>Creates a new wolf client instance.</summary>
@@ -145,6 +146,9 @@ namespace TehGM.Wolfringo
             this._client.Connected += OnClientConnected;
             this._client.Disconnected += OnClientDisconnected;
             this._client.ErrorRaised += OnClientError;
+
+            // init locks
+            this._lock = new SemaphoreSlim(1, 1);
         }
 
         /// <summary>Creates a new wolf client instance.</summary>
@@ -224,6 +228,7 @@ namespace TehGM.Wolfringo
         {
             this.Clear();
             (_client as IDisposable)?.Dispose();
+            this._lock?.Dispose();
         }
 
         /// <summary>Clears all connection-bound variables.</summary>
@@ -327,11 +332,11 @@ namespace TehGM.Wolfringo
         /// <param name="message">Sent message.</param>
         /// <param name="response">Response received.</param>
         /// <param name="rawResponse">Raw response data.</param>
-        protected virtual Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
+        protected virtual async Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             // don't do anything if response is not successful
             if (response.IsError())
-                return Task.CompletedTask;
+                return;
 
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
@@ -345,86 +350,91 @@ namespace TehGM.Wolfringo
             else if (message is ChatMessage chatMsg && response is ChatResponse)
                 rawResponse?.Payload?.First?.PopulateObject(chatMsg, "body");
 
-            if (this.UsersCachingEnabled)
+            await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
             {
-                // update users cache if it's user profile message
-                if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
+                if (this.UsersCachingEnabled)
                 {
-                    foreach (WolfUser user in userProfileResponse.UserProfiles)
-                        this.Caches?.UsersCache?.AddOrReplaceIfChanged(user);
-                }
-            }
-
-            if (this.GroupsCachingEnabled)
-            {
-                // update groups cache if it's group profile message
-                if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
-                {
-                    foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
+                    // update users cache if it's user profile message
+                    if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
                     {
-                        // repopulate group members if new group profile came without them
-                        WolfGroup existingGroup = this.Caches?.GroupsCache?.Get(group.ID);
-                        if (existingGroup != null && existingGroup.Members?.Any() == true && group.Members?.Any() != true)
-                            EntityModificationHelper.ReplaceAllGroupMembers(group, existingGroup.Members.Values);
-                        // replace cached group itself
-                        this.Caches?.GroupsCache?.AddOrReplaceIfChanged(group);
+                        foreach (WolfUser user in userProfileResponse.UserProfiles)
+                            this.Caches?.UsersCache?.AddOrReplaceIfChanged(user);
                     }
                 }
 
-                // update group member list if one was requested
-                else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMembersListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
+                if (this.GroupsCachingEnabled)
                 {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
-                    try
+                    // update groups cache if it's group profile message
+                    if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
                     {
+                        foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
+                        {
+                            // repopulate group members if new group profile came without them
+                            WolfGroup existingGroup = this.Caches?.GroupsCache?.Get(group.ID);
+                            if (existingGroup != null && existingGroup.Members?.Any() == true && group.Members?.Any() != true)
+                                EntityModificationHelper.ReplaceAllGroupMembers(group, existingGroup.Members.Values);
+                            // replace cached group itself
+                            this.Caches?.GroupsCache?.AddOrReplaceIfChanged(group);
+                        }
+                    }
+
+                    // update group member list if one was requested
+                    else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMembersListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
+                        try
+                        {
+                            if (cachedGroup != null)
+                                EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
+                        }
+                        catch (NotSupportedException)
+                        {
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                        }
+                    }
+
+                    // add group if it was created
+                    else if (response is GroupEditResponse groupEditResponse && message is GroupCreateMessage)
+                        this.Caches?.GroupsCache.AddOrReplaceIfChanged(groupEditResponse.GroupProfile);
+
+                    // update group audio config
+                    else if (message is GroupAudioUpdateResponse groupAudioUpdateResponse && groupAudioUpdateResponse.AudioConfig != null)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdateResponse.AudioConfig.GroupID);
                         if (cachedGroup != null)
-                            EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
+                        {
+                            Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
+                            rawResponse.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
+                        }
                     }
-                    catch (NotSupportedException)
+                }
+
+
+                if (this.CharmsCachingEnabled)
+                {
+                    // update charms cache if it's charms list
+                    if (response is CharmListResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
                     {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                        foreach (WolfCharm charm in listCharmsResponse.Charms)
+                            this.Caches?.CharmsCache?.AddOrReplace(charm);
                     }
                 }
 
-                // add group if it was created
-                else if (response is GroupEditResponse groupEditResponse && message is GroupCreateMessage)
-                    this.Caches?.GroupsCache.AddOrReplaceIfChanged(groupEditResponse.GroupProfile);
-
-                // update group audio config
-                else if (message is GroupAudioUpdateResponse groupAudioUpdateResponse && groupAudioUpdateResponse.AudioConfig != null)
+                if (this.AchievementsCachingEnabled)
                 {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdateResponse.AudioConfig.GroupID);
-                    if (cachedGroup != null)
+                    if (response is AchievementListResponse achievementListResponse && achievementListResponse.Achievements?.Any() == true &&
+                        message is AchievementListMessage achievementListMessage)
                     {
-                        Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
-                        rawResponse.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
+                        foreach (WolfAchievement achiv in achievementListResponse.GetFlattenedAchievementList())
+                            this.Caches?.AchievementsCache?.AddOrReplace(achievementListMessage.Language, achiv);
                     }
                 }
             }
-
-
-            if (this.CharmsCachingEnabled)
+            finally
             {
-                // update charms cache if it's charms list
-                if (response is CharmListResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
-                {
-                    foreach (WolfCharm charm in listCharmsResponse.Charms)
-                        this.Caches?.CharmsCache?.AddOrReplace(charm);
-                }
+                _lock.Release();
             }
-
-            if (this.AchievementsCachingEnabled)
-            {
-                if (response is AchievementListResponse achievementListResponse && achievementListResponse.Achievements?.Any() == true &&
-                    message is AchievementListMessage achievementListMessage)
-                {
-                    foreach (WolfAchievement achiv in achievementListResponse.GetFlattenedAchievementList())
-                        this.Caches?.AchievementsCache?.AddOrReplace(achievementListMessage.Language, achiv);
-                }
-            }
-
-            // TODO: handle other types
-            return Task.CompletedTask;
         }
         #endregion
 
@@ -576,113 +586,121 @@ namespace TehGM.Wolfringo
             if (message is WelcomeEvent welcome && welcome.LoggedInUser != null)
                 this.CurrentUserID = welcome.LoggedInUser.ID;
 
-            // update user presence
-            if (this.UsersCachingEnabled)
+            await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
             {
-                if (message is PresenceUpdateEvent presenceUpdate)
+                // update user presence
+                if (this.UsersCachingEnabled)
                 {
-                    WolfUser cachedUser = this.Caches?.UsersCache?.Get(presenceUpdate.UserID);
-                    if (cachedUser != null)
+                    if (message is PresenceUpdateEvent presenceUpdate)
                     {
-                        Log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
-                        rawMessage.Payload.PopulateObject(cachedUser, "body");
+                        WolfUser cachedUser = this.Caches?.UsersCache?.Get(presenceUpdate.UserID);
+                        if (cachedUser != null)
+                        {
+                            Log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
+                            rawMessage.Payload.PopulateObject(cachedUser, "body");
+                        }
+                    }
+                    else if (message is UserUpdateEvent userUpdatedEvent)
+                    {
+                        WolfUser cachedUser = this.Caches?.UsersCache?.Get(userUpdatedEvent.UserID);
+                        if (cachedUser == null || string.IsNullOrWhiteSpace(userUpdatedEvent.Hash) || cachedUser.Hash != userUpdatedEvent.Hash)
+                        {
+                            Log?.LogTrace("Updating user {UserID}", userUpdatedEvent.UserID);
+                            await SendAsync<UserProfileResponse>(
+                                new UserProfileMessage(new uint[] { userUpdatedEvent.UserID }, true, true),
+                                cancellationToken).ConfigureAwait(false);
+                        }
                     }
                 }
-                else if (message is UserUpdateEvent userUpdatedEvent)
+
+                if (this.GroupsCachingEnabled)
                 {
-                    WolfUser cachedUser = this.Caches?.UsersCache?.Get(userUpdatedEvent.UserID);
-                    if (cachedUser == null || string.IsNullOrWhiteSpace(userUpdatedEvent.Hash) || cachedUser.Hash != userUpdatedEvent.Hash)
+                    // update group audio count
+                    if (message is GroupAudioCountUpdateEvent groupAudioCountUpdate)
                     {
-                        Log?.LogTrace("Updating user {UserID}", userUpdatedEvent.UserID);
-                        await SendAsync<UserProfileResponse>(
-                            new UserProfileMessage(new uint[] { userUpdatedEvent.UserID }, true, true),
-                            cancellationToken).ConfigureAwait(false);
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioCountUpdate.GroupID);
+                        if (cachedGroup != null)
+                        {
+                            Log?.LogTrace("Updating cached group {GroupID} audio counts", cachedGroup.ID);
+                            rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
+                        }
+                    }
+
+                    // update group audio config
+                    if (message is GroupAudioUpdateMessage groupAudioUpdate)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdate.GroupID);
+                        if (cachedGroup != null)
+                        {
+                            Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
+                            rawMessage.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
+                        }
+                    }
+
+                    // update group when change event by requesting group profile
+                    else if (message is GroupUpdateEvent groupUpdate)
+                    {
+                        // trigger group download only if cached group has different hash
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupUpdate.GroupID);
+                        if (cachedGroup != null && cachedGroup.Hash != groupUpdate.Hash)
+                        {
+                            await SendAsync<GroupProfileResponse>(
+                                new GroupProfileMessage(new uint[] { groupUpdate.GroupID }), cancellationToken).ConfigureAwait(false);
+                        }
+                    }
+
+                    // update group member list when one joined
+                    else if (message is GroupJoinMessage groupMemberJoined)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
+                        try
+                        {
+                            if (cachedGroup != null)
+                                EntityModificationHelper.SetGroupMember(cachedGroup,
+                                    new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
+                        }
+                        catch (NotSupportedException)
+                        {
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                        }
+                    }
+
+                    // update group member list if one left
+                    else if (message is GroupLeaveMessage groupMemberLeft)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberLeft.GroupID);
+                        try
+                        {
+                            if (cachedGroup != null)
+                                EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
+                        }
+                        catch (NotSupportedException)
+                        {
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                        }
+                    }
+
+                    // update group member capabilities if member was updated
+                    else if (message is GroupMemberUpdateEvent groupMemberUpdated)
+                    {
+                        WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberUpdated.GroupID);
+                        try
+                        {
+                            if (cachedGroup != null)
+                                EntityModificationHelper.SetGroupMember(cachedGroup,
+                                    new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
+                        }
+                        catch (NotSupportedException)
+                        {
+                            Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
+                        }
                     }
                 }
             }
-
-            if (this.GroupsCachingEnabled)
+            finally
             {
-                // update group audio count
-                if (message is GroupAudioCountUpdateEvent groupAudioCountUpdate)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioCountUpdate.GroupID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Updating cached group {GroupID} audio counts", cachedGroup.ID);
-                        rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
-                    }
-                }
-
-                // update group audio config
-                if (message is GroupAudioUpdateMessage groupAudioUpdate)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdate.GroupID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
-                        rawMessage.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
-                    }
-                }
-
-                // update group when change event by requesting group profile
-                else if (message is GroupUpdateEvent groupUpdate)
-                {
-                    // trigger group download only if cached group has different hash
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupUpdate.GroupID);
-                    if (cachedGroup != null && cachedGroup.Hash != groupUpdate.Hash)
-                    {
-                        await SendAsync<GroupProfileResponse>(
-                            new GroupProfileMessage(new uint[] { groupUpdate.GroupID }), cancellationToken).ConfigureAwait(false);
-                    }
-                }
-
-                // update group member list when one joined
-                else if (message is GroupJoinMessage groupMemberJoined)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
-                    }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
-                }
-
-                // update group member list if one left
-                else if (message is GroupLeaveMessage groupMemberLeft)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberLeft.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
-                    }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
-                }
-
-                // update group member capabilities if member was updated
-                else if (message is GroupMemberUpdateEvent groupMemberUpdated)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberUpdated.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
-                    }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
-                }
+                _lock.Release();
             }
 
             // invoke events, unless this message is a self-sent chat message
