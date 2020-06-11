@@ -46,7 +46,6 @@ namespace TehGM.Wolfringo.Socket
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            this.Dispose();
             _connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _websocketClient = new ClientWebSocket();
             await _websocketClient.ConnectAsync(url, _connectionCts.Token).ConfigureAwait(false);
@@ -154,8 +153,7 @@ namespace TehGM.Wolfringo.Socket
             }
             finally
             {
-                if (_websocketClient.State == WebSocketState.Aborted)
-                    this.Dispose();
+                this.Dispose();
                 Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
             }
         }
