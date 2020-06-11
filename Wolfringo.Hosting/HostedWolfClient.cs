@@ -201,8 +201,11 @@ namespace TehGM.Wolfringo.Hosting
                     disposingClient.MessageReceived -= OnClientMessageReceived;
                     disposingClient.MessageSent -= OnClientMessageSent;
                 }
-                foreach (IMessageCallback callback in _callbacks)
-                    disposingClient?.RemoveMessageListener(callback);
+                lock (this._callbacks)
+                {
+                    for (int i = 0; i < _callbacks.Count; i++)
+                        this._client.RemoveMessageListener(_callbacks[i]);
+                }
                 disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
 
                 if (disposingClient?.IsConnected == true)
