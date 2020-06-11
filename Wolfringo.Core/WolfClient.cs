@@ -319,20 +319,28 @@ namespace TehGM.Wolfringo
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
-                    ctr.Dispose();
-                    if (_client != null)
-                        _client.MessageReceived -= callback;
                 }
-                catch (OperationCanceledException) { }
-                catch (Exception ex)
+                catch (OperationCanceledException) when (LogCanceledWarning()) { }
+                catch (Exception ex) when (ex.LogAsError(this.Log, "Exception has occured when handling socket response"))
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
-                    Log?.LogError(ex, "Exception has occured when handling socket response");
                     tcs.TrySetException(ex);
+                }
+                finally
+                {
+                    ctr.Dispose();
+                    (_client as SocketClient).MessageReceived -= callback;
                 }
             };
             _client.MessageReceived += callback;
             return tcs.Task;
+
+
+            bool LogCanceledWarning()
+            {
+                this.Log?.LogWarning("Message receiving aborted due to connection task being canceled");
+                return true;
+            }
         }
 
         /// <summary>Internal method for handling additional actions on sent message.</summary>
@@ -575,15 +583,17 @@ namespace TehGM.Wolfringo
                     await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
                 }
             }
-            catch (OperationCanceledException)
-            {
-                Log?.LogWarning("Message receiving aborted due to connection task being cancelled");
-            }
-            catch (Exception ex)
+            catch (OperationCanceledException) when (LogCanceledWarning()) { }
+            catch (Exception ex) when (ex.LogAsError(this.Log, "Exception occured when handling received message"))
             {
                 // don't rethrow exception here, as doing so will kill the socket client loop
-                Log?.LogError(ex, "Exception occured when handling received message");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
+            }
+
+            bool LogCanceledWarning()
+            {
+                this.Log?.LogWarning("Message receiving aborted due to connection task being canceled");
+                return true;
             }
         }
 
