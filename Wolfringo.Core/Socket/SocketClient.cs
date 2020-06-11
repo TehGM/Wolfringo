@@ -112,7 +112,7 @@ namespace TehGM.Wolfringo.Socket
         {
             try
             {
-                _connectionCts = CancellationTokenSource.CreateLinkedTokenSource();
+                _connectionCts = new CancellationTokenSource();
                 ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024 * 16]);
 
                 while (!_connectionCts.Token.IsCancellationRequested)
