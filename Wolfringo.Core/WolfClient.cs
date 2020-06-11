@@ -571,7 +571,7 @@ namespace TehGM.Wolfringo
                     await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
                 }
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 Log?.LogWarning("Message receiving aborted due to connection task being cancelled");
             }
