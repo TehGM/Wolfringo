@@ -118,7 +118,7 @@ namespace TehGM.Wolfringo.Socket
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     // trigger cancellation if client has been disposed or is in closed state
-                    if (_websocketClient == null || _websocketClient.State == WebSocketState.Closed || _websocketClient.State == WebSocketState.Aborted)
+                    if (!this.IsConnected)
                         _connectionCts?.Cancel();
                     // if closing was initiated by the server, acknowledge it before cancelling
                     else if (_websocketClient?.State == WebSocketState.CloseReceived)
@@ -192,7 +192,7 @@ namespace TehGM.Wolfringo.Socket
             // read stream
             WebSocketReceiveResult result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
             // cancel further execution if connection was closed
-            if (result.MessageType == WebSocketMessageType.Close)
+            if (!this.IsConnected)
                 return null;
 
             byte[] contents = null;
@@ -230,7 +230,7 @@ namespace TehGM.Wolfringo.Socket
         {
             try
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && this.IsConnected)
                 {
                     await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
                     await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
