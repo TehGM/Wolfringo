@@ -200,12 +200,14 @@ namespace TehGM.Wolfringo.Hosting
             {
                 if (disposingClient != null)
                 {
-                    this._client.Disconnected -= OnClientDisconnected;
-                    this._client.Connected -= OnClientConntected;
-                    this._client.ErrorRaised -= OnClientErrorRaised;
-                    this._client.MessageReceived -= OnClientMessageReceived;
-                    this._client.MessageSent -= OnClientMessageSent;
+                    disposingClient.Disconnected -= OnClientDisconnected;
+                    disposingClient.Connected -= OnClientConntected;
+                    disposingClient.ErrorRaised -= OnClientErrorRaised;
+                    disposingClient.MessageReceived -= OnClientMessageReceived;
+                    disposingClient.MessageSent -= OnClientMessageSent;
                 }
+                foreach (IMessageCallback callback in _callbacks)
+                    disposingClient?.RemoveMessageListener(callback); 
                 disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
                 disposingClient?.Dispose();
             }
