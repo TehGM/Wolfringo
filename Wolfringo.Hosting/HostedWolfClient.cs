@@ -204,7 +204,7 @@ namespace TehGM.Wolfringo.Hosting
                 lock (this._callbacks)
                 {
                     for (int i = 0; i < _callbacks.Count; i++)
-                        this._client.RemoveMessageListener(_callbacks[i]);
+                        disposingClient.RemoveMessageListener(_callbacks[i]);
                 }
                 disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
 
