@@ -93,7 +93,7 @@ namespace TehGM.Wolfringo
         /// <summary>Caches container.</summary>
         protected WolfEntityCacheContainer Caches { get; set; }
 
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource _connectionCts;
         private readonly SemaphoreSlim _lock;
 
         #region Constructors
@@ -212,17 +212,9 @@ namespace TehGM.Wolfringo
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            if (_cts != null)
-            {
-                _cts?.Cancel();
-                _cts?.Dispose();
-                _cts = null;
-            }
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
             return _client.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device.ToLower()}&EIO=3&transport=websocket"),
-                _cts.Token);
+                cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -250,9 +242,9 @@ namespace TehGM.Wolfringo
         /// <summary>Clears all connection-bound variables.</summary>
         protected virtual void Clear()
         {
-            this._cts?.Cancel();
-            this._cts?.Dispose();
-            this._cts = null;
+            this._connectionCts?.Cancel();
+            this._connectionCts?.Dispose();
+            this._connectionCts = null;
             this.CurrentUserID = null;
             this.Caches?.ClearAll();
         }
@@ -277,10 +269,10 @@ namespace TehGM.Wolfringo
             }
             SerializedMessageData data = serializer.Serialize(message);
 
-            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token))
+            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
             {
-                uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cts.Token).ConfigureAwait(false);
-                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cts.Token).ConfigureAwait(false);
+                uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
                     throw new MessageSendingException(message, response);
                 this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
@@ -339,7 +331,7 @@ namespace TehGM.Wolfringo
                 finally
                 {
                     ctr.Dispose();
-                    (_client as SocketClient).MessageReceived -= callback;
+                    (sender as SocketClient).MessageReceived -= callback;
                 }
             };
             _client.MessageReceived += callback;
@@ -348,7 +340,7 @@ namespace TehGM.Wolfringo
 
             bool LogCanceledWarning()
             {
-                this.Log?.LogWarning("Message receiving aborted due to connection task being canceled");
+                this.Log?.LogWarning("Message sending aborted due to connection task being canceled");
                 return true;
             }
         }
@@ -590,7 +582,7 @@ namespace TehGM.Wolfringo
                         return;
 
                     Log?.LogDebug("Message received: {Command}", command);
-                    await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
+                    await OnMessageReceivedInternalAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException) when (LogCanceledWarning()) { }
@@ -763,6 +755,9 @@ namespace TehGM.Wolfringo
         private void OnClientConnected(object sender, EventArgs e)
         {
             Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
+            this._connectionCts?.Cancel();
+            this._connectionCts?.Dispose();
+            this._connectionCts = new CancellationTokenSource();
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
 

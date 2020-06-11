@@ -35,7 +35,7 @@ namespace TehGM.Wolfringo.Hosting
         // internal working vars
         private WolfClient _client;
         private readonly SemaphoreSlim _clientLock = new SemaphoreSlim(1, 1);
-        private CancellationToken _connectionCancellationToken;
+        private CancellationToken _hostCancellationToken;
         private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
         private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
         private string _token;                                  // keep token cached so it's reused when client is recreates
@@ -106,23 +106,23 @@ namespace TehGM.Wolfringo.Hosting
             this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(() =>
             {
                 if (this.IsConnected)
-                    _ = this.DisconnectAsync();
+                    _ = this.DisconnectAsync(_hostCancellationToken);
             });
 
             // when options change, we need to dispose existing client, and create new one with new options
             this._optionsChangeEventRegistration = _options.OnChange(async (opts) =>
             {
                 // lock to avoid race conditions
-                await _clientLock.WaitAsync().ConfigureAwait(false);
+                await _clientLock.WaitAsync(_hostCancellationToken).ConfigureAwait(false);
                 try
                 {
                     if (_client == null)
                         return;
                     _log?.LogDebug("Options changed, recreting client");
-                    await DisposeClientAsync().ConfigureAwait(false);
+                    await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
                     // if it wasn't manually disconnected, reconnect it
                     if (!this._manuallyDisconnected)
-                        await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                        await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -236,33 +236,28 @@ namespace TehGM.Wolfringo.Hosting
                         return;
                     // check all values are valid
                     if (string.IsNullOrWhiteSpace(options.LoginEmail))
-                    {
-                        _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginEmail));
-                        return;
-                    }
+                        throw new ArgumentNullException(nameof(options.LoginEmail));
                     if (string.IsNullOrWhiteSpace(options.LoginPassword))
-                    {
-                        _log?.LogError("Cannot auto-login: {PropertyName} is empty", nameof(options.LoginPassword));
-                        return;
-                    }
+                        throw new ArgumentNullException(nameof(options.LoginPassword));
 
                     // send login
                     _log?.LogDebug("Auto-login: {Login}", options.LoginEmail);
                     LoginResponse response = await this.SendAsync<LoginResponse>(
-                        new LoginMessage(options.LoginEmail, options.LoginPassword, false), _connectionCancellationToken).ConfigureAwait(false);
+                        new LoginMessage(options.LoginEmail, options.LoginPassword, false), _hostCancellationToken).ConfigureAwait(false);
                     loggedInNickname = response.Nickname;
                 }
                 else loggedInNickname = welcome.LoggedInUser.Nickname;
 
                 // subscribe to all the things
-                await (this).SendAsync(new SubscribeToPmMessage(), _connectionCancellationToken).ConfigureAwait(false);
-                await (this).SendAsync(new SubscribeToGroupMessage(), _connectionCancellationToken).ConfigureAwait(false);
+                await (this).SendAsync(new SubscribeToPmMessage(), _hostCancellationToken).ConfigureAwait(false);
+                await (this).SendAsync(new SubscribeToGroupMessage(), _hostCancellationToken).ConfigureAwait(false);
                 _log?.LogInformation("Automatically logged in as {Nickname}", loggedInNickname);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when automatically logging in"))
             {
-                _log?.LogError(ex, "Exception occured when automatically logging in");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+                if (_options.CurrentValue.CloseOnCriticalError)
+                    _hostLifetime?.StopApplication();
             }
         }
 
@@ -272,13 +267,13 @@ namespace TehGM.Wolfringo.Hosting
         {
             try
             {
+                _hostCancellationToken = cancellationToken;
                 // only connect if not already connected
                 if (!this.IsConnected)
                     return this.ConnectAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when trying to connect as a hosted client"))
             {
-                _log?.LogCritical(ex, "Exception occured when trying to connect as a hosted client");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
                 if (_options.CurrentValue.CloseOnCriticalError)
                     _hostLifetime?.StopApplication();
@@ -294,9 +289,8 @@ namespace TehGM.Wolfringo.Hosting
                 if (this.IsConnected)
                     return this.DisconnectAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.LogAsError(this._log, "Exception occured when trying to disconnect as a hosted client"))
             {
-                _log?.LogError(ex, "Exception occured when trying to disconnect as a hosted client");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
             }
             return Task.CompletedTask;
@@ -306,15 +300,18 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public async Task ConnectAsync(CancellationToken cancellationToken = default)
         {
-            // public connection should always be done with locking to avoid race conditions
-            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            try
+            using (CancellationTokenSource connectingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
             {
-                await this.ConnectInternalAsync(cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                _clientLock.Release();
+                // public connection should always be done with locking to avoid race conditions
+                await _clientLock.WaitAsync(connectingCts.Token).ConfigureAwait(false);
+                try
+                {
+                    await this.ConnectInternalAsync(connectingCts.Token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _clientLock.Release();
+                }
             }
         }
 
@@ -328,7 +325,6 @@ namespace TehGM.Wolfringo.Hosting
             if (_client == null)
                 CreateClient();
 
-            this._connectionCancellationToken = cancellationToken;
             this._manuallyDisconnected = false;
             return _client.ConnectAsync(cancellationToken);
         }
@@ -336,17 +332,20 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
-            // public disconnection should always be done with locking to avoid race conditions
-            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            try
+            using (CancellationTokenSource disconnectingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
             {
-                ThrowIfNotConnected();
-                this._manuallyDisconnected = true;
-                await _client.DisconnectAsync(cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                _clientLock.Release();
+                // public disconnection should always be done with locking to avoid race conditions
+                await _clientLock.WaitAsync(disconnectingCts.Token).ConfigureAwait(false);
+                try
+                {
+                    ThrowIfNotConnected();
+                    this._manuallyDisconnected = true;
+                    await _client.DisconnectAsync(disconnectingCts.Token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _clientLock.Release();
+                }
             }
         }
 
@@ -360,15 +359,15 @@ namespace TehGM.Wolfringo.Hosting
         {
             TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
             // lock first to avoid race conditions
-            await _clientLock.WaitAsync(_connectionCancellationToken).ConfigureAwait(false);
+            await _clientLock.WaitAsync(_hostCancellationToken).ConfigureAwait(false);
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
                 if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
                     return;
                 if (delay > TimeSpan.Zero)
-                    await Task.Delay(delay, _connectionCancellationToken).ConfigureAwait(false);
-                await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                    await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
+                await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex.LogAsWarning(this._log, "Failed to auto - reconnect, recreating underlying client"))
             {
@@ -380,11 +379,11 @@ namespace TehGM.Wolfringo.Hosting
                 {
                     reconnectAttempts++;
                     bool lastAttempt = reconnectAttempts == _options.CurrentValue.AutoReconnectAttempts;
-                    await Task.Delay(delay, _connectionCancellationToken).ConfigureAwait(false);
+                    await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
                     try
                     {
-                        await DisposeClientAsync(_connectionCancellationToken).ConfigureAwait(false);
-                        await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                        await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
+                        await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
                         break;
                     }
                     catch (Exception ex2) when (
@@ -402,8 +401,8 @@ namespace TehGM.Wolfringo.Hosting
             }
             finally
             {
-                this.Disconnected?.Invoke(this, e);
                 _clientLock.Release();
+                this.Disconnected?.Invoke(this, e);
             }
         }
 
@@ -444,16 +443,19 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
-            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-            try
+            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
             {
-                ThrowIfNotConnected();
+                await _clientLock.WaitAsync(sendingCts.Token).ConfigureAwait(false);
+                try
+                {
+                    ThrowIfNotConnected();
+                }
+                finally
+                {
+                    _clientLock.Release();
+                }
+                return await _client.SendAsync<TResponse>(message, sendingCts.Token).ConfigureAwait(false);
             }
-            finally
-            {
-                _clientLock.Release();
-            }
-            return await _client.SendAsync<TResponse>(message, cancellationToken).ConfigureAwait(false);
         }
 
         /* CACHES */

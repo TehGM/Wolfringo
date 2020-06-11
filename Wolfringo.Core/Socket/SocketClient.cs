@@ -47,10 +47,10 @@ namespace TehGM.Wolfringo.Socket
                 throw new InvalidOperationException("Already connected");
 
             this.Clear();
-            _connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _websocketClient = new ClientWebSocket();
-            await _websocketClient.ConnectAsync(url, _connectionCts.Token).ConfigureAwait(false);
-            _ = ConnectionLoopAsync(_connectionCts.Token);
+            _lastMessageID = 7;
+            await _websocketClient.ConnectAsync(url, cancellationToken).ConfigureAwait(false);
+            _ = ConnectionLoopAsync();
             Connected?.Invoke(this, EventArgs.Empty);
         }
 
@@ -108,16 +108,17 @@ namespace TehGM.Wolfringo.Socket
             }
         }
 
-        private async Task ConnectionLoopAsync(CancellationToken cancellationToken = default)
+        private async Task ConnectionLoopAsync()
         {
             try
             {
+                _connectionCts = CancellationTokenSource.CreateLinkedTokenSource();
                 ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024 * 16]);
 
-                while (!cancellationToken.IsCancellationRequested)
+                while (!_connectionCts.Token.IsCancellationRequested)
                 {
                     // read from stream
-                    SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+                    SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
                     if (!IsAnythingReceived(receivedMessage))
                         continue;
                     if (receivedMessage.MessageType == WebSocketMessageType.Close)
@@ -132,7 +133,7 @@ namespace TehGM.Wolfringo.Socket
                         List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
                         for (int i = 0; i < msg.BinaryMessagesCount; i++)
                         {
-                            SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+                            SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
                             if (!IsAnythingReceived(receivedBinaryMessage))
                                 continue;
                             if (receivedBinaryMessage.MessageType == WebSocketMessageType.Text)
