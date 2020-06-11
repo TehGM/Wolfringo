@@ -212,6 +212,12 @@ namespace TehGM.Wolfringo
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
+            if (_cts != null)
+            {
+                _cts?.Cancel();
+                _cts?.Dispose();
+                _cts = null;
+            }
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             return _client.ConnectAsync(
