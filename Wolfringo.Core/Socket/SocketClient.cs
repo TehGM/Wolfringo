@@ -50,8 +50,8 @@ namespace TehGM.Wolfringo.Socket
             _websocketClient = new ClientWebSocket();
             _lastMessageID = 7;
             await _websocketClient.ConnectAsync(url, cancellationToken).ConfigureAwait(false);
-            _ = ConnectionLoopAsync();
             Connected?.Invoke(this, EventArgs.Empty);
+            _ = ConnectionLoopAsync();
         }
 
         /// <inheritdoc/>
