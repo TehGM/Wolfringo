@@ -571,6 +571,7 @@ namespace TehGM.Wolfringo
                     await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
                 }
             }
+            catch (TaskCanceledException) { }
             catch (Exception ex)
             {
                 // don't rethrow exception here, as doing so will kill the socket client loop
