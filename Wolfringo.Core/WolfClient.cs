@@ -323,7 +323,7 @@ namespace TehGM.Wolfringo
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
                 }
-                catch (OperationCanceledException) when (LogWarning(Log, "Message sending aborted due to connection task being canceled")) { }
+                catch (OperationCanceledException) when (LogWarning("Message sending aborted due to connection task being canceled")) { }
                 catch (Exception ex) when (ex.LogAsError(this.Log, "Exception has occured when handling socket response"))
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
@@ -399,7 +399,7 @@ namespace TehGM.Wolfringo
                         if (cachedGroup != null)
                             EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
                     }
-                    catch (NotSupportedException) when (LogWarning(Log, "Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
 
                 // add group if it was created
@@ -570,7 +570,7 @@ namespace TehGM.Wolfringo
                     await OnMessageReceivedInternalAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
                 }
             }
-            catch (OperationCanceledException) when (LogWarning(Log, "Message receiving aborted due to connection task being canceled")) { }
+            catch (OperationCanceledException) when (LogWarning("Message receiving aborted due to connection task being canceled")) { }
             catch (Exception ex) when (ex.LogAsError(this.Log, "Exception occured when handling received message"))
             {
                 // don't rethrow exception here, as doing so will kill the socket client loop
@@ -662,7 +662,7 @@ namespace TehGM.Wolfringo
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
                     }
-                    catch (NotSupportedException) when (LogWarning(Log, "Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
 
                 // update group member list if one left
@@ -674,7 +674,7 @@ namespace TehGM.Wolfringo
                         if (cachedGroup != null)
                             EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
                     }
-                    catch (NotSupportedException) when (LogWarning(Log, "Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
 
                 // update group member capabilities if member was updated
@@ -687,7 +687,7 @@ namespace TehGM.Wolfringo
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
                     }
-                    catch (NotSupportedException) when (LogWarning(Log, "Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
             }
 
@@ -784,7 +784,7 @@ namespace TehGM.Wolfringo
             }
         }
 
-        private bool LogWarning(ILogger log, string message, params object[] args)
+        private bool LogWarning(string message, params object[] args)
         {
             Log?.LogWarning(message, args);
             return true;
