@@ -61,7 +61,6 @@ namespace TehGM.Wolfringo.Socket
                 throw new InvalidOperationException("Not connected");
 
             await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested", cancellationToken);
-            this.Dispose();
         }
 
         /// <inheritdoc/>
@@ -155,8 +154,9 @@ namespace TehGM.Wolfringo.Socket
             }
             finally
             {
+                if (_websocketClient.State == WebSocketState.Aborted)
+                    this.Dispose();
                 Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
-                this.Dispose();
             }
         }
 
