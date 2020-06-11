@@ -150,7 +150,7 @@ namespace TehGM.Wolfringo.Hosting
                 this._client = new WolfClient(options.ServerURL, options.Device, token, _underlyingClientLog, _messageSerializers, _responseSerializers, _responseTypeResolver);
 
             // sub to events
-            this._client.AddMessageListener((Action<WelcomeEvent>)this.OnWelcome);
+            this._client.AddMessageListener<WelcomeEvent>(OnWelcome);
             this._client.Disconnected += OnClientDisconnected;
             this._client.Connected += OnClientConntected;
             this._client.ErrorRaised += OnClientErrorRaised;
@@ -198,6 +198,15 @@ namespace TehGM.Wolfringo.Hosting
             }
             finally
             {
+                if (disposingClient != null)
+                {
+                    this._client.Disconnected -= OnClientDisconnected;
+                    this._client.Connected -= OnClientConntected;
+                    this._client.ErrorRaised -= OnClientErrorRaised;
+                    this._client.MessageReceived -= OnClientMessageReceived;
+                    this._client.MessageSent -= OnClientMessageSent;
+                }
+                disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
                 disposingClient?.Dispose();
             }
         }
@@ -482,7 +491,7 @@ namespace TehGM.Wolfringo.Hosting
             _manuallyDisconnected = true;
             _optionsChangeEventRegistration?.Dispose();
             _exitingEventRegistration?.Dispose();
-            _client?.Dispose();
+            DisposeClientAsync().GetAwaiter().GetResult();
             _client = null;
             _callbacks?.Clear();
             _clientLock?.Dispose();

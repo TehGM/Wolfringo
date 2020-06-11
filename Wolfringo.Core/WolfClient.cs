@@ -233,6 +233,16 @@ namespace TehGM.Wolfringo
         public virtual void Dispose()
         {
             this.Clear();
+
+            if (this._client != null)
+            {
+                this._client.MessageReceived -= OnClientMessageReceived;
+                this._client.MessageSent -= OnClientMessageSent;
+                this._client.Connected -= OnClientConnected;
+                this._client.Disconnected -= OnClientDisconnected;
+                this._client.ErrorRaised -= OnClientError;
+            }
+
             (_client as IDisposable)?.Dispose();
             this._lock?.Dispose();
         }
