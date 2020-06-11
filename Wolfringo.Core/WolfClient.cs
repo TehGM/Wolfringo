@@ -320,6 +320,7 @@ namespace TehGM.Wolfringo
                     if (_client != null)
                         _client.MessageReceived -= callback;
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
