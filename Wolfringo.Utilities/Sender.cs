@@ -318,7 +318,10 @@ namespace TehGM.Wolfringo
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, string password, CancellationToken cancellationToken = default)
         {
             await client.SendAsync(new GroupJoinMessage(groupID, password), cancellationToken).ConfigureAwait(false);
-            return await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
+            WolfGroup group = await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
+            if (group.Members?.Any() != true)
+                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
+            return group;
         }
         /// <summary>Join a group.</summary>
         /// <param name="groupID">ID of group to join.</param>
@@ -340,7 +343,10 @@ namespace TehGM.Wolfringo
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, string groupName, string password, CancellationToken cancellationToken = default)
         {
             await client.SendAsync(new GroupJoinMessage(groupName, password), cancellationToken).ConfigureAwait(false);
-            return await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
+            WolfGroup group = await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
+            if (group.Members?.Any() != true)
+                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
+            return group;
         }
         /// <summary>Join a group.</summary>
         /// <param name="groupName">Name of the group to join.</param>
@@ -392,21 +398,31 @@ namespace TehGM.Wolfringo
                 foreach (WolfGroup group in response.GroupProfiles)
                 {
                     // request members list for groups not present in cache
-                    try
-                    {
-                        GroupMembersListResponse membersResponse = await client.SendAsync<GroupMembersListResponse>(
-                            new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
-                        // client should be configured to intercept this response
-                        // however, just in case it's not (like when caching is disabled), do it here as well
-                        if (membersResponse?.GroupMembers != null)
-                            EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
-                    }
-                    // handle case when requesting profiles for group the user is not in
-                    catch (MessageSendingException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden) { }
-                    catch (NotSupportedException) { }
+                    await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
                 }
             }
             return results;
+        }
+
+        private static async Task<IEnumerable<WolfGroupMember>> RequestGroupMembersAsync(this IWolfClient client, WolfGroup group, 
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                GroupMembersListResponse membersResponse = await client.SendAsync<GroupMembersListResponse>(
+                    new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
+                // client should be configured to intercept this response
+                // however, just in case it's not (like when caching is disabled), do it here as well
+                if (membersResponse?.GroupMembers != null)
+                {
+                    EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                    return membersResponse.GroupMembers;
+                }
+            }
+            // handle case when requesting profiles for group the user is not in
+            catch (MessageSendingException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden) { }
+            catch (NotSupportedException) { }
+            return null;
         }
 
         /// <summary>Get profile of specified group.</summary>
