@@ -10,8 +10,6 @@ namespace TehGM.Wolfringo.Socket
 
         public SocketReceiveResult(byte[] contentBytes, int bytesRead, WebSocketMessageType messageType)
         {
-            if (messageType == WebSocketMessageType.Close)
-                throw new ArgumentException($"{messageType} message type not supported in {nameof(SocketReceiveResult)}", nameof(messageType));
             this.ContentBytes = new byte[bytesRead];
             Buffer.BlockCopy(contentBytes, 0, this.ContentBytes, 0, bytesRead);
             this.MessageType = messageType;

@@ -130,6 +130,8 @@ namespace TehGM.Wolfringo.Socket
 
                     // read from stream
                     SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+                    if (receivedMessage.MessageType == WebSocketMessageType.Close)
+                        continue;
                     if (!IsAnythingReceived(receivedMessage))
                         continue;
 
