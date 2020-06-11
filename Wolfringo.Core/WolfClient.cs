@@ -361,7 +361,14 @@ namespace TehGM.Wolfringo
                 if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
                 {
                     foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
+                    {
+                        // repopulate group members if new group profile came without them
+                        WolfGroup existingGroup = this.Caches?.GroupsCache?.Get(group.ID);
+                        if (existingGroup != null && existingGroup.Members?.Any() == true && group.Members?.Any() != true)
+                            EntityModificationHelper.ReplaceAllGroupMembers(group, existingGroup.Members.Values);
+                        // replace cached group itself
                         this.Caches?.GroupsCache?.AddOrReplaceIfChanged(group);
+                    }
                 }
 
                 // update group member list if one was requested
