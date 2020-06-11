@@ -118,7 +118,7 @@ namespace TehGM.Wolfringo.Hosting
                 {
                     if (_client == null)
                         return;
-                    _log?.LogDebug("Options changed, recreting client");
+                    _log?.LogDebug("Options changed, recreating client");
                     await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
                     // if it wasn't manually disconnected, reconnect it
                     if (!this._manuallyDisconnected)
