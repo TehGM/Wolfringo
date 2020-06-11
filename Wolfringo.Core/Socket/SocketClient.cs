@@ -46,6 +46,7 @@ namespace TehGM.Wolfringo.Socket
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
+            this.Clear();
             _connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _websocketClient = new ClientWebSocket();
             await _websocketClient.ConnectAsync(url, _connectionCts.Token).ConfigureAwait(false);
@@ -153,7 +154,7 @@ namespace TehGM.Wolfringo.Socket
             }
             finally
             {
-                this.Dispose();
+                this.Clear();
                 Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
             }
         }
@@ -249,8 +250,7 @@ namespace TehGM.Wolfringo.Socket
             }
         }
 
-        /// <summary>Disposes the resources used by this client.</summary>
-        public void Dispose()
+        private void Clear()
         {
             if (this._connectionCts?.IsCancellationRequested != true)
                 this._connectionCts?.Cancel();
@@ -259,6 +259,13 @@ namespace TehGM.Wolfringo.Socket
             this.Session = null;
             this._websocketClient?.Dispose();
             this._websocketClient = null;
+        }
+
+        /// <summary>Disposes the resources used by this client.</summary>
+        public void Dispose()
+        {
+            this.Clear();
+            this._sendLock?.Dispose();
         }
     }
 }
