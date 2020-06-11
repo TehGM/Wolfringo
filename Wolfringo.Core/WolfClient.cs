@@ -267,12 +267,15 @@ namespace TehGM.Wolfringo
             }
             SerializedMessageData data = serializer.Serialize(message);
 
-            uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
-            IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
-            if (response.IsError())
-                throw new MessageSendingException(message, response);
-            this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
-            return (TResponse)response;
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token))
+            {
+                uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cts.Token).ConfigureAwait(false);
+                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cts.Token).ConfigureAwait(false);
+                if (response.IsError())
+                    throw new MessageSendingException(message, response);
+                this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
+                return (TResponse)response;
+            }
         }
 
         /// <summary>Waits for response for sent message.</summary>
