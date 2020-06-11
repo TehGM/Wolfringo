@@ -385,6 +385,7 @@ namespace TehGM.Wolfringo.Hosting
                     {
                         await DisposeClientAsync(_connectionCancellationToken).ConfigureAwait(false);
                         await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
+                        break;
                     }
                     catch (Exception ex2)
                     {
