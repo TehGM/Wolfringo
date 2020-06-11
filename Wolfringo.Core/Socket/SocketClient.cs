@@ -249,13 +249,13 @@ namespace TehGM.Wolfringo.Socket
         /// <summary>Disposes the resources used by this client.</summary>
         public void Dispose()
         {
-            this.Session = null;
-            this._websocketClient?.Dispose();
-            this._websocketClient = null;
             if (this._connectionCts?.IsCancellationRequested != true)
                 this._connectionCts?.Cancel();
             this._connectionCts?.Dispose();
             this._connectionCts = null;
+            this.Session = null;
+            this._websocketClient?.Dispose();
+            this._websocketClient = null;
         }
     }
 }
