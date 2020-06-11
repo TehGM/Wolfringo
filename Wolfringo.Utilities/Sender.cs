@@ -413,7 +413,7 @@ namespace TehGM.Wolfringo
                     new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
                 // client should be configured to intercept this response
                 // however, just in case it's not (like when caching is disabled), do it here as well
-                if (membersResponse?.GroupMembers != null)
+                if (membersResponse?.GroupMembers?.Any() == true)
                 {
                     EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
                     return membersResponse.GroupMembers;
