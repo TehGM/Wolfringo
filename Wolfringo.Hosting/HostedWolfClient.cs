@@ -193,11 +193,6 @@ namespace TehGM.Wolfringo.Hosting
             // disconnect and dispose it
             try
             {
-                if (disposingClient?.IsConnected == true)
-                    await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
                 if (disposingClient != null)
                 {
                     disposingClient.Disconnected -= OnClientDisconnected;
@@ -207,8 +202,14 @@ namespace TehGM.Wolfringo.Hosting
                     disposingClient.MessageSent -= OnClientMessageSent;
                 }
                 foreach (IMessageCallback callback in _callbacks)
-                    disposingClient?.RemoveMessageListener(callback); 
+                    disposingClient?.RemoveMessageListener(callback);
                 disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
+
+                if (disposingClient?.IsConnected == true)
+                    await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
                 disposingClient?.Dispose();
             }
         }
