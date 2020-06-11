@@ -370,16 +370,16 @@ namespace TehGM.Wolfringo.Hosting
                     await Task.Delay(delay, _connectionCancellationToken).ConfigureAwait(false);
                 await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.LogAsWarning(this._log, "Failed to auto - reconnect, recreating underlying client"))
             {
                 // strip client and retry
-                _log?.LogWarning(ex, "Failed to auto-reconnect, recreating underlying client");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
 
                 int reconnectAttempts = 1;
                 while (reconnectAttempts < _options.CurrentValue.AutoReconnectAttempts)
                 {
                     reconnectAttempts++;
+                    bool lastAttempt = reconnectAttempts == _options.CurrentValue.AutoReconnectAttempts;
                     await Task.Delay(delay, _connectionCancellationToken).ConfigureAwait(false);
                     try
                     {
@@ -387,19 +387,16 @@ namespace TehGM.Wolfringo.Hosting
                         await this.ConnectInternalAsync(_connectionCancellationToken).ConfigureAwait(false);
                         break;
                     }
-                    catch (Exception ex2)
+                    catch (Exception ex2) when (
+                        (lastAttempt && ex.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client")) || 
+                        ex.LogAsWarning(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt"))
                     {
-                        bool lastAttempt = reconnectAttempts == _options.CurrentValue.AutoReconnectAttempts;
-                        const string message = "Exception occured when attempting to reconnect with recreated client";
                         if (lastAttempt)
                         {
-                            _log?.LogCritical(ex2, message + ", this was the last attempt");
                             this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
                             if (_options.CurrentValue.CloseOnCriticalError)
                                 _hostLifetime?.StopApplication();
                         }
-                        else
-                            _log.LogWarning(ex2, message);
                     }
                 }
             }
