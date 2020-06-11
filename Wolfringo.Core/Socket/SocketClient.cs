@@ -48,8 +48,8 @@ namespace TehGM.Wolfringo.Socket
 
             this.Clear();
             _websocketClient = new ClientWebSocket();
-            _lastMessageID = 7;
             await _websocketClient.ConnectAsync(url, cancellationToken).ConfigureAwait(false);
+            _lastMessageID = 7;
             Connected?.Invoke(this, EventArgs.Empty);
             _ = ConnectionLoopAsync();
         }
@@ -122,7 +122,7 @@ namespace TehGM.Wolfringo.Socket
                     if (!IsAnythingReceived(receivedMessage))
                         continue;
                     if (receivedMessage.MessageType == WebSocketMessageType.Close)
-                        continue;
+                        break;
 
                     // parse the message
                     if (receivedMessage.MessageType == WebSocketMessageType.Text)
@@ -151,7 +151,6 @@ namespace TehGM.Wolfringo.Socket
             catch (Exception ex)
             {
                 ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-                throw;
             }
             finally
             {
@@ -247,7 +246,6 @@ namespace TehGM.Wolfringo.Socket
             catch (Exception ex)
             {
                 ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-                throw;
             }
         }
 
