@@ -42,6 +42,7 @@ namespace TehGM.Wolfringo.Hosting
 
         // services
         private readonly ILogger _log;
+        private readonly ILogger _underlyingClientLog;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
         private readonly ISerializerMap<string, IMessageSerializer> _messageSerializers;
         private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
@@ -80,7 +81,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="messageSerializers">Map of message serializers.</param>
         /// <param name="responseSerializers">Map of response serializers.</param>
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
-        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ITokenProvider tokenProvider,
+        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, ITokenProvider tokenProvider,
             ISerializerMap<string, IMessageSerializer> messageSerializers, ISerializerMap<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver,
 #if NETCOREAPP3_0
@@ -93,6 +94,7 @@ namespace TehGM.Wolfringo.Hosting
             this._callbacks = new List<IMessageCallback>();
 
             this._log = logger;
+            this._underlyingClientLog = underlyingClientLogger;
             this._options = options;
             this._messageSerializers = messageSerializers;
             this._responseSerializers = responseSerializers;
@@ -142,10 +144,10 @@ namespace TehGM.Wolfringo.Hosting
 
             // if token is null, use default client behaviour for token with token provider
             if (token == null)
-                this._client = new WolfClient(options.ServerURL, options.Device, _log, _tokenProvider, _messageSerializers, _responseSerializers, _responseTypeResolver);
+                this._client = new WolfClient(options.ServerURL, options.Device, _underlyingClientLog, _tokenProvider, _messageSerializers, _responseSerializers, _responseTypeResolver);
             // otherwise, reuse the token for new client
             else
-                this._client = new WolfClient(options.ServerURL, options.Device, token, _log, _messageSerializers, _responseSerializers, _responseTypeResolver);
+                this._client = new WolfClient(options.ServerURL, options.Device, token, _underlyingClientLog, _messageSerializers, _responseSerializers, _responseTypeResolver);
 
             // sub to events
             this._client.AddMessageListener((Action<WelcomeEvent>)this.OnWelcome);
