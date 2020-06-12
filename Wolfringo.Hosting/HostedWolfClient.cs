@@ -373,8 +373,8 @@ namespace TehGM.Wolfringo.Hosting
                         break;
                     }
                     catch (Exception ex2) when (
-                        (lastAttempt && ex.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt")) || 
-                        ex.LogAsWarning(this._log, "Exception occured when attempting to reconnect with recreated client"))
+                        (!lastAttempt && ex2.LogAsWarning(this._log, "Exception occured when attempting to reconnect with recreated client")) ||
+                        ex2.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt"))
                     {
                         if (lastAttempt)
                         {
@@ -470,12 +470,12 @@ namespace TehGM.Wolfringo.Hosting
         public void Dispose()
         {
             _manuallyDisconnected = true;
-            try { _optionsChangeEventRegistration?.Dispose(); } catch { }
-            try { _exitingEventRegistration?.Dispose(); } catch { }
+            _optionsChangeEventRegistration?.Dispose();
+            _exitingEventRegistration?.Dispose();
             DisposeClientAsync().GetAwaiter().GetResult();
             _client = null;
             _callbacks?.Clear();
-            try { _clientLock?.Dispose(); } catch { }
+            _clientLock?.Dispose();
         }
     }
 }

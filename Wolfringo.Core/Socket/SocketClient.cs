@@ -265,7 +265,7 @@ namespace TehGM.Wolfringo.Socket
         public void Dispose()
         {
             this.Clear();
-            try { this._sendLock?.Dispose(); } catch { }
+            this._sendLock?.Dispose();
             this._websocketClient = null;
         }
     }

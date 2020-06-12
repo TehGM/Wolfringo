@@ -250,18 +250,18 @@ namespace TehGM.Wolfringo
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
-            Log?.LogTrace("Sending {Command}", message.Command);
-
-            if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
-            {
-                // try fallback simple serialization
-                Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
-                serializer = MessageSerializers.FallbackSerializer;
-            }
-            SerializedMessageData data = serializer.Serialize(message);
-
             using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
             {
+                Log?.LogTrace("Sending {Command}", message.Command);
+                // select serializer
+                if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
+                {
+                    // try fallback simple serialization
+                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
+                    serializer = MessageSerializers.FallbackSerializer;
+                }
+                // serialize and send message
+                SerializedMessageData data = serializer.Serialize(message);
                 uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
                 IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
@@ -706,10 +706,9 @@ namespace TehGM.Wolfringo
         /// <summary>Logs connected and raises event. Invoked when underlying client connects to the server.</summary>
         private void OnClientConnected(object sender, EventArgs e)
         {
-            Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
-            this._connectionCts?.Cancel();
-            this._connectionCts?.Dispose();
+            this.Clear();
             this._connectionCts = new CancellationTokenSource();
+            Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
 
@@ -727,9 +726,7 @@ namespace TehGM.Wolfringo
         /// <summary>Logs error and raises event. Invoked when underlying client raises error event.</summary>
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
-            if (e.ExceptionObject is Exception ex)
-                Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
-            else Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+            Log?.LogError("Socket client error: {Error}", (e.ExceptionObject is Exception ex) ? ex.Message : e.ExceptionObject?.ToString());
             this.ErrorRaised?.Invoke(this, e);
         }
         #endregion
