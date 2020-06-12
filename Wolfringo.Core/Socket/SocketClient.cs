@@ -19,7 +19,8 @@ namespace TehGM.Wolfringo.Socket
         /// <summary>Session info for the connection.</summary>
         public SocketSession Session { get; private set; }
         /// <inheritdoc/>
-        public bool IsConnected => _websocketClient != null && (_websocketClient.State == WebSocketState.Open || _websocketClient.State == WebSocketState.Connecting);
+        public bool IsConnected => _connectionCts?.IsCancellationRequested != true &&
+            (_websocketClient?.State == WebSocketState.Open || _websocketClient?.State == WebSocketState.Connecting);
 
         private ClientWebSocket _websocketClient;
         private CancellationTokenSource _connectionCts;
@@ -154,6 +155,7 @@ namespace TehGM.Wolfringo.Socket
             finally
             {
                 Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
+                // always clear AFTER invoking the event. Learned hard way.
                 this.Clear();
             }
         }
@@ -259,6 +261,7 @@ namespace TehGM.Wolfringo.Socket
             this._connectionCts = null;
             this.Session = null;
             try { this._websocketClient?.Dispose(); } catch { }
+            this._websocketClient = null;
         }
 
         /// <summary>Disposes the resources used by this client.</summary>
@@ -266,7 +269,6 @@ namespace TehGM.Wolfringo.Socket
         {
             this.Clear();
             this._sendLock?.Dispose();
-            this._websocketClient = null;
         }
     }
 }
