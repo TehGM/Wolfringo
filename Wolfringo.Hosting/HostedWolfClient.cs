@@ -103,10 +103,10 @@ namespace TehGM.Wolfringo.Hosting
             this._hostLifetime = hostLifetime;
 
             // disconnect when closing
-            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(() =>
+            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(async () =>
             {
                 if (this.IsConnected)
-                    _ = this.DisconnectAsync(_hostCancellationToken);
+                    await this.DisconnectAsync().ConfigureAwait(false);
             });
 
             // when options change, we need to dispose existing client, and create new one with new options
@@ -193,27 +193,12 @@ namespace TehGM.Wolfringo.Hosting
             // disconnect and dispose it
             try
             {
-                if (disposingClient != null)
-                {
-                    disposingClient.Disconnected -= OnClientDisconnected;
-                    disposingClient.Connected -= OnClientConnected;
-                    disposingClient.ErrorRaised -= OnClientErrorRaised;
-                    disposingClient.MessageReceived -= OnClientMessageReceived;
-                    disposingClient.MessageSent -= OnClientMessageSent;
-                }
-                lock (this._callbacks)
-                {
-                    for (int i = 0; i < _callbacks.Count; i++)
-                        disposingClient.RemoveMessageListener(_callbacks[i]);
-                }
-                disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
-
                 if (disposingClient?.IsConnected == true)
                     await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
             }
             finally
             {
-                disposingClient?.Dispose();
+                try { disposingClient?.Dispose(); } catch { }
             }
         }
 
@@ -382,8 +367,8 @@ namespace TehGM.Wolfringo.Hosting
                     bool lastAttempt = reconnectAttempts == maxAttempts;
                     try
                     {
-                        await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
                         await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
+                        await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
                         await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
                         break;
                     }
@@ -445,18 +430,7 @@ namespace TehGM.Wolfringo.Hosting
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
             using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
-            {
-                await _clientLock.WaitAsync(sendingCts.Token).ConfigureAwait(false);
-                try
-                {
-                    ThrowIfNotConnected();
-                }
-                finally
-                {
-                    _clientLock.Release();
-                }
                 return await _client.SendAsync<TResponse>(message, sendingCts.Token).ConfigureAwait(false);
-            }
         }
 
         /* CACHES */
@@ -496,12 +470,12 @@ namespace TehGM.Wolfringo.Hosting
         public void Dispose()
         {
             _manuallyDisconnected = true;
-            _optionsChangeEventRegistration?.Dispose();
-            _exitingEventRegistration?.Dispose();
+            try { _optionsChangeEventRegistration?.Dispose(); } catch { }
+            try { _exitingEventRegistration?.Dispose(); } catch { }
             DisposeClientAsync().GetAwaiter().GetResult();
             _client = null;
             _callbacks?.Clear();
-            _clientLock?.Dispose();
+            try { _clientLock?.Dispose(); } catch { }
         }
     }
 }
