@@ -193,6 +193,7 @@ namespace TehGM.Wolfringo.Hosting
             // disconnect and dispose it
             try
             {
+                disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
                 if (disposingClient?.IsConnected == true)
                     await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
             }
@@ -357,9 +358,9 @@ namespace TehGM.Wolfringo.Hosting
             }
             catch (Exception ex) when (ex.LogAsWarning(this._log, "Failed to auto-reconnect, recreating underlying client"))
             {
-                // strip client and retry
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
 
+                // strip client and retry
                 int reconnectAttempts = 1;
                 int maxAttempts = _options.CurrentValue.AutoReconnectAttempts;
                 while (reconnectAttempts < maxAttempts)
