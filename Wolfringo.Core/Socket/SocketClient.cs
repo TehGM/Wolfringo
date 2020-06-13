@@ -184,8 +184,6 @@ namespace TehGM.Wolfringo.Socket
                 // begin pinging loop
                 _ = PingLoopAsync(this.Session, _connectionCts.Token);
             }
-            //else if (msg.Type == SocketMessageType.TransportClose || msg.Type == SocketMessageType.Disconnect)
-            //    this._connectionCts?.Cancel();
             // raise the event to listeners
             MessageReceived?.Invoke(this, new SocketMessageEventArgs(msg, binaryMessages ?? Enumerable.Empty<byte[]>()));
         }

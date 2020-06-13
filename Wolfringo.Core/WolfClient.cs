@@ -716,9 +716,9 @@ namespace TehGM.Wolfringo
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
         {
             if (e.CloseStatus == System.Net.WebSockets.WebSocketCloseStatus.NormalClosure)
-                Log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
+                Log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription ?? "-");
             else
-                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
+                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription ?? "-");
             this.Clear();
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }

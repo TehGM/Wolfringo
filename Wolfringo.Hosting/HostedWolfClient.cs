@@ -350,6 +350,7 @@ namespace TehGM.Wolfringo.Hosting
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
                 if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
                     return;
+                _log?.LogDebug("Reconnection delay: {Delay}", delay);
                 if (delay > TimeSpan.Zero)
                     await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
                 await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
