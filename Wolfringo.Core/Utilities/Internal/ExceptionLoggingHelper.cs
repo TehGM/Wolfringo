@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 
-namespace TehGM.Wolfringo.Utilities
+namespace TehGM.Wolfringo.Utilities.Internal
 {
     public static class ExceptionLoggingHelper
     {
