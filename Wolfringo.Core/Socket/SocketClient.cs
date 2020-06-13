@@ -19,7 +19,8 @@ namespace TehGM.Wolfringo.Socket
         /// <summary>Session info for the connection.</summary>
         public SocketSession Session { get; private set; }
         /// <inheritdoc/>
-        public bool IsConnected => _websocketClient != null && (_websocketClient.State != WebSocketState.Closed || _websocketClient.State != WebSocketState.Aborted);
+        public bool IsConnected => _connectionCts?.IsCancellationRequested != true &&
+            (_websocketClient?.State == WebSocketState.Open || _websocketClient?.State == WebSocketState.Connecting);
 
         private ClientWebSocket _websocketClient;
         private CancellationTokenSource _connectionCts;
@@ -46,22 +47,20 @@ namespace TehGM.Wolfringo.Socket
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            this.Dispose();
-            _connectionCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            this.Clear();
             _websocketClient = new ClientWebSocket();
-            await _websocketClient.ConnectAsync(url, _connectionCts.Token).ConfigureAwait(false);
-            _ = ConnectionLoopAsync(_connectionCts.Token);
+            await _websocketClient.ConnectAsync(url, cancellationToken).ConfigureAwait(false);
             Connected?.Invoke(this, EventArgs.Empty);
+            _ = ConnectionLoopAsync();
         }
 
         /// <inheritdoc/>
-        public async Task DisconnectAsync(CancellationToken cancellationToken = default)
+        public Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
-            await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested", cancellationToken);
-            this.Dispose();
+            return _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested", cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -81,12 +80,12 @@ namespace TehGM.Wolfringo.Socket
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
-            try
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
             {
-                await _sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                byte[] data = Encoding.UTF8.GetBytes(message.ToString());
-                using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
+                await _sendLock.WaitAsync(cts.Token).ConfigureAwait(false);
+                try
                 {
+                    byte[] data = Encoding.UTF8.GetBytes(message.ToString());
                     // send the text message
                     await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cts.Token).ConfigureAwait(false);
 
@@ -100,36 +99,28 @@ namespace TehGM.Wolfringo.Socket
                         }
                     }
                 }
-                MessageSent?.Invoke(this, new SocketMessageEventArgs(message, binaryMessages));
-                return message.ID ?? default;
+                finally
+                {
+                    _sendLock.Release();
+                }
             }
-            finally
-            {
-                _sendLock.Release();
-            }
+
+            MessageSent?.Invoke(this, new SocketMessageEventArgs(message, binaryMessages));
+            return message.ID ?? default;
         }
 
-        private async Task ConnectionLoopAsync(CancellationToken cancellationToken = default)
+        private async Task ConnectionLoopAsync()
         {
             try
             {
-                ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024 * 16]);
+                _lastMessageID = 7;
+                _connectionCts = new CancellationTokenSource();
+                ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024]);
 
-                while (!cancellationToken.IsCancellationRequested)
+                while (_connectionCts != null && !_connectionCts.Token.IsCancellationRequested)
                 {
-                    // trigger cancellation if client has been disposed or is in closed state
-                    if (_websocketClient == null || _websocketClient.State == WebSocketState.Closed)
-                        _connectionCts?.Cancel();
-                    // if closing was initiated by the server, acknowledge it before cancelling
-                    else if (_websocketClient?.State == WebSocketState.CloseReceived)
-                    {
-                        await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested by server", cancellationToken).ConfigureAwait(false);
-                        _connectionCts?.Cancel();
-                    }
-                    cancellationToken.ThrowIfCancellationRequested();
-
                     // read from stream
-                    SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+                    SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
                     if (!IsAnythingReceived(receivedMessage))
                         continue;
 
@@ -142,7 +133,7 @@ namespace TehGM.Wolfringo.Socket
                         List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
                         for (int i = 0; i < msg.BinaryMessagesCount; i++)
                         {
-                            SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+                            SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
                             if (!IsAnythingReceived(receivedBinaryMessage))
                                 continue;
                             if (receivedBinaryMessage.MessageType == WebSocketMessageType.Text)
@@ -156,18 +147,31 @@ namespace TehGM.Wolfringo.Socket
                         throw new InvalidDataException("Received a binary message while a text message was expected");
                 }
             }
-            catch (TaskCanceledException) { }
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-                throw;
             }
             finally
             {
                 Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
-                this.Dispose();
+                // always clear AFTER invoking the event. Learned hard way.
+                this.Clear();
             }
+        }
+
+        private async Task CheckSocketStateAsync(CancellationToken cancellationToken = default)
+        {
+            // if closing was initiated by the server, acknowledge it before cancelling
+            if (_websocketClient?.State == WebSocketState.CloseReceived)
+            {
+                await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested by server", default).ConfigureAwait(false);
+                _connectionCts?.Cancel();
+            }
+            // trigger cancellation if client has been disposed or is in closed state
+            else if (!this.IsConnected)
+                _connectionCts?.Cancel();
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         private void OnTextMessageReceived(SocketMessage msg, IEnumerable<byte[]> binaryMessages)
@@ -189,10 +193,12 @@ namespace TehGM.Wolfringo.Socket
 
         private async Task<SocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken = default)
         {
+            await CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
+
             // read stream
             WebSocketReceiveResult result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
             // cancel further execution if connection was closed
-            if (result.MessageType == WebSocketMessageType.Close)
+            if (result.MessageType == WebSocketMessageType.Close || !this.IsConnected)
                 return null;
 
             byte[] contents = null;
@@ -202,19 +208,22 @@ namespace TehGM.Wolfringo.Socket
                 // borrowed from Discord.NET's handling of websockets
                 using (MemoryStream stream = new MemoryStream())
                 {
-                    stream.Write(buffer.Array, 0, result.Count);
+                    stream.Write(buffer.Array, buffer.Offset, result.Count);
                     do
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
+                        await CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
                         result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
-                        stream.Write(buffer.Array, 0, result.Count);
+                        // cancel further execution if connection was closed
+                        if (result.MessageType == WebSocketMessageType.Close || !this.IsConnected)
+                            return null;
+                        stream.Write(buffer.Array, buffer.Offset, result.Count);
                     }
                     while (result == null || !result.EndOfMessage);
 
                     bytesRead = (int)stream.Length;
-                    if (stream.TryGetBuffer(out buffer))
-                        contents = buffer.Array;
-                    else contents = stream.ToArray();
+                    if (stream.TryGetBuffer(out ArraySegment<byte> streamBuffer))
+                        contents = streamBuffer.Array;
+                    else contents = streamBuffer.ToArray();
                 }
             }
             else
@@ -230,30 +239,34 @@ namespace TehGM.Wolfringo.Socket
         {
             try
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && this.IsConnected)
                 {
                     await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
                     await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
                 }
             }
-            catch (TaskCanceledException) { }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-                throw;
             }
+        }
+
+        private void Clear()
+        {
+            try { this._connectionCts?.Cancel(); } catch { }
+            try { this._connectionCts?.Dispose(); } catch { }
+            this._connectionCts = null;
+            this.Session = null;
+            try { this._websocketClient?.Dispose(); } catch { }
+            this._websocketClient = null;
         }
 
         /// <summary>Disposes the resources used by this client.</summary>
         public void Dispose()
         {
-            this.Session = null;
-            this._websocketClient?.Dispose();
-            this._websocketClient = null;
-            if (this._connectionCts?.IsCancellationRequested != true)
-                this._connectionCts?.Cancel();
-            this._connectionCts?.Dispose();
-            this._connectionCts = null;
+            this.Clear();
+            this._sendLock?.Dispose();
         }
     }
 }

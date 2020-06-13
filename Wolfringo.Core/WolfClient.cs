@@ -93,7 +93,7 @@ namespace TehGM.Wolfringo
         /// <summary>Caches container.</summary>
         protected WolfEntityCacheContainer Caches { get; set; }
 
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource _connectionCts;
 
         #region Constructors
         /// <summary>Creates a new wolf client instance.</summary>
@@ -208,16 +208,18 @@ namespace TehGM.Wolfringo
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
+            Log?.LogDebug("Connecting");
             return _client.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device.ToLower()}&EIO=3&transport=websocket"),
-                _cts.Token);
+                cancellationToken);
         }
 
         /// <inheritdoc/>
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
-            => _client.DisconnectAsync(cancellationToken);
+        {
+            Log?.LogDebug("Disconnecting");
+            return _client.DisconnectAsync(cancellationToken);
+        }
 
         /// <inheritdoc/>
         public virtual void Dispose()
@@ -229,9 +231,9 @@ namespace TehGM.Wolfringo
         /// <summary>Clears all connection-bound variables.</summary>
         protected virtual void Clear()
         {
-            this._cts?.Cancel();
-            this._cts?.Dispose();
-            this._cts = null;
+            try { this._connectionCts?.Cancel(); } catch { }
+            try { this._connectionCts?.Dispose(); } catch { }
+            this._connectionCts = null;
             this.CurrentUserID = null;
             this.Caches?.ClearAll();
         }
@@ -248,20 +250,25 @@ namespace TehGM.Wolfringo
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
-            if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
+            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
             {
-                // try fallback simple serialization
-                Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
-                serializer = MessageSerializers.FallbackSerializer;
+                Log?.LogTrace("Sending {Command}", message.Command);
+                // select serializer
+                if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
+                {
+                    // try fallback simple serialization
+                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
+                    serializer = MessageSerializers.FallbackSerializer;
+                }
+                // serialize and send message
+                SerializedMessageData data = serializer.Serialize(message);
+                uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, sendingCts.Token).ConfigureAwait(false);
+                if (response.IsError())
+                    throw new MessageSendingException(message, response);
+                this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
+                return (TResponse)response;
             }
-            SerializedMessageData data = serializer.Serialize(message);
-
-            uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, cancellationToken).ConfigureAwait(false);
-            IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, cancellationToken).ConfigureAwait(false);
-            if (response.IsError())
-                throw new MessageSendingException(message, response);
-            this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
-            return (TResponse)response;
         }
 
         /// <summary>Waits for response for sent message.</summary>
@@ -305,15 +312,17 @@ namespace TehGM.Wolfringo
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
-                    ctr.Dispose();
-                    if (_client != null)
-                        _client.MessageReceived -= callback;
                 }
-                catch (Exception ex)
+                catch (OperationCanceledException) when (LogWarning("Message sending aborted due to connection task being canceled")) { }
+                catch (Exception ex) when (ex.LogAsError(this.Log, "Exception has occured when handling socket response"))
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
-                    Log?.LogError(ex, "Exception has occured when handling socket response");
                     tcs.TrySetException(ex);
+                }
+                finally
+                {
+                    ctr.Dispose();
+                    (sender as SocketClient).MessageReceived -= callback;
                 }
             };
             _client.MessageReceived += callback;
@@ -361,7 +370,14 @@ namespace TehGM.Wolfringo
                 if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
                 {
                     foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
+                    {
+                        // repopulate group members if new group profile came without them
+                        WolfGroup existingGroup = this.Caches?.GroupsCache?.Get(group.ID);
+                        if (existingGroup != null && existingGroup.Members?.Any() == true && group.Members?.Any() != true)
+                            EntityModificationHelper.ReplaceAllGroupMembers(group, existingGroup.Members.Values);
+                        // replace cached group itself
                         this.Caches?.GroupsCache?.AddOrReplaceIfChanged(group);
+                    }
                 }
 
                 // update group member list if one was requested
@@ -373,10 +389,7 @@ namespace TehGM.Wolfringo
                         if (cachedGroup != null)
                             EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
                     }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
 
                 // add group if it was created
@@ -416,7 +429,6 @@ namespace TehGM.Wolfringo
                 }
             }
 
-            // TODO: handle other types
             return Task.CompletedTask;
         }
         #endregion
@@ -545,13 +557,13 @@ namespace TehGM.Wolfringo
                         return;
 
                     Log?.LogDebug("Message received: {Command}", command);
-                    await OnMessageReceivedInternalAsync(msg, rawData, _cts.Token).ConfigureAwait(false);
+                    await OnMessageReceivedInternalAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
+            catch (OperationCanceledException) when (LogWarning("Message receiving aborted due to connection task being canceled")) { }
+            catch (Exception ex) when (ex.LogAsError(this.Log, "Exception occured when handling received message"))
             {
                 // don't rethrow exception here, as doing so will kill the socket client loop
-                Log?.LogError(ex, "Exception occured when handling received message");
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
             }
         }
@@ -640,10 +652,7 @@ namespace TehGM.Wolfringo
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
                     }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
 
                 // update group member list if one left
@@ -655,10 +664,7 @@ namespace TehGM.Wolfringo
                         if (cachedGroup != null)
                             EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
                     }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
 
                 // update group member capabilities if member was updated
@@ -671,10 +677,7 @@ namespace TehGM.Wolfringo
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
                     }
-                    catch (NotSupportedException)
-                    {
-                        Log?.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID);
-                    }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
             }
 
@@ -703,6 +706,8 @@ namespace TehGM.Wolfringo
         /// <summary>Logs connected and raises event. Invoked when underlying client connects to the server.</summary>
         private void OnClientConnected(object sender, EventArgs e)
         {
+            this.Clear();
+            this._connectionCts = new CancellationTokenSource();
             Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
@@ -711,9 +716,9 @@ namespace TehGM.Wolfringo
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
         {
             if (e.CloseStatus == System.Net.WebSockets.WebSocketCloseStatus.NormalClosure)
-                Log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription);
+                Log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription ?? "-");
             else
-                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription);
+                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription ?? "-");
             this.Clear();
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
@@ -721,9 +726,7 @@ namespace TehGM.Wolfringo
         /// <summary>Logs error and raises event. Invoked when underlying client raises error event.</summary>
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
-            if (e.ExceptionObject is Exception ex)
-                Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
-            else Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+            Log?.LogError("Socket client error: {Error}", (e.ExceptionObject is Exception ex) ? ex.Message : e.ExceptionObject?.ToString());
             this.ErrorRaised?.Invoke(this, e);
         }
         #endregion
@@ -766,6 +769,12 @@ namespace TehGM.Wolfringo
                 else
                     Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
             }
+        }
+
+        private bool LogWarning(string message, params object[] args)
+        {
+            Log?.LogWarning(message, args);
+            return true;
         }
         #endregion
     }
