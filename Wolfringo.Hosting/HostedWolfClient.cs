@@ -194,6 +194,11 @@ namespace TehGM.Wolfringo.Hosting
             try
             {
                 disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
+                this._client.Disconnected -= OnClientDisconnected;
+                this._client.Connected -= OnClientConnected;
+                this._client.ErrorRaised -= OnClientErrorRaised;
+                this._client.MessageReceived -= OnClientMessageReceived;
+                this._client.MessageSent -= OnClientMessageSent;
                 if (disposingClient?.IsConnected == true)
                     await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
             }
