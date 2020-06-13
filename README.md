@@ -10,7 +10,7 @@ Library works with strongly-typed messages and responses, that are serialized wh
 
 ### Download
 
-> This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library.
+> This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library. Any version before 0.3.0 can be especially unstable.
 
 Preview version of this library is available as a [GitHub Package](https://github.com/TehGM/Wolfringo/packages/257862). Later versions will be available on nuget.org.
 
@@ -68,6 +68,27 @@ async void OnChatMessage(ChatMessage message)
 ```
 
 See [Example project](Examples/SimplePingBot) for a full example.
+
+### Interactive
+[Wolfringo.Utilities.Interactive](https://github.com/TehGM/Wolfringo/packages/261227) provides helper methods to easily await next message by user, in group, or custom conditions by providing own Func delegate.
+
+```csharp
+private async void OnChatMessage(ChatMessage message)
+{
+    if (!message.IsPrivateMessage) return;
+    await _client.ReplyTextAsync(message, "Ready? Set? Go!");
+    DateTime startTime = DateTime.UtcNow;
+    ChatMessage response = await _client.AwaitNextPrivateByUserAsync(message.SenderID.Value, TimeSpan.FromSeconds(10));     // timeout is optional
+    if (response == null) // if response message is null, it timed out
+        await _client.ReplyTextAsync(message, "Aww, too slow. :(");
+    else
+    {
+        double userSpeed = (DateTime.UtcNow - startTime).TotalSeconds;
+        await _client.ReplyTextAsync(response, $"Congrats, you replied within {userSpeed}!");
+    }
+}
+```
+See [Example project](Examples/HostedPingBot/HostedMessageHandler.cs) for a working example.
 
 ### Logging
 [WolfClient](Wolfringo.Core/WolfClient.cs) constructor takes an ILogger as one of the optional parameters, making it compatible with any of the major .NET logging frameworks. To enable logging, create a new instance of any ILogger, and simply pass it to the client constructor.
