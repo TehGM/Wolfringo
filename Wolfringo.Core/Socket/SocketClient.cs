@@ -117,7 +117,7 @@ namespace TehGM.Wolfringo.Socket
                 _connectionCts = new CancellationTokenSource();
                 ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024]);
 
-                while (_connectionCts != null && !_connectionCts.Token.IsCancellationRequested)
+                while (_connectionCts?.Token.IsCancellationRequested != true)
                 {
                     // read from stream
                     SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
@@ -154,7 +154,8 @@ namespace TehGM.Wolfringo.Socket
             }
             finally
             {
-                Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
+                Disconnected?.Invoke(this, new SocketClosedEventArgs(
+                    _websocketClient?.CloseStatus ?? WebSocketCloseStatus.Empty, _websocketClient?.CloseStatusDescription));
                 // always clear AFTER invoking the event. Learned hard way.
                 this.Clear();
             }
@@ -165,7 +166,8 @@ namespace TehGM.Wolfringo.Socket
             // if closing was initiated by the server, acknowledge it before cancelling
             if (_websocketClient?.State == WebSocketState.CloseReceived)
             {
-                await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested by server", default).ConfigureAwait(false);
+                await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, 
+                    "Disconnection requested by server", cancellationToken).ConfigureAwait(false);
                 _connectionCts?.Cancel();
             }
             // trigger cancellation if client has been disposed or is in closed state
@@ -198,7 +200,7 @@ namespace TehGM.Wolfringo.Socket
             // read stream
             WebSocketReceiveResult result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
             // cancel further execution if connection was closed
-            if (result.MessageType == WebSocketMessageType.Close || !this.IsConnected)
+            if (result?.MessageType == WebSocketMessageType.Close || !this.IsConnected)
                 return null;
 
             byte[] contents = null;
@@ -214,7 +216,7 @@ namespace TehGM.Wolfringo.Socket
                         await CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
                         result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
                         // cancel further execution if connection was closed
-                        if (result.MessageType == WebSocketMessageType.Close || !this.IsConnected)
+                        if (result?.MessageType == WebSocketMessageType.Close || !this.IsConnected)
                             return null;
                         stream.Write(buffer.Array, buffer.Offset, result.Count);
                     }
