@@ -257,14 +257,14 @@ namespace TehGM.Wolfringo.Hosting
 
         /* IHostedService */
         /// <inheritdoc/>
-        Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        async Task IHostedService.StartAsync(CancellationToken cancellationToken)
         {
             try
             {
                 _hostCancellationToken = cancellationToken;
                 // only connect if not already connected
                 if (!this.IsConnected)
-                    return this.ConnectAsync(cancellationToken);
+                    await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when trying to connect as a hosted client"))
             {
@@ -272,23 +272,10 @@ namespace TehGM.Wolfringo.Hosting
                 if (_options.CurrentValue.CloseOnCriticalError)
                     _hostLifetime?.StopApplication();
             }
-            return Task.CompletedTask;
         }
         /// <inheritdoc/>
         Task IHostedService.StopAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                // only disconnect if connected
-                if (this.IsConnected)
-                    return this.DisconnectAsync(cancellationToken);
-            }
-            catch (Exception ex) when (ex.LogAsError(this._log, "Exception occured when trying to disconnect as a hosted client"))
-            {
-                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-            }
-            return Task.CompletedTask;
-        }
+            => this.DisposeClientAsync(cancellationToken);
 
         /* CONNECT AND DISCONNECT */
         /// <inheritdoc/>
