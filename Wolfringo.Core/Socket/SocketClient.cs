@@ -244,7 +244,8 @@ namespace TehGM.Wolfringo.Socket
                 while (!cancellationToken.IsCancellationRequested && this.IsConnected)
                 {
                     await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
-                    await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
+                    if (!cancellationToken.IsCancellationRequested && this.IsConnected)
+                        await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException) { }
