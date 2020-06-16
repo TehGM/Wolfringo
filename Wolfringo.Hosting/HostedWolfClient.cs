@@ -348,7 +348,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <para>If first attempt of reconnection fails, underlying client will be recreated and attempt will be made again.
         /// If this fails, error will be logged and <see cref="ErrorRaised"/> invoked.</para>
         /// <para>Reconnection attempt will be aborted if client is disposed, disconnection was manual or 
-        /// <see cref="HostedWolfClientOptions.AutoReconnect"/> is set to false.</para></remarks>
+        /// <see cref="HostedWolfClientOptions.AutoReconnectAttempts"/> is set to 0.</para></remarks>
         private async void OnClientDisconnected(object sender, EventArgs e)
         {
             TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
@@ -357,7 +357,7 @@ namespace TehGM.Wolfringo.Hosting
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
-                if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
+                if (this._client == null || this._manuallyDisconnected || this._options.CurrentValue.AutoReconnectAttempts < 1)
                     return;
                 _log?.LogDebug("Reconnection delay: {Delay}", delay);
                 if (delay > TimeSpan.Zero)

@@ -25,9 +25,6 @@ namespace TehGM.Wolfringo.Hosting
         public string LoginPassword { get; set; }
 
         // auto-reconnection
-        /// <summary>Whether hosted client should attempt to automatically reconnect when non-manually disconnected.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool AutoReconnect { get; set; } = true;
         /// <summary>How long the client should wait before automatically reconnecting.</summary>
         /// <remarks>Defaults to 500ms.</remarks>
         public TimeSpan AutoReconnectDelay { get; set; } = TimeSpan.FromSeconds(0.5);
