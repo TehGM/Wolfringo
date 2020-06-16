@@ -379,7 +379,8 @@ namespace TehGM.Wolfringo.Hosting
                     try
                     {
                         await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
-                        await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
+                        if (delay > TimeSpan.Zero)
+                            await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
                         await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
                         break;
                     }
