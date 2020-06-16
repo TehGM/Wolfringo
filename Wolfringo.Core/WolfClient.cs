@@ -726,7 +726,11 @@ namespace TehGM.Wolfringo
         /// <summary>Logs error and raises event. Invoked when underlying client raises error event.</summary>
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
-            Log?.LogError("Socket client error: {Error}", (e.ExceptionObject is Exception ex) ? ex.Message : e.ExceptionObject?.ToString());
+            Exception ex = e.ExceptionObject as Exception;
+            if (ex != null)
+                Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
+            else
+                Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
             this.ErrorRaised?.Invoke(this, e);
         }
         #endregion
