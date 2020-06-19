@@ -394,13 +394,16 @@ namespace TehGM.Wolfringo
                 GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
                     new GroupProfileMessage(toRequest, true), cancellationToken).ConfigureAwait(false);
                 results.AddRange(response.GroupProfiles);
-
-                foreach (WolfGroup group in response.GroupProfiles)
-                {
-                    // request members list for groups not present in cache
-                    await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
-                }
             }
+
+            // request members for group that has it's member list empty
+            IEnumerable<WolfGroup> memberRequests = results.Where(group => group.Members?.Any() != true);
+            foreach (WolfGroup group in memberRequests)
+            {
+                // request members list for groups not present in cache
+                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
+            }
+
             return results;
         }
 
