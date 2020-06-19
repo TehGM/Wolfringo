@@ -464,7 +464,10 @@ namespace TehGM.Wolfringo
             // if cache misses, need to request from the server
             GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
                 new GroupProfileMessage(trimmedName), cancellationToken).ConfigureAwait(false);
-            return response?.GroupProfiles?.FirstOrDefault();
+            result = response?.GroupProfiles?.FirstOrDefault();
+            if (result != null)
+                await client.RequestGroupMembersAsync(result, cancellationToken).ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>Retrieve profiles of groups current user is in.</summary>
