@@ -399,10 +399,7 @@ namespace TehGM.Wolfringo
             // request members for group that has it's member list empty
             IEnumerable<WolfGroup> memberRequests = results.Where(group => group.Members?.Any() != true);
             foreach (WolfGroup group in memberRequests)
-            {
-                // request members list for groups not present in cache
                 await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
-            }
 
             return results;
         }
@@ -418,13 +415,16 @@ namespace TehGM.Wolfringo
                 // however, just in case it's not (like when caching is disabled), do it here as well
                 if (membersResponse?.GroupMembers?.Any() == true)
                 {
-                    EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                    try
+                    {
+                        EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                    }
+                    catch (NotSupportedException) { }
                     return membersResponse.GroupMembers;
                 }
             }
             // handle case when requesting profiles for group the user is not in
             catch (MessageSendingException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden) { }
-            catch (NotSupportedException) { }
             return null;
         }
 
