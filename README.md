@@ -134,7 +134,8 @@ This exception will not be logged automatically by the client.
 #### Serializer maps
 Client uses power of Dependency Injection to allow customizability. The client accepts optional Message and Response Serializer maps which are used for serializing and deserializing the message and response objects. You can inject own instance of the map to change mapping, or even add new types if it's required.
 
-You can see [DefaultMessageSerializerMap](Wolfringo.Core/Messages/Serialization/DefaultMessageSerializerMap.cs), [DefaultResponseSerializerMap](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerMap.cs),[DefaultMessageSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultMessageSerializer.cs) and [DefaultResponseSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultResponseSerializer.cs) for examples of default base implementations.
+You can see [DefaultMessageSerializerMap](Wolfringo.Core/Messages/Serialization/DefaultMessageSerializerMap.cs), [DefaultResponseSerializerMap](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerMap.cs), [DefaultMessageSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultMessageSerializer.cs) and [DefaultResponseSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultResponseSerializer.cs) for examples of default base implementations.
+
 #### Overriding client methods
 Client automatically caches the entities based on message/response type. If you add a new type that needs to support this, you must create a new client class inheriting from [WolfClient](Wolfringo.Core/WolfClient.cs). You can override `Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)` method to change behaviour for sent messages and received responses, and `Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)` method to change behaviour for received events and messages.
 
@@ -143,13 +144,13 @@ Client automatically caches the entities based on message/response type. If you 
 #### Determining response type for sent message
 [WolfClient](Wolfringo.Core/WolfClient.cs) needs to know how to deserialize message's response, and to determine the type, it uses an [IResponseTypeResolver](Wolfringo.Core/Messages/Responses/IResponseTypeResolver.cs) to select the type that will be used with response serializer mappings. This interface can be passed into the client constructor. If null or none is passed in, [DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) will be used automatically.
 
-[DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) respects [ResponseType](Wolfringo.Core/Messages/Responses/ResponseTypeAttribute.cs) attribute on the message type, and will ignore the generic type passed in with `SendAsync` method. If the attribute is missing, default client implementation will instruct the type resolver to use provided generic type. Client will attempt to cast the response to the provided generic type regardless of the actual response type, and might return null.
+[DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) respects [ResponseType](Wolfringo.Core/Messages/Responses/ResponseTypeAttribute.cs) attribute on the message type, and will ignore the generic type passed in with `SendAsync` method. If the attribute is missing, default client implementation will instruct the type resolver to use provided generic type. Client will attempt to cast the response to the provided generic type regardless of the actual response type, and might throw an exception if the cast is impossible.
 
 ## Further development
 > This library is still in preview, so breaking changes might be introduced with any version until 1.0.0 release.
 
 #### Planned features
-- Some kind of commands system
+- Some kind of commands system.
 
 #### Known bugs and missing features
 - Avatar setting is not supported, due to Wolf protocol not supporting it yet.
@@ -157,6 +158,8 @@ Client automatically caches the entities based on message/response type. If you 
 
 ### Contributing
 In case you want to report a bug or request a feature, open a new [Issue](https://github.com/TehGM/Wolfringo/issues).
+
+If you want to contribute a patch or update, fork repository, implement the change, and open a pull request.
 
 ## License
 Copyright (c) 2020 TehGM 
