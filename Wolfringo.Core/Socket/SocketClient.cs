@@ -111,6 +111,7 @@ namespace TehGM.Wolfringo.Socket
 
         private async Task ConnectionLoopAsync()
         {
+            Exception closeException = null;
             try
             {
                 _lastMessageID = 7;
@@ -147,15 +148,24 @@ namespace TehGM.Wolfringo.Socket
                         throw new InvalidDataException("Received a binary message while a text message was expected");
                 }
             }
-            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+                closeException = ex;
+                // ignore premature close and task cancellations
+                // these should be treated as normal close event, not an error
+                if (!IsClosedPrematurelyException(ex) && !(ex is OperationCanceledException))
+                    ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
             }
             finally
             {
-                Disconnected?.Invoke(this, new SocketClosedEventArgs(
-                    _websocketClient?.CloseStatus ?? WebSocketCloseStatus.Empty, _websocketClient?.CloseStatusDescription));
+                // craft closed event, keeping the exception in mind
+                WebSocketCloseStatus status = _websocketClient?.CloseStatus ??                              // websocketclient reported status has priority
+                    (IsClosedPrematurelyException(closeException) ? WebSocketCloseStatus.ProtocolError :    // if premature close, report as protocol error
+                    (closeException is OperationCanceledException) ? WebSocketCloseStatus.NormalClosure :   // if operation canceled, report as normal closure
+                    WebSocketCloseStatus.Empty);                                                            // otherwise report unknown status
+                string message = _websocketClient?.CloseStatusDescription ?? closeException?.Message;
+                Disconnected?.Invoke(this, new SocketClosedEventArgs(status, message, closeException));
+
                 // always clear AFTER invoking the event. Learned hard way.
                 this.Clear();
             }
@@ -264,6 +274,9 @@ namespace TehGM.Wolfringo.Socket
             try { this._websocketClient?.Dispose(); } catch { }
             this._websocketClient = null;
         }
+
+        private static bool IsClosedPrematurelyException(Exception ex)
+            => ex != null && ex is WebSocketException wsEx && wsEx.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely;
 
         /// <summary>Disposes the resources used by this client.</summary>
         public void Dispose()
