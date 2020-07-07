@@ -1,5 +1,5 @@
 ﻿# Wolfringo's SocketIO client implementation
-This folder contains custom SocketIO client implementation. Feel free to use it in your own project, following Wolfringo's MIT licensing.
+This folder contains custom SocketIO client implementation. Feel free to use it in your own project, following [Wolfringo's MIT licensing](/LICENSE).
 
 This implementation was created because most of SocketIO libraries are obsolete, don't work with .NET Core, or are bugged, WIP, or have other issues. Because of this situation, I decided to write my own implementation that I'll have full control and knowledge of, and that works fine with the library.
 
