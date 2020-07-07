@@ -576,7 +576,7 @@ namespace TehGM.Wolfringo
         /// <returns>Enumerable of retrieved charms.</returns>
         /// <seealso cref="GetAllCharmsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetCharmAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<IEnumerable<WolfCharm>> GetCharmsAsync(this IWolfClient client, IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
         {
             if (charmIDs != null && !charmIDs.Any())
@@ -602,7 +602,7 @@ namespace TehGM.Wolfringo
         /// <returns>Enumerable of retrieved charms.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetCharmAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task<IEnumerable<WolfCharm>> GetAllCharmsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.GetCharmsAsync(null, cancellationToken);
         /// <summary>Get charm by ID.</summary>
@@ -611,7 +611,7 @@ namespace TehGM.Wolfringo
         /// <returns>Retrieved charm.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetAllCharmsAsync(IWolfClient, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<WolfCharm> GetCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
         {
             IEnumerable<WolfCharm> result = await client.GetCharmsAsync(new uint[] { charmID }, cancellationToken).ConfigureAwait(false);
@@ -636,7 +636,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="SetActiveCharmAsync(IWolfClient, uint, CancellationToken)"/>
-        public static async Task<WolfCharm> GetUserCurrentCharm(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        public static async Task<WolfCharm> GetUserCurrentCharmAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
         {
             WolfUser user = await client.GetUserAsync(userID, cancellationToken).ConfigureAwait(false);
             if (user == null)
@@ -650,7 +650,7 @@ namespace TehGM.Wolfringo
         /// <param name="userID">ID of user to retrieve owned charms of.</param>
         /// <returns>Enumerable of owned charms subscriptions.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetUserExpiredCharmsAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="SetActiveCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<IEnumerable<WolfCharmSubscription>> GetUserActiveCharmsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
@@ -676,14 +676,14 @@ namespace TehGM.Wolfringo
         /// <param name="charmID">ID of charm to set as active.</param>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="RemoveActiveCharmAsync(IWolfClient, CancellationToken)"/>
         public static Task SetActiveCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
             => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>() { { 0, charmID } }), cancellationToken);
         /// <summary>Remove current user's selected charm.</summary>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="SetActiveCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task RemoveActiveCharmAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>()), cancellationToken);
