@@ -30,9 +30,13 @@ namespace TehGM.Wolfringo.Utilities
         public WolfClientReconnector(IWolfClient client, ReconnectorConfig config)
         {
             this._client = client ?? throw new ArgumentNullException(nameof(client));
-            this.Config = config ?? new ReconnectorConfig();
+            this.Config = config ?? throw new ArgumentNullException(nameof(config));
             this._client.Disconnected += OnClientDisconnected;
         }
+
+        /// <summary>Creates instance of reconnector using default config values.</summary>
+        /// <param name="client">Client to automatically reconnect.</param>
+        public WolfClientReconnector(IWolfClient client) : this(client, new ReconnectorConfig()) { }
 
         /// <summary>Reconnects the client.</summary>
         /// <remarks>This method is invoked when the client has disconnected.</remarks>
