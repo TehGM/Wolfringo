@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace TehGM.Wolfringo.Utilities
 {
@@ -14,13 +15,10 @@ namespace TehGM.Wolfringo.Utilities
     /// client has auto-reconnecting behaviour built-in.</para></remarks>
     public class WolfClientReconnector : IDisposable
     {
-        /// <summary>How much time to wait before reconnecting.</summary>
-        /// <remarks><para>Set to 0 or negative value to reconnect instantly.</para>
-        /// <para>Defaults to 500ms.</para></remarks>
-        public TimeSpan ReconnectionDelay { get; set; } = TimeSpan.FromSeconds(0.5);
+        /// <summary>Configuration for reconnecting.</summary>
+        public ReconnectorConfig Config { get; }
 
         private readonly IWolfClient _client;
-        private readonly CancellationToken _cancellationToken;
 
         /// <summary>Raised when client fails to reconnect.</summary>
         /// <remarks>The object will be disposed after this event executes.</remarks>
@@ -28,31 +26,52 @@ namespace TehGM.Wolfringo.Utilities
 
         /// <summary>Creates instance of reconnector.</summary>
         /// <param name="client">Client to automatically reconnect.</param>
-        /// <param name="connectionCancellationToken">Cancellation token to use for new connections.</param>
-        public WolfClientReconnector(IWolfClient client, CancellationToken connectionCancellationToken = default)
+        /// <param name="config">Reconnector configuration.</param>
+        public WolfClientReconnector(IWolfClient client, ReconnectorConfig config)
         {
-            this._client = client;
-            this._cancellationToken = connectionCancellationToken;
+            this._client = client ?? throw new ArgumentNullException(nameof(client));
+            this.Config = config ?? new ReconnectorConfig();
             this._client.Disconnected += OnClientDisconnected;
         }
 
         /// <summary>Reconnects the client.</summary>
         /// <remarks>This method is invoked when the client has disconnected.</remarks>
+        /// <exception cref="AggregateException">Aggregate exception containing all exceptions occured over all reconnect attempts.</exception>
         private async void OnClientDisconnected(object sender, EventArgs e)
         {
-            try
+            this.Config.Log?.LogDebug("Attempting to reconnect, max {Attempts} times. Delay: {Delay}",
+                this.Config.ReconnectAttempts, this.Config.ReconnectionDelay);
+
+            ICollection<Exception> exceptions = new List<Exception>(this.Config.ReconnectAttempts);
+            int reconnectionAttempt = 0;
+            while (reconnectionAttempt < this.Config.ReconnectAttempts)
             {
-                // wait reconnection delay if any
-                if (this.ReconnectionDelay > TimeSpan.Zero)
-                    await Task.Delay(this.ReconnectionDelay);
-                // attempt to reconnnect unconditionally
-                await _client.ConnectAsync(_cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                // on error, raise event and dispose the instance.
-                FailedToReconnect?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-                this.Dispose();
+                reconnectionAttempt++;
+                bool lastAttempt = reconnectionAttempt == this.Config.ReconnectAttempts;
+                try
+                {
+                    this.Config.Log?.LogTrace("Reconnection attempt {Attempt}", reconnectionAttempt);
+
+                    // wait reconnection delay if any
+                    if (this.Config.ReconnectionDelay > TimeSpan.Zero)
+                        await Task.Delay(this.Config.ReconnectionDelay);
+
+                    // attempt to reconnnect unconditionally
+                    await _client.ConnectAsync(this.Config.CancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+
+                    if (lastAttempt)
+                    {
+                        // on error, raise event and dispose the instance.
+                        AggregateException aggrEx = new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions);
+                        this.Config.Log?.LogError(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts);
+                        FailedToReconnect?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
+                        throw aggrEx;
+                    }
+                }
             }
         }
 

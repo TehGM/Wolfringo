@@ -97,12 +97,17 @@ In .NET Core Host, simply configure logging using services as you normally would
 
 ### Auto-Reconnecting
 
-You can use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) to enable auto-reconnecting behaviour.
+You can use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) to enable configurable auto-reconnecting behaviour. This is implemented outside of [WolfClient](Wolfringo.Core/WolfClient.cs) to make reconnector implementation-independent.
 ```csharp
 IWolfClient client = new WolfClient();
-WolfClientReconnector reconnector = new WolfClientReconnector(client);
+ReconnectorOptions options = new ReconnectorOptions();
+// here configure options, such as attempts, delay, logger or cancellation token
+WolfClientReconnector reconnector = new WolfClientReconnector(client, options);
 ```
-The reconnector class will automatically reconnect the client until reconnection fails or `reconnector.Dispose()` method is called. To re-enable reconnection, manually connect the client and create a new [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) again, providing the same client via the constructor.
+
+The reconnector utility will make defined amount of attempts to reconnect the client. If all attempts fail, the reconnector will raise `FailedToReconnect` event and provide all exceptions occured when trying to reconnect in an `AggregateException`.
+
+To stop reconnector, call `Dispose()`. Once disposed, the reconnector will no longer attempt to auto-reconnect, and can't be reused. If you need to re-enable reconnection, create a new instance of reconnector.
 
 If the reconnector behaviour is not sufficent for your use-case, listen to client's Disconnected event to implement own behaviour.
 
