@@ -42,3 +42,8 @@ You can access parsed SID object using `Session` property once the connection ha
 
 #### Encoding
 By default, client uses UTF-8 encoding when sending and receiving messages. To change that, simply set `MessagesEncoding` property.
+
+## License
+Copyright (c) 2020 TehGM 
+
+Licensed under [MIT License](/LICENSE).
