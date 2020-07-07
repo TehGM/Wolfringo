@@ -338,49 +338,49 @@ namespace TehGM.Wolfringo.Hosting
         /// <see cref="HostedWolfClientOptions.AutoReconnectAttempts"/> is set to 0.</para></remarks>
         private async void OnClientDisconnected(object sender, EventArgs e)
         {
-            TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
+            HostedWolfClientOptions options = this._options.CurrentValue;
+
             // lock first to avoid race conditions
             await _clientLock.WaitAsync(_hostCancellationToken).ConfigureAwait(false);
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
-                if (this._client == null || this._manuallyDisconnected || this._options.CurrentValue.AutoReconnectAttempts < 1)
+                if (this._client == null || this._manuallyDisconnected || options.AutoReconnectAttempts < 1)
                     return;
-                _log?.LogDebug("Reconnection delay: {Delay}", delay);
-                if (delay > TimeSpan.Zero)
-                    await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
-                await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException ex) when (ex.LogAsDebug(this._log, "Auto-reconnection canceled")) { }
-            catch (Exception ex) when (ex.LogAsWarning(this._log, "Failed to auto-reconnect, recreating underlying client"))
-            {
-                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
 
-                // strip client and retry
-                int reconnectAttempts = 1;
-                int maxAttempts = _options.CurrentValue.AutoReconnectAttempts;
-                while (reconnectAttempts < maxAttempts)
+                this._log?.LogDebug("Attempting to reconnect, max {Attempts} times. Delay: {Delay}",
+                    options.AutoReconnectAttempts, options.AutoReconnectDelay);
+
+                int reconnectAttempt = 0;
+                ICollection<Exception> exceptions = new List<Exception>(options.AutoReconnectAttempts);
+                while (reconnectAttempt < options.AutoReconnectAttempts)
                 {
-                    reconnectAttempts++;
-                    bool lastAttempt = reconnectAttempts == maxAttempts;
+                    reconnectAttempt++;
+                    bool lastAttempt = reconnectAttempt == options.AutoReconnectAttempts;
                     try
                     {
-                        await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
-                        if (delay > TimeSpan.Zero)
-                            await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
+                        // if not the first attempt, recreate the client
+                        if (reconnectAttempt != 1)
+                            await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
+                        // wait the delay
+                        if (options.AutoReconnectDelay > TimeSpan.Zero)
+                            await Task.Delay(options.AutoReconnectDelay, _hostCancellationToken).ConfigureAwait(false);
+                        // attempt reconnection
                         await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
-                        break;
                     }
-                    catch (OperationCanceledException ex2) when (ex2.LogAsDebug(this._log, "Auto-reconnection canceled")) { }
-                    catch (Exception ex2) when (
-                        (!lastAttempt && ex2.LogAsWarning(this._log, "Exception occured when attempting to reconnect with recreated client")) ||
-                        ex2.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt"))
+                    catch (OperationCanceledException ex) when (ex.LogAsDebug(this._log, "Auto-reconnection canceled")) { }
+                    catch (Exception ex) when (
+                        (!lastAttempt && ex.LogAsWarning(this._log, "Failed to auto-reconnect, recreating underlying client")) ||
+                        ex.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt"))
                     {
+                        exceptions.Add(ex);
                         if (lastAttempt)
                         {
-                            this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
+                            AggregateException aggrEx = new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions);
+                            this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
                             if (_options.CurrentValue.CloseOnCriticalError)
                                 _hostLifetime?.StopApplication();
+                            throw aggrEx;
                         }
                     }
                 }
