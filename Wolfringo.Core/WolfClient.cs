@@ -717,7 +717,13 @@ namespace TehGM.Wolfringo
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
         {
             if (e.CloseStatus == WebSocketCloseStatus.NormalClosure)
-                Log?.LogInformation("Disconnected ({Description})", e.CloseMessage ?? "-");
+            {
+                // don't log message for operation canceled exception
+                if (string.IsNullOrEmpty(e.CloseMessage) || (e.Exception is OperationCanceledException && e.CloseMessage == e.Exception?.Message))
+                    Log?.LogInformation("Disconnected");
+                else 
+                    Log?.LogInformation("Disconnected ({Description})", e.CloseMessage);
+            }
             else
                 Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseMessage ?? "-");
 
