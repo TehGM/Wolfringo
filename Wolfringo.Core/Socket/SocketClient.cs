@@ -18,6 +18,8 @@ namespace TehGM.Wolfringo.Socket
     {
         /// <summary>Session info for the connection.</summary>
         public SocketSession Session { get; private set; }
+        /// <summary>Encoding to use when sending and receiving messages. Defaults to UTF8.</summary>
+        public Encoding MessageEncoding { get; set; } = Encoding.UTF8;
         /// <inheritdoc/>
         public bool IsConnected => _connectionCts?.IsCancellationRequested != true &&
             (_websocketClient?.State == WebSocketState.Open || _websocketClient?.State == WebSocketState.Connecting);
@@ -85,7 +87,7 @@ namespace TehGM.Wolfringo.Socket
                 await _sendLock.WaitAsync(cts.Token).ConfigureAwait(false);
                 try
                 {
-                    byte[] data = Encoding.UTF8.GetBytes(message.ToString());
+                    byte[] data = this.MessageEncoding.GetBytes(message.ToString());
                     // send the text message
                     await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cts.Token).ConfigureAwait(false);
 
@@ -128,7 +130,7 @@ namespace TehGM.Wolfringo.Socket
                     // parse the message
                     if (receivedMessage.MessageType == WebSocketMessageType.Text)
                     {
-                        SocketMessage msg = SocketMessage.Parse(Encoding.UTF8.GetString(receivedMessage.ContentBytes));
+                        SocketMessage msg = SocketMessage.Parse(this.MessageEncoding.GetString(receivedMessage.ContentBytes));
 
                         // if message is binary, read them from stream as well
                         List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
