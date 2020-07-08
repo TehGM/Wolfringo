@@ -69,6 +69,13 @@ async void OnChatMessage(ChatMessage message)
 
 See [Example project](Examples/SimplePingBot) for a full example.
 
+### Receiving profile updates
+WOLF protocol requires you to subscribe to Group/User profile to receive real-time updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
+
+To subscribe to profile updates, request the group/user profile or bot's contacts/groups list. Requesting profiles with Sender utility will automatically subscribe to updates. If you're using message classes directly, their constructors have an argument allowing you to decide if the bot should subscribe to updates.
+
+Default [WolfClient](Wolfringo.Core/WolfClient.cs) will automatically update its caches when a profile update is received.
+
 ### Interactive
 [Wolfringo.Utilities.Interactive](https://github.com/TehGM/Wolfringo/packages/261227) provides helper methods to easily await next message by user, in group, or custom conditions by providing own Func delegate.
 
@@ -94,11 +101,6 @@ See [Example project](Examples/HostedPingBot/HostedMessageHandler.cs) for a work
 [WolfClient](Wolfringo.Core/WolfClient.cs) constructor takes an ILogger as one of the optional parameters, making it compatible with any of the major .NET logging frameworks. To enable logging, create a new instance of any ILogger, and simply pass it to the client constructor.
 
 In .NET Core Host, simply configure logging using services as you normally would in ASP.NET Core/other Hosted scenario. Default [HostedWolfClient](Wolfringo.Hosting/HostedWolfClient.cs) will use dependency injection mechanisms to get the logger and pass it to the underlying [WolfClient](Wolfringo.Core/WolfClient.cs).
-
-### Receiving profile updates
-WOLF protocol requires you to subscribe to Group/User profile updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
-
-To subscribe to profile updates, simply request the group/user profile at any point. You can also request all bot's contacts and groups. Requesting profiles with Sender utility will automatically subscribe to updates. If you're using message classes directly, their constructors have an argument allowing you to decide if the bot should subscribe to updates.
 
 ### Auto-Reconnecting
 
