@@ -394,13 +394,13 @@ namespace TehGM.Wolfringo
                 GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
                     new GroupProfileMessage(toRequest, true), cancellationToken).ConfigureAwait(false);
                 results.AddRange(response.GroupProfiles);
-
-                foreach (WolfGroup group in response.GroupProfiles)
-                {
-                    // request members list for groups not present in cache
-                    await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
-                }
             }
+
+            // request members for group that has it's member list empty
+            IEnumerable<WolfGroup> memberRequests = results.Where(group => group.Members?.Any() != true);
+            foreach (WolfGroup group in memberRequests)
+                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
+
             return results;
         }
 
@@ -415,13 +415,16 @@ namespace TehGM.Wolfringo
                 // however, just in case it's not (like when caching is disabled), do it here as well
                 if (membersResponse?.GroupMembers?.Any() == true)
                 {
-                    EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                    try
+                    {
+                        EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                    }
+                    catch (NotSupportedException) { }
                     return membersResponse.GroupMembers;
                 }
             }
             // handle case when requesting profiles for group the user is not in
             catch (MessageSendingException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden) { }
-            catch (NotSupportedException) { }
             return null;
         }
 
@@ -464,7 +467,10 @@ namespace TehGM.Wolfringo
             // if cache misses, need to request from the server
             GroupProfileResponse response = await client.SendAsync<GroupProfileResponse>(
                 new GroupProfileMessage(trimmedName), cancellationToken).ConfigureAwait(false);
-            return response?.GroupProfiles?.FirstOrDefault();
+            result = response?.GroupProfiles?.FirstOrDefault();
+            if (result != null)
+                await client.RequestGroupMembersAsync(result, cancellationToken).ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>Retrieve profiles of groups current user is in.</summary>
@@ -570,7 +576,7 @@ namespace TehGM.Wolfringo
         /// <returns>Enumerable of retrieved charms.</returns>
         /// <seealso cref="GetAllCharmsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetCharmAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<IEnumerable<WolfCharm>> GetCharmsAsync(this IWolfClient client, IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
         {
             if (charmIDs != null && !charmIDs.Any())
@@ -596,7 +602,7 @@ namespace TehGM.Wolfringo
         /// <returns>Enumerable of retrieved charms.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetCharmAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task<IEnumerable<WolfCharm>> GetAllCharmsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.GetCharmsAsync(null, cancellationToken);
         /// <summary>Get charm by ID.</summary>
@@ -605,7 +611,7 @@ namespace TehGM.Wolfringo
         /// <returns>Retrieved charm.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetAllCharmsAsync(IWolfClient, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<WolfCharm> GetCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
         {
             IEnumerable<WolfCharm> result = await client.GetCharmsAsync(new uint[] { charmID }, cancellationToken).ConfigureAwait(false);
@@ -630,7 +636,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="SetActiveCharmAsync(IWolfClient, uint, CancellationToken)"/>
-        public static async Task<WolfCharm> GetUserCurrentCharm(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
+        public static async Task<WolfCharm> GetUserCurrentCharmAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
         {
             WolfUser user = await client.GetUserAsync(userID, cancellationToken).ConfigureAwait(false);
             if (user == null)
@@ -644,7 +650,7 @@ namespace TehGM.Wolfringo
         /// <param name="userID">ID of user to retrieve owned charms of.</param>
         /// <returns>Enumerable of owned charms subscriptions.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetUserExpiredCharmsAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="SetActiveCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static async Task<IEnumerable<WolfCharmSubscription>> GetUserActiveCharmsAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
@@ -670,14 +676,14 @@ namespace TehGM.Wolfringo
         /// <param name="charmID">ID of charm to set as active.</param>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="RemoveActiveCharmAsync(IWolfClient, CancellationToken)"/>
         public static Task SetActiveCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
             => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>() { { 0, charmID } }), cancellationToken);
         /// <summary>Remove current user's selected charm.</summary>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
-        /// <seealso cref="GetUserCurrentCharm(IWolfClient, uint, CancellationToken)"/>
+        /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="SetActiveCharmAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task RemoveActiveCharmAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>()), cancellationToken);

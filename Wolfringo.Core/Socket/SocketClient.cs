@@ -18,6 +18,8 @@ namespace TehGM.Wolfringo.Socket
     {
         /// <summary>Session info for the connection.</summary>
         public SocketSession Session { get; private set; }
+        /// <summary>Encoding to use when sending and receiving messages. Defaults to UTF8.</summary>
+        public Encoding MessageEncoding { get; set; } = Encoding.UTF8;
         /// <inheritdoc/>
         public bool IsConnected => _connectionCts?.IsCancellationRequested != true &&
             (_websocketClient?.State == WebSocketState.Open || _websocketClient?.State == WebSocketState.Connecting);
@@ -85,7 +87,7 @@ namespace TehGM.Wolfringo.Socket
                 await _sendLock.WaitAsync(cts.Token).ConfigureAwait(false);
                 try
                 {
-                    byte[] data = Encoding.UTF8.GetBytes(message.ToString());
+                    byte[] data = this.MessageEncoding.GetBytes(message.ToString());
                     // send the text message
                     await _websocketClient.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, cts.Token).ConfigureAwait(false);
 
@@ -111,13 +113,14 @@ namespace TehGM.Wolfringo.Socket
 
         private async Task ConnectionLoopAsync()
         {
+            Exception closeException = null;
             try
             {
                 _lastMessageID = 7;
                 _connectionCts = new CancellationTokenSource();
                 ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024]);
 
-                while (_connectionCts != null && !_connectionCts.Token.IsCancellationRequested)
+                while (_connectionCts?.Token.IsCancellationRequested != true)
                 {
                     // read from stream
                     SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
@@ -127,7 +130,7 @@ namespace TehGM.Wolfringo.Socket
                     // parse the message
                     if (receivedMessage.MessageType == WebSocketMessageType.Text)
                     {
-                        SocketMessage msg = SocketMessage.Parse(Encoding.UTF8.GetString(receivedMessage.ContentBytes));
+                        SocketMessage msg = SocketMessage.Parse(this.MessageEncoding.GetString(receivedMessage.ContentBytes));
 
                         // if message is binary, read them from stream as well
                         List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
@@ -147,14 +150,24 @@ namespace TehGM.Wolfringo.Socket
                         throw new InvalidDataException("Received a binary message while a text message was expected");
                 }
             }
-            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
+                closeException = ex;
+                // ignore premature close and task cancellations
+                // these should be treated as normal close event, not an error
+                if (!IsClosedPrematurelyException(ex) && !(ex is OperationCanceledException))
+                    ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
             }
             finally
             {
-                Disconnected?.Invoke(this, new SocketClosedEventArgs(_websocketClient.CloseStatus.Value, _websocketClient.CloseStatusDescription));
+                // craft closed event, keeping the exception in mind
+                WebSocketCloseStatus status = _websocketClient?.CloseStatus ??                              // websocketclient reported status has priority
+                    (IsClosedPrematurelyException(closeException) ? WebSocketCloseStatus.ProtocolError :    // if premature close, report as protocol error
+                    (closeException is OperationCanceledException) ? WebSocketCloseStatus.NormalClosure :   // if operation canceled, report as normal closure
+                    WebSocketCloseStatus.Empty);                                                            // otherwise report unknown status
+                string message = _websocketClient?.CloseStatusDescription ?? closeException?.Message;
+                Disconnected?.Invoke(this, new SocketClosedEventArgs(status, message, closeException));
+
                 // always clear AFTER invoking the event. Learned hard way.
                 this.Clear();
             }
@@ -165,7 +178,8 @@ namespace TehGM.Wolfringo.Socket
             // if closing was initiated by the server, acknowledge it before cancelling
             if (_websocketClient?.State == WebSocketState.CloseReceived)
             {
-                await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Disconnection requested by server", default).ConfigureAwait(false);
+                await _websocketClient.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, 
+                    "Disconnection requested by server", cancellationToken).ConfigureAwait(false);
                 _connectionCts?.Cancel();
             }
             // trigger cancellation if client has been disposed or is in closed state
@@ -198,7 +212,7 @@ namespace TehGM.Wolfringo.Socket
             // read stream
             WebSocketReceiveResult result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
             // cancel further execution if connection was closed
-            if (result.MessageType == WebSocketMessageType.Close || !this.IsConnected)
+            if (result?.MessageType == WebSocketMessageType.Close || !this.IsConnected)
                 return null;
 
             byte[] contents = null;
@@ -214,7 +228,7 @@ namespace TehGM.Wolfringo.Socket
                         await CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
                         result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
                         // cancel further execution if connection was closed
-                        if (result.MessageType == WebSocketMessageType.Close || !this.IsConnected)
+                        if (result?.MessageType == WebSocketMessageType.Close || !this.IsConnected)
                             return null;
                         stream.Write(buffer.Array, buffer.Offset, result.Count);
                     }
@@ -242,7 +256,8 @@ namespace TehGM.Wolfringo.Socket
                 while (!cancellationToken.IsCancellationRequested && this.IsConnected)
                 {
                     await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
-                    await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
+                    if (!cancellationToken.IsCancellationRequested && this.IsConnected)
+                        await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException) { }
@@ -261,6 +276,9 @@ namespace TehGM.Wolfringo.Socket
             try { this._websocketClient?.Dispose(); } catch { }
             this._websocketClient = null;
         }
+
+        private static bool IsClosedPrematurelyException(Exception ex)
+            => ex != null && ex is WebSocketException wsEx && wsEx.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely;
 
         /// <summary>Disposes the resources used by this client.</summary>
         public void Dispose()

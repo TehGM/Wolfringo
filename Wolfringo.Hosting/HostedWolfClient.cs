@@ -103,10 +103,9 @@ namespace TehGM.Wolfringo.Hosting
             this._hostLifetime = hostLifetime;
 
             // disconnect when closing
-            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(async () =>
+            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(() =>
             {
-                if (this.IsConnected)
-                    await this.DisconnectAsync().ConfigureAwait(false);
+                DisposeClientAsync().GetAwaiter().GetResult();
             });
 
             // when options change, we need to dispose existing client, and create new one with new options
@@ -124,6 +123,7 @@ namespace TehGM.Wolfringo.Hosting
                     if (!this._manuallyDisconnected)
                         await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
                 }
+                catch (OperationCanceledException) { }
                 finally
                 {
                     _clientLock.Release();
@@ -194,9 +194,15 @@ namespace TehGM.Wolfringo.Hosting
             try
             {
                 disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
+                disposingClient.Disconnected -= OnClientDisconnected;
+                disposingClient.Connected -= OnClientConnected;
+                disposingClient.ErrorRaised -= OnClientErrorRaised;
+                disposingClient.MessageReceived -= OnClientMessageReceived;
+                disposingClient.MessageSent -= OnClientMessageSent;
                 if (disposingClient?.IsConnected == true)
                     await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
             }
+            catch (OperationCanceledException) { }
             finally
             {
                 try { disposingClient?.Dispose(); } catch { }
@@ -239,6 +245,7 @@ namespace TehGM.Wolfringo.Hosting
                 await this.SendAsync(new SubscribeToGroupMessage(), _hostCancellationToken).ConfigureAwait(false);
                 _log?.LogInformation("Automatically logged in as {Nickname}", loggedInNickname);
             }
+            catch (OperationCanceledException ex) when (ex.LogAsDebug(this._log, "Automatic login canceled")) { }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when automatically logging in"))
             {
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
@@ -249,14 +256,14 @@ namespace TehGM.Wolfringo.Hosting
 
         /* IHostedService */
         /// <inheritdoc/>
-        Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        async Task IHostedService.StartAsync(CancellationToken cancellationToken)
         {
             try
             {
                 _hostCancellationToken = cancellationToken;
                 // only connect if not already connected
                 if (!this.IsConnected)
-                    return this.ConnectAsync(cancellationToken);
+                    await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when trying to connect as a hosted client"))
             {
@@ -264,23 +271,10 @@ namespace TehGM.Wolfringo.Hosting
                 if (_options.CurrentValue.CloseOnCriticalError)
                     _hostLifetime?.StopApplication();
             }
-            return Task.CompletedTask;
         }
         /// <inheritdoc/>
         Task IHostedService.StopAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                // only disconnect if connected
-                if (this.IsConnected)
-                    return this.DisconnectAsync(cancellationToken);
-            }
-            catch (Exception ex) when (ex.LogAsError(this._log, "Exception occured when trying to disconnect as a hosted client"))
-            {
-                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-            }
-            return Task.CompletedTask;
-        }
+            => this.DisposeClientAsync(cancellationToken);
 
         /* CONNECT AND DISCONNECT */
         /// <inheritdoc/>
@@ -340,49 +334,52 @@ namespace TehGM.Wolfringo.Hosting
         /// <para>If first attempt of reconnection fails, underlying client will be recreated and attempt will be made again.
         /// If this fails, error will be logged and <see cref="ErrorRaised"/> invoked.</para>
         /// <para>Reconnection attempt will be aborted if client is disposed, disconnection was manual or 
-        /// <see cref="HostedWolfClientOptions.AutoReconnect"/> is set to false.</para></remarks>
+        /// <see cref="HostedWolfClientOptions.AutoReconnectAttempts"/> is set to 0.</para></remarks>
         private async void OnClientDisconnected(object sender, EventArgs e)
         {
-            TimeSpan delay = this._options.CurrentValue.AutoReconnectDelay;
+            HostedWolfClientOptions options = this._options.CurrentValue;
+
             // lock first to avoid race conditions
             await _clientLock.WaitAsync(_hostCancellationToken).ConfigureAwait(false);
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
-                if (this._client == null || this._manuallyDisconnected || !this._options.CurrentValue.AutoReconnect)
+                if (this._client == null || this._manuallyDisconnected || options.AutoReconnectAttempts < 1)
                     return;
-                _log?.LogDebug("Reconnection delay: {Delay}", delay);
-                if (delay > TimeSpan.Zero)
-                    await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
-                await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex) when (ex.LogAsWarning(this._log, "Failed to auto-reconnect, recreating underlying client"))
-            {
-                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
 
-                // strip client and retry
-                int reconnectAttempts = 1;
-                int maxAttempts = _options.CurrentValue.AutoReconnectAttempts;
-                while (reconnectAttempts < maxAttempts)
+                this._log?.LogDebug("Attempting to reconnect, max {Attempts} times. Delay: {Delay}",
+                    options.AutoReconnectAttempts, options.AutoReconnectDelay);
+
+                int reconnectAttempt = 0;
+                ICollection<Exception> exceptions = new List<Exception>(options.AutoReconnectAttempts);
+                while (reconnectAttempt < options.AutoReconnectAttempts)
                 {
-                    reconnectAttempts++;
-                    bool lastAttempt = reconnectAttempts == maxAttempts;
+                    reconnectAttempt++;
+                    bool lastAttempt = reconnectAttempt == options.AutoReconnectAttempts;
                     try
                     {
-                        await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
-                        await Task.Delay(delay, _hostCancellationToken).ConfigureAwait(false);
+                        // if not the first attempt, recreate the client
+                        if (reconnectAttempt != 1)
+                            await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
+                        // wait the delay
+                        if (options.AutoReconnectDelay > TimeSpan.Zero)
+                            await Task.Delay(options.AutoReconnectDelay, _hostCancellationToken).ConfigureAwait(false);
+                        // attempt reconnection
                         await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
-                        break;
                     }
-                    catch (Exception ex2) when (
-                        (!lastAttempt && ex2.LogAsWarning(this._log, "Exception occured when attempting to reconnect with recreated client")) ||
-                        ex2.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt"))
+                    catch (OperationCanceledException ex) when (ex.LogAsDebug(this._log, "Auto-reconnection canceled")) { }
+                    catch (Exception ex) when (
+                        (!lastAttempt && ex.LogAsWarning(this._log, "Failed to auto-reconnect, recreating underlying client")) ||
+                        ex.LogAsCritical(this._log, "Exception occured when attempting to reconnect with recreated client, this was the last attempt"))
                     {
+                        exceptions.Add(ex);
                         if (lastAttempt)
                         {
-                            this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex2, true));
+                            AggregateException aggrEx = new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions);
+                            this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
                             if (_options.CurrentValue.CloseOnCriticalError)
                                 _hostLifetime?.StopApplication();
+                            throw aggrEx;
                         }
                     }
                 }

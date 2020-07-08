@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -715,10 +716,17 @@ namespace TehGM.Wolfringo
         /// <summary>Logs disconnected and raises event. Invoked when underlying client disconnects from the server.</summary>
         private void OnClientDisconnected(object sender, SocketClosedEventArgs e)
         {
-            if (e.CloseStatus == System.Net.WebSockets.WebSocketCloseStatus.NormalClosure)
-                Log?.LogInformation("Disconnected ({Description})", e.CloseStatusDescription ?? "-");
+            if (e.CloseStatus == WebSocketCloseStatus.NormalClosure)
+            {
+                // don't log message for operation canceled exception
+                if (string.IsNullOrEmpty(e.CloseMessage) || (e.Exception is OperationCanceledException && e.CloseMessage == e.Exception?.Message))
+                    Log?.LogInformation("Disconnected");
+                else 
+                    Log?.LogInformation("Disconnected ({Description})", e.CloseMessage);
+            }
             else
-                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseStatusDescription ?? "-");
+                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseMessage ?? "-");
+
             this.Clear();
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
@@ -726,7 +734,11 @@ namespace TehGM.Wolfringo
         /// <summary>Logs error and raises event. Invoked when underlying client raises error event.</summary>
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
-            Log?.LogError("Socket client error: {Error}", (e.ExceptionObject is Exception ex) ? ex.Message : e.ExceptionObject?.ToString());
+            if (e.ExceptionObject is Exception ex)
+                Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
+            else
+                Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+
             this.ErrorRaised?.Invoke(this, e);
         }
         #endregion
