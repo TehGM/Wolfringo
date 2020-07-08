@@ -69,6 +69,24 @@ async void OnChatMessage(ChatMessage message)
 
 See [Example project](Examples/SimplePingBot) for a full example.
 
+### .NET Core Host
+
+For use with .NET Core Host, install [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package in addition to the main Wolfringo package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
+
+```csharp
+using TehGM.Wolfringo.Hosting;
+
+// Configure the client options to include login credentials
+services.Configure<HostedWolfClientOptions>(context.Configuration.GetSection("WolfClient"));
+// add hosted wolf client with it's default services
+services.AddWolfClient();
+// add message handler that implements IHostedService and takes IHostedWolfClient as one of constructor parameters
+services.AddHostedService<HostedMessageHandler>();
+```
+
+See [Example project](Examples/HostedPingBot) for a full example.
+
+## Features usage
 ### Receiving profile updates
 WOLF protocol requires you to subscribe to Group/User profile to receive real-time updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
 
@@ -97,11 +115,6 @@ private async void OnChatMessage(ChatMessage message)
 ```
 See [Example project](Examples/HostedPingBot/HostedMessageHandler.cs) for a working example.
 
-### Logging
-[WolfClient](Wolfringo.Core/WolfClient.cs) constructor takes an ILogger as one of the optional parameters, making it compatible with any of the major .NET logging frameworks. To enable logging, create a new instance of any ILogger, and simply pass it to the client constructor.
-
-In .NET Core Host, simply configure logging using services as you normally would in ASP.NET Core/other Hosted scenario. Default [HostedWolfClient](Wolfringo.Hosting/HostedWolfClient.cs) will use dependency injection mechanisms to get the logger and pass it to the underlying [WolfClient](Wolfringo.Core/WolfClient.cs).
-
 ### Auto-Reconnecting
 
 You can use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) to enable configurable auto-reconnecting behaviour. This is implemented outside of [WolfClient](Wolfringo.Core/WolfClient.cs) to make reconnector implementation-independent.
@@ -120,27 +133,10 @@ If the reconnector behaviour is not sufficent for your use-case, listen to clien
 
 > Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package. This wrapper has reconnection logic built-in.
 
-### .NET Core Host
+### Logging
+[WolfClient](Wolfringo.Core/WolfClient.cs) constructor takes an ILogger as one of the optional parameters, making it compatible with any of the major .NET logging frameworks. To enable logging, create a new instance of any ILogger, and simply pass it to the client constructor.
 
-For use with .NET Core Host, install [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package in addition to the main Wolfringo package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
-
-```csharp
-using TehGM.Wolfringo.Hosting;
-
-// Configure the client options to include login credentials
-services.Configure<HostedWolfClientOptions>(context.Configuration.GetSection("WolfClient"));
-// add hosted wolf client with it's default services
-services.AddWolfClient();
-// add message handler that implements IHostedService and takes IHostedWolfClient as one of constructor parameters
-services.AddHostedService<HostedMessageHandler>();
-```
-
-See [Example project](Examples/HostedPingBot) for a full example.
-
-### Errors when sending
-If server responds with an error, [MessageSendingException](Wolfringo.Core/MessageSendingException.cs) will be thrown and provide a error details. To handle errors, use try-catch block when sending any message.
-
-This exception will not be logged automatically by the client.
+In .NET Core Host, simply configure logging using services as you normally would in ASP.NET Core/other Hosted scenario. Default [HostedWolfClient](Wolfringo.Hosting/HostedWolfClient.cs) will use dependency injection mechanisms to get the logger and pass it to the underlying [WolfClient](Wolfringo.Core/WolfClient.cs).
 
 ### Caching
 Default [WolfClient](Wolfringo.Core/WolfClient.cs) automatically caches following WOLF entities: Users, Groups, Charms and Achievements. [Sender Utility](Wolfringo.Utilities/Sender.cs) automatically uses cache where possible to avoid excessive requests to the server.
@@ -148,6 +144,11 @@ Default [WolfClient](Wolfringo.Core/WolfClient.cs) automatically caches followin
 Cached entities have lifetime of current connection, and will be automatically removed when client disconnects, regardless if it was a manual disconnection, or automatic hourly disconnection requested by the server.
 
 You can selectively opt out of caching by using following properties of the client: `UsersCachingEnabled`, `GroupsCachingEnabled`, `CharmsCachingEnabled`, `AchievementsCachingEnabled`. [Hosted WolfClient](Wolfringo.Hosting/HostedWolfClientOptions) can set these properties in its appsettings section.
+
+### Errors when sending
+If server responds with an error, [MessageSendingException](Wolfringo.Core/MessageSendingException.cs) will be thrown and provide a error details. To handle errors, use try-catch block when sending any message.
+
+This exception will not be logged automatically by the client.
 
 ## Extending the client
 #### Serializer maps
