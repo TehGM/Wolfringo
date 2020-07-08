@@ -72,7 +72,7 @@ See [Example project](Examples/SimplePingBot) for a full example.
 ### Receiving profile updates
 WOLF protocol requires you to subscribe to Group/User profile to receive real-time updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
 
-To subscribe to profile updates, request the group/user profile or bot's contacts/groups list. Requesting profiles with Sender utility will automatically subscribe to updates. If you're using message classes directly, their constructors have an argument allowing you to decide if the bot should subscribe to updates.
+To subscribe to profile updates, request the group/user profile or bot's contacts/groups list. Requesting profiles with [Sender Utility](Wolfringo.Utilities/Sender.cs) will automatically subscribe to updates. If you're using message classes directly, their constructors have an argument allowing you to decide if the bot should subscribe to updates.
 
 Default [WolfClient](Wolfringo.Core/WolfClient.cs) will automatically update its caches when a profile update is received.
 
@@ -141,6 +141,13 @@ See [Example project](Examples/HostedPingBot) for a full example.
 If server responds with an error, [MessageSendingException](Wolfringo.Core/MessageSendingException.cs) will be thrown and provide a error details. To handle errors, use try-catch block when sending any message.
 
 This exception will not be logged automatically by the client.
+
+### Caching
+Default [WolfClient](Wolfringo.Core/WolfClient.cs) automatically caches following WOLF entities: Users, Groups, Charms and Achievements. [Sender Utility](Wolfringo.Utilities/Sender.cs) automatically uses cache where possible to avoid excessive requests to the server.
+
+Cached entities have lifetime of current connection, and will be automatically removed when client disconnects, regardless if it was a manual disconnection, or automatic hourly disconnection requested by the server.
+
+You can selectively opt out of caching by using following properties of the client: `UsersCachingEnabled`, `GroupsCachingEnabled`, `CharmsCachingEnabled`, `AchievementsCachingEnabled`. [Hosted WolfClient](Wolfringo.Hosting/HostedWolfClientOptions) can set these properties in its appsettings section.
 
 ## Extending the client
 #### Serializer maps
