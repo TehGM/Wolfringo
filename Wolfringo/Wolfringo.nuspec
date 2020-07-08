@@ -6,7 +6,7 @@
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
-    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities, Utilities.Interactive and Hosting libraries.</description>
+    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities and Utilities.Interactive libraries.</description>
     <tags>wolf palringo</tags>
     <projectUrl>https://github.com/TehGM/Wolfringo</projectUrl>
     <repository type="git" url="https://github.com/TehGM/Wolfringo" />
@@ -17,7 +17,6 @@
         <group>
             <dependency id="Wolfringo.Core" version="0.3.1" />
             <dependency id="Wolfringo.Utilities" version="0.2.0" />
-            <dependency id="Wolfringo.Hosting" version="0.3.1" />
             <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
         </group>
     </dependencies>
