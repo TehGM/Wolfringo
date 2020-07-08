@@ -95,6 +95,11 @@ See [Example project](Examples/HostedPingBot/HostedMessageHandler.cs) for a work
 
 In .NET Core Host, simply configure logging using services as you normally would in ASP.NET Core/other Hosted scenario. Default [HostedWolfClient](Wolfringo.Hosting/HostedWolfClient.cs) will use dependency injection mechanisms to get the logger and pass it to the underlying [WolfClient](Wolfringo.Core/WolfClient.cs).
 
+### Receiving profile updates
+WOLF protocol requires you to subscribe to Group/User profile updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
+
+To subscribe to profile updates, simply request the group/user profile at any point. You can also request all bot's contacts and groups. Requesting profiles with Sender utility will automatically subscribe to updates. If you're using message classes directly, their constructors have an argument allowing you to decide if the bot should subscribe to updates.
+
 ### Auto-Reconnecting
 
 You can use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) to enable configurable auto-reconnecting behaviour. This is implemented outside of [WolfClient](Wolfringo.Core/WolfClient.cs) to make reconnector implementation-independent.
