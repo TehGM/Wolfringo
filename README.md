@@ -23,6 +23,10 @@ Preview version of this library is available as a [GitHub Package](https://githu
     ```cli
     Install-Package Wolfringo -Source "TehGM's GitHub"
     ```
+4. *(Optional - only for ASP.NET Core/.NET Core Host)* Install Wolfringo.Hosting package
+    ```cli
+    Install-Package Wolfringo.Hosting -Source "TehGM's GitHub"
+    ```
 
 See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) for more information about installing GitHub packages.
 
@@ -71,7 +75,7 @@ See [Example project](Examples/SimplePingBot) for a full example.
 
 ### .NET Core Host
 
-For use with .NET Core Host, install [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package in addition to the main Wolfringo package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
+For use with .NET Core Host, install [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package in addition to the main Wolfringo meta-package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
 
 ```csharp
 using TehGM.Wolfringo.Hosting;
