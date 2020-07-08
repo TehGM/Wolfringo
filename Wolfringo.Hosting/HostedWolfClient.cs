@@ -103,10 +103,9 @@ namespace TehGM.Wolfringo.Hosting
             this._hostLifetime = hostLifetime;
 
             // disconnect when closing
-            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(async () =>
+            this._exitingEventRegistration = this._hostLifetime.ApplicationStopping.Register(() =>
             {
-                if (this.IsConnected)
-                    await this.DisconnectAsync().ConfigureAwait(false);
+                DisposeClientAsync().GetAwaiter().GetResult();
             });
 
             // when options change, we need to dispose existing client, and create new one with new options
