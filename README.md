@@ -23,7 +23,7 @@ Preview version of this library is available as a [GitHub Package](https://githu
     ```cli
     Install-Package Wolfringo -Source "TehGM's GitHub"
     ```
-4. *(Optional - only for ASP.NET Core/.NET Core Host)* Install Wolfringo.Hosting package
+4. *(.NET Core Host/ASP.NET Core only)* Install Wolfringo.Hosting package
     ```cli
     Install-Package Wolfringo.Hosting -Source "TehGM's GitHub"
     ```
