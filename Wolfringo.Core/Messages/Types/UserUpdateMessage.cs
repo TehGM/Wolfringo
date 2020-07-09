@@ -87,7 +87,7 @@ namespace TehGM.Wolfringo
                 this.Relationship = user.Relationship ?? WolfRelationship.NotSpecified;
                 this.LookingFor = user.LookingFor ?? WolfLookingFor.NotSpecified;
                 // create new collection to not modify the underlying user
-                this.Links = user.Links == null ? null : new List<string>(user.Links);
+                this.Links = user.Links == null ? new List<string>() : new List<string>(user.Links);
             }
 
             /// <summary>Build the <see cref="GroupUpdateMessage"/>.</summary>
