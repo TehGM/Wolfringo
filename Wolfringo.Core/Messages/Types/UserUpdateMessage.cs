@@ -80,7 +80,7 @@ namespace TehGM.Wolfringo
             {
                 this.Nickname = user.Nickname;
                 this.Status = user.Status;
-                this.Name = user.Name;
+                this.Name = user.ProfileName;
                 this.About = user.About;
                 this.Gender = user.Gender ?? WolfGender.NotSpecified;
                 this.Language = user.Language ?? WolfLanguage.NotSpecified;
