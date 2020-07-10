@@ -46,7 +46,7 @@ namespace TehGM.Wolfringo
         /// <summary>User's name, as specified in the profile.</summary>
         /// <remarks>If this value is null, user request with extended data might be required.</remarks>
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; private set; }
+        public string ProfileName { get; private set; }
         /// <summary>User's "About Me" description.</summary>
         /// <remarks>If this value is null, group request with extended data might be required.</remarks>
         [JsonProperty("about", NullValueHandling = NullValueHandling.Ignore)]
