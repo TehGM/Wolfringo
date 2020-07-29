@@ -263,8 +263,8 @@ namespace TehGM.Wolfringo
                 }
                 // serialize and send message
                 SerializedMessageData data = serializer.Serialize(message);
-                uint msgId = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
-                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgId, message, sendingCts.Token).ConfigureAwait(false);
+                uint msgID = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgID, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
                     throw new MessageSendingException(message, response);
                 this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
@@ -278,28 +278,26 @@ namespace TehGM.Wolfringo
         /// and <typeparamref name="TResponse"/> will be used only for casting. If <see cref="ResponseTypeAttribute"/> is not set on
         /// <paramref name="message"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
         /// <typeparam name="TResponse">Response type to cast response to.</typeparam>
-        /// <param name="messageId">Sent message ID.</param>
+        /// <param name="messageID">Sent message ID.</param>
         /// <param name="sentMessage">Sent message.</param>
         /// <returns>Server's response.</returns>
-        private Task<IWolfResponse> AwaitResponseAsync<TResponse>(uint messageId, IWolfMessage sentMessage, 
+        private Task<IWolfResponse> AwaitResponseAsync<TResponse>(uint messageID, IWolfMessage sentMessage, 
             CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
             TaskCompletionSource<IWolfResponse> tcs = new TaskCompletionSource<IWolfResponse>();
-            EventHandler<SocketMessageEventArgs> callback = null;
             CancellationTokenRegistration ctr = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
+            EventHandler<SocketMessageEventArgs> callback = null;
             callback = async (sender, e) =>
             {
+                // ignore messages that are no acks
+                if (e.Message.Type != SocketMessageType.EventAck && e.Message.Type != SocketMessageType.BinaryEventAck)
+                    return;
+                // only accept response with corresponding message ID
+                if (e.Message.ID == null || e.Message.ID.Value != messageID)
+                    return;
+
                 try
                 {
-                    // ignore messages that are no acks
-                    if (e.Message.Type != SocketMessageType.EventAck && e.Message.Type != SocketMessageType.BinaryEventAck)
-                        return;
-                    // only accept response with corresponding message ID
-                    if (e.Message.ID == null)
-                        return;
-                    if (e.Message.ID.Value != messageId)
-                        return;
-
                     // parse response
                     Type responseType = ResponseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
                     if (!ResponseSerializers.TryFindMappedSerializer(responseType, out IResponseSerializer serializer))
