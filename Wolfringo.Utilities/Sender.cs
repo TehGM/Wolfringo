@@ -318,10 +318,7 @@ namespace TehGM.Wolfringo
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, string password, CancellationToken cancellationToken = default)
         {
             await client.SendAsync(new GroupJoinMessage(groupID, password), cancellationToken).ConfigureAwait(false);
-            WolfGroup group = await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
-            if (group.Members?.Any() != true)
-                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
-            return group;
+            return await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Join a group.</summary>
         /// <param name="groupID">ID of group to join.</param>
@@ -343,10 +340,7 @@ namespace TehGM.Wolfringo
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, string groupName, string password, CancellationToken cancellationToken = default)
         {
             await client.SendAsync(new GroupJoinMessage(groupName, password), cancellationToken).ConfigureAwait(false);
-            WolfGroup group = await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
-            if (group.Members?.Any() != true)
-                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
-            return group;
+            return await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Join a group.</summary>
         /// <param name="groupName">Name of the group to join.</param>
