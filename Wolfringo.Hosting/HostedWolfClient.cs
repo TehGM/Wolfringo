@@ -366,6 +366,7 @@ namespace TehGM.Wolfringo.Hosting
                             await Task.Delay(options.AutoReconnectDelay, _hostCancellationToken).ConfigureAwait(false);
                         // attempt reconnection
                         await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
+                        return;
                     }
                     catch (OperationCanceledException ex) when (ex.LogAsDebug(this._log, "Auto-reconnection canceled")) { }
                     catch (Exception ex) when (

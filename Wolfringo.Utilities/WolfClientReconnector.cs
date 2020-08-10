@@ -62,6 +62,7 @@ namespace TehGM.Wolfringo.Utilities
 
                     // attempt to reconnnect unconditionally
                     await _client.ConnectAsync(this.Config.CancellationToken).ConfigureAwait(false);
+                    return;
                 }
                 catch (Exception ex)
                 {
