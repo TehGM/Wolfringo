@@ -21,7 +21,7 @@ namespace TehGM.Wolfringo.Socket
         /// <summary>Encoding to use when sending and receiving messages. Defaults to UTF8.</summary>
         public Encoding MessageEncoding { get; set; } = Encoding.UTF8;
         /// <inheritdoc/>
-        public bool IsConnected => _connectionCts?.IsCancellationRequested != true &&
+        public bool IsConnected => _connectionCts != null && !_connectionCts.IsCancellationRequested &&
             (_websocketClient?.State == WebSocketState.Open || _websocketClient?.State == WebSocketState.Connecting);
 
         private ClientWebSocket _websocketClient;
@@ -166,10 +166,10 @@ namespace TehGM.Wolfringo.Socket
                     (closeException is OperationCanceledException) ? WebSocketCloseStatus.NormalClosure :   // if operation canceled, report as normal closure
                     WebSocketCloseStatus.Empty);                                                            // otherwise report unknown status
                 string message = _websocketClient?.CloseStatusDescription ?? closeException?.Message;
-                Disconnected?.Invoke(this, new SocketClosedEventArgs(status, message, closeException));
 
-                // always clear AFTER invoking the event. Learned hard way.
+                // clear cancels and nulls cts, so IsConnected will start returning false
                 this.Clear();
+                Disconnected?.Invoke(this, new SocketClosedEventArgs(status, message, closeException));
             }
         }
 

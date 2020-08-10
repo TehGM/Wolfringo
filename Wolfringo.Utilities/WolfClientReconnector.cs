@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -47,14 +48,11 @@ namespace TehGM.Wolfringo.Utilities
                 this.Config.ReconnectAttempts, this.Config.ReconnectionDelay);
 
             ICollection<Exception> exceptions = new List<Exception>(this.Config.ReconnectAttempts);
-            int reconnectionAttempt = 0;
-            while (reconnectionAttempt < this.Config.ReconnectAttempts)
+            for (int i = 1; i <= this.Config.ReconnectAttempts; i++)
             {
-                reconnectionAttempt++;
-                bool lastAttempt = reconnectionAttempt == this.Config.ReconnectAttempts;
                 try
                 {
-                    this.Config.Log?.LogTrace("Reconnection attempt {Attempt}", reconnectionAttempt);
+                    this.Config.Log?.LogTrace("Reconnection attempt {Attempt}", i);
 
                     // wait reconnection delay if any
                     if (this.Config.ReconnectionDelay > TimeSpan.Zero)
@@ -62,21 +60,20 @@ namespace TehGM.Wolfringo.Utilities
 
                     // attempt to reconnnect unconditionally
                     await _client.ConnectAsync(this.Config.CancellationToken).ConfigureAwait(false);
+                    return;
                 }
                 catch (Exception ex)
                 {
                     exceptions.Add(ex);
-
-                    if (lastAttempt)
-                    {
-                        // on error, raise event and dispose the instance.
-                        AggregateException aggrEx = new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions);
-                        this.Config.Log?.LogError(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts);
-                        FailedToReconnect?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
-                        throw aggrEx;
-                    }
                 }
             }
+
+            AggregateException aggrEx = exceptions.Any() ?
+                new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions) :
+                new AggregateException("Failed to reconnect, but no exceptions were thrown");
+            this.Config.Log?.LogError(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts);
+            FailedToReconnect?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
+            throw aggrEx;
         }
 
         /// <summary>Disposes the instance by removing event handlers.</summary>

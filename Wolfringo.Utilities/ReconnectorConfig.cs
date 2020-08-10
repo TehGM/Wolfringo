@@ -18,6 +18,8 @@ namespace TehGM.Wolfringo.Utilities
 
         public ReconnectorConfig(int attempts, TimeSpan delay, ILogger logger = null, CancellationToken cancellationToken = default)
         {
+            if (attempts < 1)
+                throw new ArgumentException("Reconnection attempts cannot be less than 1", nameof(attempts));
             this.CancellationToken = cancellationToken;
             this.Log = logger;
             this.ReconnectAttempts = attempts;

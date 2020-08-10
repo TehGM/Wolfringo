@@ -32,14 +32,14 @@ namespace TehGM.Wolfringo
         /// <summary>Default Wolf server URL.</summary>
         public const string DefaultServerURL = "wss://v3-rc.palringo.com:3051";
         /// <summary>Default device string to pass to the server when connecting.</summary>
-        public const string DefaultDevice = "bot";
+        public const WolfDevice DefaultDevice = WolfDevice.Bot;
 
         /// <summary>URL of the server.</summary>
         public string Url { get; }
         /// <summary>Token used with the connection.</summary>
         public string Token { get; }
         /// <summary>Device string to pass to the server when connecting.</summary>
-        public string Device { get; }
+        public WolfDevice Device { get; }
         /// <summary>Is this client currently connected?</summary>
         public bool IsConnected => this._client?.IsConnected == true;
         /// <inheritdoc/>
@@ -107,20 +107,18 @@ namespace TehGM.Wolfringo
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
         /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
-        /// <param name="device">Device string to use when connecting.</param>
+        /// <param name="device">Device to use when connecting.</param>
         /// <param name="token">Token to use for connection.</param>
         /// <param name="logger">Logger for logging logs.</param>
         /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
         /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(string url, string device, string token, ILogger logger = null, 
+        public WolfClient(string url, WolfDevice device, string token, ILogger logger = null, 
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentNullException(nameof(url));
-            if (string.IsNullOrWhiteSpace(device))
-                throw new ArgumentNullException(nameof(device));
             if (token != null && string.IsNullOrWhiteSpace(token))
                 throw new ArgumentException("Token can be null for auto-generation or have a value, but it cannot be empty or whitespace", nameof(token));
 
@@ -159,13 +157,13 @@ namespace TehGM.Wolfringo
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
         /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
-        /// <param name="device">Device string to use when connecting.</param>
+        /// <param name="device">Device to use when connecting.</param>
         /// <param name="logger">Logger for logging logs.</param>
         /// <param name="tokenProvider">Token provider used to generate the token.</param>
         /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
         /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(string url, string device, ILogger logger = null, 
+        public WolfClient(string url, WolfDevice device, ILogger logger = null, 
             ITokenProvider tokenProvider = null, 
             ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
@@ -204,16 +202,21 @@ namespace TehGM.Wolfringo
 
         #region Connection management
         /// <inheritdoc/>
-        public Task ConnectAsync(CancellationToken cancellationToken = default)
+        /// <param name="device">Device to connect as.</param>
+        public Task ConnectAsync(WolfDevice device, CancellationToken cancellationToken = default)
         {
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
             Log?.LogDebug("Connecting");
             return _client.ConnectAsync(
-                new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={this.Device.ToLower()}&EIO=3&transport=websocket"),
+                new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket"),
                 cancellationToken);
         }
+
+        /// <inheritdoc/>
+        public Task ConnectAsync(CancellationToken cancellationToken = default)
+            => this.ConnectAsync(this.Device, cancellationToken);
 
         /// <inheritdoc/>
         public Task DisconnectAsync(CancellationToken cancellationToken = default)

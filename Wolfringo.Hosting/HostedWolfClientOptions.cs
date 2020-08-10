@@ -8,9 +8,9 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>Server URL to connect to.</summary>
         /// <remarks>Defaults to <see cref="WolfClient.DefaultServerURL"/>.</remarks>
         public string ServerURL { get; set; } = WolfClient.DefaultServerURL;
-        /// <summary>Device string to use when connecting.</summary>
+        /// <summary>Device to use when connecting.</summary>
         /// <remarks>Defaults to <see cref="WolfClient.DefaultDevice"/>.</remarks>
-        public string Device { get; set; } = WolfClient.DefaultDevice;
+        public WolfDevice Device { get; set; } = WolfClient.DefaultDevice;
         /// <summary>Token to use when connecting.</summary>
         /// <remarks>If not set, the client will automatically generate a valid token.</remarks>
         public string Token { get; set; } = null;
