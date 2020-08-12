@@ -85,8 +85,8 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
-        protected readonly ISocketClient SocketClient;
-        protected readonly MessageCallbackDispatcher CallbackDispatcher;
+        protected ISocketClient SocketClient { get; }
+        protected MessageCallbackDispatcher CallbackDispatcher { get; }
         /// <summary>Message serializers mapping used when serializing and deserializing messages.</summary>
         protected ISerializerMap<string, IMessageSerializer> MessageSerializers { get; }
         /// <summary>Response serializers mapping used when deserializing responses.</summary>
