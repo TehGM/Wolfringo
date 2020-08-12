@@ -70,6 +70,10 @@ namespace TehGM.Wolfringo
             set => this.Caches.AchievementsCachingEnabled = value;
         }
 
+        /// <summary>Whether the client should skip raising events for messages it sent.</summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool IgnoreOwnChatMessages { get; set; }
+
         /// <inheritdoc/>
         public event EventHandler Connected;
         /// <inheritdoc/>
@@ -121,6 +125,9 @@ namespace TehGM.Wolfringo
                 throw new ArgumentNullException(nameof(url));
             if (token != null && string.IsNullOrWhiteSpace(token))
                 throw new ArgumentException("Token can be null for auto-generation or have a value, but it cannot be empty or whitespace", nameof(token));
+
+            // set defaults
+            this.IgnoreOwnChatMessages = true;
 
             // set provided props
             this.Url = url;
@@ -568,6 +575,12 @@ namespace TehGM.Wolfringo
 
                     Log?.LogDebug("Message received: {Command}", command);
                     await OnMessageReceivedInternalAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+
+                    // invoke events, unless this message is a self-sent chat message
+                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages && chatMessage.SenderID.Value == this.CurrentUserID)
+                        return;
+                    this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
+                    _callbackDispatcher.Invoke(msg);
                 }
             }
             catch (OperationCanceledException) when (LogWarning("Message receiving aborted due to connection task being canceled")) { }
@@ -696,12 +709,6 @@ namespace TehGM.Wolfringo
                     catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
             }
-
-            // invoke events, unless this message is a self-sent chat message
-            if (message is IChatMessage chatMessage && chatMessage.SenderID.Value == this.CurrentUserID)
-                return;
-            this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(message));
-            _callbackDispatcher.Invoke(message);
         }
 
         /// <inheritdoc/>
