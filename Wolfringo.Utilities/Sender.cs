@@ -25,13 +25,8 @@ namespace TehGM.Wolfringo
         /// <param name="isPasswordAlreadyHashed">Whether <paramref name="password"/> is provided already hashed.</param>
         /// <returns>Response with login result.</returns>
         /// <seealso cref="LogoutAsync(IWolfClient, CancellationToken)"/>
-        public static async Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, bool isPasswordAlreadyHashed = false, CancellationToken cancellationToken = default)
-        {
-            LoginResponse response = await client.SendAsync<LoginResponse>(new LoginMessage(login, password, isPasswordAlreadyHashed), cancellationToken).ConfigureAwait(false);
-            await client.SendAsync(new SubscribeToPmMessage(), cancellationToken).ConfigureAwait(false);
-            await client.SendAsync(new SubscribeToGroupMessage(), cancellationToken).ConfigureAwait(false);
-            return response;
-        }
+        public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, bool isPasswordAlreadyHashed = false, CancellationToken cancellationToken = default)
+            => client.SendAsync<LoginResponse>(new LoginMessage(login, password, isPasswordAlreadyHashed), cancellationToken);
 
         /// <summary>Update current user's online state.</summary>
         /// <param name="state">Online state to set.</param>

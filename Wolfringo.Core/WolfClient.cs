@@ -209,6 +209,8 @@ namespace TehGM.Wolfringo
                 throw new InvalidOperationException("Already connected");
 
             Log?.LogDebug("Connecting");
+            this.Clear();
+            this._connectionCts = new CancellationTokenSource();
             return _client.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket"),
                 cancellationToken);
@@ -346,7 +348,13 @@ namespace TehGM.Wolfringo
 
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
+            {
                 this.CurrentUserID = loginResponse.UserID;
+                // subscribe to messages
+                return Task.WhenAll(
+                    this.SendAsync(new SubscribeToPmMessage(), cancellationToken),
+                    this.SendAsync(new SubscribeToGroupMessage(), cancellationToken));
+            }
 
             // when logging out, null the user ID.
             else if (message is LogoutMessage)
@@ -581,7 +589,13 @@ namespace TehGM.Wolfringo
         {
             // if welcome is already logged in, we can populate userID
             if (message is WelcomeEvent welcome && welcome.LoggedInUser != null)
+            {
                 this.CurrentUserID = welcome.LoggedInUser.ID;
+                await Task.WhenAll(
+                    this.SendAsync(new SubscribeToPmMessage(), cancellationToken), 
+                    this.SendAsync(new SubscribeToGroupMessage(), cancellationToken))
+                    .ConfigureAwait(false);
+            }
 
             // update user presence
             if (this.UsersCachingEnabled)
@@ -708,8 +722,6 @@ namespace TehGM.Wolfringo
         /// <summary>Logs connected and raises event. Invoked when underlying client connects to the server.</summary>
         private void OnClientConnected(object sender, EventArgs e)
         {
-            this.Clear();
-            this._connectionCts = new CancellationTokenSource();
             Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
