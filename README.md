@@ -49,6 +49,11 @@ async void OnWelcome(WelcomeEvent welcome)
         // login with Sender Utility
         await client.LoginAsync("MyBotEmail", "MyBotPassword");
     }
+    else
+    {
+        await _client.SendAsync(new SubscribeToPmMessage());
+        await _client.SendAsync(new SubscribeToGroupMessage());
+    }
 }
 
 async void OnChatMessage(ChatMessage message)
