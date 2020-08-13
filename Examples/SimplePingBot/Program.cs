@@ -111,7 +111,9 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
                 {
                     await _client.LogoutAsync();
                     await _client.DisconnectAsync();
-                    await _client.ConnectAsync();
+                    // uncomment the line below if not using any auto-reconnecting mechanism, such as WolfClientReconnector
+                    // if something is handling auto-reconnection, leave this line commented
+                    //await _client.ConnectAsync();
                 }
             }
         }
