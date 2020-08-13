@@ -593,7 +593,7 @@ namespace TehGM.Wolfringo
 
         /// <summary>Internal method for handling additional actions on received message.</summary>
         /// <remarks>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
-        /// Additionally, this method also raises events and callbacks, unless received message is a chat message sent by <see cref="CurrentUserID"/>.
+        /// Additionally, this method will automatically subscribe to PM and Group messages for <see cref="WelcomeEvent"/> when LoggedInUser is not null.
         /// For this reason, it's important to be careful when overriding this method, as not calling base
         /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
         /// <param name="message">Received message.</param>
