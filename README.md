@@ -145,7 +145,7 @@ In .NET Core Host, simply configure logging using services as you normally would
 ### Errors handling
 If server responds with an error, [MessageSendingException](Wolfringo.Core/MessageSendingException.cs) will be thrown and provide a error details. To handle errors, use try-catch block when sending any message. This exception will not be logged automatically by the client.
 
-For other errors (such as exceptions thrown when processing a received message), subscribe to [IWolfClient.ErrorRaised](Wolfringo.Core/IWolfClient.cs) event. Its `UnhandledExceptionEventArgs` contains `ExceptionObject` property, which is the that exception occured.
+For other errors (such as exceptions thrown when processing a received message), subscribe to [IWolfClient.ErrorRaised](Wolfringo.Core/IWolfClient.cs) event. Its `UnhandledExceptionEventArgs` contains `ExceptionObject` property, which is the exception that occured.
 
 ### Caching
 Default [WolfClient](Wolfringo.Core/WolfClient.cs) automatically caches following WOLF entities: Users, Groups, Charms and Achievements. [Sender Utility](Wolfringo.Utilities/Sender.cs) automatically uses cache where possible to avoid excessive requests to the server.
