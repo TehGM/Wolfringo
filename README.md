@@ -49,6 +49,7 @@ async void OnWelcome(WelcomeEvent welcome)
         // login with Sender Utility
         await client.LoginAsync("MyBotEmail", "MyBotPassword");
     }
+    await _client.SubscribeAllMessagesAsync();  // without this, the bot will not receive any messages
 }
 
 async void OnChatMessage(ChatMessage message)

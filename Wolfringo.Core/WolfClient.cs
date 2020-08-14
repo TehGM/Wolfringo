@@ -355,13 +355,7 @@ namespace TehGM.Wolfringo
 
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
-            {
                 this.CurrentUserID = loginResponse.UserID;
-                // subscribe to messages
-                return Task.WhenAll(
-                    this.SendAsync(new SubscribeToPmMessage(), cancellationToken),
-                    this.SendAsync(new SubscribeToGroupMessage(), cancellationToken));
-            }
 
             // when logging out, null the user ID.
             else if (message is LogoutMessage)
@@ -602,13 +596,7 @@ namespace TehGM.Wolfringo
         {
             // if welcome is already logged in, we can populate userID
             if (message is WelcomeEvent welcome && welcome.LoggedInUser != null)
-            {
                 this.CurrentUserID = welcome.LoggedInUser.ID;
-                await Task.WhenAll(
-                    this.SendAsync(new SubscribeToPmMessage(), cancellationToken), 
-                    this.SendAsync(new SubscribeToGroupMessage(), cancellationToken))
-                    .ConfigureAwait(false);
-            }
 
             // update user presence
             if (this.UsersCachingEnabled)

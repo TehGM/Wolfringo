@@ -28,6 +28,16 @@ namespace TehGM.Wolfringo
         public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, bool isPasswordAlreadyHashed = false, CancellationToken cancellationToken = default)
             => client.SendAsync<LoginResponse>(new LoginMessage(login, password, isPasswordAlreadyHashed), cancellationToken);
 
+        /// <summary>Subscribes to all incoming messages.</summary>
+        public static Task SubscribeAllMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => Task.WhenAll(SubscribePrivateMessagesAsync(client, cancellationToken), SubscribeGroupMessagesAsync(client, cancellationToken));
+        /// <summary>Subscribes to incoming private message.</summary>
+        public static Task SubscribePrivateMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync(new SubscribeToPmMessage(), cancellationToken);
+        /// <summary>Subscribes to incoming group message.</summary>
+        public static Task SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync(new SubscribeToGroupMessage(), cancellationToken);
+
         /// <summary>Update current user's online state.</summary>
         /// <param name="state">Online state to set.</param>
         public static Task SetOnlineStateAsync(this IWolfClient client, WolfOnlineState state, CancellationToken cancellationToken = default)
