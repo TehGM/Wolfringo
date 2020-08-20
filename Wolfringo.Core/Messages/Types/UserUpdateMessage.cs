@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo
         // extended props
         /// <summary>User's name, as specified in the profile.</summary>
         [JsonProperty("name")]
-        public string Name { get; private set; }
+        public string ProfileName { get; private set; }
         /// <summary>User's "About Me" description.</summary>
         [JsonProperty("about")]
         public string About { get; private set; }
@@ -58,7 +58,7 @@ namespace TehGM.Wolfringo
             public string Status { get; set; }
             // extended props
             /// <summary>User's name, as specified in the profile.</summary>
-            public string Name { get; set; }
+            public string ProfileName { get; set; }
             /// <summary>User's "About Me" description.</summary>
             public string About { get; set; }
             /// <summary>User's gender.</summary>
@@ -80,7 +80,7 @@ namespace TehGM.Wolfringo
             {
                 this.Nickname = user.Nickname;
                 this.Status = user.Status;
-                this.Name = user.ProfileName;
+                this.ProfileName = user.ProfileName;
                 this.About = user.About;
                 this.Gender = user.Gender ?? WolfGender.NotSpecified;
                 this.Language = user.Language ?? WolfLanguage.NotSpecified;
@@ -98,7 +98,7 @@ namespace TehGM.Wolfringo
                 {
                     Nickname = this.Nickname,
                     Status = this.Status,
-                    Name = this.Name,
+                    ProfileName = this.ProfileName,
                     About = this.About,
                     Gender = this.Gender,
                     Language = this.Language,

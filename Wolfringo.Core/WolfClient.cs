@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo
     /// <remarks><para>This implementation, together with IHostedWolfClient from Wolfringo.Hosting package, is the default intended way to 
     /// use Wolfringo library. It's based on message and response serializers, which combined with constructor Dependency Injection
     /// provide high degree of customizability.</para>
-    /// <para>Custom SocketIO client <see cref="SocketClient"/> is used by this library. This client only provides functionality required for
+    /// <para>Custom SocketIO client <see cref="Socket.SocketClient"/> is used by this library. This client only provides functionality required for
     /// Wolf, and may not be suitable for other scenarios.</para>
     /// <para>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
     /// For this reason, it's important to be careful when overriding 
@@ -41,7 +41,7 @@ namespace TehGM.Wolfringo
         /// <summary>Device string to pass to the server when connecting.</summary>
         public WolfDevice Device { get; }
         /// <summary>Is this client currently connected?</summary>
-        public bool IsConnected => this._client?.IsConnected == true;
+        public bool IsConnected => this.SocketClient?.IsConnected == true;
         /// <inheritdoc/>
         public uint? CurrentUserID { get; protected set; }
 
@@ -70,6 +70,10 @@ namespace TehGM.Wolfringo
             set => this.Caches.AchievementsCachingEnabled = value;
         }
 
+        /// <summary>Whether the client should skip raising events for messages it sent.</summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool IgnoreOwnChatMessages { get; set; }
+
         /// <inheritdoc/>
         public event EventHandler Connected;
         /// <inheritdoc/>
@@ -81,8 +85,8 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
-        private readonly ISocketClient _client;
-        private readonly MessageCallbackDispatcher _callbackDispatcher;
+        protected ISocketClient SocketClient { get; }
+        protected MessageCallbackDispatcher CallbackDispatcher { get; }
         /// <summary>Message serializers mapping used when serializing and deserializing messages.</summary>
         protected ISerializerMap<string, IMessageSerializer> MessageSerializers { get; }
         /// <summary>Response serializers mapping used when deserializing responses.</summary>
@@ -122,6 +126,9 @@ namespace TehGM.Wolfringo
             if (token != null && string.IsNullOrWhiteSpace(token))
                 throw new ArgumentException("Token can be null for auto-generation or have a value, but it cannot be empty or whitespace", nameof(token));
 
+            // set defaults
+            this.IgnoreOwnChatMessages = true;
+
             // set provided props
             this.Url = url;
             this.Device = device;
@@ -132,18 +139,18 @@ namespace TehGM.Wolfringo
             this.ResponseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
 
             // init dispatcher
-            this._callbackDispatcher = new MessageCallbackDispatcher();
+            this.CallbackDispatcher = new MessageCallbackDispatcher();
 
             // init caches
             this.Caches = new WolfEntityCacheContainer();
 
             // init socket client
-            this._client = new SocketClient();
-            this._client.MessageReceived += OnClientMessageReceived;
-            this._client.MessageSent += OnClientMessageSent;
-            this._client.Connected += OnClientConnected;
-            this._client.Disconnected += OnClientDisconnected;
-            this._client.ErrorRaised += OnClientError;
+            this.SocketClient = new SocketClient();
+            this.SocketClient.MessageReceived += OnClientMessageReceived;
+            this.SocketClient.MessageSent += OnClientMessageSent;
+            this.SocketClient.Connected += OnClientConnected;
+            this.SocketClient.Disconnected += OnClientDisconnected;
+            this.SocketClient.ErrorRaised += OnClientError;
         }
 
         /// <summary>Creates a new wolf client instance.</summary>
@@ -209,7 +216,9 @@ namespace TehGM.Wolfringo
                 throw new InvalidOperationException("Already connected");
 
             Log?.LogDebug("Connecting");
-            return _client.ConnectAsync(
+            this.Clear();
+            this._connectionCts = new CancellationTokenSource();
+            return SocketClient.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket"),
                 cancellationToken);
         }
@@ -222,14 +231,14 @@ namespace TehGM.Wolfringo
         public Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
             Log?.LogDebug("Disconnecting");
-            return _client.DisconnectAsync(cancellationToken);
+            return SocketClient.DisconnectAsync(cancellationToken);
         }
 
         /// <inheritdoc/>
         public virtual void Dispose()
         {
             this.Clear();
-            (_client as IDisposable)?.Dispose();
+            (SocketClient as IDisposable)?.Dispose();
         }
 
         /// <summary>Clears all connection-bound variables.</summary>
@@ -266,7 +275,7 @@ namespace TehGM.Wolfringo
                 }
                 // serialize and send message
                 SerializedMessageData data = serializer.Serialize(message);
-                uint msgID = await _client.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                uint msgID = await SocketClient.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
                 IWolfResponse response = await AwaitResponseAsync<TResponse>(msgID, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
                     throw new MessageSendingException(message, response);
@@ -327,7 +336,7 @@ namespace TehGM.Wolfringo
                     (sender as SocketClient).MessageReceived -= callback;
                 }
             };
-            _client.MessageReceived += callback;
+            SocketClient.MessageReceived += callback;
             return tcs.Task;
         }
 
@@ -560,6 +569,12 @@ namespace TehGM.Wolfringo
 
                     Log?.LogDebug("Message received: {Command}", command);
                     await OnMessageReceivedInternalAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+
+                    // invoke events, unless this message is a self-sent chat message
+                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages && chatMessage.SenderID.Value == this.CurrentUserID)
+                        return;
+                    this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
+                    CallbackDispatcher.Invoke(msg);
                 }
             }
             catch (OperationCanceledException) when (LogWarning("Message receiving aborted due to connection task being canceled")) { }
@@ -572,7 +587,7 @@ namespace TehGM.Wolfringo
 
         /// <summary>Internal method for handling additional actions on received message.</summary>
         /// <remarks>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
-        /// Additionally, this method also raises events and callbacks, unless received message is a chat message sent by <see cref="CurrentUserID"/>.
+        /// Additionally, this method will automatically subscribe to PM and Group messages for <see cref="WelcomeEvent"/> when LoggedInUser is not null.
         /// For this reason, it's important to be careful when overriding this method, as not calling base
         /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
         /// <param name="message">Received message.</param>
@@ -682,20 +697,14 @@ namespace TehGM.Wolfringo
                     catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
             }
-
-            // invoke events, unless this message is a self-sent chat message
-            if (message is IChatMessage chatMessage && chatMessage.SenderID.Value == this.CurrentUserID)
-                return;
-            this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(message));
-            _callbackDispatcher.Invoke(message);
         }
 
         /// <inheritdoc/>
         public void AddMessageListener(IMessageCallback listener)
-            => _callbackDispatcher.Add(listener);
+            => CallbackDispatcher.Add(listener);
         /// <inheritdoc/>
         public void RemoveMessageListener(IMessageCallback listener)
-            => _callbackDispatcher.Remove(listener);
+            => CallbackDispatcher.Remove(listener);
 
         /// <summary>Logs sent message. Invoked when underlying client sends a message.</summary>
         private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
@@ -708,8 +717,6 @@ namespace TehGM.Wolfringo
         /// <summary>Logs connected and raises event. Invoked when underlying client connects to the server.</summary>
         private void OnClientConnected(object sender, EventArgs e)
         {
-            this.Clear();
-            this._connectionCts = new CancellationTokenSource();
             Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }

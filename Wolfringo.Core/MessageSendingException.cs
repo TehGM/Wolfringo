@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo
         /// <returns>Build exception message.</returns>
         private static string BuildDefaultMessage(string sentCommand, IWolfResponse response)
         {
-            StringBuilder builder = new StringBuilder($"Server responded with non-success status code: {(int)response.StatusCode} ({response.StatusCode})");
+            StringBuilder builder = new StringBuilder($"{sentCommand} > Server responded with non-success status code: {(int)response.StatusCode} ({response.StatusCode})");
             if (response is WolfResponse wolfResponse && wolfResponse.ErrorCode != null)
             {
                 builder.AppendLine();

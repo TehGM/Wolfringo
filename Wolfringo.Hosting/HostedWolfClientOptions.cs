@@ -49,5 +49,10 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>Whether achievements caching should be enabled.</summary>
         /// <remarks>Defaults to true.</remarks>
         public bool AchievementsCachingEnabled { get; set; } = true;
+
+        // messages handling
+        /// <summary>Whether the client should skip raising events for messages it sent.</summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool IgnoreOwnChatMessages { get; set; } = true;
     }
 }

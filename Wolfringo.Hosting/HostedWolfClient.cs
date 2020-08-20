@@ -172,6 +172,9 @@ namespace TehGM.Wolfringo.Hosting
 
             // store token for reconnections
             this._token = this._client.Token;
+
+            // pass in options
+            this._client.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
         }
 
         /// <summary>Gets memorized token.</summary>

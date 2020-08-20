@@ -25,7 +25,6 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             _client.MessageReceived += OnMessageReceived;               // This event is raised when client receives and parses any message type.
             _client.AddMessageListener<WelcomeEvent>(OnWelcome);        // these 2 callbacks are invoked if received message is a WolfEvent (first callback)
             _client.AddMessageListener<ChatMessage>(OnChatMessage);     // or a chat message (second callback).
-            _client.ErrorRaised += OnError;                             // this event is raised when there was an error during background processing
 
             // reconnector is part of Wolfringo.Utilities package
             WolfClientReconnector reconnector = new WolfClientReconnector(_client);
@@ -79,11 +78,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
                 Config config = Config.Load();
                 await _client.LoginAsync(config.Username, config.Password);
             }
-            else
-            {
-                await _client.SendAsync(new SubscribeToPmMessage());
-                await _client.SendAsync(new SubscribeToGroupMessage());
-            }
+            await _client.SubscribeAllMessagesAsync();      // without this, bot will not receive any messages
+
             // user should not be cached locally - always call GetUserAsync/GetCurrentUserAsync on client!
             WolfUser user = await _client.GetCurrentUserAsync();
             // same applies to groups - always call GetGroupsAsync!
@@ -98,23 +94,6 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
                 await _client.ReplyTextAsync(message, "Hello there (using dispatcher)!!!");
                 // an example showing how listener can be removed
                 _client.RemoveMessageListener<ChatMessage>(OnChatMessage);
-            }
-        }
-
-        private static async void OnError(object sender, UnhandledExceptionEventArgs e)
-        {
-            // handle non-sending errors here
-            // example: error when subscribing to messages on reconnection (caused by a bug in WOLF server)
-            if (e.ExceptionObject is MessageSendingException msgSendingException)
-            {
-                if (msgSendingException.SentMessage is SubscribeToPmMessage || msgSendingException.SentMessage is SubscribeToGroupMessage)
-                {
-                    await _client.LogoutAsync();
-                    await _client.DisconnectAsync();
-                    // uncomment the line below if not using any auto-reconnecting mechanism, such as WolfClientReconnector
-                    // if something is handling auto-reconnection, leave this line commented
-                    //await _client.ConnectAsync();
-                }
             }
         }
     }
