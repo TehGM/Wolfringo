@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
-    <Version>0.3.2</Version>
+    <Version>0.3.3</Version>
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
