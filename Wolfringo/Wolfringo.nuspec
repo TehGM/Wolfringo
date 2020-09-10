@@ -16,7 +16,7 @@
     <dependencies>
         <group>
             <dependency id="Wolfringo.Core" version="0.3.4" />
-            <dependency id="Wolfringo.Utilities" version="0.2.2" />
+            <dependency id="Wolfringo.Utilities" version="0.2.3" />
             <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
         </group>
     </dependencies>
