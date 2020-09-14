@@ -47,7 +47,8 @@ async void OnWelcome(WelcomeEvent welcome)
     if (welcome.LoggedInUser == null)
     {
         // login with Sender Utility
-        await client.LoginAsync("MyBotEmail", "MyBotPassword");
+        await client.LoginAsync("MyBotEmail", "MyBotPassword", WolfLoginType.Email);
+        // other supported login types: Facebook, Google, Apple
     }
     await _client.SubscribeAllMessagesAsync();  // without this, the bot will not receive any messages
 }
@@ -92,6 +93,23 @@ services.AddHostedService<HostedMessageHandler>();
 See [Example project](Examples/HostedPingBot) for a full example.
 
 ## Features usage
+### Auto-Reconnecting
+You can use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) to enable configurable auto-reconnecting behaviour. This is implemented outside of [WolfClient](Wolfringo.Core/WolfClient.cs) to make reconnector implementation-independent.
+```csharp
+IWolfClient client = new WolfClient();
+ReconnectorOptions options = new ReconnectorOptions();
+// here configure options, such as attempts, delay, logger or cancellation token
+WolfClientReconnector reconnector = new WolfClientReconnector(client, options);
+```
+
+The reconnector utility will make defined amount of attempts to reconnect the client. If all attempts fail, the reconnector will raise `FailedToReconnect` event and provide all exceptions occured when trying to reconnect in an `AggregateException`.
+
+To stop reconnector, call `Dispose()`. Once disposed, the reconnector will no longer attempt to auto-reconnect, and can't be reused. If you need to re-enable reconnection, create a new instance of reconnector.
+
+If the reconnector behaviour is not sufficent for your use-case, listen to client's Disconnected event to implement own behaviour.
+
+> Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package. This wrapper has reconnection logic built-in.
+
 ### Receiving profile updates
 WOLF protocol requires you to subscribe to Group/User profile to receive real-time updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
 
@@ -119,24 +137,6 @@ private async void OnChatMessage(ChatMessage message)
 }
 ```
 See [Example project](Examples/HostedPingBot/HostedMessageHandler.cs) for a working example.
-
-### Auto-Reconnecting
-
-You can use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) to enable configurable auto-reconnecting behaviour. This is implemented outside of [WolfClient](Wolfringo.Core/WolfClient.cs) to make reconnector implementation-independent.
-```csharp
-IWolfClient client = new WolfClient();
-ReconnectorOptions options = new ReconnectorOptions();
-// here configure options, such as attempts, delay, logger or cancellation token
-WolfClientReconnector reconnector = new WolfClientReconnector(client, options);
-```
-
-The reconnector utility will make defined amount of attempts to reconnect the client. If all attempts fail, the reconnector will raise `FailedToReconnect` event and provide all exceptions occured when trying to reconnect in an `AggregateException`.
-
-To stop reconnector, call `Dispose()`. Once disposed, the reconnector will no longer attempt to auto-reconnect, and can't be reused. If you need to re-enable reconnection, create a new instance of reconnector.
-
-If the reconnector behaviour is not sufficent for your use-case, listen to client's Disconnected event to implement own behaviour.
-
-> Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package. This wrapper has reconnection logic built-in.
 
 ### Logging
 [WolfClient](Wolfringo.Core/WolfClient.cs) constructor takes an ILogger as one of the optional parameters, making it compatible with any of the major .NET logging frameworks. To enable logging, create a new instance of any ILogger, and simply pass it to the client constructor.
