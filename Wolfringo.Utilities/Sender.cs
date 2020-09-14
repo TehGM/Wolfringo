@@ -22,12 +22,27 @@ namespace TehGM.Wolfringo
         /// <summary>Log in.</summary>
         /// <param name="login">User email to use to login with.</param>
         /// <param name="password">User password.</param>
-        /// <param name="isPasswordAlreadyHashed">Whether <paramref name="password"/> is provided already hashed.</param>
+        /// <param name="loginType">Login type to use.</param>
         /// <returns>Response with login result.</returns>
         /// <seealso cref="LogoutAsync(IWolfClient, CancellationToken)"/>
-        public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, bool isPasswordAlreadyHashed = false, CancellationToken cancellationToken = default)
-            => client.SendAsync<LoginResponse>(new LoginMessage(login, password, isPasswordAlreadyHashed), cancellationToken);
+        public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, WolfLoginType loginType, CancellationToken cancellationToken = default)
+            => client.SendAsync<LoginResponse>(new LoginMessage(login, password, loginType), cancellationToken);
 
+        /// <summary>Log in, using Email login type.</summary>
+        /// <param name="login">User email to use to login with.</param>
+        /// <param name="password">User password.</param>
+        /// <returns>Response with login result.</returns>
+        /// <seealso cref="LogoutAsync(IWolfClient, CancellationToken)"/>
+        public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, CancellationToken cancellationToken = default)
+            => LoginAsync(client, login, password, WolfLoginType.Email, cancellationToken);
+
+        /// <summary>Log out.</summary>
+        /// <seealso cref="LoginAsync(IWolfClient, string, string, bool, CancellationToken)"/>
+        public static Task LogoutAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync(new LogoutMessage(), cancellationToken);
+
+
+        /* MESSAGES SUBSCRIBING */
         /// <summary>Subscribes to all incoming messages.</summary>
         public static Task SubscribeAllMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => Task.WhenAll(SubscribePrivateMessagesAsync(client, cancellationToken), SubscribeGroupMessagesAsync(client, cancellationToken));
@@ -38,15 +53,12 @@ namespace TehGM.Wolfringo
         public static Task SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new SubscribeToGroupMessage(), cancellationToken);
 
+
+        /* ONLINE PRESENCE */
         /// <summary>Update current user's online state.</summary>
         /// <param name="state">Online state to set.</param>
         public static Task SetOnlineStateAsync(this IWolfClient client, WolfOnlineState state, CancellationToken cancellationToken = default)
             => client.SendAsync(new OnlineStateUpdateMessage(state), cancellationToken);
-
-        /// <summary>Log out.</summary>
-        /// <seealso cref="LoginAsync(IWolfClient, string, string, bool, CancellationToken)"/>
-        public static Task LogoutAsync(this IWolfClient client, CancellationToken cancellationToken = default)
-            => client.SendAsync(new LogoutMessage(), cancellationToken);
         #endregion
 
 

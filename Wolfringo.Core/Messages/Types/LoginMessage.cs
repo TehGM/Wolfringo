@@ -19,12 +19,19 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("username", Required = Required.Always)]
         public string Login { get; private set; }
         /// <summary>Login password.</summary>
+        /// <remarks>The password might be hashed. Check <see cref="UseMD5"/> to see if password is hashed.</remarks>
         [JsonProperty("password", Required = Required.Always)]
-        public string Md5Password { get; private set; }
+        public string Password { get; private set; }
+        /// <summary>Whether the password is hashed.</summary>
+        /// <remarks>Current implementation will hash passwords only when <see cref="LoginType"/> is <see cref="WolfLoginType.Email"/>.</remarks>
         [JsonProperty("md5Password")]
-        private readonly bool _useMd5 = true;
+        public bool UseMD5 => this.LoginType == WolfLoginType.Email;
         [JsonProperty("type")]
-        private readonly string _loginType = "email";
+        private string _loginType => LoginTypeToString(this.LoginType);
+
+        /// <summary>Login type to use.</summary>
+        [JsonIgnore]
+        public WolfLoginType LoginType { get; }
 
         [JsonConstructor]
         protected LoginMessage() { }
@@ -32,8 +39,8 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>Creates a message instance.</summary>
         /// <param name="login">Email to login with.</param>
         /// <param name="password">Password to use when logging in.</param>
-        /// <param name="isPasswordAlreadyHashed">If false, constructor will hash the provided password; if false, password will be sent as provided.</param>
-        public LoginMessage(string login, string password, bool isPasswordAlreadyHashed = false) : this()
+        /// <param name="loginType">Type of login to perform.</param>
+        public LoginMessage(string login, string password, WolfLoginType loginType) : this()
         {
             if (string.IsNullOrWhiteSpace(login))
                 throw new ArgumentNullException(nameof(login));
@@ -41,9 +48,8 @@ namespace TehGM.Wolfringo.Messages
                 throw new ArgumentNullException(nameof(password));
 
             this.Login = login;
-            if (isPasswordAlreadyHashed)
-                this.Md5Password = password;
-            else
+            this.LoginType = loginType;
+            if (this.UseMD5)
             {
                 using (MD5 crypto = MD5.Create())
                 {
@@ -53,8 +59,27 @@ namespace TehGM.Wolfringo.Messages
                     StringBuilder builder = new StringBuilder();
                     for (int i = 0; i < hash.Length; i++)
                         builder.Append(hash[i].ToString("x2"));
-                    this.Md5Password = builder.ToString();
+                    this.Password = builder.ToString();
                 }
+            }
+            else
+                this.Password = password;
+        }
+
+        public static string LoginTypeToString(WolfLoginType loginType)
+        {
+            switch (loginType)
+            {
+                case WolfLoginType.Email:
+                    return "email";
+                case WolfLoginType.Google:
+                    return "google";
+                case WolfLoginType.Facebook:
+                    return "facebook";
+                case WolfLoginType.Apple:
+                    return "apple";
+                default:
+                    return loginType.ToString().ToLowerInvariant();
             }
         }
     }
