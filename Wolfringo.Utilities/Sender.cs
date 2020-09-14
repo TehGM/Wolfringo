@@ -42,7 +42,7 @@ namespace TehGM.Wolfringo
             => client.SendAsync(new LogoutMessage(), cancellationToken);
 
 
-        /* MESSAGES SUBSCRIBING */
+        // messages subscribing
         /// <summary>Subscribes to all incoming messages.</summary>
         public static Task SubscribeAllMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => Task.WhenAll(SubscribePrivateMessagesAsync(client, cancellationToken), SubscribeGroupMessagesAsync(client, cancellationToken));
@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo
             => client.SendAsync(new SubscribeToGroupMessage(), cancellationToken);
 
 
-        /* ONLINE PRESENCE */
+        // online presence
         /// <summary>Update current user's online state.</summary>
         /// <param name="state">Online state to set.</param>
         public static Task SetOnlineStateAsync(this IWolfClient client, WolfOnlineState state, CancellationToken cancellationToken = default)
@@ -154,7 +154,10 @@ namespace TehGM.Wolfringo
         public static async Task<IEnumerable<WolfUser>> GetContactListAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             ContactListResponse response = await client.SendAsync<ContactListResponse>(new ContactListMessage(true), cancellationToken).ConfigureAwait(false);
-            return await client.GetUsersAsync(response.ContactIDs, cancellationToken).ConfigureAwait(false);
+            if (response.ContactIDs?.Any() == true)
+                return await client.GetUsersAsync(response.ContactIDs, cancellationToken).ConfigureAwait(false);
+            else
+                return Enumerable.Empty<WolfUser>();
         }
 
         /// <summary>Add contact.</summary>
@@ -495,7 +498,9 @@ namespace TehGM.Wolfringo
         {
             GroupListResponse response = await client.SendAsync<GroupListResponse>(
                 new GroupListMessage(), cancellationToken).ConfigureAwait(false);
-            return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
+            if (response.UserGroupIDs?.Any() == true)
+                return await client.GetGroupsAsync(response.UserGroupIDs, cancellationToken).ConfigureAwait(false);
+            else return Enumerable.Empty<WolfGroup>();
         }
 
         /// <summary>Gets statistics of a group.</summary>
