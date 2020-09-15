@@ -15,6 +15,7 @@ namespace TehGM.Wolfringo.Messages
         string FlightID { get; }
         /// <summary>Unique ID of the message.</summary>
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        [Obsolete("WOLF protocol now prefers to use Timestamp as a message ID.")]
         Guid? ID { get; }
         /// <summary>Is it a group message?</summary>
         [JsonProperty("isGroup")]
