@@ -54,6 +54,11 @@ namespace TehGM.Wolfringo
             => client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupMessage(), cancellationToken);
 
 
+        // tips subscribing
+        public static Task<EntitiesSubscribeResponse> SubscribeGroupTipsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupTipsMessage(), cancellationToken);
+
+
         // online presence
         /// <summary>Update current user's online state.</summary>
         /// <param name="state">Online state to set.</param>

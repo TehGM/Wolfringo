@@ -63,6 +63,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.CharmSubscriberExpiredList, new DefaultMessageSerializer<UserExpiredCharmsListMessage>() },
                 { MessageCommands.CharmSubscriberActiveList, new DefaultMessageSerializer<UserActiveCharmsListMessage>() },
                 { MessageCommands.CharmSubscriberSetSelected, new DefaultMessageSerializer<UserCharmsSelectMessage>() },
+                { MessageCommands.TipGroupSubscribe, new DefaultMessageSerializer<SubscribeToGroupTipsMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
