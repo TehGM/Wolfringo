@@ -33,7 +33,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonConverter(typeof(EntityIdConverter))]
         public uint RecipientID { get; private set; }
         /// <summary>Information about message's latest edit.</summary>
-        [JsonProperty("edited")]
+        [JsonProperty("edited", NullValueHandling = NullValueHandling.Ignore)]
         public ChatMessage.EditMetadata? EditInfo { get; private set; }
         /// <summary>Is this message soft-deleted by group admin?</summary>
         [JsonProperty("isDeleted", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
