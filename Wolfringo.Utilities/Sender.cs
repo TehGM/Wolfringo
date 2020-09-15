@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,13 +51,19 @@ namespace TehGM.Wolfringo
         public static Task SubscribePrivateMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new SubscribeToPmMessage(), cancellationToken);
         /// <summary>Subscribes to incoming group message.</summary>
-        public static Task<EntitiesSubscribeResponse> SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
-            => client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupMessage(), cancellationToken);
+        public static async Task<IReadOnlyDictionary<uint, HttpStatusCode>> SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            EntitiesSubscribeResponse response = await client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupMessage(), cancellationToken).ConfigureAwait(false);
+            return response.Results;
+        }
 
 
         // tips subscribing
-        public static Task<EntitiesSubscribeResponse> SubscribeGroupTipsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
-            => client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupTipsMessage(), cancellationToken);
+        public static async Task<IReadOnlyDictionary<uint, HttpStatusCode>> SubscribeGroupTipsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            EntitiesSubscribeResponse response = await client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupTipsMessage(), cancellationToken).ConfigureAwait(false);
+            return response.Results;
+        }
 
 
         // online presence
