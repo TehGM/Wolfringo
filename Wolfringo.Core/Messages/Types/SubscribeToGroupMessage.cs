@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>A message for subscribing to group messages.</summary>
+    [ResponseType(typeof(EntitiesSubscribeResponse))]
     public class SubscribeToGroupMessage : IHeadersWolfMessage
     {
         /// <inheritdoc/>

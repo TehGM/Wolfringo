@@ -44,6 +44,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(AchievementListResponse), defaultSerializer },
                 { typeof(UserAchievementListResponse), defaultSerializer },
                 { typeof(UserCharmsListResponse), defaultSerializer },
+                { typeof(EntitiesSubscribeResponse), defaultSerializer },
                 // group stats
                 { typeof(GroupStatisticsResponse), new GroupStatisticsResponseSerializer() },
                 // group profile

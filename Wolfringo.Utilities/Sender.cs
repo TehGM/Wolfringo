@@ -50,8 +50,8 @@ namespace TehGM.Wolfringo
         public static Task SubscribePrivateMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new SubscribeToPmMessage(), cancellationToken);
         /// <summary>Subscribes to incoming group message.</summary>
-        public static Task SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
-            => client.SendAsync(new SubscribeToGroupMessage(), cancellationToken);
+        public static Task<EntitiesSubscribeResponse> SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
+            => client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupMessage(), cancellationToken);
 
 
         // online presence
