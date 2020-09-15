@@ -11,15 +11,15 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         /// <inheritdoc/>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            double ms = ((DateTime)value - Epoch).TotalMilliseconds;
-            writer.WriteValue((long)ms * 1000);
+            double ticks = ((DateTime)value - Epoch).Ticks;
+            writer.WriteValue((long)ticks / 10);
         }
 
         /// <inheritdoc/>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null) { return null; }
-            return Epoch.AddMilliseconds((long)reader.Value / 1000d);
+            return Epoch.AddTicks((long)reader.Value * 10);
         }
     }
 }
