@@ -930,6 +930,19 @@ namespace TehGM.Wolfringo
         public static Task<ChatResponse> ReplyVoiceAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
+
+
+        // deleting
+        /// <summary>Requests chat message to be deleted.</summary>
+        /// <param name="message">Chat message to delete.</param>
+        /// <returns>Message updating result.</returns>
+        public static Task<ChatUpdateResponse> DeleteChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = true }.Build(), cancellationToken);
+        /// <summary>Requests chat message to be restored (un-deleted).</summary>
+        /// <param name="message">Chat message to restore.</param>
+        /// <returns>Message updating result.</returns>
+        public static Task<ChatUpdateResponse> RestoreChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
+            => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = false }.Build(), cancellationToken);
         #endregion
     }
 }

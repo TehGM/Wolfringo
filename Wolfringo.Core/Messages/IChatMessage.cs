@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages
 {
     /// <summary>Represents a message that appears in the chat.</summary>
     [ResponseType(typeof(ChatResponse))]
-    public interface IChatMessage : IWolfMessage
+    public interface IChatMessage : IWolfMessage, IRawDataMessage
     {
         // json data
         [JsonProperty("flightId", NullValueHandling = NullValueHandling.Ignore)]
@@ -34,7 +34,10 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("recipient")]
         [JsonConverter(typeof(EntityIdConverter))]
         uint RecipientID { get; }
+    }
 
+    public interface IRawDataMessage
+    {
         // binary data
         /// <summary>Message's raw binary data.</summary>
         [JsonIgnore]

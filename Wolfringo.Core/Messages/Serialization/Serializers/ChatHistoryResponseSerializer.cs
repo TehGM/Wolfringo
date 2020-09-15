@@ -26,9 +26,12 @@ namespace TehGM.Wolfringo.Messages.Serialization
             {
                 Guid msgId = responseChatMessage["id"].ToObject<Guid>();
                 IChatMessage msg = result.Messages.First(m => m.ID == msgId);
-                JToken numProp = responseChatMessage["data"]["num"];
-                int binaryIndex = numProp.ToObject<int>(SerializationHelper.DefaultSerializer);
-                ChatMessageSerializer.PopulateMessageData(ref msg, responseData.BinaryMessages.ElementAt(binaryIndex));
+                JToken numProp = responseChatMessage["data"]?["num"];
+                if (numProp != null)
+                {
+                    int binaryIndex = numProp.ToObject<int>(SerializationHelper.DefaultSerializer);
+                    SerializationHelper.PopulateMessageRawData(ref msg, responseData.BinaryMessages.ElementAt(binaryIndex));
+                }
             }
 
             return result;

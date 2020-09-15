@@ -53,7 +53,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(RecentConversationsResponse), chatHistorySerializer },
                 // entity updates
                 { typeof(UserUpdateResponse), new UserUpdateResponseSerializer() },
-                { typeof(GroupEditResponse), new GroupEditResponseSerializer() }
+                { typeof(GroupEditResponse), new GroupEditResponseSerializer() },
+                { typeof(ChatUpdateResponse), new ChatUpdateResponseSerializer() }
             };
         }
 
