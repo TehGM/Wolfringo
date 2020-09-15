@@ -19,32 +19,32 @@ namespace TehGM.Wolfringo
         // main props
         /// <summary>User's display name.</summary>
         [JsonProperty("nickname")]
-        public string Nickname { get; private set; }
+        public string Nickname { get; protected set; }
         /// <summary>User's status.</summary>
         [JsonProperty("status")]
-        public string Status { get; private set; }
+        public string Status { get; protected set; }
         // extended props
         /// <summary>User's name, as specified in the profile.</summary>
         [JsonProperty("name")]
-        public string ProfileName { get; private set; }
+        public string ProfileName { get; protected set; }
         /// <summary>User's "About Me" description.</summary>
         [JsonProperty("about")]
-        public string About { get; private set; }
+        public string About { get; protected set; }
         /// <summary>User's gender.</summary>
         [JsonProperty("gender")]
-        public WolfGender Gender { get; private set; }
+        public WolfGender Gender { get; protected set; }
         /// <summary>User's language.</summary>
         [JsonProperty("language")]
-        public WolfLanguage Language { get; private set; }
+        public WolfLanguage Language { get; protected set; }
         /// <summary>User's relationship status.</summary>
         [JsonProperty("relationship")]
-        public WolfRelationship Relationship { get; private set; }
+        public WolfRelationship Relationship { get; protected set; }
         /// <summary>User's looking for.</summary>
         [JsonProperty("lookingFor")]
-        public WolfLookingFor LookingFor { get; private set; }
+        public WolfLookingFor LookingFor { get; protected set; }
         /// <summary>User's links.</summary>
         [JsonProperty("urls")]
-        public IEnumerable<string> Links { get; private set; }
+        public IEnumerable<string> Links { get; protected set; }
 
         [JsonConstructor]
         protected UserUpdateMessage() { }

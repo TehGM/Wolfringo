@@ -19,25 +19,25 @@ namespace TehGM.Wolfringo.Messages
         // json data
         /// <summary>Is it a group message?</summary>
         [JsonProperty("isGroup")]
-        public bool IsGroupMessage { get; private set; }
+        public bool IsGroupMessage { get; protected set; }
         /// <summary>Message's timestamp. Used by protocol as message ID</summary>
         [JsonProperty("timestamp")]
         [JsonConverter(typeof(MillisecondsEpochConverter))]
-        public DateTime Timestamp { get; private set; }
+        public DateTime Timestamp { get; protected set; }
         /// <summary>User that sent the message.</summary>
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(EntityIdConverter))]
-        public uint? SenderID { get; private set; }
+        public uint? SenderID { get; protected set; }
         /// <summary>User or group that received the message.</summary>
         [JsonProperty("recipient")]
         [JsonConverter(typeof(EntityIdConverter))]
-        public uint RecipientID { get; private set; }
+        public uint RecipientID { get; protected set; }
         /// <summary>Information about message's latest edit.</summary>
         [JsonProperty("edited", NullValueHandling = NullValueHandling.Ignore)]
-        public ChatMessage.EditMetadata? EditInfo { get; private set; }
+        public ChatMessage.EditMetadata? EditInfo { get; protected set; }
         /// <summary>Is this message soft-deleted by group admin?</summary>
         [JsonProperty("isDeleted", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public bool? IsDeleted { get; private set; }
+        public bool? IsDeleted { get; protected set; }
 
         // binary data
         /// <summary>Message's raw binary data.</summary>
