@@ -14,10 +14,18 @@
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RootNamespace>TehGM.Wolfringo.Utilities.Interactive</RootNamespace>
+    <PackageIcon>wolfringo_logo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Wolfringo.Core\Wolfringo.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\wolfringo_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
