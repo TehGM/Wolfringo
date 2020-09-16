@@ -63,6 +63,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             token.PopulateObject(target, "headers", serializer);
             token.PopulateObject(target, "body.extended", serializer);
             token.PopulateObject(target, "body.base", serializer);
+            token.PopulateObject(target, "metadata", serializer);
             token.PopulateObject(target, "body.metadata", serializer);
         }
 
