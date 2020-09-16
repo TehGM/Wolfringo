@@ -35,6 +35,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             // metadata props
             JObject metadata = new JObject();
             SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isDeleted");
+            SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isTipped");
             if (metadata.HasValues)
                 body.Add(new JProperty("metadata", metadata));
 

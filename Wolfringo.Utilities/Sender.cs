@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -955,6 +956,65 @@ namespace TehGM.Wolfringo
         /// <returns>Message updating result.</returns>
         public static Task<ChatUpdateResponse> RestoreChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = false }.Build(), cancellationToken);
+        #endregion
+
+
+        /* TIPS */
+        #region Tips
+        // summaries
+        /// <summary>Requests tips summaries for messages.</summary>
+        /// <param name="messages">Messages to get tips statistics for.</param>
+        public static async Task<IReadOnlyDictionary<long, IEnumerable<WolfTip>>> GetMessageTipsSummaryAsync(this IWolfClient client, IEnumerable<ChatMessage> messages, CancellationToken cancellationToken = default)
+        {
+            if (messages?.Any() != true)
+                throw new ArgumentException("Messages are required for requesting tips statistics", nameof(messages));
+            if (messages.Any(m => m.Timestamp == null))
+                throw new ArgumentException("Tips statistics can be requested only for messages already processed by the Wolf server", nameof(messages));
+            if (!messages.All(m => m.IsGroupMessage))
+                throw new ArgumentException("Tips statistics can be requested only for group messages", nameof(messages));
+            if (messages.Any(m => m.RecipientID != messages.First().RecipientID))
+                throw new ArgumentException("Tips statistics can be requested at once only for messages from the same group", nameof(messages));
+            TipSummaryResponse results = await client.SendAsync<TipSummaryResponse>(
+                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => SerializationHelper.DateTimeToWolfTimestamp(m.Timestamp.Value))), cancellationToken);
+            return results.Tips;
+        }
+        /// <summary>Requests tips summaries for a message.</summary>
+        /// <param name="messages">Message to get tips statistics for.</param>
+        public static async Task<IEnumerable<WolfTip>> GetMessageTipsSummaryAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
+        {
+            IReadOnlyDictionary<long, IEnumerable<WolfTip>> result = await GetMessageTipsSummaryAsync(client, new ChatMessage[] { message }, cancellationToken).ConfigureAwait(false);
+            return result[SerializationHelper.DateTimeToWolfTimestamp(message.Timestamp.Value)];
+        }
+
+        // tipping
+        /// <summary>Tips a message.</summary>
+        /// <param name="message">Message to tip.</param>
+        /// <param name="charmID">ID of charm to tip the message with.</param>
+        public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, uint charmID, CancellationToken cancellationToken = default)
+            => TipMessageAsync(client, message, new uint[] { charmID }, cancellationToken);
+        /// <summary>Tips a message.</summary>
+        /// <param name="message">Message to tip.</param>
+        /// <param name="charmIDs">IDs of charms to tip the message with.</param>
+        public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
+            => TipMessageAsync(client, message, charmIDs.Select(charm => new WolfTip(charm, 1)), cancellationToken);
+        /// <summary>Tips a message.</summary>
+        /// <param name="message">Message to tip.</param>
+        /// <param name="tip">Tip to tip the message with.</param>
+        public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, WolfTip tip, CancellationToken cancellationToken = default)
+            => TipMessageAsync(client, message, new WolfTip[] { tip }, cancellationToken);
+        /// <summary>Tips a message.</summary>
+        /// <param name="message">Message to tip.</param>
+        /// <param name="tips">Tips to tip the message with.</param>
+        public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, IEnumerable<WolfTip> tips, CancellationToken cancellationToken = default)
+        {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+            if (message.Timestamp == null)
+                throw new ArgumentException("Only messages already processed by the Wolf server can be tipped", nameof(message));
+            if (!message.IsGroupMessage)
+                throw new ArgumentException("Only group messages can be tipped", nameof(message));
+            return client.SendAsync(new TipAddMessage(SerializationHelper.DateTimeToWolfTimestamp(message.Timestamp.Value), message.RecipientID, message.SenderID.Value, WolfTip.ContextType.Message, tips), cancellationToken);
+        }
         #endregion
     }
 }

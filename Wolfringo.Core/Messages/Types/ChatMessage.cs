@@ -40,6 +40,9 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>Is this message soft-deleted by group admin?</summary>
         [JsonProperty("isDeleted", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public bool IsDeleted { get; private set; }
+        /// <summary>Is this message tipped?</summary>
+        [JsonProperty("isTipped", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public bool HasTips { get; private set; }
 
         // binary data
         /// <inheritdoc/>

@@ -36,8 +36,11 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("edited", NullValueHandling = NullValueHandling.Ignore)]
         public ChatMessage.EditMetadata? EditInfo { get; protected set; }
         /// <summary>Is this message soft-deleted by group admin?</summary>
-        [JsonProperty("isDeleted", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("isDeleted", NullValueHandling = NullValueHandling.Ignore)]
         public bool? IsDeleted { get; protected set; }
+        /// <summary>Is this message tipped?</summary>
+        [JsonProperty("isTipped", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? HasTips { get; private set; }
 
         // binary data
         /// <summary>Message's raw binary data.</summary>

@@ -4,20 +4,19 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
-    /// <summary>Serializer for group edit message, such as group creation or update.</summary>
-    /// <remarks>This special serializer moves "extended" properties into "extended" object to match the protocol.</remarks>
-    /// <typeparam name="T">Type of group edit message.</typeparam>
+    /// <summary>Serializer for chat message edit message, such as message deletion.</summary>
+    /// <remarks>This special serializer moves "metadata" properties into "metadata" object to match the protocol.</remarks>
     public class ChatUpdateMessageSerializer : DefaultMessageSerializer<ChatUpdateMessage>
     {
         /// <inheritdoc/>
         public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
             // deserialize message
-            ChatUpdateMessage result = messageData.Payload.ToObject<ChatUpdateMessage>(SerializationHelper.DefaultSerializer);
-            messageData.Payload.FlattenCommonProperties(result, SerializationHelper.DefaultSerializer);
+            ChatUpdateMessage result = (ChatUpdateMessage)base.Deserialize(command, messageData);
 
             // parse and populate binary data
-            SerializationHelper.PopulateMessageRawData(ref result, messageData.BinaryMessages.First());
+            if (messageData.BinaryMessages?.Any() == true)
+                SerializationHelper.PopulateMessageRawData(ref result, messageData.BinaryMessages.First());
 
             return result;
         }
@@ -32,6 +31,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             // metadata props
             JObject metadata = new JObject();
             SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isDeleted");
+            SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isTipped");
             if (metadata.HasValues)
                 body.Add(new JProperty("metadata", metadata));
 
