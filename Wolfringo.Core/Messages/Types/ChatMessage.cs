@@ -90,7 +90,7 @@ namespace TehGM.Wolfringo.Messages
             [JsonProperty("subscriberId")]
             public uint UserID { get; private set; }
             [JsonProperty("timestamp")]
-            [JsonConverter(typeof(MillisecondsEpochConverter))]
+            [JsonConverter(typeof(WolfTimestampConverter))]
             public DateTime Timestamp { get; private set; }
         }
     }

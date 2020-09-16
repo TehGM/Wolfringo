@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages.Responses
     public class LoginResponse : WolfResponse, IWolfResponse
     {
         [JsonProperty("offlineMessageTimestamp")]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
+        [JsonConverter(typeof(WolfTimestampConverter))]
         public DateTime OfflineMessageTimestamp { get; private set; }
 
         /// <summary>Logged in user ID.</summary>

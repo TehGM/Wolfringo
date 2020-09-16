@@ -12,7 +12,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         public Guid ID { get; private set; }
         /// <summary>Timestamp of the message.</summary>
         [JsonProperty("timestamp")]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
+        [JsonConverter(typeof(WolfTimestampConverter))]
         public DateTime Timestamp { get; private set; }
         /// <summary>Was the message spam filtered?</summary>
         [JsonProperty("isSpam")]

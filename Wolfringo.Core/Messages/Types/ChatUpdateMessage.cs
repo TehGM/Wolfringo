@@ -22,7 +22,7 @@ namespace TehGM.Wolfringo.Messages
         public bool IsGroupMessage { get; protected set; }
         /// <summary>Message's timestamp. Used by protocol as message ID</summary>
         [JsonProperty("timestamp")]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
+        [JsonConverter(typeof(WolfTimestampConverter))]
         public DateTime Timestamp { get; protected set; }
         /// <summary>User that sent the message.</summary>
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]

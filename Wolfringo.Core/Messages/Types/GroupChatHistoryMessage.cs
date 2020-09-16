@@ -26,11 +26,11 @@ namespace TehGM.Wolfringo.Messages
         public uint GroupID { get; private set; }
         /// <summary>Timestamp of the oldest message to retrieve.</summary>
         [JsonProperty("timestampBegin")]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
+        [JsonConverter(typeof(WolfTimestampConverter))]
         public DateTime AfterTime { get; private set; }
         /// <summary>Timestamp of the oldest already received message.</summary>
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
+        [JsonConverter(typeof(WolfTimestampConverter))]
         public DateTime? BeforeTime { get; private set; }
         /// <summary>Should history be ordered chronologically?</summary>
         [JsonProperty("chronological")]
@@ -47,7 +47,7 @@ namespace TehGM.Wolfringo.Messages
         {
             this.GroupID = groupId;
             this.BeforeTime = before;
-            this.AfterTime = MillisecondsEpochConverter.Epoch.AddMilliseconds(1);
+            this.AfterTime = SerializationHelper.Epoch.AddMilliseconds(1);
             this.RequestChronologicalOrder = chronological;
         }
     }

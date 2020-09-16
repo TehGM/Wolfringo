@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
         /// <summary>Timestamp of the oldest already received message.</summary>
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
+        [JsonConverter(typeof(WolfTimestampConverter))]
         public DateTime? BeforeTime { get; private set; }
 
         [JsonConstructor]
