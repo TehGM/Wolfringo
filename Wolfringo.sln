@@ -29,6 +29,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostedPingBot", "Examples\H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Utilities.Interactive", "Wolfringo.Utilities.Interactive\Wolfringo.Utilities.Interactive.csproj", "{CDFC76B6-B4A6-4698-97B7-D9BDBF760F8D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}"
+	ProjectSection(SolutionItems) = preProject
+		docs\docfx.json = docs\docfx.json
+		docs\filter.yml = docs\filter.yml
+	EndProjectSection
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Commands", "Wolfringo.Commands\Wolfringo.Commands.csproj", "{C2F757AF-A4CA-4E31-BA2F-A0F0BFB72B36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCommandsBot", "Examples\SimpleCommandsBot\SimpleCommandsBot.csproj", "{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}"
@@ -86,6 +92,7 @@ Global
 		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B} = {F765215F-98D7-4199-8124-1FF254A35A21}
 		{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67} = {F765215F-98D7-4199-8124-1FF254A35A21}
 		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA} = {F765215F-98D7-4199-8124-1FF254A35A21}
+		{5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46} = {93B12389-3D03-4FF6-9A1A-41C4709683B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}

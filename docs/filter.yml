@@ -1,0 +1,4 @@
+apiRules:
+    - exclude:
+        uidRegex: ^TehGM\.Wolfringo\.Examples
+        type: Namespace
