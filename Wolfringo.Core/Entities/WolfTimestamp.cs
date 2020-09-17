@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
@@ -7,7 +8,8 @@ namespace TehGM.Wolfringo
     /// <summary>Represents a WOLF Timestamp.</summary>
     /// <remarks>This type is designed to provide easy and out-of-the-box conversions between WOLF Timestamp long format and DateTime.</remarks>
     [JsonConverter(typeof(WolfTimestampConverter))]
-    public struct WolfTimestamp : IEquatable<WolfTimestamp>, IEquatable<DateTime>, IEquatable<long>, IComparable<WolfTimestamp>, IComparable<DateTime>, IComparable<long>
+    [TypeConverter(typeof(WolfTimestampTypeConverter))]
+    public struct WolfTimestamp : IEquatable<WolfTimestamp>, IEquatable<DateTime>, IEquatable<long>, IComparable<WolfTimestamp>, IComparable<DateTime>, IComparable<long>, IConvertible
     {
         /// <summary>Unix Epoch.</summary>
         public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -47,6 +49,63 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         public override string ToString()
             => this._value.ToString();
+
+        /// <inheritdoc/>
+        TypeCode IConvertible.GetTypeCode()
+            => TypeCode.Int64;
+        /// <inheritdoc/>
+        DateTime IConvertible.ToDateTime(IFormatProvider provider)
+            => this.ToDateTime();
+        /// <inheritdoc/>
+        decimal IConvertible.ToDecimal(IFormatProvider provider)
+            => this._value;
+        /// <inheritdoc/>
+        double IConvertible.ToDouble(IFormatProvider provider)
+            => this._value;
+        /// <inheritdoc/>
+        float IConvertible.ToSingle(IFormatProvider provider)
+            => this._value;
+        /// <inheritdoc/>
+        string IConvertible.ToString(IFormatProvider provider)
+            => this.ToString();
+        /// <inheritdoc/>
+        long IConvertible.ToInt64(IFormatProvider provider)
+            => this._value;
+        /// <inheritdoc/>
+        ulong IConvertible.ToUInt64(IFormatProvider provider)
+            => (ulong)this._value;
+        /// <inheritdoc/>
+        bool IConvertible.ToBoolean(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(Boolean).FullName}");
+        /// <inheritdoc/>
+        byte IConvertible.ToByte(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(Byte).FullName}");
+        /// <inheritdoc/>
+        char IConvertible.ToChar(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(Char).FullName}");
+        /// <inheritdoc/>
+        short IConvertible.ToInt16(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(Int16).FullName}");
+        /// <inheritdoc/>
+        int IConvertible.ToInt32(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(Int32).FullName}");
+        /// <inheritdoc/>
+        sbyte IConvertible.ToSByte(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(SByte).FullName}");
+        /// <inheritdoc/>
+        ushort IConvertible.ToUInt16(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(UInt16).FullName}");
+        /// <inheritdoc/>
+        uint IConvertible.ToUInt32(IFormatProvider provider)
+            => throw new InvalidCastException($"Cannot cast {this.GetType().FullName} to {typeof(UInt32).FullName}");
+
+        /// <inheritdoc/>
+        object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+        {
+            if (conversionType.IsAssignableFrom(this.GetType()))
+                return this;
+            return Convert.ChangeType(this._value, conversionType);
+        }
         #endregion
 
         #region Equality checks

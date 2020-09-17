@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
@@ -27,6 +29,20 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         public override bool CanConvert(Type objectType)
         {
             return typeof(WolfTimestamp).IsAssignableFrom(objectType) || typeof(long).IsAssignableFrom(objectType) || typeof(DateTime).IsAssignableFrom(objectType);
+        }
+    }
+
+    public class WolfTimestampTypeConverter : TypeConverter
+    {
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string)
+                return new WolfTimestamp(long.Parse((string)value));
+            if (value is long)
+                return new WolfTimestamp((long)value);
+            if (value is DateTime)
+                return new WolfTimestamp((DateTime)value);
+            return base.ConvertFrom(context, culture, value);
         }
     }
 }

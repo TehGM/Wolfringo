@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
@@ -55,9 +56,10 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             JObject jObj = JObject.Load(reader);
             IEnumerable<JProperty> properties = jObj.Properties();
             Dictionary<TKey, TValue> results = new Dictionary<TKey, TValue>(properties.Count());
+            TypeConverter keyConverter = TypeDescriptor.GetConverter(typeof(TKey));
             foreach (JProperty prop in properties)
             {
-                TKey key = (TKey)Convert.ChangeType(prop.Name, typeof(TKey));
+                TKey key = (TKey)keyConverter.ConvertFromInvariantString(prop.Name);
                 TValue value = default;
                 if (prop.Value != null)
                 {
