@@ -68,7 +68,7 @@ namespace TehGM.Wolfringo.Messages
             /// <summary>Is this message soft-deleted by group admin?</summary>
             public bool? IsDeleted { get; set; }
 
-            public Builder(IChatMessage message)
+            public Builder(ChatMessage message)
             {
                 if (message.Timestamp == null)
                     throw new ArgumentException($"{nameof(ChatUpdateMessage)} can only be used for messages already processed by the Wolf server", nameof(message));
