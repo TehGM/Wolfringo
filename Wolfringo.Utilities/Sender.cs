@@ -979,7 +979,7 @@ namespace TehGM.Wolfringo
             return results.Tips;
         }
         /// <summary>Requests tips summaries for a message.</summary>
-        /// <param name="messages">Message to get tips statistics for.</param>
+        /// <param name="message">Message to get tips statistics for.</param>
         public static async Task<IEnumerable<WolfTip>> GetMessageTipsSummaryAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
         {
             IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>> result = await GetMessageTipsSummaryAsync(client, new ChatMessage[] { message }, cancellationToken).ConfigureAwait(false);
@@ -987,6 +987,9 @@ namespace TehGM.Wolfringo
         }
 
         // details
+        /// <summary>Requests tips details for messages.</summary>
+        /// <param name="message">Message to get tips statistics for.</param>
+        /// <returns>Collection of tips details.</returns>
         public static async Task<IEnumerable<WolfTip>> GetMessageTipsDetailsAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
         {
             if (message == null)
