@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo
 {
@@ -16,10 +17,12 @@ namespace TehGM.Wolfringo
         public int Quantity { get; private set; }
 
 
+        /// <summary>ID of the user that tipped the message.</summary>
+        [JsonProperty("subscriber", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(ValueOrPropertyConverter), "id")]
+        public uint? SenderID { get; private set; }
         [JsonProperty("magnitude", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public int Magnitude { get; private set; }
-        [JsonProperty("subscriber", NullValueHandling = NullValueHandling.Ignore)]
-        public string Subscriber { get; private set; }
 
         [JsonConstructor]
         protected WolfTip() { }

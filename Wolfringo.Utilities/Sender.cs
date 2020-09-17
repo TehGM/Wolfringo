@@ -986,6 +986,19 @@ namespace TehGM.Wolfringo
             return result[message.Timestamp.Value];
         }
 
+        // details
+        public static async Task<IEnumerable<WolfTip>> GetMessageTipsDetailsAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
+        {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+            if (message.Timestamp == null)
+                throw new ArgumentException("Only messages already processed by the Wolf server can be tipped", nameof(message));
+            if (!message.IsGroupMessage)
+                throw new ArgumentException("Only group messages can be tipped", nameof(message));
+            TipDetailsResponse result = await client.SendAsync<TipDetailsResponse>(new TipDetailsMessage(message.Timestamp.Value, message.RecipientID, WolfTip.ContextType.Message));
+            return result.Tips;
+        }
+
         // tipping
         /// <summary>Tips a message.</summary>
         /// <param name="message">Message to tip.</param>

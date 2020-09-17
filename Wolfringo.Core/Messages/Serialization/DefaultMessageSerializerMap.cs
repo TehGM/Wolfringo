@@ -65,6 +65,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.CharmSubscriberSetSelected, new DefaultMessageSerializer<UserCharmsSelectMessage>() },
                 { MessageCommands.TipGroupSubscribe, new DefaultMessageSerializer<SubscribeToGroupTipsMessage>() },
                 { MessageCommands.TipSummary, new DefaultMessageSerializer<TipSummaryMessage>() },
+                { MessageCommands.TipDetail, new DefaultMessageSerializer<TipDetailsMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

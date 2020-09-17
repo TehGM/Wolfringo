@@ -56,7 +56,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 // entity updates
                 { typeof(UserUpdateResponse), new UserUpdateResponseSerializer() },
                 { typeof(GroupEditResponse), new GroupEditResponseSerializer() },
-                { typeof(ChatUpdateResponse), new ChatUpdateResponseSerializer() }
+                { typeof(ChatUpdateResponse), new ChatUpdateResponseSerializer() },
+                // tips
+                { typeof(TipDetailsResponse), new TipDetailsResponseSerializer() },
             };
         }
 
