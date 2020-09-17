@@ -3,22 +3,30 @@ using System;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
 {
-    // https://stackoverflow.com/questions/19971494/how-to-deserialize-a-unix-timestamp-%CE%BCs-to-a-datetime-from-json/56795442
-
-    /// <summary>Json converter for converting unix epoch in millisecond format to DateTime.</summary>
-    public class WolfTimestampConverter : EpochConverter
+    /// <summary>Json converter for converting unix epoch in millisecond format to WolfTimestamp or DateTime.</summary>
+    public class WolfTimestampConverter : JsonConverter
     {
         /// <inheritdoc/>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue(SerializationHelper.DateTimeToWolfTimestamp((DateTime)value));
+            writer.WriteValue((long)((WolfTimestamp)value));
         }
 
         /// <inheritdoc/>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null) { return null; }
-            return SerializationHelper.WolfTimestampToDateTime((long)reader.Value);
+            WolfTimestamp result = new WolfTimestamp((long)reader.Value);
+            if (objectType.IsAssignableFrom(typeof(long)))
+                return (long)result;
+            if (objectType.IsAssignableFrom(typeof(DateTime)))
+                return (DateTime)result;
+            return result;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(WolfTimestamp).IsAssignableFrom(objectType) || typeof(long).IsAssignableFrom(objectType) || typeof(DateTime).IsAssignableFrom(objectType);
         }
     }
 }

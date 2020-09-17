@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
@@ -19,8 +18,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         public string MimeType { get; private set; }
         /// <summary>Message's timestamp.</summary>
         [JsonProperty("timestamp")]
-        [JsonConverter(typeof(WolfTimestampConverter))]
-        public DateTime Timestamp { get; private set; }
+        public WolfTimestamp Timestamp { get; private set; }
         /// <summary>User that sent the message.</summary>
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(EntityIdConverter))]

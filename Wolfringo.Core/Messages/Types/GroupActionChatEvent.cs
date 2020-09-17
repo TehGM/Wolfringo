@@ -31,7 +31,7 @@ namespace TehGM.Wolfringo.Messages
         /// <inheritdoc/>
         public string MimeType { get; private set; }
         /// <inheritdoc/>
-        public DateTime? Timestamp { get; private set; }
+        public WolfTimestamp? Timestamp { get; private set; }
         /// <inheritdoc/>
         public uint? SenderID { get; private set; }
         /// <inheritdoc/>

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages
 {
@@ -29,7 +28,7 @@ namespace TehGM.Wolfringo.Messages
         /// <inheritdoc/>
         public string MimeType { get; private set; }
         /// <inheritdoc/>
-        public DateTime? Timestamp { get; private set; }
+        public WolfTimestamp? Timestamp { get; private set; }
         /// <inheritdoc/>
         public uint? SenderID { get; private set; }
         /// <inheritdoc/>
@@ -93,8 +92,7 @@ namespace TehGM.Wolfringo.Messages
             [JsonProperty("subscriberId")]
             public uint UserID { get; private set; }
             [JsonProperty("timestamp")]
-            [JsonConverter(typeof(WolfTimestampConverter))]
-            public DateTime Timestamp { get; private set; }
+            public WolfTimestamp Timestamp { get; private set; }
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
@@ -8,8 +6,7 @@ namespace TehGM.Wolfringo.Messages.Responses
     public class LoginResponse : WolfResponse, IWolfResponse
     {
         [JsonProperty("offlineMessageTimestamp")]
-        [JsonConverter(typeof(WolfTimestampConverter))]
-        public DateTime OfflineMessageTimestamp { get; private set; }
+        public WolfTimestamp OfflineMessageTimestamp { get; private set; }
 
         /// <summary>Logged in user ID.</summary>
         [JsonProperty("id")]

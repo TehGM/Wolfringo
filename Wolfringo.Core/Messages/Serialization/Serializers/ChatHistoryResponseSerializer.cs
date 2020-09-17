@@ -24,7 +24,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 throw new ArgumentException("Chat history response requires to have a body property that is a JSON array", nameof(responseData));
             foreach (JToken responseChatMessage in responseBody)
             {
-                DateTime msgTimestamp = SerializationHelper.WolfTimestampToDateTime(responseChatMessage["timestamp"].ToObject<long>(SerializationHelper.DefaultSerializer));
+                WolfTimestamp msgTimestamp = responseChatMessage["timestamp"].ToObject<WolfTimestamp>(SerializationHelper.DefaultSerializer);
                 IChatMessage msg = result.Messages.First(m => m.Timestamp == msgTimestamp);
                 JToken numProp = responseChatMessage["data"]?["num"];
                 if (numProp != null)

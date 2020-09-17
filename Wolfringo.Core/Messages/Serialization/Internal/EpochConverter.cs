@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         /// <inheritdoc/>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            double seconds = ((DateTime)value - SerializationHelper.Epoch).TotalSeconds;
+            double seconds = ((DateTime)value - WolfTimestamp.Epoch).TotalSeconds;
             writer.WriteValue((long)seconds);
         }
 
@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null) { return null; }
-            return SerializationHelper.Epoch.AddSeconds((long)reader.Value);
+            return WolfTimestamp.Epoch.AddSeconds((long)reader.Value);
         }
     }
 }

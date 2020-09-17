@@ -11,8 +11,6 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
     /// <remarks>It's not recommended to use this class unless it's required for writing a custom serializer implementation.</remarks>
     public static class SerializationHelper
     {
-        public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         /// <summary>Default serializer settings.</summary>
         public static readonly JsonSerializerSettings SerializerSettings;
         /// <summary>Default serializer.</summary>
@@ -127,15 +125,6 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                 foreach (byte b in data)
                     byteCollection.Add(b);
             }
-        }
-
-        public static DateTime WolfTimestampToDateTime(long timestamp)
-            => Epoch.AddTicks(timestamp * 10);
-
-        public static long DateTimeToWolfTimestamp(DateTime timestamp)
-        {
-            double ticks = (timestamp - Epoch).Ticks;
-            return (long)ticks / 10;
         }
     }
 }

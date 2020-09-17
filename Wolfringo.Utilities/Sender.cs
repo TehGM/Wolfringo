@@ -259,8 +259,8 @@ namespace TehGM.Wolfringo
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
-        public static async Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
+        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
+        public static async Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, WolfTimestamp? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
         {
             ChatHistoryResponse response = await client.SendAsync<ChatHistoryResponse>(
                 new PrivateChatHistoryMessage(userID, beforeTime), cancellationToken).ConfigureAwait(false);
@@ -272,20 +272,20 @@ namespace TehGM.Wolfringo
         /// <param name="userID">ID of user to get message history with.</param>
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
-        public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, DateTime? beforeTime, CancellationToken cancellationToken = default)
+        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
+        public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, WolfTimestamp? beforeTime, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, beforeTime, false, cancellationToken);
         /// <summary>Retrieve private messages history, starting with most recent message.</summary>
         /// <param name="userID">ID of user to get message history with.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
+        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, bool oldestFirst, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, null, oldestFirst, cancellationToken);
         /// <summary>Retrieve private messages history, ordered from newest to oldest, starting with most recent message.</summary>
         /// <param name="userID">ID of user to get message history with.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
+        /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, null, false, cancellationToken);
 
@@ -295,11 +295,11 @@ namespace TehGM.Wolfringo
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
-        public static async Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, DateTime? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
+        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
+        public static async Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, WolfTimestamp? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
         {
             ChatHistoryResponse response = await client.SendAsync<ChatHistoryResponse>(
-                new GroupChatHistoryMessage(groupID, beforeTime, oldestFirst), cancellationToken).ConfigureAwait(false);
+                new GroupChatHistoryMessage(groupID, beforeTime, null, oldestFirst), cancellationToken).ConfigureAwait(false);
             return oldestFirst ?
                 response.Messages.OrderBy(msg => msg.Timestamp) :
                 response.Messages.OrderByDescending(msg => msg.Timestamp);
@@ -308,20 +308,20 @@ namespace TehGM.Wolfringo
         /// <param name="groupID">ID of group to get message history from.</param>
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
-        public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, DateTime? beforeTime, CancellationToken cancellationToken = default)
+        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
+        public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, WolfTimestamp? beforeTime, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, beforeTime, false, cancellationToken);
         /// <summary>Retrieve group messages history, starting with most recent message.</summary>
         /// <param name="groupID">ID of group to get message history from.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
+        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, bool oldestFirst, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, null, oldestFirst, cancellationToken);
         /// <summary>Retrieve group messages history, ordered from newest to oldest, starting with most recent message.</summary>
         /// <param name="groupID">ID of group to get message history from.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
-        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, DateTime?, bool, CancellationToken)"/>
+        /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, null, false, cancellationToken);
 
@@ -964,7 +964,7 @@ namespace TehGM.Wolfringo
         // summaries
         /// <summary>Requests tips summaries for messages.</summary>
         /// <param name="messages">Messages to get tips statistics for.</param>
-        public static async Task<IReadOnlyDictionary<long, IEnumerable<WolfTip>>> GetMessageTipsSummaryAsync(this IWolfClient client, IEnumerable<ChatMessage> messages, CancellationToken cancellationToken = default)
+        public static async Task<IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>>> GetMessageTipsSummaryAsync(this IWolfClient client, IEnumerable<ChatMessage> messages, CancellationToken cancellationToken = default)
         {
             if (messages?.Any() != true)
                 throw new ArgumentException("Messages are required for requesting tips statistics", nameof(messages));
@@ -975,15 +975,15 @@ namespace TehGM.Wolfringo
             if (messages.Any(m => m.RecipientID != messages.First().RecipientID))
                 throw new ArgumentException("Tips statistics can be requested at once only for messages from the same group", nameof(messages));
             TipSummaryResponse results = await client.SendAsync<TipSummaryResponse>(
-                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => SerializationHelper.DateTimeToWolfTimestamp(m.Timestamp.Value))), cancellationToken);
+                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => m.Timestamp.Value)), cancellationToken);
             return results.Tips;
         }
         /// <summary>Requests tips summaries for a message.</summary>
         /// <param name="messages">Message to get tips statistics for.</param>
         public static async Task<IEnumerable<WolfTip>> GetMessageTipsSummaryAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
         {
-            IReadOnlyDictionary<long, IEnumerable<WolfTip>> result = await GetMessageTipsSummaryAsync(client, new ChatMessage[] { message }, cancellationToken).ConfigureAwait(false);
-            return result[SerializationHelper.DateTimeToWolfTimestamp(message.Timestamp.Value)];
+            IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>> result = await GetMessageTipsSummaryAsync(client, new ChatMessage[] { message }, cancellationToken).ConfigureAwait(false);
+            return result[message.Timestamp.Value];
         }
 
         // tipping
@@ -1013,7 +1013,7 @@ namespace TehGM.Wolfringo
                 throw new ArgumentException("Only messages already processed by the Wolf server can be tipped", nameof(message));
             if (!message.IsGroupMessage)
                 throw new ArgumentException("Only group messages can be tipped", nameof(message));
-            return client.SendAsync(new TipAddMessage(SerializationHelper.DateTimeToWolfTimestamp(message.Timestamp.Value), message.RecipientID, message.SenderID.Value, WolfTip.ContextType.Message, tips), cancellationToken);
+            return client.SendAsync(new TipAddMessage(message.Timestamp.Value, message.RecipientID, message.SenderID.Value, WolfTip.ContextType.Message, tips), cancellationToken);
         }
         #endregion
     }

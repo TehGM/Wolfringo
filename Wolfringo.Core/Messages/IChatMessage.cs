@@ -25,8 +25,7 @@ namespace TehGM.Wolfringo.Messages
         string MimeType { get; }
         /// <summary>Message's timestamp.</summary>
         [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(WolfTimestampConverter))]
-        DateTime? Timestamp { get; }
+        WolfTimestamp? Timestamp { get; }
         /// <summary>User that sent the message.</summary>
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(EntityIdConverter))]

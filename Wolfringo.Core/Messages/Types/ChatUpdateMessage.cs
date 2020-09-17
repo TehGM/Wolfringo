@@ -20,10 +20,9 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>Is it a group message?</summary>
         [JsonProperty("isGroup")]
         public bool IsGroupMessage { get; protected set; }
-        /// <summary>Message's timestamp. Used by protocol as message ID</summary>
+        /// <summary>Message's timestamp. Used by protocol as message ID.</summary>
         [JsonProperty("timestamp")]
-        [JsonConverter(typeof(WolfTimestampConverter))]
-        public DateTime Timestamp { get; protected set; }
+        public WolfTimestamp Timestamp { get; protected set; }
         /// <summary>User that sent the message.</summary>
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(EntityIdConverter))]
@@ -60,7 +59,7 @@ namespace TehGM.Wolfringo.Messages
         public class Builder
         {
             /// <summary>Message's timestamp. Used by protocol as message ID.</summary>
-            public DateTime Timestamp { get; }
+            public WolfTimestamp Timestamp { get; }
             /// <summary>User or group that received the message.</summary>
             public uint RecipientID { get; }
             /// <summary>Is it a group message?</summary>

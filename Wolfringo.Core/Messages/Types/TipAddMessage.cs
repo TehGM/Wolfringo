@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Messages
         public WolfTip.ContextType ContextType { get; private set; }
         /// <summary>ID of message to tip.</summary>
         [JsonProperty("id")]
-        public long MessageID { get; private set; }
+        public WolfTimestamp MessageID { get; private set; }
         /// <summary>List of tips.</summary>
         [JsonProperty("charmList")]
         public IEnumerable<WolfTip> Tips { get; private set; }
@@ -46,7 +46,7 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="authorID">ID of the message author.</param>
         /// <param name="contextType">Context type of the tip.</param>
         /// <param name="tips">Tips to send.</param>
-        public TipAddMessage(long messageID, uint groupID, uint authorID, WolfTip.ContextType contextType, IEnumerable<WolfTip> tips)
+        public TipAddMessage(WolfTimestamp messageID, uint groupID, uint authorID, WolfTip.ContextType contextType, IEnumerable<WolfTip> tips)
         {
             if (tips?.Any() != true)
                 throw new ArgumentException("Must request at least one tip to add", nameof(tips));

@@ -24,18 +24,18 @@ namespace TehGM.Wolfringo.Messages
         public uint GroupID { get; private set; }
         /// <summary>List of message IDs (timestamps) to request summary of.</summary>
         [JsonProperty("idList")]
-        public IEnumerable<long> MessageIDs { get; private set; }
+        public IEnumerable<WolfTimestamp> MessageIDs { get; private set; }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="contextType">Request context type.</param>
         /// <param name="groupID">Group where the messages are in.</param>
         /// <param name="messageIDs">List of message IDs (timestamps) to request summary of.</param>
-        public TipSummaryMessage(WolfTip.ContextType contextType, uint groupID, IEnumerable<long> messageIDs)
+        public TipSummaryMessage(WolfTip.ContextType contextType, uint groupID, IEnumerable<WolfTimestamp> messageIDs)
         {
             if (messageIDs?.Any() != true)
                 throw new ArgumentException("Must request at least one message ID", nameof(messageIDs));
             this.ContextType = contextType;
-            this.MessageIDs = new ReadOnlyCollection<long>((messageIDs as IList<long>) ?? messageIDs.ToArray());
+            this.MessageIDs = new ReadOnlyCollection<WolfTimestamp>((messageIDs as IList<WolfTimestamp>) ?? messageIDs.ToArray());
             this.GroupID = groupID;
         }
     }
