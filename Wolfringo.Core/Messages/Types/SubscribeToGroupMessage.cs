@@ -5,6 +5,7 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>A message for subscribing to group messages.</summary>
+    /// <remarks>Uses <see cref="EntitiesSubscribeResponse"/> as response type.</remarks>
     [ResponseType(typeof(EntitiesSubscribeResponse))]
     public class SubscribeToGroupMessage : IHeadersWolfMessage
     {

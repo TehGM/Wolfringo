@@ -9,6 +9,7 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>A message for requesting summary on messages tips.</summary>
+    /// <remarks>Uses <see cref="TipSummaryResponse"/> as response type.</remarks>
     [ResponseType(typeof(TipSummaryResponse))]
     public class TipSummaryMessage : IWolfMessage
     {

@@ -5,6 +5,7 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>A message for requesting details on message's tips.</summary>
+    /// <remarks>Uses <see cref="TipDetailsResponse"/> as response type.</remarks>
     [ResponseType(typeof(TipDetailsResponse))]
     public class TipDetailsMessage : IWolfMessage
     {
