@@ -239,7 +239,7 @@ namespace TehGM.Wolfringo.Hosting
                     _log?.LogDebug("Auto-login: {Login}", options.LoginUsername);
                     LoginResponse response = await this.SendAsync<LoginResponse>(
                         new LoginMessage(options.LoginUsername, options.LoginPassword, options.LoginType), _hostCancellationToken).ConfigureAwait(false);
-                    loggedInNickname = response.Nickname;
+                    loggedInNickname = response.User.Nickname;
                 }
                 else loggedInNickname = welcome.LoggedInUser.Nickname;
 
