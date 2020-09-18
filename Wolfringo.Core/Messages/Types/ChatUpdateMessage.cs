@@ -69,17 +69,23 @@ namespace TehGM.Wolfringo.Messages
             public bool? IsDeleted { get; set; }
 
             public Builder(ChatMessage message)
+                : this(message.Timestamp ?? throw new ArgumentException($"{nameof(ChatUpdateMessage)} can only be used for messages already processed by the Wolf server", nameof(message)),
+                      message.RecipientID, message.IsGroupMessage)
             {
-                if (message.Timestamp == null)
-                    throw new ArgumentException($"{nameof(ChatUpdateMessage)} can only be used for messages already processed by the Wolf server", nameof(message));
-                this.Timestamp = message.Timestamp.Value;
-                this.RecipientID = message.RecipientID;
-                this.IsGroupMessage = message.IsGroupMessage;
+                if (message.IsDeleted)
+                    this.IsDeleted = message.IsDeleted;
+            }
+
+            public Builder(WolfTimestamp timestamp, uint recipientID, bool isGroupMessage)
+            {
+                this.Timestamp = timestamp;
+                this.RecipientID = recipientID;
+                this.IsGroupMessage = isGroupMessage;
             }
 
             public ChatUpdateMessage Build()
             {
-                return new ChatUpdateMessage()
+                return new ChatUpdateMessage
                 {
                     Timestamp = this.Timestamp,
                     RecipientID = this.RecipientID,
