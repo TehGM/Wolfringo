@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using TehGM.Wolfringo.Messages.Responses;
@@ -9,11 +10,18 @@ namespace TehGM.Wolfringo.Messages
     /// <summary>A message for logging in.</summary>
     /// <remarks>Uses <see cref="LoginResponse"/> as response type.</remarks>
     [ResponseType(typeof(LoginResponse))]
-    public class LoginMessage : IWolfMessage
+    public class LoginMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
         [JsonIgnore]
         public string Command => MessageCommands.SecurityLogin;
+
+        /// <inheritdoc/>
+        [JsonIgnore]
+        public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
+        {
+            { "version", 2 }
+        };
 
         /// <summary>Login email.</summary>
         [JsonProperty("username", Required = Required.Always)]
