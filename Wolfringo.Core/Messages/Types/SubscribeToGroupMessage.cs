@@ -20,6 +20,7 @@ namespace TehGM.Wolfringo.Messages
         };
 
         /// <summary>ID of the group.</summary>
+        /// <remarks>When this value is null, request will subscribe to messages from all groups.</remarks>
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public uint? GroupID { get; private set; }
 
@@ -28,6 +29,7 @@ namespace TehGM.Wolfringo.Messages
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to subscribe to. Use null to subscribe to all.</param>
+        /// <remarks>When <paramref name="groupID"/> is null, the request will subscribe to messages from all groups.</remarks>
         public SubscribeToGroupMessage(uint? groupID) : this()
         {
             this.GroupID = groupID;

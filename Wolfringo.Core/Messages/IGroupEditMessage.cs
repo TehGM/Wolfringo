@@ -22,12 +22,15 @@ namespace TehGM.Wolfringo
         [JsonProperty("discoverable")]
         bool IsDiscoverable { get; }
         /// <summary>Group's entry reputation level.</summary>
+        /// <remarks>When this value is null, the group entry rep level setting will not change.</remarks>
         [JsonProperty("entryLevel")]
         int? EntryReputationLevel { get; }
         /// <summary>Language of the group.</summary>
+        /// <remarks>When this value is null, the group language setting will not change.</remarks>
         [JsonProperty("language")]
         WolfLanguage? Language { get; }
         /// <summary>Long description of the group.</summary>
+        /// <remarks>When this value is null, the group long description will not change.</remarks>
         [JsonProperty("longDescription")]
         string LongDescription { get; }
     }
