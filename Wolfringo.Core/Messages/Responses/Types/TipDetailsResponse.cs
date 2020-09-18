@@ -20,6 +20,6 @@ namespace TehGM.Wolfringo.Messages.Responses
         public int Version { get; private set; }
 
         [JsonConstructor]
-        protected TipDetailsResponse() { }
+        protected TipDetailsResponse() : base() { }
     }
 }

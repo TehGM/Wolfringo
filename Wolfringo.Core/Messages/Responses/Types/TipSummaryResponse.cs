@@ -13,6 +13,6 @@ namespace TehGM.Wolfringo.Messages.Responses
         public IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>> Tips { get; private set; }
 
         [JsonConstructor]
-        protected TipSummaryResponse() { }
+        protected TipSummaryResponse() : base() { }
     }
 }
