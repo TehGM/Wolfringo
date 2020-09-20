@@ -10,7 +10,7 @@ Library works with strongly-typed messages and responses, that are serialized wh
 
 ### Download
 
-> This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library. Any version before 0.3.0 can be especially unstable.
+> This library is currently in preview and any update until version 1.0.0 might introduce breaking changes.
 
 Since version 0.4.0, this package is now downloadable via [nuget.org](https://www.nuget.org/packages/Wolfringo/)!
 
