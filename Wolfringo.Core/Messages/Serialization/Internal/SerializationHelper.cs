@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TehGM.Wolfringo.Messages.Serialization.Internal
@@ -61,6 +63,8 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             token.PopulateObject(target, "headers", serializer);
             token.PopulateObject(target, "body.extended", serializer);
             token.PopulateObject(target, "body.base", serializer);
+            token.PopulateObject(target, "metadata", serializer);
+            token.PopulateObject(target, "body.metadata", serializer);
         }
 
         /// <summary>Serializes Wolf message.</summary>
@@ -92,6 +96,35 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             JToken value = source[propertyName];
             source.Remove(propertyName);
             target.Add(new JProperty(propertyName, value));
+        }
+
+        /// <summary>Populates chat message's raw data.</summary>
+        /// <typeparam name="T">Type of chat message.</typeparam>
+        /// <param name="message">Chat message.</param>
+        /// <param name="data">Binary data.</param>
+        public static void PopulateMessageRawData<T>(ref T message, IEnumerable<byte> data) where T : IRawDataMessage
+        {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+            if (data.Any() == true && data.First() == 4)
+                data = data.Skip(1);
+
+
+            if (message.RawData == null || !(message.RawData is ICollection<byte> byteCollection) || byteCollection.IsReadOnly)
+                throw new InvalidOperationException($"Cannot populate raw data in {message.GetType().Name} as the collection is read only or null");
+            byteCollection.Clear();
+            // if it's a list, we can do it in a more performant way
+            if (message.RawData is List<byte> byteList)
+                byteList.AddRange(data);
+            // otherwise do it one by one
+            else
+            {
+                foreach (byte b in data)
+                    byteCollection.Add(b);
+            }
         }
     }
 }

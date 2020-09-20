@@ -15,6 +15,7 @@
         public const string Voice = "audio/x-speex";
         /// <summary>Group action.</summary>
         public const string GroupAction = "application/palringo-group-action";
+        /// <summary>Response to private chat request.</summary>
         public const string PrivateRequestResponse = "text/palringo-private-request-response";
     }
 }

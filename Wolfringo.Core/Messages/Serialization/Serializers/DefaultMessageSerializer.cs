@@ -10,12 +10,12 @@ namespace TehGM.Wolfringo.Messages.Serialization
         public virtual IWolfMessage Deserialize(string command, SerializedMessageData messageData)
         {
             IWolfMessage result = messageData.Payload.ToObject<T>(SerializationHelper.DefaultSerializer);
-            messageData.Payload.FlattenCommonProperties(result);
+            messageData.Payload.FlattenCommonProperties(result, SerializationHelper.DefaultSerializer);
             return result;
         }
 
         /// <inheritdoc/>
         public virtual SerializedMessageData Serialize(IWolfMessage message)
-            => new SerializedMessageData(message.SerializeJsonPayload());
+            => new SerializedMessageData(message.SerializeJsonPayload(SerializationHelper.DefaultSerializer));
     }
 }

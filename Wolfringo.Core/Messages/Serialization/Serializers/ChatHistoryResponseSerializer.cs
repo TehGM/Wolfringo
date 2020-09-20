@@ -24,11 +24,14 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 throw new ArgumentException("Chat history response requires to have a body property that is a JSON array", nameof(responseData));
             foreach (JToken responseChatMessage in responseBody)
             {
-                Guid msgId = responseChatMessage["id"].ToObject<Guid>();
-                IChatMessage msg = result.Messages.First(m => m.ID == msgId);
-                JToken numProp = responseChatMessage["data"]["num"];
-                int binaryIndex = numProp.ToObject<int>(SerializationHelper.DefaultSerializer);
-                ChatMessageSerializer.PopulateMessageData(ref msg, responseData.BinaryMessages.ElementAt(binaryIndex));
+                WolfTimestamp msgTimestamp = responseChatMessage["timestamp"].ToObject<WolfTimestamp>(SerializationHelper.DefaultSerializer);
+                IChatMessage msg = result.Messages.First(m => m.Timestamp == msgTimestamp);
+                JToken numProp = responseChatMessage["data"]?["num"];
+                if (numProp != null)
+                {
+                    int binaryIndex = numProp.ToObject<int>(SerializationHelper.DefaultSerializer);
+                    SerializationHelper.PopulateMessageRawData(ref msg, responseData.BinaryMessages.ElementAt(binaryIndex));
+                }
             }
 
             return result;

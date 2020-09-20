@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
-    <Version>0.3.3</Version>
+    <Version>0.4.0</Version>
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
@@ -12,7 +12,8 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <Description>Extension for Wolfringo library, providing support for ASP.NET Core and other .NET Core Hosting scenarios.</Description>
-    <PackageTags>wolf palringo</PackageTags>
+    <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
+    <PackageIcon>wolfringo_logo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -32,6 +33,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Wolfringo.Core\Wolfringo.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\wolfringo_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

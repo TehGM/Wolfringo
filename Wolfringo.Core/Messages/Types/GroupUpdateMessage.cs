@@ -16,29 +16,29 @@ namespace TehGM.Wolfringo.Messages
         // main props
         /// <summary>ID of the group.</summary>
         [JsonProperty("id")]
-        public uint ID { get; private set; }
+        public uint ID { get; protected set; }
         /// <summary>Group's short description.</summary>
         [JsonProperty("description")]
-        public string Description { get; private set; }
+        public string Description { get; protected set; }
         /// <summary>Is message history visible even if user is not in the group?</summary>
         [JsonProperty("peekable")]
-        public bool IsPeekable { get; private set; }
+        public bool IsPeekable { get; protected set; }
         // extended props
         /// <summary>Is extended admin privilege enabled in this group?</summary>
         [JsonProperty("advancedAdmin")]
-        public bool IsExtendedAdminEnabled { get; private set; }
+        public bool IsExtendedAdminEnabled { get; protected set; }
         /// <summary>Is group publicly discoverable?</summary>
         [JsonProperty("discoverable")]
-        public bool IsDiscoverable { get; private set; }
+        public bool IsDiscoverable { get; protected set; }
         /// <summary>Group's entry reputation level.</summary>
         [JsonProperty("entryLevel")]
-        public int? EntryReputationLevel { get; private set; }
+        public int? EntryReputationLevel { get; protected set; }
         /// <summary>Language of the group.</summary>
         [JsonProperty("language")]
-        public WolfLanguage? Language { get; private set; }
+        public WolfLanguage? Language { get; protected set; }
         /// <summary>Long description of the group.</summary>
         [JsonProperty("longDescription")]
-        public string LongDescription { get; private set; }
+        public string LongDescription { get; protected set; }
 
         [JsonConstructor]
         protected GroupUpdateMessage() { }

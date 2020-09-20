@@ -19,10 +19,12 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>Whether the hosted client should automatically login when connected.</summary>
         /// <remarks>Defaults to true.</remarks>
         public bool AutoLogin { get; set; } = true;
-        /// <summary>Email address to use as login when automatically logging in.</summary>
-        public string LoginEmail { get; set; }
+        /// <summary>Username to use as login when automatically logging in.</summary>
+        public string LoginUsername { get; set; }
         /// <summary>Password to authenticate with when automatically logging in.</summary>
         public string LoginPassword { get; set; }
+        /// <summary>Login type to use when automatically logging in.</summary>
+        public WolfLoginType LoginType { get; set; } = WolfLoginType.Email;
 
         // auto-reconnection
         /// <summary>How long the client should wait before automatically reconnecting.</summary>

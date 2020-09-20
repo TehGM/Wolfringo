@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
@@ -17,10 +16,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
             // deserialize message
             Type msgType = GetMessageType(messageData.Payload["body"]);
             IChatMessage result = (IChatMessage)messageData.Payload.ToObject(msgType, SerializationHelper.DefaultSerializer);
-            messageData.Payload.FlattenCommonProperties(result);
+            messageData.Payload.FlattenCommonProperties(result, SerializationHelper.DefaultSerializer);
 
             // parse and populate binary data
-            PopulateMessageData(ref result, messageData.BinaryMessages.First());
+            if (messageData.BinaryMessages?.Any() == true)
+                SerializationHelper.PopulateMessageRawData(ref result, messageData.BinaryMessages.First());
 
             return result;
         }
@@ -29,10 +29,20 @@ namespace TehGM.Wolfringo.Messages.Serialization
         public SerializedMessageData Serialize(IWolfMessage message)
         {
             JObject payload = message.SerializeJsonPayload();
+            JObject body = payload["body"] as JObject;
             IChatMessage msg = (IChatMessage)message;
+
+            // metadata props
+            JObject metadata = new JObject();
+            SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isDeleted");
+            SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isTipped");
+            if (metadata.HasValues)
+                body.Add(new JProperty("metadata", metadata));
+
+            // raw data
             if (msg.RawData?.Any() == true)
             {
-                payload["body"]["data"] = new JObject(new JProperty("_placeholder", true), new JProperty("num", 0));
+                body["data"] = new JObject(new JProperty("_placeholder", true), new JProperty("num", 0));
                 return new SerializedMessageData(payload, msg.RawData.ToArray());
             }
             return new SerializedMessageData(payload);
@@ -53,35 +63,6 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 return typeof(GroupActionChatEvent);
             // normal case: chat message
             return typeof(ChatMessage);
-        }
-
-        /// <summary>Populates chat message's raw data.</summary>
-        /// <typeparam name="T">Type of chat message.</typeparam>
-        /// <param name="message">Chat message.</param>
-        /// <param name="data">Binary data.</param>
-        public static void PopulateMessageData<T>(ref T message, IEnumerable<byte> data) where T : IChatMessage
-        {
-            if (message == null)
-                throw new ArgumentNullException(nameof(message));
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-
-            if (data.Any() == true && data.First() == 4)
-                data = data.Skip(1);
-
-
-            if (message.RawData == null || !(message.RawData is ICollection<byte> byteCollection) || byteCollection.IsReadOnly)
-                throw new InvalidOperationException($"Cannot populate raw data in {message.GetType().Name} as the collection is read only");
-            byteCollection.Clear();
-            // if it's a list, we can do it in a more performant way
-            if (message.RawData is List<byte> byteList)
-                byteList.AddRange(data);
-            // otherwise do it one by one
-            else
-            {
-                foreach (byte b in data)
-                    byteCollection.Add(b);
-            }
         }
     }
 }

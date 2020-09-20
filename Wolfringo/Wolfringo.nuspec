@@ -2,23 +2,27 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>0.3.4</version>
+    <version>0.4.0</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
     <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities and Utilities.Interactive libraries.</description>
-    <tags>wolf palringo</tags>
+    <tags>wolf palringo wolfringo pal bot client</tags>
     <projectUrl>https://github.com/TehGM/Wolfringo</projectUrl>
+    <icon>wolfringo_logo.png</icon>
     <repository type="git" url="https://github.com/TehGM/Wolfringo" />
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <dependencies>
         <group>
-            <dependency id="Wolfringo.Core" version="0.3.4" />
-            <dependency id="Wolfringo.Utilities" version="0.2.2" />
+            <dependency id="Wolfringo.Core" version="0.4.0" />
+            <dependency id="Wolfringo.Utilities" version="0.4.0" />
             <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
         </group>
     </dependencies>
   </metadata>
+  <files>
+    <file src="..\wolfringo_logo.png" target="" />
+  </files>
 </package>

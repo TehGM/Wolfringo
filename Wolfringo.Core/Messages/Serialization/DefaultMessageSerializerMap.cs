@@ -63,6 +63,9 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.CharmSubscriberExpiredList, new DefaultMessageSerializer<UserExpiredCharmsListMessage>() },
                 { MessageCommands.CharmSubscriberActiveList, new DefaultMessageSerializer<UserActiveCharmsListMessage>() },
                 { MessageCommands.CharmSubscriberSetSelected, new DefaultMessageSerializer<UserCharmsSelectMessage>() },
+                { MessageCommands.TipGroupSubscribe, new DefaultMessageSerializer<SubscribeToGroupTipsMessage>() },
+                { MessageCommands.TipSummary, new DefaultMessageSerializer<TipSummaryMessage>() },
+                { MessageCommands.TipDetail, new DefaultMessageSerializer<TipDetailsMessage>() },
                 // group join and leave
                 { MessageCommands.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageCommands.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
@@ -71,10 +74,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageCommands.SubscriberContactDelete, new ContactAddDeleteMessageSerializer<ContactDeleteMessage>() },
                 // chat message
                 { MessageCommands.MessageSend, new ChatMessageSerializer() },
+                // tip add
+                { MessageCommands.TipAdd, new TipAddMessageSerializer() },
                 // entity updates
                 { MessageCommands.SubscriberProfileUpdate, new UserUpdateMessageSerializer() },
                 { MessageCommands.GroupCreate, new GroupEditMessageSerializer<GroupCreateMessage>() },
-                { MessageCommands.GroupProfileUpdate, new GroupEditMessageSerializer<GroupUpdateMessage>() }
+                { MessageCommands.GroupProfileUpdate, new GroupEditMessageSerializer<GroupUpdateMessage>() },
+                { MessageCommands.MessageUpdate, new ChatUpdateMessageSerializer() }
             };
         }
 

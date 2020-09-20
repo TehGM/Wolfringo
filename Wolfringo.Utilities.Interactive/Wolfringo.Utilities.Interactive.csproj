@@ -10,14 +10,22 @@
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <Description>Interactive utilities for Wolfringo library.</Description>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
-    <PackageTags>wolf palringo</PackageTags>
+    <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RootNamespace>TehGM.Wolfringo.Utilities.Interactive</RootNamespace>
+    <PackageIcon>wolfringo_logo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Wolfringo.Core\Wolfringo.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\wolfringo_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

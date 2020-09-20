@@ -44,6 +44,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(AchievementListResponse), defaultSerializer },
                 { typeof(UserAchievementListResponse), defaultSerializer },
                 { typeof(UserCharmsListResponse), defaultSerializer },
+                { typeof(EntitiesSubscribeResponse), defaultSerializer },
+                { typeof(TipSummaryResponse), defaultSerializer },
                 // group stats
                 { typeof(GroupStatisticsResponse), new GroupStatisticsResponseSerializer() },
                 // group profile
@@ -53,7 +55,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(RecentConversationsResponse), chatHistorySerializer },
                 // entity updates
                 { typeof(UserUpdateResponse), new UserUpdateResponseSerializer() },
-                { typeof(GroupEditResponse), new GroupEditResponseSerializer() }
+                { typeof(GroupEditResponse), new GroupEditResponseSerializer() },
+                { typeof(ChatUpdateResponse), new ChatUpdateResponseSerializer() },
+                // tips
+                { typeof(TipDetailsResponse), new TipDetailsResponseSerializer() },
             };
         }
 

@@ -47,5 +47,10 @@
         public const string CharmSubscriberExpiredList = "charm subscriber expired list";
         public const string CharmSubscriberActiveList = "charm subscriber active list";
         public const string CharmSubscriberSetSelected = "charm subscriber set selected";
+        public const string MessageUpdate = "message update";
+        public const string TipGroupSubscribe = "tip group subscribe";
+        public const string TipSummary = "tip summary";
+        public const string TipDetail = "tip detail";
+        public const string TipAdd = "tip add";
     }
 }

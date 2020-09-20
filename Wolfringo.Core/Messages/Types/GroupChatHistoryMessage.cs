@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages
 {
@@ -26,12 +24,10 @@ namespace TehGM.Wolfringo.Messages
         public uint GroupID { get; private set; }
         /// <summary>Timestamp of the oldest message to retrieve.</summary>
         [JsonProperty("timestampBegin")]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
-        public DateTime AfterTime { get; private set; }
+        public WolfTimestamp AfterTime { get; private set; }
         /// <summary>Timestamp of the oldest already received message.</summary>
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
-        public DateTime? BeforeTime { get; private set; }
+        public WolfTimestamp? BeforeTime { get; private set; }
         /// <summary>Should history be ordered chronologically?</summary>
         [JsonProperty("chronological")]
         public bool RequestChronologicalOrder { get; private set; }
@@ -43,11 +39,11 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="groupId">ID of the group.</param>
         /// <param name="before">Timestamp of the oldest already received message.</param>
         /// <param name="chronological">Should history be ordered chronologically?</param>
-        public GroupChatHistoryMessage(uint groupId, DateTime? before, bool chronological = false)
+        public GroupChatHistoryMessage(uint groupId, WolfTimestamp? before, WolfTimestamp? after, bool chronological = false)
         {
             this.GroupID = groupId;
             this.BeforeTime = before;
-            this.AfterTime = MillisecondsEpochConverter.Epoch.AddMilliseconds(1);
+            this.AfterTime = after ?? WolfTimestamp.Epoch.AddMilliseconds(1);
             this.RequestChronologicalOrder = chronological;
         }
     }

@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     /// <remarks>Uses <see cref="ChatResponse"/> as response type.</remarks>
     /// <seealso cref="GroupActionChatEvent"/>
     [ResponseType(typeof(ChatResponse))]
-    public class ChatMessage : IChatMessage, IWolfMessage
+    public class ChatMessage : IChatMessage, IWolfMessage, IRawDataMessage
     {
         /// <inheritdoc/>
         [JsonIgnore]
@@ -21,17 +21,27 @@ namespace TehGM.Wolfringo.Messages
         /// <inheritdoc/>
         public string FlightID { get; private set; }
         /// <inheritdoc/>
+        [Obsolete("WOLF protocol now prefers to use Timestamp as a message ID.")]
         public Guid? ID { get; private set; }
         /// <inheritdoc/>
         public bool IsGroupMessage { get; private set; }
         /// <inheritdoc/>
         public string MimeType { get; private set; }
         /// <inheritdoc/>
-        public DateTime? Timestamp { get; private set; }
+        public WolfTimestamp? Timestamp { get; private set; }
         /// <inheritdoc/>
         public uint? SenderID { get; private set; }
         /// <inheritdoc/>
         public uint RecipientID { get; private set; }
+        /// <summary>Information about message's latest edit.</summary>
+        [JsonProperty("edited", NullValueHandling = NullValueHandling.Ignore)]
+        public EditMetadata? EditInfo { get; private set; }
+        /// <summary>Is this message soft-deleted by group admin?</summary>
+        [JsonProperty("isDeleted", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public bool IsDeleted { get; private set; }
+        /// <summary>Is this message tipped?</summary>
+        [JsonProperty("isTipped", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public bool HasTips { get; private set; }
 
         // binary data
         /// <inheritdoc/>
@@ -73,6 +83,16 @@ namespace TehGM.Wolfringo.Messages
             this.IsGroupMessage = groupMessage;
             this.FlightID = Guid.NewGuid().ToString();
             this.RawData = (data as IReadOnlyCollection<byte>) ?? new List<byte>(data);
+        }
+
+
+        /// <summary>Represents metadata about chat message edit.</summary>
+        public struct EditMetadata
+        {
+            [JsonProperty("subscriberId")]
+            public uint UserID { get; private set; }
+            [JsonProperty("timestamp")]
+            public WolfTimestamp Timestamp { get; private set; }
         }
     }
 }

@@ -31,7 +31,7 @@ namespace TehGM.Wolfringo.Messages
         /// <inheritdoc/>
         public string MimeType { get; private set; }
         /// <inheritdoc/>
-        public DateTime? Timestamp { get; private set; }
+        public WolfTimestamp? Timestamp { get; private set; }
         /// <inheritdoc/>
         public uint? SenderID { get; private set; }
         /// <inheritdoc/>
@@ -113,6 +113,8 @@ namespace TehGM.Wolfringo.Messages
                     return GroupActionType.Mod;
                 case "admin":
                     return GroupActionType.Admin;
+                case "owner":
+                    return GroupActionType.OwnerChanged;
                 default:
                     throw new ArgumentException($"Unknown group action type: {type}", nameof(type));
             }
@@ -123,20 +125,22 @@ namespace TehGM.Wolfringo.Messages
     public enum GroupActionType
     {
         /// <summary>User joined the group.</summary>
-        UserJoined, // join
+        UserJoined,     // join
         /// <summary>User left the group.</summary>
-        UserLeft,   // leave
+        UserLeft,       // leave
         /// <summary>User was banned from the group.</summary>
-        Ban,        // ban
+        Ban,            // ban
         /// <summary>User was kicked from the group.</summary>
-        Kick,       // 
+        Kick,           // 
         /// <summary>User was silenced in the group.</summary>
-        Silence,    // silence
+        Silence,        // silence
         /// <summary>User was reset in the group.</summary>
-        Reset,      // reset
+        Reset,          // reset
         /// <summary>User was modded the group.</summary>
-        Mod,        // mod
+        Mod,            // mod
         /// <summary>User was admined the group.</summary>
-        Admin       // admin
+        Admin,          // admin
+        /// <summary>User was set as group owner.</summary>
+        OwnerChanged    // owner
     }
 }

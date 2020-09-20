@@ -355,7 +355,7 @@ namespace TehGM.Wolfringo
 
             // if it's a login message, we can extract current user ID
             if (response is LoginResponse loginResponse)
-                this.CurrentUserID = loginResponse.UserID;
+                this.CurrentUserID = loginResponse.User.ID;
 
             // when logging out, null the user ID.
             else if (message is LogoutMessage)

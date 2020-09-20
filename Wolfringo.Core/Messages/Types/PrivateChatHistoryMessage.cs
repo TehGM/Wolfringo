@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages
 {
@@ -26,8 +24,7 @@ namespace TehGM.Wolfringo.Messages
         public uint UserID { get; private set; }
         /// <summary>Timestamp of the oldest already received message.</summary>
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
-        public DateTime? BeforeTime { get; private set; }
+        public WolfTimestamp? BeforeTime { get; private set; }
 
         [JsonConstructor]
         protected PrivateChatHistoryMessage() { }
@@ -35,7 +32,7 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>Creates a message instance.</summary>
         /// <param name="userID">ID of the user.</param>
         /// <param name="before">Timestamp of the oldest already received message.</param>
-        public PrivateChatHistoryMessage(uint userID, DateTime? before)
+        public PrivateChatHistoryMessage(uint userID, WolfTimestamp? before)
         {
             this.UserID = userID;
             this.BeforeTime = before;

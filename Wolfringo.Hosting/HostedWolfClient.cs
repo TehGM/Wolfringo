@@ -230,16 +230,16 @@ namespace TehGM.Wolfringo.Hosting
                     if (!options.AutoLogin)
                         return;
                     // check all values are valid
-                    if (string.IsNullOrWhiteSpace(options.LoginEmail))
-                        throw new ArgumentNullException(nameof(options.LoginEmail));
+                    if (string.IsNullOrWhiteSpace(options.LoginUsername))
+                        throw new ArgumentNullException(nameof(options.LoginUsername));
                     if (string.IsNullOrWhiteSpace(options.LoginPassword))
                         throw new ArgumentNullException(nameof(options.LoginPassword));
 
                     // send login
-                    _log?.LogDebug("Auto-login: {Login}", options.LoginEmail);
+                    _log?.LogDebug("Auto-login: {Login}", options.LoginUsername);
                     LoginResponse response = await this.SendAsync<LoginResponse>(
-                        new LoginMessage(options.LoginEmail, options.LoginPassword, false), _hostCancellationToken).ConfigureAwait(false);
-                    loggedInNickname = response.Nickname;
+                        new LoginMessage(options.LoginUsername, options.LoginPassword, options.LoginType), _hostCancellationToken).ConfigureAwait(false);
+                    loggedInNickname = response.User.Nickname;
                 }
                 else loggedInNickname = welcome.LoggedInUser.Nickname;
 

@@ -8,13 +8,15 @@ namespace TehGM.Wolfringo.Messages
 {
     /// <summary>Represents a message that appears in the chat.</summary>
     [ResponseType(typeof(ChatResponse))]
-    public interface IChatMessage : IWolfMessage
+    public interface IChatMessage : IWolfMessage, IRawDataMessage
     {
         // json data
         [JsonProperty("flightId", NullValueHandling = NullValueHandling.Ignore)]
         string FlightID { get; }
         /// <summary>Unique ID of the message.</summary>
+        /// <remarks>WOLF seems to prefer using <see cref="Timestamp"/> as message identifier now. Please use this to identify the message.</remarks>
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        [Obsolete("WOLF protocol now prefers to use Timestamp as a message ID.")]
         Guid? ID { get; }
         /// <summary>Is it a group message?</summary>
         [JsonProperty("isGroup")]
@@ -23,10 +25,15 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("mimeType")]
         string MimeType { get; }
         /// <summary>Message's timestamp.</summary>
+        /// <remarks><para>When creating a new chat message, this value will be null. Once WOLF server acknowledges the message, it'll respond with timestamp value. 
+        /// Default <see cref="WolfClient"/> implementation will automatically populate this value once this happens, so message will have timestamp 
+        /// populated after <see cref="IWolfClient.SendAsync{TResponse}(IWolfMessage, System.Threading.CancellationToken)"/> returns.</para>
+        /// <para>For received messages, this value will be populated normally.</para></remarks>
         [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(MillisecondsEpochConverter))]
-        DateTime? Timestamp { get; }
+        WolfTimestamp? Timestamp { get; }
         /// <summary>User that sent the message.</summary>
+        /// <remarks><para>When creating a new chat message, this value will be null.</para>
+        /// <para>For received messages, this value will be populated normally.</para></remarks>
         [JsonProperty("originator", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(EntityIdConverter))]
         uint? SenderID { get; }
@@ -34,7 +41,10 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("recipient")]
         [JsonConverter(typeof(EntityIdConverter))]
         uint RecipientID { get; }
+    }
 
+    public interface IRawDataMessage
+    {
         // binary data
         /// <summary>Message's raw binary data.</summary>
         [JsonIgnore]

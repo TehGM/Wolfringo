@@ -76,7 +76,7 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             if (message.LoggedInUser == null)
             {
                 Config config = Config.Load();
-                await _client.LoginAsync(config.Username, config.Password);
+                await _client.LoginAsync(config.Username, config.Password, WolfLoginType.Email);
             }
             await _client.SubscribeAllMessagesAsync();      // without this, bot will not receive any messages
 
