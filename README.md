@@ -4,9 +4,9 @@
 
 This is a .NET library for WOLF (previously Palringo).
 
-This library is designed with extensibility through Dependency Injection in mind, and is compatible with ASP.NET Core and other .NET Core Hosting scenarios through [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package.
+This library is designed with extensibility through Dependency Injection in mind, and is compatible with ASP.NET Core and other .NET Core Hosting scenarios through [Wolfringo.Hosting](https://www.nuget.org/packages/Wolfringo.Hosting/) package.
 
-Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](https://github.com/TehGM/Wolfringo/packages/257846) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with [Wolfringo](https://github.com/TehGM/Wolfringo/packages/257862) meta-package.
+Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](https://www.nuget.org/packages/Wolfringo.Utilities/) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with [Wolfringo](https://www.nuget.org/packages/Wolfringo/) meta-package.
 
 ### Download
 
@@ -22,6 +22,9 @@ Since version 0.4.0, this package is now downloadable via [nuget.org](https://ww
     ```cli
     Install-Package Wolfringo.Hosting
     ```
+
+#### Older versions
+Older versions are available through GitHub Packages. See [Installation Guide on Wiki](https://github.com/TehGM/Wolfringo/wiki/Installing#older-versions) for steps to install version before 0.4.0.
 
 ## Usage example
 
@@ -68,7 +71,7 @@ See [Example project](Examples/SimplePingBot) for a full example.
 
 ### .NET Core Host
 
-For use with .NET Core Host, install [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package in addition to the main Wolfringo meta-package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
+For use with .NET Core Host, install [Wolfringo.Hosting](https://www.nuget.org/packages/Wolfringo.Hosting/) package in addition to the main Wolfringo meta-package. This package contains a client wrapper suitable for use with ASP.NET Core and Generic Host.
 
 ```csharp
 using TehGM.Wolfringo.Hosting;
@@ -99,7 +102,7 @@ To stop reconnector, call `Dispose()`. Once disposed, the reconnector will no lo
 
 If the reconnector behaviour is not sufficent for your use-case, listen to client's Disconnected event to implement own behaviour.
 
-> Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](https://github.com/TehGM/Wolfringo/packages/257845) package. This wrapper has reconnection logic built-in.
+> Note: do not use [WolfClientReconnector](Wolfringo.Utilities/WolfClientReconnector.cs) if using hosted client wrapper from [Wolfringo.Hosting](https://www.nuget.org/packages/Wolfringo.Hosting/) package. This wrapper has reconnection logic built-in.
 
 ### Receiving profile updates
 WOLF protocol requires you to subscribe to Group/User profile to receive real-time updates. Wolfringo client doesn't do it automatically. This behaviour is opt-in, as it's likely not necessary for most bots.
@@ -109,7 +112,7 @@ To subscribe to profile updates, request the group/user profile or bot's contact
 Default [WolfClient](Wolfringo.Core/WolfClient.cs) will automatically update its caches when a profile update is received.
 
 ### Interactive
-[Wolfringo.Utilities.Interactive](https://github.com/TehGM/Wolfringo/packages/261227) provides helper methods to easily await next message by user, in group, or custom conditions by providing own Func delegate.
+[Wolfringo.Utilities.Interactive](https://www.nuget.org/packages/Wolfringo.Utilities.Interactive/) provides helper methods to easily await next message by user, in group, or custom conditions by providing own Func delegate.
 
 ```csharp
 private async void OnChatMessage(ChatMessage message)
