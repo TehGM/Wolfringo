@@ -2,7 +2,7 @@ name: .NET Core Build
 
 on:
   push:
-    branches: [ ci-test ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
