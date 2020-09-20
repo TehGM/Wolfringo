@@ -12,25 +12,16 @@ Library works with strongly-typed messages and responses, that are serialized wh
 
 > This library is currently in preview and hasn't yet been battle-tested, and therefore there might be bugs and updates might introduce breaking changes, some of which might not be clearly documented. Once preview ends, I'll do my best to make the library as backwards-compatible as possible, but until 1.0.0 release, be aware of pre-release stage of this library. Any version before 0.3.0 can be especially unstable.
 
-Preview version of this library is available as a [GitHub Package](https://github.com/TehGM/Wolfringo/packages/257862). Later versions will be available on nuget.org.
+Since version 0.4.0, this package is now downloadable via [nuget.org](https://www.nuget.org/packages/Wolfringo/)!
 
-1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
-2. Run following commands to authenticate with GitHub Packages, replacing `<GithubUsername>` and `<GithubToken>` with your github username and generated PAT, respectively:
+1. Install package in your project
     ```cli
-    dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
+    Install-Package Wolfringo
     ```
-3. Install package in your project
+2. *(.NET Core Host/ASP.NET Core only)* Install Wolfringo.Hosting package
     ```cli
-    Install-Package Wolfringo -Source "TehGM's GitHub"
+    Install-Package Wolfringo.Hosting
     ```
-4. *(.NET Core Host/ASP.NET Core only)* Install Wolfringo.Hosting package
-    ```cli
-    Install-Package Wolfringo.Hosting -Source "TehGM's GitHub"
-    ```
-
-See [GitHub Packages](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages#installing-a-package) for more information about installing GitHub packages.
-
-> Note: The initial version of the package is published on nuget.org as unlisted to reserve name. However, other versions between 0.1.0 and 1.0.0 will not be published to nuget.org. For this reason, it's important to specify `-Source "TehGM's Github"` when installing the preview version.
 
 ## Usage example
 
