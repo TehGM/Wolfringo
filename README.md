@@ -1,6 +1,6 @@
 
 # Wolfringo
-[![GitHub top language](https://img.shields.io/github/languages/top/TehGM/Wolfringo)](https://github.com/TehGM/Wolfringo) [![GitHub](https://img.shields.io/github/license/TehGM/Wolfringo)](LICENSE) [![Releases](https://img.shields.io/github/v/release/TehGM/Wolfringo?include_prereleases&sort=semver)](https://github.com/TehGM/Wolfringo/releases) [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/TehGM/Wolfringo/.NET%20Core%20Build)](https://github.com/TehGM/Wolfringo/actions) [![GitHub issues](https://img.shields.io/github/issues/TehGM/Wolfringo)](https://github.com/TehGM/Wolfringo/issues)
+[![Nuget](https://img.shields.io/nuget/v/Wolfringo)](https://www.nuget.org/packages/Wolfringo/) [![GitHub top language](https://img.shields.io/github/languages/top/TehGM/Wolfringo)](https://github.com/TehGM/Wolfringo) [![GitHub](https://img.shields.io/github/license/TehGM/Wolfringo)](LICENSE) [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/TehGM/Wolfringo/.NET%20Core%20Build)](https://github.com/TehGM/Wolfringo/actions) [![GitHub issues](https://img.shields.io/github/issues/TehGM/Wolfringo)](https://github.com/TehGM/Wolfringo/issues)
 
 This is a .NET library for WOLF (previously Palringo).
 
