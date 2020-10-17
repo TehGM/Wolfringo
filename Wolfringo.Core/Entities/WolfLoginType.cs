@@ -6,6 +6,8 @@
         Email,
         Google,
         Facebook,
-        Apple
+        Apple,
+        Twitter,
+        Snapchat
     }
 }
