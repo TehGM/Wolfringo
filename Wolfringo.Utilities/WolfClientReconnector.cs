@@ -52,15 +52,21 @@ namespace TehGM.Wolfringo.Utilities
             {
                 try
                 {
+                    this.Config.CancellationToken.ThrowIfCancellationRequested();
                     this.Config.Log?.LogTrace("Reconnection attempt {Attempt}", i);
 
                     // wait reconnection delay if any
                     if (this.Config.ReconnectionDelay > TimeSpan.Zero)
-                        await Task.Delay(this.Config.ReconnectionDelay);
+                        await Task.Delay(this.Config.ReconnectionDelay, this.Config.CancellationToken).ConfigureAwait(false);
 
                     // attempt to reconnnect unconditionally
                     await _client.ConnectAsync(this.Config.CancellationToken).ConfigureAwait(false);
                     return;
+                }
+                catch (OperationCanceledException ex)
+                {
+                    exceptions.Add(ex);
+                    break;
                 }
                 catch (Exception ex)
                 {
@@ -71,7 +77,7 @@ namespace TehGM.Wolfringo.Utilities
             AggregateException aggrEx = exceptions.Any() ?
                 new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions) :
                 new AggregateException("Failed to reconnect, but no exceptions were thrown");
-            this.Config.Log?.LogError(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts);
+            this.Config.Log?.LogError(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts > 0 ? this.Config.ReconnectAttempts.ToString() : "Infinite");
             FailedToReconnect?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
             throw aggrEx;
         }
