@@ -31,7 +31,8 @@ namespace TehGM.Wolfringo.Hosting
         /// <remarks>Defaults to 500ms.</remarks>
         public TimeSpan AutoReconnectDelay { get; set; } = TimeSpan.FromSeconds(0.5);
         /// <summary>How many times should client attempt to reconnect.</summary>
-        /// <remarks>Defaults to 5 times.</remarks>
+        /// <remarks>Value of 0 means reconnection will not be attempted. Negative values will be treated as infinite.
+        /// <para>Defaults to 5 times.</para></remarks>
         public int AutoReconnectAttempts { get; set; } = 5;
         /// <summary>Whether the application should close on critical error.</summary>
         /// <remarks><para>Setting this to true might be useful if the application is running as a service, so it's auto-restarted.</para>

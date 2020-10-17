@@ -48,7 +48,7 @@ namespace TehGM.Wolfringo.Utilities
                 this.Config.ReconnectAttempts, this.Config.ReconnectionDelay);
 
             ICollection<Exception> exceptions = new List<Exception>(this.Config.ReconnectAttempts);
-            for (int i = 1; i <= this.Config.ReconnectAttempts; i++)
+            for (int i = 1; this.Config.ReconnectAttempts < 0 || i <= this.Config.ReconnectAttempts; i++)
             {
                 try
                 {

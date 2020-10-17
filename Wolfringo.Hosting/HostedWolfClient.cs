@@ -347,15 +347,15 @@ namespace TehGM.Wolfringo.Hosting
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
-                if (this._client == null || this._manuallyDisconnected || options.AutoReconnectAttempts < 1)
+                if (this._client == null || this._manuallyDisconnected || options.AutoReconnectAttempts == 0)
                     return;
 
                 this._log?.LogDebug("Attempting to reconnect, max {Attempts} times. Delay: {Delay}",
-                    options.AutoReconnectAttempts, options.AutoReconnectDelay);
+                    options.AutoReconnectAttempts > 0 ? options.AutoReconnectAttempts.ToString() : "Infinite", options.AutoReconnectDelay);
 
                 int reconnectAttempt = 0;
                 ICollection<Exception> exceptions = new List<Exception>(options.AutoReconnectAttempts);
-                while (reconnectAttempt < options.AutoReconnectAttempts)
+                while (options.AutoReconnectAttempts < 0 || reconnectAttempt < options.AutoReconnectAttempts)
                 {
                     reconnectAttempt++;
                     bool lastAttempt = reconnectAttempt == options.AutoReconnectAttempts;
