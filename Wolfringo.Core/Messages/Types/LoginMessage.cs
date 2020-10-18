@@ -86,6 +86,10 @@ namespace TehGM.Wolfringo.Messages
                     return "facebook";
                 case WolfLoginType.Apple:
                     return "apple";
+                case WolfLoginType.Twitter:
+                    return "twitter";
+                case WolfLoginType.Snapchat:
+                    return "snapchat";
                 default:
                     return loginType.ToString().ToLowerInvariant();
             }

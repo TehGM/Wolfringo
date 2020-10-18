@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -16,8 +16,8 @@
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <dependencies>
         <group>
-            <dependency id="Wolfringo.Core" version="0.4.0" />
-            <dependency id="Wolfringo.Utilities" version="0.4.0" />
+            <dependency id="Wolfringo.Core" version="0.4.1" />
+            <dependency id="Wolfringo.Utilities" version="0.4.1" />
             <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
         </group>
     </dependencies>
