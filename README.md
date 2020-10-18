@@ -42,7 +42,7 @@ async void OnWelcome(WelcomeEvent welcome)
     {
         // login with Sender Utility
         await client.LoginAsync("MyBotEmail", "MyBotPassword", WolfLoginType.Email);
-        // other supported login types: Facebook, Google, Apple
+        // other supported login types: Facebook, Google, Apple, Snapchat, Twitter
     }
     await _client.SubscribeAllMessagesAsync();  // without this, the bot will not receive any messages
 }
