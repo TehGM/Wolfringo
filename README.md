@@ -35,6 +35,10 @@ using TehGM.Wolfringo;
 IWolfClient client = new WolfClient();
 client.AddMessageListener<WelcomeEvent>(OnWelcome);
 client.AddMessageListener<ChatMessage>(OnChatMessage);
+// connect the client to the server
+await client.ConnectAsync();
+// wait forever to prevent application from exiting
+await Task.Delay(-1);
 
 async void OnWelcome(WelcomeEvent welcome)
 {
