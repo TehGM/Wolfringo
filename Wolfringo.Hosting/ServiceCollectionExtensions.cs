@@ -26,8 +26,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<ISerializerMap<string, IMessageSerializer>, DefaultMessageSerializerMap>();
             services.TryAddTransient<ISerializerMap<Type, IResponseSerializer>, DefaultResponseSerializerMap>();
 
-            services.AddSingleton<IHostedWolfClient, HostedWolfClient>();
-            services.AddSingleton<IWolfClient>(x => (IWolfClient)x.GetRequiredService<IHostedWolfClient>());
+            services.TryAddSingleton<IHostedWolfClient, HostedWolfClient>();
+            services.TryAddSingleton<IWolfClient>(x => (IWolfClient)x.GetRequiredService<IHostedWolfClient>());
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IHostedWolfClient>());
 
             services.AddOptions();

@@ -39,6 +39,7 @@ namespace TehGM.Wolfringo.Hosting
         private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
         private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
         private string _token;                                  // keep token cached so it's reused when client is recreates
+        private bool _isStarted;                                // set to true of first hosted service start, to prevent multiple hosted services starting
 
         // services
         private readonly ILogger _log;
@@ -261,8 +262,12 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         async Task IHostedService.StartAsync(CancellationToken cancellationToken)
         {
+            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
+                if (this._isStarted)
+                    return;
+                this._isStarted = true;
                 _hostCancellationToken = cancellationToken;
                 // only connect if not already connected
                 if (!this.IsConnected)
@@ -273,6 +278,10 @@ namespace TehGM.Wolfringo.Hosting
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
                 if (_options.CurrentValue.CloseOnCriticalError)
                     _hostLifetime?.StopApplication();
+            }
+            finally
+            {
+                _clientLock.Release();
             }
         }
         /// <inheritdoc/>
