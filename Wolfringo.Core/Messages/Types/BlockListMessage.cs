@@ -10,6 +10,6 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberBlockList;
+        public string EventName => MessageEventNames.SubscriberBlockList;
     }
 }

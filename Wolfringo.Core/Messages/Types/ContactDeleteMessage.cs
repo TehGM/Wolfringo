@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberContactDelete;
+        public string EventName => MessageEventNames.SubscriberContactDelete;
 
         /// <summary>ID of user being removed from contacts.</summary>
         [JsonProperty("id")]

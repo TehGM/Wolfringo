@@ -6,9 +6,9 @@ namespace TehGM.Wolfringo
     /// <summary>Represents a wolf command message or event.</summary>
     public interface IWolfMessage
     {
-        /// <summary>Message command.</summary>
+        /// <summary>Message event name.</summary>
         [JsonIgnore]
-        string Command { get; }
+        string EventName { get; }
     }
 
     /// <summary>Represents a wolf command message or event that uses headers in payload.</summary>

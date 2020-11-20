@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Messages
 
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.MessageSend;
+        public string EventName => MessageEventNames.MessageSend;
 
         // json data
         /// <inheritdoc/>

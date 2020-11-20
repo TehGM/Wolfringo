@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberContactList;
+        public string EventName => MessageEventNames.SubscriberContactList;
 
         /// <summary>Subscribe to contacts' profile updates?</summary>
         [JsonProperty("subscribe")]

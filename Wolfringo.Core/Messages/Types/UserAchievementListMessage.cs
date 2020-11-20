@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.AchievementSubscriberList;
+        public string EventName => MessageEventNames.AchievementSubscriberList;
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]

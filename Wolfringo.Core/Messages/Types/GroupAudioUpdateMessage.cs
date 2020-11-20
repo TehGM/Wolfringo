@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupAudioUpdate;
+        public string EventName => MessageEventNames.GroupAudioUpdate;
 
         /// <summary>Is audio stage enabled?</summary>
         [JsonProperty("enabled")]

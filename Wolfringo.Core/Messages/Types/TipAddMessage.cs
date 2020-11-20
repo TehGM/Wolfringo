@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     public class TipAddMessage : IWolfMessage
     {
         [JsonIgnore]
-        public string Command => MessageCommands.TipAdd;
+        public string EventName => MessageEventNames.TipAdd;
 
         /// <summary>Context type of the tip.</summary>
         [JsonProperty("type")]

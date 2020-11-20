@@ -1,7 +1,7 @@
 ﻿namespace TehGM.Wolfringo.Messages
 {
-    /// <summary>Collection of message commands used by Wolf protocol.</summary>
-    public static class MessageCommands
+    /// <summary>Collection of message event names used by Wolf protocol.</summary>
+    public static class MessageEventNames
     {
         public const string Welcome = "welcome";
         public const string MessagePrivateSubscribe = "message private subscribe";

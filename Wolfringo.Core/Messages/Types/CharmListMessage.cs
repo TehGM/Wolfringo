@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.CharmList;
+        public string EventName => MessageEventNames.CharmList;
 
         /// <summary>List of requested charms IDs.</summary>
         [JsonProperty("idList", NullValueHandling = NullValueHandling.Ignore)]

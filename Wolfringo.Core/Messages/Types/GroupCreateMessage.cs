@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupCreate;
+        public string EventName => MessageEventNames.GroupCreate;
 
         // main props
         /// <summary>Group public name.</summary>

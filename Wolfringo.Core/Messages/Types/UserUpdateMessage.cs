@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberProfileUpdate;
+        public string EventName => MessageEventNames.SubscriberProfileUpdate;
 
         // main props
         /// <summary>User's display name.</summary>

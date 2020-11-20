@@ -33,7 +33,7 @@ namespace TehGM.Wolfringo
         /// <param name="response">Server's response.</param>
         /// <param name="innerException">Inner exception.</param>
         public MessageSendingException(IWolfMessage sentMessage, IWolfResponse response, Exception innerException)
-            : this(sentMessage, response, BuildDefaultMessage(sentMessage.Command, response), innerException) { }
+            : this(sentMessage, response, BuildDefaultMessage(sentMessage.EventName, response), innerException) { }
 
         /// <summary>Creates a new instance of the exception.</summary>
         /// <param name="sentMessage">Message sent to the server.</param>
@@ -46,7 +46,7 @@ namespace TehGM.Wolfringo
         /// <param name="sentMessage">Message sent to the server.</param>
         /// <param name="response">Server's response.</param>
         public MessageSendingException(IWolfMessage sentMessage, IWolfResponse response)
-            : this(sentMessage, response, BuildDefaultMessage(sentMessage.Command, response), null) { }
+            : this(sentMessage, response, BuildDefaultMessage(sentMessage.EventName, response), null) { }
 
         /// <summary>Builds exception message based on sent command and server's response.</summary>
         /// <param name="sentCommand">Command sent to the server.</param>

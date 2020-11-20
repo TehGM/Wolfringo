@@ -42,7 +42,7 @@ namespace TehGM.Wolfringo.Messages.Responses
                     return "User does not exist";
                 case WolfErrorCode.LoginIncorrectOrCannotSendToGroup:
                     {
-                        if (sentCommand != null && string.Equals(sentCommand, MessageCommands.SecurityLogin, StringComparison.OrdinalIgnoreCase))
+                        if (sentCommand != null && string.Equals(sentCommand, MessageEventNames.SecurityLogin, StringComparison.OrdinalIgnoreCase))
                             return "Incorrect login credentials";
                         return "Silenced, banned, or not in group";
                     }
@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo.Messages.Responses
                     return "Group name is already taken";
                 case WolfErrorCode.AlreadyContactOrGroupNameForbidden:
                     {
-                        if (sentCommand != null && !string.Equals(sentCommand, MessageCommands.SubscriberContactAdd, StringComparison.OrdinalIgnoreCase))
+                        if (sentCommand != null && !string.Equals(sentCommand, MessageEventNames.SubscriberContactAdd, StringComparison.OrdinalIgnoreCase))
                             return "Group name is not allowed";
                         return "Contact already added";
                     }

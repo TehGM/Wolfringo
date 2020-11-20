@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(EntitiesSubscribeResponse))]
     public class SubscribeToGroupTipsMessage : IWolfMessage
     {
-        public string Command => MessageCommands.TipGroupSubscribe;
+        public string EventName => MessageEventNames.TipGroupSubscribe;
 
         [JsonConstructor]
         public SubscribeToGroupTipsMessage() { }

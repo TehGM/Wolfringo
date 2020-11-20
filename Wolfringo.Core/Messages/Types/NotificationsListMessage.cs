@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.NotificationList;
+        public string EventName => MessageEventNames.NotificationList;
 
         private const WolfLanguage _defaultLanguage = WolfLanguage.English;
 

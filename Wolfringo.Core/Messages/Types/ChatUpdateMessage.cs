@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
     public class ChatUpdateMessage : IWolfMessage, IRawDataMessage
     {
         [JsonIgnore]
-        public string Command => MessageCommands.MessageUpdate;
+        public string EventName => MessageEventNames.MessageUpdate;
 
         // json data
         /// <summary>Is it a group message?</summary>

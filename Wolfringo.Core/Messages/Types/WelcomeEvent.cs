@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.Welcome;
+        public string EventName => MessageEventNames.Welcome;
 
         /// <summary>IP address connection is established from.</summary>
         [JsonProperty("ip")]

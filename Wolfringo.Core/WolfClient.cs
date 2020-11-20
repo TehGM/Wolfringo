@@ -258,24 +258,24 @@ namespace TehGM.Wolfringo
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
-            if (string.IsNullOrWhiteSpace(message.Command))
+            if (string.IsNullOrWhiteSpace(message.EventName))
                 throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
             using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
             {
-                Log?.LogTrace("Sending {Command}", message.Command);
+                Log?.LogTrace("Sending {Command}", message.EventName);
                 // select serializer
-                if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
+                if (!MessageSerializers.TryFindMappedSerializer(message.EventName, out IMessageSerializer serializer))
                 {
                     // try fallback simple serialization
-                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
+                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.EventName);
                     serializer = MessageSerializers.FallbackSerializer;
                 }
                 // serialize and send message
                 SerializedMessageData data = serializer.Serialize(message);
-                uint msgID = await SocketClient.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                uint msgID = await SocketClient.SendAsync(message.EventName, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
                 IWolfResponse response = await AwaitResponseAsync<TResponse>(msgID, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
                     throw new MessageSendingException(message, response);

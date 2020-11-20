@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.AchievementList;
+        public string EventName => MessageEventNames.AchievementList;
 
         /// <summary>Language of achievement translations.</summary>
         [JsonProperty("language")]

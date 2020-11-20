@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(UserCharmsListResponse))]
     public class UserExpiredCharmsListMessage : IWolfMessage
     {
-        public string Command => MessageCommands.CharmSubscriberExpiredList;
+        public string EventName => MessageEventNames.CharmSubscriberExpiredList;
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]

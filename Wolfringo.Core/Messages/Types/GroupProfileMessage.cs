@@ -18,7 +18,7 @@ namespace TehGM.Wolfringo.Messages
 
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupProfile;
+        public string EventName => MessageEventNames.GroupProfile;
         /// <inheritdoc/>
         [JsonIgnore]
         public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()

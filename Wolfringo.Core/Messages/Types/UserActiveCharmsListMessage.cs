@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.CharmSubscriberActiveList;
+        public string EventName => MessageEventNames.CharmSubscriberActiveList;
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]

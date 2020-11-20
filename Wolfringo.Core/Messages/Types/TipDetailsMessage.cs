@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class TipDetailsMessage : IWolfMessage
     {
         [JsonIgnore]
-        public string Command => MessageCommands.TipDetail;
+        public string EventName => MessageEventNames.TipDetail;
 
         /// <summary>ID (timestamp) of the message to get tip details of.</summary>
         [JsonProperty("id")]

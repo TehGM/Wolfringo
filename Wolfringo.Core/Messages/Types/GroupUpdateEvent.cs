@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupUpdate;
+        public string EventName => MessageEventNames.GroupUpdate;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("id")]

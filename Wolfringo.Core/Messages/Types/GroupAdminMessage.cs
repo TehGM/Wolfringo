@@ -8,7 +8,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupAdmin;
+        public string EventName => MessageEventNames.GroupAdmin;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("groupId")]

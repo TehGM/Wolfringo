@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberBlockDelete;
+        public string EventName => MessageEventNames.SubscriberBlockDelete;
 
         /// <summary>ID of user being unblocked.</summary>
         [JsonProperty("id")]

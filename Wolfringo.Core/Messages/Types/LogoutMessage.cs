@@ -7,6 +7,6 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SecurityLogout;
+        public string EventName => MessageEventNames.SecurityLogout;
     }
 }

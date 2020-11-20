@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupProfileUpdate;
+        public string EventName => MessageEventNames.GroupProfileUpdate;
 
         // main props
         /// <summary>ID of the group.</summary>

@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Messages
     public class TipSummaryMessage : IWolfMessage
     {
         [JsonIgnore]
-        public string Command => MessageCommands.TipSummary;
+        public string EventName => MessageEventNames.TipSummary;
 
         /// <summary>Request context type.</summary>
         [JsonProperty("contextType")]

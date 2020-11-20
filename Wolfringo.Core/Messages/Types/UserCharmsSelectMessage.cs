@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.CharmSubscriberSetSelected;
+        public string EventName => MessageEventNames.CharmSubscriberSetSelected;
 
         /// <summary>Selected charms IDs.</summary>
         [JsonProperty("selectedList")]

@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberBlockAdd;
+        public string EventName => MessageEventNames.SubscriberBlockAdd;
 
         /// <summary>ID of user being blocked.</summary>
         [JsonProperty("id")]

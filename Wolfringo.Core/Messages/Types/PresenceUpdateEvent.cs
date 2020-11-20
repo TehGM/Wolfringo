@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.PresenceUpdate;
+        public string EventName => MessageEventNames.PresenceUpdate;
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]

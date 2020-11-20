@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Command => MessageCommands.MessageGroupUnsubscribe;
+        public string EventName => MessageEventNames.MessageGroupUnsubscribe;
 
         /// <summary>IDs of the groups.</summary>
         [JsonProperty("idList")]
