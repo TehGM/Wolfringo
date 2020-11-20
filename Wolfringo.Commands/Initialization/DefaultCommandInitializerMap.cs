@@ -35,6 +35,10 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         public void MapInitializer(Type commandAttributeType, ICommandInitializer initializer)
-            => this._map[commandAttributeType] = initializer;
+        {
+            if (!typeof(CommandAttributeBase).IsAssignableFrom(commandAttributeType))
+                throw new ArgumentException($"Command attribute type must inherit from {typeof(CommandAttributeBase).Name}", nameof(commandAttributeType));
+            this._map[commandAttributeType] = initializer;
+        }
     }
 }
