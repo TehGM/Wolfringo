@@ -91,7 +91,7 @@ namespace TehGM.Wolfringo.Commands
         private void AddAssembly(Assembly assembly)
         {
             IEnumerable<TypeInfo> types = assembly.DefinedTypes.Where(t => !t.IsAbstract && !t.ContainsGenericParameters
-                && !Attribute.IsDefined(t, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(t, typeof(CommandHandlerAttribute)));
+                && !Attribute.IsDefined(t, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(t, typeof(CommandHandlerAttribute), true));
             if (!types.Any())
             {
                 _log?.LogWarning("Cannot initialize commands from assembly {AssemblyName} - no non-static non-abstract non-generic classes with {Attribute}", assembly.FullName, nameof(CommandHandlerAttribute));
@@ -103,7 +103,7 @@ namespace TehGM.Wolfringo.Commands
 
         private void AddType(TypeInfo type)
         {
-            IEnumerable<MethodInfo> methods = type.DeclaredMethods.Where(m => !m.IsStatic && !Attribute.IsDefined(m, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(m, typeof(CommandAttributeBase)));
+            IEnumerable<MethodInfo> methods = type.DeclaredMethods.Where(m => !m.IsStatic && !Attribute.IsDefined(m, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(m, typeof(CommandAttributeBase), true));
             if (!methods.Any())
             {
                 _log?.LogWarning("Cannot initialize commands from type {TypeName} - no method with {Attribute}", type.FullName, nameof(CommandAttributeBase));
@@ -115,7 +115,7 @@ namespace TehGM.Wolfringo.Commands
 
         private void AddMethod(MethodInfo method)
         {
-            IEnumerable<CommandAttributeBase> attributes = method.GetCustomAttributes<CommandAttributeBase>();
+            IEnumerable<CommandAttributeBase> attributes = method.GetCustomAttributes<CommandAttributeBase>(true);
             if (!attributes.Any())
             {
                 _log?.LogWarning("Cannot initialize command from {TypeName}'s method {MethodName} - {Attribute} missing", method.DeclaringType.FullName, method.Name, nameof(CommandAttributeBase));
@@ -127,6 +127,11 @@ namespace TehGM.Wolfringo.Commands
                 ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
                 if (initializer == null)
                     throw new InvalidOperationException($"No initializer found for command type {attribute.GetType().Name}");
+
+                // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
+                CommandHandlerAttribute handlerAttribute = method.DeclaringType.GetCustomAttribute<CommandHandlerAttribute>(true);
+                if (handlerAttribute?.PreInitialize == true)
+                    _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
 
                 // add the command
                 _commands.Add((attribute, method));
