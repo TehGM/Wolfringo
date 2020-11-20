@@ -17,8 +17,10 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this._services = services;
         }
 
-        public object GetCommandHandler(CommandAttributeBase commandAttribute, Type handlerType)
+        public object GetCommandHandler(ICommandInstanceDescriptor descriptor)
         {
+            Type handlerType = descriptor.Method.DeclaringType;
+
             // if not shared, try persistent
             if (_persistentHandlers.TryGetValue(handlerType, out object handler))
                 return handler;

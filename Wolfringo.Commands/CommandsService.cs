@@ -23,9 +23,9 @@ namespace TehGM.Wolfringo.Commands
 
         public CancellationToken CancellationToken { get; set; }
 
-        private List<(CommandAttributeBase, MethodInfo)> _commands;
+        private List<CommandInstanceDescriptor> _commands;
         private readonly SemaphoreSlim _lock;
-        private readonly IDictionary<CommandAttributeBase, ICommandInstance> _cachedInstances;
+        private readonly IDictionary<CommandInstanceDescriptor, ICommandInstance> _cachedInstances;
 
         public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null,
             ILogger log = null, CancellationToken cancellationToken = default)
@@ -42,9 +42,9 @@ namespace TehGM.Wolfringo.Commands
             this.CancellationToken = cancellationToken;
 
             // init private
-            this._commands = new List<(CommandAttributeBase, MethodInfo)>();
+            this._commands = new List<CommandInstanceDescriptor>();
             this._lock = new SemaphoreSlim(1, 1);
-            this._cachedInstances = new Dictionary<CommandAttributeBase, ICommandInstance>();
+            this._cachedInstances = new Dictionary<CommandInstanceDescriptor, ICommandInstance>();
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
@@ -134,30 +134,31 @@ namespace TehGM.Wolfringo.Commands
                 if (initializer == null)
                     throw new InvalidOperationException($"No initializer found for command type {attribute.GetType().Name}");
 
+                CommandInstanceDescriptor descriptor = new CommandInstanceDescriptor(attribute, method);
+
                 // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
-                CommandHandlerAttribute handlerAttribute = method.DeclaringType.GetCustomAttribute<CommandHandlerAttribute>(true);
-                if (handlerAttribute?.PreInitialize == true)
+                if (descriptor.HandlerAttribute?.PreInitialize == true)
                 {
                     _log?.LogDebug("Pre-initializing command handler {Handler}", method.DeclaringType.Name);
-                    _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
+                    _handlerProvider.GetCommandHandler(descriptor);
                 }
 
                 // for performance: pre-create and cache command instance if it's a persistent one anyway
-                if (handlerAttribute?.IsPersistent == true)
+                if (descriptor.HandlerAttribute?.IsPersistent == true)
                 {
                     _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", method.Name, method.DeclaringType.Name);
-                    _cachedInstances.Add(attribute, CreateCommandInstance(attribute, method));
+                    _cachedInstances.Add(descriptor, CreateCommandInstance(descriptor));
                 }
 
                 // add the command
-                _commands.Add((attribute, method));
+                _commands.Add(new CommandInstanceDescriptor(attribute, method));
                 _log?.LogTrace("Command {Name} from handler {Handler} loaded", method.Name, method.DeclaringType.Name);
             }
         }
 
         private async void OnMessageReceived(ChatMessage message)
         {
-            IEnumerable<(CommandAttributeBase, MethodInfo)> commandsCopy;
+            IEnumerable<CommandInstanceDescriptor> commandsCopy;
             await this._lock.WaitAsync(this.CancellationToken).ConfigureAwait(false);
             try
             {
@@ -169,15 +170,15 @@ namespace TehGM.Wolfringo.Commands
             }
 
             ICommandContext context = new CommandContext(message, this._client, this._options);
-            foreach ((CommandAttributeBase attribute, MethodInfo method) in commandsCopy)
+            foreach (CommandInstanceDescriptor command in commandsCopy)
             {
-                using (_log.BeginCommandScope(context, method.DeclaringType, method.Name))
+                using (_log.BeginCommandScope(context, command.HandlerType, command.Method.Name))
                 {
                     try
                     {
                         // try to get instance from cache - or create if it's not there
-                        if (!_cachedInstances.TryGetValue(attribute, out ICommandInstance instance))
-                            instance = CreateCommandInstance(attribute, method);
+                        if (!_cachedInstances.TryGetValue(command, out ICommandInstance instance))
+                            instance = CreateCommandInstance(command);
 
                         // check if the command should run at all - if not, skip
                         ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this.CancellationToken).ConfigureAwait(false);
@@ -185,27 +186,27 @@ namespace TehGM.Wolfringo.Commands
                             continue;
 
                         // execute the command
-                        _log?.LogTrace("Executing command {Name} from handler {Handler}", method.Name, method.DeclaringType.Name);
+                        _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.HandlerType.Name);
                         ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this.CancellationToken).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
-                            _log?.LogError("Execution of command {Name} from handler {Handler} has failed", method.Name, method.DeclaringType.Name);
+                            _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.HandlerType.Name);
                         break;
                     }
                     catch (OperationCanceledException)
                     {
-                        _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", method.Name, method.DeclaringType.Name);
+                        _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.HandlerType.Name);
                         return;
                     }
-                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", method.Name, method.DeclaringType.Name)) { return; }
+                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.HandlerType.Name)) { return; }
                 }
             }
         }
 
-        private ICommandInstance CreateCommandInstance(CommandAttributeBase attribute, MethodInfo method)
+        private ICommandInstance CreateCommandInstance(CommandInstanceDescriptor descriptor)
         {
-            object handler = _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
-            ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
-            return initializer.InitializeCommand(attribute, method, handler);
+            object handler = _handlerProvider.GetCommandHandler(descriptor);
+            ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());
+            return initializer.InitializeCommand(descriptor, handler);
         }
 
         public void Dispose()
