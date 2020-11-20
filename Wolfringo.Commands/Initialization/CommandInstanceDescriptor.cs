@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public CommandAttributeBase Attribute { get; }
         public MethodInfo Method { get; }
         public CommandHandlerAttribute HandlerAttribute { get; }
+        public int Priority { get; }
 
         public Type HandlerType => Method.DeclaringType;
 
@@ -18,6 +19,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this.Method = method;
 
             this.HandlerAttribute = method.DeclaringType.GetCustomAttribute<CommandHandlerAttribute>(true);
+
+            // on-method priority overwrites handler priority. Default is 0.
+            this.Priority =
+                method.GetCustomAttribute<PriorityAttribute>()?.Priority ??
+                method.DeclaringType.GetCustomAttribute<PriorityAttribute>()?.Priority ??
+                0;
         }
 
         public override bool Equals(object obj)

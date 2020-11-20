@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands
 
         public CancellationToken CancellationToken { get; set; }
 
-        private List<CommandInstanceDescriptor> _commands;
+        private ICollection<CommandInstanceDescriptor> _commands;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<CommandInstanceDescriptor, ICommandInstance> _cachedInstances;
 
@@ -81,6 +81,9 @@ namespace TehGM.Wolfringo.Commands
                         this.AddAssembly(asm);
                     foreach (Type t in _options.Classes)
                         this.AddType(t.GetTypeInfo());
+
+                    // order according to priority
+                    this._commands = this._commands.OrderByDescending(c => c.Priority).ToList();
 
                     this._log?.LogDebug("{Count} commands loaded", _commands.Count);
                 }
