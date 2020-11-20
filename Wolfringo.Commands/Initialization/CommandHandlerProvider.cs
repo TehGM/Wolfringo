@@ -8,15 +8,13 @@ namespace TehGM.Wolfringo.Commands.Initialization
     public class CommandHandlerProvider : ICommandHandlerProvider
     {
         private readonly IServiceProvider _services;
-        private readonly IWolfClient _client;
 
         private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
         private readonly IDictionary<Type, object> _persistentHandlers;
 
-        public CommandHandlerProvider(IWolfClient client, IServiceProvider services)
+        public CommandHandlerProvider(IServiceProvider services)
         {
             this._services = services;
-            this._client = client;
         }
 
         public object GetCommandHandler(CommandAttributeBase commandAttribute, Type handlerType)
@@ -65,19 +63,13 @@ namespace TehGM.Wolfringo.Commands.Initialization
             object[] paramsValues = new object[ctorParams.Length];
             foreach (ParameterInfo param in ctorParams)
             {
-                object value;
-                if (param.ParameterType.IsAssignableFrom(this._client.GetType()))
-                    value = this._client;
-                else
+                object value = this._services.GetService(param.ParameterType);
+                if (value == null)
                 {
-                    value = this._services.GetService(param.ParameterType);
-                    if (value == null)
-                    {
-                        if (param.IsOptional)
-                            value = param.HasDefaultValue ? param.DefaultValue : null;
-                        else
-                            return false;
-                    }
+                    if (param.IsOptional)
+                        value = param.HasDefaultValue ? param.DefaultValue : null;
+                    else
+                        return false;
                 }
                 paramsValues[param.Position] = value;
             }
