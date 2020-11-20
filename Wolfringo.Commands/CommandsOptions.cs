@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace TehGM.Wolfringo.Commands
 {
-    public class CommandsOptions
+    public class CommandsOptions : ICommandsOptions
     {
         public string Prefix { get; set; } = "!";
         public bool CaseInsensitive { get; set; } = true;

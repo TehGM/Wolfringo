@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -22,7 +23,7 @@ namespace TehGM.Wolfringo.Commands
 
         public CancellationToken CancellationToken { get; set; }
 
-        private List<ICommandInstance> _commands;
+        private List<(CommandAttributeBase, MethodInfo)> _commands;
         private readonly SemaphoreSlim _lock;
 
         public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null,
@@ -40,7 +41,7 @@ namespace TehGM.Wolfringo.Commands
             this.CancellationToken = cancellationToken;
 
             // init private
-            this._commands = new List<ICommandInstance>();
+            this._commands = new List<(CommandAttributeBase, MethodInfo)>();
             this._lock = new SemaphoreSlim(1, 1);
 
             // register event handlers
@@ -122,18 +123,53 @@ namespace TehGM.Wolfringo.Commands
             }
             foreach (CommandAttributeBase attribute in attributes)
             {
+                // ensure there's a valid initializer
                 ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
                 if (initializer == null)
                     throw new InvalidOperationException($"No initializer found for command type {attribute.GetType().Name}");
-                object handler = _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
-                ICommandInstance command = initializer.InitializeCommand(attribute, method, handler);
-                _commands.Add(command);
+
+                // add the command
+                _commands.Add((attribute, method));
             }
         }
 
         private async void OnMessageReceived(ChatMessage message)
         {
-            throw new NotImplementedException();
+            await this._lock.WaitAsync(this.CancellationToken).ConfigureAwait(false);
+            try
+            {
+                ICommandContext context = new CommandContext(message, this._client, this._options);
+
+                foreach ((CommandAttributeBase attribute, MethodInfo method) in _commands)
+                {
+                    using (_log.BeginCommandScope(context, method.DeclaringType, method.Name))
+                    {
+                        try
+                        {
+                            object handler = _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
+                            ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
+                            ICommandInstance instance = initializer.InitializeCommand(attribute, method, handler);
+                            ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this.CancellationToken).ConfigureAwait(false);
+                            if (!checkResult.IsSuccess)
+                                continue;
+                            ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this.CancellationToken).ConfigureAwait(false);
+                            if (!executeResult.IsSuccess)
+                                _log?.LogError("Execution of command {MethodName} has failed", method.Name);
+                            break;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            _log?.LogWarning("Execution of command {MethodName} was cancelled", method.Name);
+                            return;
+                        }
+                        catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {MethodName}", method.Name)) { return; }
+                    }
+                }
+            }
+            finally
+            {
+                this._lock.Release();
+            }
         }
 
         public void Dispose()
