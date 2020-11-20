@@ -209,7 +209,7 @@ namespace TehGM.Wolfringo.Commands
         {
             object handler = _handlerProvider.GetCommandHandler(descriptor);
             ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());
-            return initializer.InitializeCommand(descriptor, handler);
+            return initializer.InitializeCommand(descriptor, handler, _options);
         }
 
         public void Dispose()

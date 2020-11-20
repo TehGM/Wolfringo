@@ -2,6 +2,6 @@
 {
     public interface ICommandInitializer
     {
-        ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, object handler);
+        ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, object handler, ICommandsOptions options);
     }
 }
