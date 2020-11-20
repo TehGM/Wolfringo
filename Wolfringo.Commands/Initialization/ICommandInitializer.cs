@@ -4,6 +4,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
 {
     public interface ICommandInitializer
     {
-        ICommandInstance InitializeCommand(CommandAttributeBase commandAttribute, MethodInfo method);
+        ICommandInstance InitializeCommand(CommandAttributeBase commandAttribute, MethodInfo method, object handler);
     }
 }
