@@ -135,40 +135,42 @@ namespace TehGM.Wolfringo.Commands
 
         private async void OnMessageReceived(ChatMessage message)
         {
+            IEnumerable<(CommandAttributeBase, MethodInfo)> commandsCopy;
             await this._lock.WaitAsync(this.CancellationToken).ConfigureAwait(false);
             try
             {
-                ICommandContext context = new CommandContext(message, this._client, this._options);
-
-                foreach ((CommandAttributeBase attribute, MethodInfo method) in _commands)
-                {
-                    using (_log.BeginCommandScope(context, method.DeclaringType, method.Name))
-                    {
-                        try
-                        {
-                            object handler = _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
-                            ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
-                            ICommandInstance instance = initializer.InitializeCommand(attribute, method, handler);
-                            ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this.CancellationToken).ConfigureAwait(false);
-                            if (!checkResult.IsSuccess)
-                                continue;
-                            ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this.CancellationToken).ConfigureAwait(false);
-                            if (!executeResult.IsSuccess)
-                                _log?.LogError("Execution of command {MethodName} has failed", method.Name);
-                            break;
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            _log?.LogWarning("Execution of command {MethodName} was cancelled", method.Name);
-                            return;
-                        }
-                        catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {MethodName}", method.Name)) { return; }
-                    }
-                }
+                 commandsCopy = _commands.ToArray();
             }
             finally
             {
                 this._lock.Release();
+            }
+
+            ICommandContext context = new CommandContext(message, this._client, this._options);
+            foreach ((CommandAttributeBase attribute, MethodInfo method) in commandsCopy)
+            {
+                using (_log.BeginCommandScope(context, method.DeclaringType, method.Name))
+                {
+                    try
+                    {
+                        object handler = _handlerProvider.GetCommandHandler(attribute, method.DeclaringType);
+                        ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
+                        ICommandInstance instance = initializer.InitializeCommand(attribute, method, handler);
+                        ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this.CancellationToken).ConfigureAwait(false);
+                        if (!checkResult.IsSuccess)
+                            continue;
+                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this.CancellationToken).ConfigureAwait(false);
+                        if (!executeResult.IsSuccess)
+                            _log?.LogError("Execution of command {MethodName} has failed", method.Name);
+                        break;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        _log?.LogWarning("Execution of command {MethodName} was cancelled", method.Name);
+                        return;
+                    }
+                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {MethodName}", method.Name)) { return; }
+                }
             }
         }
 
