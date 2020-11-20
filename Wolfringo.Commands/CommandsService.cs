@@ -19,16 +19,17 @@ namespace TehGM.Wolfringo.Commands
         private readonly IServiceProvider _services;
         private readonly ICommandHandlerProvider _handlerProvider;
         private readonly ICommandInitializerMap _initializers;
+        private readonly ICommandsLoader _commandsLoader;
         private readonly ILogger _log;
 
         public CancellationToken CancellationToken { get; set; }
 
-        private ICollection<CommandInstanceDescriptor> _commands;
+        private ICollection<ICommandInstanceDescriptor> _commands;
         private readonly SemaphoreSlim _lock;
-        private readonly IDictionary<CommandInstanceDescriptor, ICommandInstance> _cachedInstances;
+        private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _cachedInstances;
 
         public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null,
-            ILogger log = null, CancellationToken cancellationToken = default)
+            ICommandsLoader commandsLoader = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -39,12 +40,13 @@ namespace TehGM.Wolfringo.Commands
             this._services = services ?? this.CreateDefaultServiceProvider();
             this._handlerProvider = handlerProvider ?? new CommandHandlerProvider(this._services);
             this._initializers = initializers ?? new DefaultCommandInitializerMap();
+            this._commandsLoader = commandsLoader ?? new DefaultCommandsLoader(this._initializers, this._log);
             this.CancellationToken = cancellationToken;
 
             // init private
-            this._commands = new List<CommandInstanceDescriptor>();
+            this._commands = new List<ICommandInstanceDescriptor>();
             this._lock = new SemaphoreSlim(1, 1);
-            this._cachedInstances = new Dictionary<CommandInstanceDescriptor, ICommandInstance>();
+            this._cachedInstances = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
@@ -77,14 +79,36 @@ namespace TehGM.Wolfringo.Commands
 
                     this._commands.Clear();
                     this._cachedInstances.Clear();
-                    foreach (Assembly asm in _options.Assemblies)
-                        this.AddAssembly(asm);
-                    foreach (Type t in _options.Classes)
-                        this.AddType(t.GetTypeInfo());
 
-                    // order according to priority
-                    this._commands = this._commands.OrderByDescending(c => c.Priority).ToList();
+                    // ask loader to load from all specified assemblies and types
+                    IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
+                    descriptors = descriptors.Union(await _commandsLoader.LoadFromTypesAsync(_options.Classes.Select(t => t.GetTypeInfo()) ?? Enumerable.Empty<TypeInfo>(), cts.Token).ConfigureAwait(false));
 
+                    // make sure there's no duplicates
+                    descriptors = descriptors.Distinct();
+
+                    // for each loaded command, handle pre-initialization and caching
+                    foreach (ICommandInstanceDescriptor descriptor in descriptors)
+                    {
+                        CommandHandlerAttribute handlerAttribute = descriptor.GetHandlerAttribute();
+
+                        // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
+                        if (handlerAttribute?.PreInitialize == true)
+                        {
+                            _log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.Method.DeclaringType.Name);
+                            _handlerProvider.GetCommandHandler(descriptor);
+                        }
+
+                        // for performance: pre-create and cache command instance if it's a persistent one anyway
+                        if (handlerAttribute?.IsPersistent == true)
+                        {
+                            _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.Method.DeclaringType.Name);
+                            _cachedInstances.Add(descriptor, CreateCommandInstance(descriptor));
+                        }
+                    }
+
+                    // order according to priority and put it into commands storage
+                    this._commands = descriptors.OrderByDescending(c => c.GetPriority()).ToArray();
                     this._log?.LogDebug("{Count} commands loaded", _commands.Count);
                 }
                 finally
@@ -94,74 +118,11 @@ namespace TehGM.Wolfringo.Commands
             }
         }
 
-        private void AddAssembly(Assembly assembly)
-        {
-            _log?.LogTrace("Loading assembly {Name}", assembly.FullName);
-            IEnumerable<TypeInfo> types = assembly.DefinedTypes.Where(t => !t.IsAbstract && !t.ContainsGenericParameters
-                && !Attribute.IsDefined(t, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(t, typeof(CommandHandlerAttribute), true));
-            if (!types.Any())
-            {
-                _log?.LogWarning("Cannot initialize commands from assembly {Name} - no non-static non-abstract non-generic classes with {Attribute}", assembly.FullName, nameof(CommandHandlerAttribute));
-                return;
-            }
-            foreach (TypeInfo type in types)
-                AddType(type);
-        }
-
-        private void AddType(TypeInfo type)
-        {
-            _log?.LogTrace("Loading handler {Handler}", type.FullName);
-            IEnumerable<MethodInfo> methods = type.DeclaredMethods.Where(m => !m.IsStatic && !Attribute.IsDefined(m, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(m, typeof(CommandAttributeBase), true));
-            if (!methods.Any())
-            {
-                _log?.LogWarning("Cannot initialize commands from type {Handler} - no method with {Attribute}", type.FullName, nameof(CommandAttributeBase));
-                return;
-            }
-            foreach (MethodInfo method in methods)
-                AddMethod(method);
-        }
-
-        private void AddMethod(MethodInfo method)
-        {
-            _log?.LogTrace("Loading command {Name}", method.Name);
-            IEnumerable<CommandAttributeBase> attributes = method.GetCustomAttributes<CommandAttributeBase>(true);
-            if (!attributes.Any())
-            {
-                _log?.LogWarning("Cannot initialize command from {Handler}'s method {Name} - {Attribute} missing", method.DeclaringType.FullName, method.Name, nameof(CommandAttributeBase));
-                return;
-            }
-            foreach (CommandAttributeBase attribute in attributes)
-            {
-                // ensure there's a valid initializer
-                ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
-                if (initializer == null)
-                    throw new InvalidOperationException($"No initializer found for command type {attribute.GetType().Name}");
-
-                CommandInstanceDescriptor descriptor = new CommandInstanceDescriptor(attribute, method);
-
-                // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
-                if (descriptor.HandlerAttribute?.PreInitialize == true)
-                {
-                    _log?.LogDebug("Pre-initializing command handler {Handler}", method.DeclaringType.Name);
-                    _handlerProvider.GetCommandHandler(descriptor);
-                }
-
-                // for performance: pre-create and cache command instance if it's a persistent one anyway
-                if (descriptor.HandlerAttribute?.IsPersistent == true)
-                {
-                    _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", method.Name, method.DeclaringType.Name);
-                    _cachedInstances.Add(descriptor, CreateCommandInstance(descriptor));
-                }
-
-                // add the command
-                _commands.Add(new CommandInstanceDescriptor(attribute, method));
-                _log?.LogTrace("Command {Name} from handler {Handler} loaded", method.Name, method.DeclaringType.Name);
-            }
-        }
-
         private async void OnMessageReceived(ChatMessage message)
         {
-            IEnumerable<CommandInstanceDescriptor> commandsCopy;
+            // make a copy - this might not be the fastest, but we should use a lock to prevent race conditions with StartAsync
+            // and using a lock over the entire method could cause hanging if user is not carefull in their command method. Copying is just safer
+            IEnumerable<ICommandInstanceDescriptor> commandsCopy;
             await this._lock.WaitAsync(this.CancellationToken).ConfigureAwait(false);
             try
             {
@@ -205,7 +166,7 @@ namespace TehGM.Wolfringo.Commands
             }
         }
 
-        private ICommandInstance CreateCommandInstance(CommandInstanceDescriptor descriptor)
+        private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor)
         {
             object handler = _handlerProvider.GetCommandHandler(descriptor);
             ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());

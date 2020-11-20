@@ -18,13 +18,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this.Attribute = attribute;
             this.Method = method;
 
-            this.HandlerAttribute = method.DeclaringType.GetCustomAttribute<CommandHandlerAttribute>(true);
-
-            // on-method priority overwrites handler priority. Default is 0.
-            this.Priority =
-                method.GetCustomAttribute<PriorityAttribute>()?.Priority ??
-                method.DeclaringType.GetCustomAttribute<PriorityAttribute>()?.Priority ??
-                0;
+            // from extensions
+            this.HandlerAttribute = this.GetHandlerAttribute();
+            this.Priority = this.GetPriority();
         }
 
         public override bool Equals(object obj)
