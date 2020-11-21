@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
         public object GetCommandHandler(ICommandInstanceDescriptor descriptor)
         {
-            Type handlerType = descriptor.Method.DeclaringType;
+            Type handlerType = descriptor.GetHandlerType();
 
             // if not shared, try persistent
             if (_persistentHandlers.TryGetValue(handlerType, out object handler))
@@ -65,7 +65,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             handler = handlerDescriptor.CreateInstance();
 
             // if it's a persistent instance, store it
-            if (handlerDescriptor.Attribute?.IsPersistent == true)
+            if (handlerDescriptor.IsPersistent())
                 _persistentHandlers.Add(handlerType, handler);
 
             // finally, return the fresh handler

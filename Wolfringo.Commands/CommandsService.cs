@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -136,7 +135,7 @@ namespace TehGM.Wolfringo.Commands
             ICommandContext context = new CommandContext(message, this._client, this._options);
             foreach (ICommandInstanceDescriptor command in commandsCopy)
             {
-                using (_log.BeginCommandScope(context, command.Method.DeclaringType, command.Method.Name))
+                using (_log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                 {
                     try
                     {
@@ -150,7 +149,7 @@ namespace TehGM.Wolfringo.Commands
                             continue;
 
                         // execute the command
-                        _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.Method.DeclaringType.Name);
+                        _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
                         ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this.CancellationToken).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
                             _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.Method.DeclaringType.Name);
@@ -158,10 +157,10 @@ namespace TehGM.Wolfringo.Commands
                     }
                     catch (OperationCanceledException)
                     {
-                        _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.Method.DeclaringType.Name);
+                        _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
                         return;
                     }
-                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.Method.DeclaringType.Name)) { return; }
+                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name)) { return; }
                 }
             }
         }

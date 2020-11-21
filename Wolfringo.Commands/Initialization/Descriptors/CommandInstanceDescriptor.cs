@@ -11,8 +11,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public CommandHandlerAttribute HandlerAttribute { get; }
         public int Priority { get; }
 
-        public Type HandlerType => Method.DeclaringType;
-
         public CommandInstanceDescriptor(CommandAttributeBase attribute, MethodInfo method)
         {
             this.Attribute = attribute;

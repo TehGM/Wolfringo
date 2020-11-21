@@ -9,9 +9,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
     {
         public ConstructorInfo Constructor { get; }
         public object[] ConstructorParams { get; }
-
         public CommandHandlerAttribute Attribute { get; }
-
         public Type Type => this.Constructor.DeclaringType;
 
         public CommandHandlerDescriptor(ConstructorInfo ctor, IEnumerable<object> parameters)

@@ -71,7 +71,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 // add the command
                 CommandInstanceDescriptor descriptor = new CommandInstanceDescriptor(attribute, method);
                 results.Add(new CommandInstanceDescriptor(attribute, method));
-                _log?.LogTrace("Command {Name} from handler {Handler} loaded", method.Name, method.DeclaringType.Name);
+                _log?.LogTrace("Command {Name} from handler {Handler} loaded", descriptor.Method.Name, descriptor.GetHandlerType().Name);
             }
             return Task.FromResult<IEnumerable<ICommandInstanceDescriptor>>(results);
         }
