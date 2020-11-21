@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using TehGM.Wolfringo.Commands.Instances;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
+    /// <inheritdoc/>
+    /// <remarks>This is a default initializer designed to load <see cref="RegexCommandInstance"/> from <see cref="RegexCommandAttribute"/>. It will not work with other command types.</remarks>
     public class RegexCommandInitializer : ICommandInitializer
     {
+        /// <inheritdoc/>
         public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, object handler, ICommandsOptions options)
         {
             // validate this is a correct command attribute type
@@ -14,10 +16,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 throw new ArgumentException($"{this.GetType().Name} can only be used with {typeof(RegexCommandAttribute).Name} commands", nameof(descriptor.Attribute));
 
             // check case sensitiviness, Priority: method attribute, handler attribute, options
-            bool caseInsensitive =
-                descriptor.Method.GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
-                descriptor.Method.DeclaringType.GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
-                options?.CaseInsensitive ?? false;
+            bool caseInsensitive = descriptor.IsCaseInsensitive(defaultValue: options?.CaseInsensitive ?? false);
 
             // prepare regex
             RegexOptions regexOptions = regexCommand.Options;

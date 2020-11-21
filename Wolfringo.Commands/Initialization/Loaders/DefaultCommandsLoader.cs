@@ -9,17 +9,23 @@ using Microsoft.Extensions.Logging;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
+    /// <inheritdoc/>
     public class DefaultCommandsLoader : ICommandsLoader
     {
         private readonly ILogger _log;
         private readonly ICommandInitializerMap _initializers;
 
+        /// <summary>Creates a new loader instance.</summary>
+        /// <param name="initializers">Command initializers mapping.</param>
+        /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         public DefaultCommandsLoader(ICommandInitializerMap initializers, ILogger log)
         {
             this._initializers = initializers;
             this._log = log;
         }
 
+        /// <inheritdoc/>
+        /// <remarks>Only commands from types marked with <see cref="CommandHandlerAttribute"/> will be loaded.</remarks>
         public Task<IEnumerable<ICommandInstanceDescriptor>> LoadFromAssemblyAsync(Assembly assembly, CancellationToken cancellationToken = default)
         {
             List<ICommandInstanceDescriptor> results = new List<ICommandInstanceDescriptor>();
@@ -36,6 +42,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
             return Task.FromResult<IEnumerable<ICommandInstanceDescriptor>>(results);
         }
 
+        /// <inheritdoc/>
+        /// <remarks>Commands will be loaded regardless of presence of <see cref="CommandHandlerAttribute"/>.</remarks>
         public Task<IEnumerable<ICommandInstanceDescriptor>> LoadFromTypeAsync(TypeInfo type, CancellationToken cancellationToken = default)
         {
             List<ICommandInstanceDescriptor> results = new List<ICommandInstanceDescriptor>();
@@ -51,6 +59,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
             return Task.FromResult<IEnumerable<ICommandInstanceDescriptor>>(results);
         }
 
+        /// <inheritdoc/>
+        /// <remarks>Commands will be loaded regardless of presence of <see cref="CommandHandlerAttribute"/>.</remarks>
+        /// <exception cref="InvalidOperationException">No mapped initializer for a command was found.</exception>
         public Task<IEnumerable<ICommandInstanceDescriptor>> LoadFromMethodAsync(MethodInfo method, CancellationToken cancellationToken = default)
         {
             List<ICommandInstanceDescriptor> results = new List<ICommandInstanceDescriptor>();

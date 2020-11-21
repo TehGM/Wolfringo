@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
+    /// <inheritdoc>/>
+    /// <remarks><para>This provider will keep persistent handlers in its own cache, and reuse them when applicable.</para>
+    /// <para>The persistent handler instances that implement <see cref="IDisposable"/> will be automatically disposed when <see cref="Dispose"/> method is called.</para></remarks>
     public class CommandHandlerProvider : ICommandHandlerProvider, IDisposable
     {
         private readonly IServiceProvider _services;
@@ -12,11 +15,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
         private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
         private readonly IDictionary<Type, object> _persistentHandlers;
 
+        /// <summary>Creates a new provider instance.</summary>
+        /// <param name="services">Service provider with services to use for constructor injection.</param>
         public CommandHandlerProvider(IServiceProvider services)
         {
             this._services = services;
         }
 
+        /// <inheritdoc>/>
         public object GetCommandHandler(ICommandInstanceDescriptor descriptor)
         {
             Type handlerType = descriptor.GetHandlerType();
@@ -93,6 +99,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
             return true;
         }
 
+        /// <summary>Disposes the provider.</summary>
+        /// <remarks>Any persistent handler that implements <see cref="IDisposable"/> will also be disposed.</remarks>
         public void Dispose()
         {
             IEnumerable<object> disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);

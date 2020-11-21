@@ -8,6 +8,7 @@ using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands.Instances
 {
+    /// <summary>Represents a regex command instance.</summary>
     public class RegexCommandInstance : ICommandInstance
     {
         public Regex Regex { get; }

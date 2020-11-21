@@ -5,12 +5,25 @@ using Microsoft.Extensions.Logging;
 
 namespace TehGM.Wolfringo.Commands
 {
+    /// <summary>Extensions for logging commands.</summary>
     public static class CommandLoggingExtensions
     {
-        public static IDisposable BeginCommandScope(this ILogger log, ICommandContext context, object handler = null, [CallerMemberName] string cmdName = null)
-            => BeginCommandScope(log, context, handler?.GetType(), cmdName);
+        /// <summary>Creates a log scope for command context.</summary>
+        /// <param name="log">Logger.</param>
+        /// <param name="context">Command context to create scope for.</param>
+        /// <param name="handler">Handler to use in scope arguments.</param>
+        /// <param name="methodName">Name of the method creating the scope.</param>
+        /// <returns>Log scope.</returns>
+        public static IDisposable BeginCommandScope(this ILogger log, ICommandContext context, object handler = null, [CallerMemberName] string methodName = null)
+            => BeginCommandScope(log, context, handler?.GetType(), methodName);
 
-        public static IDisposable BeginCommandScope(this ILogger log, ICommandContext context, Type handlerType = null, [CallerMemberName] string cmdName = null)
+        /// <summary>Creates a log scope for command context.</summary>
+        /// <param name="log">Logger.</param>
+        /// <param name="context">Command context to create scope for.</param>
+        /// <param name="handlerType">Handler to use in scope arguments.</param>
+        /// <param name="methodName">Name of the method creating the scope.</param>
+        /// <returns>Log scope.</returns>
+        public static IDisposable BeginCommandScope(this ILogger log, ICommandContext context, Type handlerType = null, [CallerMemberName] string methodName = null)
         {
             Dictionary<string, object> state = new Dictionary<string, object>
             {
@@ -19,8 +32,8 @@ namespace TehGM.Wolfringo.Commands
                 { "Command.RecipientID", context.Message.RecipientID },
                 { "Command.RecipientType", context.Message.IsGroupMessage ? "Group" : "Private" }
             };
-            if (!string.IsNullOrWhiteSpace(cmdName))
-                state.Add("Command.Method", cmdName);
+            if (!string.IsNullOrWhiteSpace(methodName))
+                state.Add("Command.Method", methodName);
             if (handlerType != null)
                 state.Add("Command.Handler", handlerType.Name);
             return log.BeginScope(state);

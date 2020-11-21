@@ -11,6 +11,9 @@ using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo.Commands
 {
+    /// <summary>A service that deals with commands loading, initialization and execution.</summary>
+    /// <remarks><para>This is a base service that runs the commands. It'll manage all other parts of Commands System.</para>
+    /// <para>This command service can be customized partially by injecting custom services into its constructor. If these services are set to default or skipped, default instances will be automatically created and used, similarly to <see cref="WolfClient"/>.</para></remarks>
     public class CommandsService : IDisposable
     {
         private readonly IWolfClient _client;
@@ -22,6 +25,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly ILogger _log;
         private readonly CancellationTokenSource _cts;
 
+        // TODO: using of CTS as it is kills and point of this. Redesign.
         public CancellationToken CancellationToken { get; set; }
 
         private ICollection<ICommandInstanceDescriptor> _commands;
@@ -29,8 +33,16 @@ namespace TehGM.Wolfringo.Commands
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _cachedInstances;
 
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null,
-            ICommandsLoader commandsLoader = null, ILogger log = null, CancellationToken cancellationToken = default)
+        /// <summary>Initializes a command service.</summary>
+        /// <param name="client">WOLF client. Required.</param>
+        /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
+        /// <param name="services">Services provider that will be used by all commands. Null will cause a default to be used.</param>
+        /// <param name="handlerProvider">Handler provider that deals with creation and caching of handler objects. Null will cause a default to be used.</param>
+        /// <param name="initializers">Map of command initializers for each command attribute. Null will cause a default to be used.</param>
+        /// <param name="commandsLoader">Service that loads command attributes from assemblies and types. Null will cause a default to be used.</param>
+        /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks. If not provided, task cancellation will not be possible.</param>
+        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -75,6 +87,8 @@ namespace TehGM.Wolfringo.Commands
             return new SimpleServiceProvider(servicesMap);
         }
 
+        /// <summary>Starts the Command Service.</summary>
+        /// <param name="cancellationToken">Cancellation token to cancel loading with.</param>
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token))
@@ -193,6 +207,9 @@ namespace TehGM.Wolfringo.Commands
             return initializer.InitializeCommand(descriptor, handler, _options);
         }
 
+        /// <summary>Disposes the Command Service.</summary>
+        /// <remarks><para>This method will dispose services created by default if they weren't provided via the constructor. If service was provided via constructor, it will NOT be disposed - please dispose it manually when convenient.</para>
+        /// <para>This method will also dispose all command instances and descriptors that happen to implement <see cref="IDisposable"/>.</para></remarks>
         public void Dispose()
         {
             // remove event listener
