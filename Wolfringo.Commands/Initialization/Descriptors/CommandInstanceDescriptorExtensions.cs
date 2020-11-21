@@ -36,7 +36,25 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <returns>True if the command is case insensitive; otherwise false.</returns>
         public static bool IsCaseInsensitive(this ICommandInstanceDescriptor descriptor, bool defaultValue)
             => descriptor.Method.GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
-                descriptor.Method.DeclaringType.GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
+                descriptor.GetHandlerType().GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
+                defaultValue;
+
+        /// <summary>Gets command's prefix.</summary>
+        /// <param name="descriptor">Command descriptor.</param>
+        /// <param name="defaultValue">Fallback value to use in case of <see cref="PrefixAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
+        /// <returns>Prefix value.</returns>
+        public static string GetPrefix(this ICommandInstanceDescriptor descriptor, string defaultValue)
+            => descriptor.Method.GetCustomAttribute<PrefixAttribute>(true)?.PrefixOverride ??
+                descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixOverride ??
+                defaultValue;
+
+        /// <summary>Gets command's prefix requirement.</summary>
+        /// <param name="descriptor">Command descriptor.</param>
+        /// <param name="defaultValue">Fallback value to use in case of <see cref="PrefixAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
+        /// <returns>Prefix requirement value.</returns>
+        public static PrefixRequirement GetPrefixRequirement(this ICommandInstanceDescriptor descriptor, PrefixRequirement defaultValue)
+            => descriptor.Method.GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride ??
+                descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride ??
                 defaultValue;
     }
 }

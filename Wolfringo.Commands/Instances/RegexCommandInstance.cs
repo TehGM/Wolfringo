@@ -18,13 +18,17 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly MethodInfo _method;
         private readonly ParameterInfo[] _params;
         private readonly object _handler;
+        private readonly PrefixAttribute _prefixAttribute;
 
-        public RegexCommandInstance(Regex regex, MethodInfo method, object handler)
+        public RegexCommandInstance(Regex regex, MethodInfo method, object handler, ICommandsOptions options)
         {
             this.Regex = regex;
             this._method = method;
             this._params = _method.GetParameters();
             this._handler = handler;
+
+            this._prefixAttribute = this._method.GetCustomAttribute<PrefixAttribute>(true) ?? 
+                this.HandlerType.GetCustomAttribute<PrefixAttribute>(true);
         }
 
         public Task<ICommandResult> CheckShouldRunAsync(ICommandContext context, CancellationToken cancellationToken = default)
@@ -41,7 +45,10 @@ namespace TehGM.Wolfringo.Commands.Instances
             if (message.SenderID == context.Client.CurrentUserID)
                 return FailureResult();
             // check prefix
-            if (!message.MatchesPrefixRequirement(context.Options, out int startIndex))
+            if (!message.MatchesPrefixRequirement(
+                this._prefixAttribute?.PrefixOverride ?? context.Options.Prefix,
+                this._prefixAttribute?.PrefixRequirementOverride ?? context.Options.RequirePrefix,
+                context.Options.CaseInsensitive, out int startIndex))
                 return FailureResult();
 
             // perform regex match
