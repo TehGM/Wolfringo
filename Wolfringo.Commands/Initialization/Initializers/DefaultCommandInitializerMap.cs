@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
-    public class DefaultCommandInitializerMap : ICommandInitializerMap
+    public class DefaultCommandInitializerMap : ICommandInitializerMap, IDisposable
     {
         private IDictionary<Type, ICommandInitializer> _map;
 
@@ -39,6 +40,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (!typeof(CommandAttributeBase).IsAssignableFrom(commandAttributeType))
                 throw new ArgumentException($"Command attribute type must inherit from {typeof(CommandAttributeBase).Name}", nameof(commandAttributeType));
             this._map[commandAttributeType] = initializer;
+        }
+
+        public void Dispose()
+        {
+            IEnumerable<object> disposables = _map.Values.Where(c => c is IDisposable);
+            _map.Clear();
+            foreach (object disposable in disposables)
+                try { (disposable as IDisposable)?.Dispose(); } catch { }
         }
     }
 }

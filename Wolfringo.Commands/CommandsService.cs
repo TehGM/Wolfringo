@@ -20,10 +20,12 @@ namespace TehGM.Wolfringo.Commands
         private readonly ICommandInitializerMap _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly ILogger _log;
+        private readonly CancellationTokenSource _cts;
 
         public CancellationToken CancellationToken { get; set; }
 
         private ICollection<ICommandInstanceDescriptor> _commands;
+        private List<IDisposable> _disposables;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _cachedInstances;
 
@@ -37,7 +39,12 @@ namespace TehGM.Wolfringo.Commands
             // init optionals
             this._log = log;
             this._services = services ?? this.CreateDefaultServiceProvider();
-            this._handlerProvider = handlerProvider ?? new CommandHandlerProvider(this._services);
+            this._handlerProvider = handlerProvider;
+            if (this._handlerProvider == null)
+            {
+                this._handlerProvider = new CommandHandlerProvider(this._services);
+                this._disposables.Add(this._handlerProvider as IDisposable);
+            }
             this._initializers = initializers ?? new DefaultCommandInitializerMap();
             this._commandsLoader = commandsLoader ?? new DefaultCommandsLoader(this._initializers, this._log);
             this.CancellationToken = cancellationToken;
@@ -46,6 +53,7 @@ namespace TehGM.Wolfringo.Commands
             this._commands = new List<ICommandInstanceDescriptor>();
             this._lock = new SemaphoreSlim(1, 1);
             this._cachedInstances = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
+            this._cts = CancellationTokenSource.CreateLinkedTokenSource(this.CancellationToken);
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
@@ -69,7 +77,7 @@ namespace TehGM.Wolfringo.Commands
 
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {
-            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this.CancellationToken))
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token))
             {
                 await this._lock.WaitAsync(cts.Token).ConfigureAwait(false);
                 try
@@ -94,17 +102,23 @@ namespace TehGM.Wolfringo.Commands
                         // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
                         if (handlerAttribute?.PreInitialize == true)
                         {
-                            _log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.Method.DeclaringType.Name);
+                            _log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.GetHandlerType().Name);
                             _handlerProvider.GetCommandHandler(descriptor);
                         }
 
                         // for performance: pre-create and cache command instance if it's a persistent one anyway
                         if (handlerAttribute?.IsPersistent == true)
                         {
-                            _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.Method.DeclaringType.Name);
-                            _cachedInstances.Add(descriptor, CreateCommandInstance(descriptor));
+                            _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.GetHandlerType().Name);
+                            ICommandInstance instance = CreateCommandInstance(descriptor, out _);
+                            _cachedInstances.Add(descriptor, instance);
+                            if (instance is IDisposable disposableInstance)
+                                this._disposables.Add(disposableInstance);
                         }
                     }
+
+                    // grab all Disposable command descriptors (if any) for future disposing
+                    this._disposables.AddRange(descriptors.Where(c => c is IDisposable).Cast<IDisposable>());
 
                     // order according to priority and put it into commands storage
                     this._commands = descriptors.OrderByDescending(c => c.GetPriority()).ToArray();
@@ -122,7 +136,7 @@ namespace TehGM.Wolfringo.Commands
             // make a copy - this might not be the fastest, but we should use a lock to prevent race conditions with StartAsync
             // and using a lock over the entire method could cause hanging if user is not carefull in their command method. Copying is just safer
             IEnumerable<ICommandInstanceDescriptor> commandsCopy;
-            await this._lock.WaitAsync(this.CancellationToken).ConfigureAwait(false);
+            await this._lock.WaitAsync(this._cts.Token).ConfigureAwait(false);
             try
             {
                  commandsCopy = _commands.ToArray();
@@ -137,20 +151,21 @@ namespace TehGM.Wolfringo.Commands
             {
                 using (_log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                 {
+                    object handler = null;
                     try
                     {
                         // try to get instance from cache - or create if it's not there
                         if (!_cachedInstances.TryGetValue(command, out ICommandInstance instance))
-                            instance = CreateCommandInstance(command);
+                            instance = CreateCommandInstance(command, out handler);
 
                         // check if the command should run at all - if not, skip
-                        ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this.CancellationToken).ConfigureAwait(false);
+                        ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this._cts.Token).ConfigureAwait(false);
                         if (!checkResult.IsSuccess)
                             continue;
 
                         // execute the command
                         _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this.CancellationToken).ConfigureAwait(false);
+                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this._cts.Token).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
                             _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.Method.DeclaringType.Name);
                         break;
@@ -161,23 +176,39 @@ namespace TehGM.Wolfringo.Commands
                         return;
                     }
                     catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name)) { return; }
+                    finally
+                    {
+                        // if handler is allocated (which means it's not persistent) and disposable, let's dispose it
+                        if (handler is IDisposable disposableHandler)
+                            try { disposableHandler?.Dispose(); } catch { }
+                    }
                 }
             }
         }
 
-        private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor)
+        private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor, out object handler)
         {
-            object handler = _handlerProvider.GetCommandHandler(descriptor);
+            handler = _handlerProvider.GetCommandHandler(descriptor);
             ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());
             return initializer.InitializeCommand(descriptor, handler, _options);
         }
 
         public void Dispose()
         {
+            // remove event listener
+            this._client.RemoveMessageListener<ChatMessage>(OnMessageReceived);
+            // cancel all tasks
+            try { this._cts?.Cancel(); } catch { }
+            try { this._cts?.Dispose(); } catch { }
+            // purge collections
             this._cachedInstances?.Clear();
             this._commands?.Clear();
+            // dispose all objects (such as instances, descriptors, or services) that implement IDisposable
+            foreach (IDisposable disposable in this._disposables)
+                try { disposable?.Dispose(); } catch { }
+            this._disposables.Clear();
+            // dispose semaphore
             try { _lock?.Dispose(); } catch { }
-            this._client.RemoveMessageListener<ChatMessage>(OnMessageReceived);
         }
     }
 }

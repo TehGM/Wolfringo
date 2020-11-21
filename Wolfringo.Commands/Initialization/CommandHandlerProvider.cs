@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
-    public class CommandHandlerProvider : ICommandHandlerProvider
+    public class CommandHandlerProvider : ICommandHandlerProvider, IDisposable
     {
         private readonly IServiceProvider _services;
 
@@ -91,6 +91,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
             }
             result = new CommandHandlerDescriptor(constructor, paramsValues);
             return true;
+        }
+
+        public void Dispose()
+        {
+            IEnumerable<object> disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);
+            _persistentHandlers.Clear();
+            foreach (object handler in disposableHandlers)
+                try { (handler as IDisposable).Dispose(); } catch { }
         }
     }
 }
