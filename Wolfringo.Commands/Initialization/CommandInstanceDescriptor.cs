@@ -53,10 +53,4 @@ namespace TehGM.Wolfringo.Commands.Initialization
             return !(left == right);
         }
     }
-
-    public interface ICommandInstanceDescriptor : IEquatable<ICommandInstanceDescriptor>
-    {
-        CommandAttributeBase Attribute { get; }
-        MethodInfo Method { get; }
-    }
 }
