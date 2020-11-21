@@ -25,7 +25,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             Regex regex = new Regex(regexCommand.Pattern, regexOptions);
 
             // init instance
-            return new RegexCommandInstance(regex, descriptor.Method, handler, options);
+            return new RegexCommandInstance(regex, descriptor.Method, handler);
         }
     }
 }

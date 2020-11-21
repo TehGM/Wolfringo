@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly object _handler;
         private readonly PrefixAttribute _prefixAttribute;
 
-        public RegexCommandInstance(Regex regex, MethodInfo method, object handler, ICommandsOptions options)
+        public RegexCommandInstance(Regex regex, MethodInfo method, object handler)
         {
             this.Regex = regex;
             this._method = method;
