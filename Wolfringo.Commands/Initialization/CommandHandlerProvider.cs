@@ -65,7 +65,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
             handler = handlerDescriptor.CreateInstance();
 
             // if it's a persistent instance, store it
-            _persistentHandlers.Add(handlerType, handler);
+            if (handlerDescriptor.Attribute?.IsPersistent == true)
+                _persistentHandlers.Add(handlerType, handler);
 
             // finally, return the fresh handler
             return handler;
