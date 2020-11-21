@@ -33,7 +33,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 IEnumerable<ConstructorInfo> allConstructors = handlerType
                     .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-                // check if if the constructors are specifically designated to be used by Commands System
+                // check if any of the constructors are specifically designated to be used by Commands System
                 IEnumerable<ConstructorInfo> selectedConstructors = allConstructors
                     .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandHandlerConstructorAttribute>(false)))
                     .Where(ctor => ctor.attribute != null)
