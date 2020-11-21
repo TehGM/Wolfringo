@@ -25,16 +25,16 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (_persistentHandlers.TryGetValue(handlerType, out object handler))
                 return handler;
 
-            // if not persistent handler was found, we need to create a new one - check if descriptor is known yet
+            // if no persistent handler was found, we need to create a new one - check if descriptor is known yet
             if (!_knownHandlerDescriptors.TryGetValue(handlerType, out CommandHandlerDescriptor handlerDescriptor))
             {
                 // if descriptor not cached, create new one
                 // start with grabbing all constructors
-                IEnumerable<ConstructorInfo> allContstructors = handlerType
+                IEnumerable<ConstructorInfo> allConstructors = handlerType
                     .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
                 // check if if the constructors are specifically designated to be used by Commands System
-                IEnumerable<ConstructorInfo> selectedConstructors = allContstructors
+                IEnumerable<ConstructorInfo> selectedConstructors = allConstructors
                     .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandHandlerConstructorAttribute>(false)))
                     .Where(ctor => ctor.attribute != null)
                     .OrderByDescending(ctor => ctor.attribute.Priority)
@@ -43,7 +43,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
                 // if no explicitly-attributed constructor found, grab all that are public
                 if (!selectedConstructors.Any())
-                    selectedConstructors = allContstructors
+                    selectedConstructors = allConstructors
                         .Where(ctor => ctor.IsPublic)
                         .OrderByDescending(ctor => ctor.GetParameters().Length);
 
