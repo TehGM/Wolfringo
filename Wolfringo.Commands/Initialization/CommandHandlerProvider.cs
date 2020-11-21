@@ -29,13 +29,26 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (!_knownHandlerDescriptors.TryGetValue(handlerType, out CommandHandlerDescriptor handlerDescriptor))
             {
                 // if descriptor not cached, create new one
-                // start with sorting constructors by params count
-                IEnumerable<ConstructorInfo> constructors = handlerType
-                    .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .OrderByDescending(ctor => ctor.GetParameters().Length);
+                // start with grabbing all constructors
+                IEnumerable<ConstructorInfo> allContstructors = handlerType
+                    .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                // check if if the constructors are specifically designated to be used by Commands System
+                IEnumerable<ConstructorInfo> selectedConstructors = allContstructors
+                    .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandHandlerConstructorAttribute>(false)))
+                    .Where(ctor => ctor.attribute != null)
+                    .OrderByDescending(ctor => ctor.attribute.Priority)
+                    .ThenByDescending(ctor => ctor.constructor.GetParameters().Length)
+                    .Select(ctor => ctor.constructor);
+
+                // if no explicitly-attributed constructor found, grab all that are public
+                if (!selectedConstructors.Any())
+                    selectedConstructors = allContstructors
+                        .Where(ctor => ctor.IsPublic)
+                        .OrderByDescending(ctor => ctor.GetParameters().Length);
 
                 // try to resolve dependencies for each constructor. First one that can be resolved wins
-                foreach (ConstructorInfo ctor in constructors)
+                foreach (ConstructorInfo ctor in selectedConstructors)
                 {
                     if (TryCreateHandlerDescriptor(ctor, out handlerDescriptor))
                     {
