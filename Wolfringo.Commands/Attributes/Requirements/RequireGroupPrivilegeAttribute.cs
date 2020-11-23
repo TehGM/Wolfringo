@@ -33,22 +33,26 @@ namespace TehGM.Wolfringo.Commands
         }
 
         /// <inheritdoc/>
-        public override async Task<bool> RunAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        public override Task<bool> RunAsync(ICommandContext context, CancellationToken cancellationToken = default)
         {
             if (!context.Message.IsGroupMessage)
-                return IgnoreInPrivate;
+                return Task.FromResult(IgnoreInPrivate);
 
-            uint id = context.Message.SenderID.Value;
+            return CheckPrivilegeAsync(context, context.Message.SenderID.Value, this.Privileges, cancellationToken);
+        }
+
+        internal static async Task<bool> CheckPrivilegeAsync(ICommandContext context, uint userID, WolfGroupCapabilities privileges, CancellationToken cancellationToken = default)
+        {
             WolfGroup group = await context.GetRecipientAsync<WolfGroup>(cancellationToken).ConfigureAwait(false);
-            if (!group.Members.TryGetValue(id, out WolfGroupMember member) && group.Members?.Any() != true)
+            if (!group.Members.TryGetValue(userID, out WolfGroupMember member) && group.Members?.Any() != true)
             {
                 GroupMembersListResponse membersResponse = await context.Client.SendAsync<GroupMembersListResponse>(
                     new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
-                member = membersResponse.GroupMembers.FirstOrDefault(u => u.UserID == id);
+                member = membersResponse.GroupMembers.FirstOrDefault(u => u.UserID == userID);
             }
             if (member == null)
                 return false;
-            return (this.Privileges & member.Capabilities) == member.Capabilities;
+            return (privileges & member.Capabilities) == member.Capabilities;
         }
     }
 }
