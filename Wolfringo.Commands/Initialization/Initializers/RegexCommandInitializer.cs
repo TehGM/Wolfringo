@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TehGM.Wolfringo.Commands.Instances;
 
@@ -24,8 +25,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 regexOptions |= RegexOptions.IgnoreCase;
             Regex regex = new Regex(regexCommand.Pattern, regexOptions);
 
+            // read any additional requirements
+            IEnumerable<CommandRequirementAttribute> requirements = descriptor.GetRequirements();
+
             // init instance
-            return new RegexCommandInstance(regex, descriptor.Method, handler);
+            return new RegexCommandInstance(regex, descriptor.Method, handler, requirements);
         }
     }
 }

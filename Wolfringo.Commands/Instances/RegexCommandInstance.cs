@@ -5,33 +5,42 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Results;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TehGM.Wolfringo.Commands.Instances
 {
     /// <summary>Represents a regex command instance.</summary>
     public class RegexCommandInstance : ICommandInstance
     {
+        /// <summary>Regex this command will be triggered for.</summary>
         public Regex Regex { get; }
+        /// <summary>Type of the handler containing the command.</summary>
         public Type HandlerType => _method.DeclaringType;
-        public string HandlerMethodName => _method.Name;
 
         private readonly MethodInfo _method;
         private readonly ParameterInfo[] _params;
         private readonly object _handler;
         private readonly PrefixAttribute _prefixAttribute;
+        private readonly IEnumerable<CommandRequirementAttribute> _requirements;
 
-        public RegexCommandInstance(Regex regex, MethodInfo method, object handler)
+        public RegexCommandInstance(Regex regex, MethodInfo method, object handler, IEnumerable<CommandRequirementAttribute> requirements)
         {
             this.Regex = regex;
             this._method = method;
             this._params = _method.GetParameters();
             this._handler = handler;
+            this._requirements = requirements ?? Enumerable.Empty<CommandRequirementAttribute>();
 
             this._prefixAttribute = this._method.GetCustomAttribute<PrefixAttribute>(true) ?? 
                 this.HandlerType.GetCustomAttribute<PrefixAttribute>(true);
         }
 
-        public Task<ICommandResult> CheckShouldRunAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        public RegexCommandInstance(Regex regex, MethodInfo method, object handler)
+            : this(regex, method, handler, Enumerable.Empty<CommandRequirementAttribute>()) { }
+
+        /// <inheritdoc/>
+        public Task<ICommandResult> CheckMatchAsync(ICommandContext context, CancellationToken cancellationToken = default)
         {
             // ignore non-text messages
             if (!(context.Message is ChatMessage message))
@@ -55,20 +64,28 @@ namespace TehGM.Wolfringo.Commands.Instances
             Match match = this.Regex.Match(message.Text, startIndex);
             if (match?.Success != true)
                 return FailureResult();
-            return Task.FromResult<ICommandResult>(RegexCommandCheckResult.Success(match));
+            return Task.FromResult<ICommandResult>(RegexCommandMatchResult.Success(match));
 
-            Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(RegexCommandCheckResult.Failure);
+            Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(RegexCommandMatchResult.Failure);
         }
 
-        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, IServiceProvider services, ICommandResult checkResult, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, IServiceProvider services, ICommandResult matchResult, CancellationToken cancellationToken = default)
         {
             // ensure provided check result is valid
-            if (checkResult == null)
-                throw new ArgumentNullException(nameof(checkResult));
-            if (!checkResult.IsSuccess)
-                return null;
-            if (!(checkResult is RegexCommandCheckResult regexCheckResult))
-                throw new ArgumentException($"{nameof(checkResult)} must be of type {typeof(RegexCommandCheckResult).FullName}", nameof(checkResult));
+            if (matchResult == null)
+                throw new ArgumentNullException(nameof(matchResult));
+            if (!matchResult.IsSuccess)
+                return CommandExecutionResult.Failure;
+            if (!(matchResult is RegexCommandMatchResult regexMatchResult))
+                throw new ArgumentException($"{nameof(matchResult)} must be of type {typeof(RegexCommandMatchResult).FullName}", nameof(matchResult));
+
+            // run all custom attributes
+            foreach (CommandRequirementAttribute check in _requirements)
+            {
+                if (!await check.RunAsync(context, cancellationToken).ConfigureAwait(false))
+                    return CommandExecutionResult.Failure;
+            }
 
             // build params
             cancellationToken.ThrowIfCancellationRequested();
@@ -79,7 +96,7 @@ namespace TehGM.Wolfringo.Commands.Instances
                 if (param.ParameterType.IsAssignableFrom(context.GetType()))
                     value = context;
                 else if (param.ParameterType.IsAssignableFrom(typeof(Match)))
-                    value = regexCheckResult.RegexMatch;
+                    value = regexMatchResult.RegexMatch;
                 else if (param.ParameterType.IsAssignableFrom(context.Message.GetType()))
                     value = context.Message;
                 else if (param.ParameterType.IsAssignableFrom(context.Client.GetType()))

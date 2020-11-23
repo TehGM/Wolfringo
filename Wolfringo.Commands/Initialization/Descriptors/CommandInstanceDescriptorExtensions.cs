@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace TehGM.Wolfringo.Commands.Initialization
@@ -56,5 +58,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
             => descriptor.Method.GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride ??
                 descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride ??
                 defaultValue;
+
+        /// <summary>Gets command's pre-execute checks.</summary>
+        /// <param name="descriptor">Command descriptor.</param>
+        /// <returns>Enumerable on all pre-execute checks on the command's method and handler type.</returns>
+        public static IEnumerable<CommandRequirementAttribute> GetRequirements(this ICommandInstanceDescriptor descriptor)
+            => descriptor.Method.GetCustomAttributes<CommandRequirementAttribute>(true)
+                .Union(descriptor.GetHandlerType().GetCustomAttributes<CommandRequirementAttribute>(true));
     }
 }

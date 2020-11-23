@@ -173,13 +173,13 @@ namespace TehGM.Wolfringo.Commands
                             instance = CreateCommandInstance(command, out handler);
 
                         // check if the command should run at all - if not, skip
-                        ICommandResult checkResult = await instance.CheckShouldRunAsync(context, this._cts.Token).ConfigureAwait(false);
-                        if (!checkResult.IsSuccess)
+                        ICommandResult matchResult = await instance.CheckMatchAsync(context, this._cts.Token).ConfigureAwait(false);
+                        if (!matchResult.IsSuccess)
                             continue;
 
                         // execute the command
                         _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, checkResult, this._cts.Token).ConfigureAwait(false);
+                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, this._cts.Token).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
                             _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.Method.DeclaringType.Name);
                         break;
