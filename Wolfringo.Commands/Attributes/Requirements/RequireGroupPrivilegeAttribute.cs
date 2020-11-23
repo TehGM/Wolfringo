@@ -7,9 +7,9 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Command requirement that checks if the user has correct group permissions.</summary>
-    /// <seealso cref="RequireOwnerAttribute"/>
-    /// <seealso cref="RequireAdminAttribute"/>
-    /// <seealso cref="RequireModAttribute"/>
+    /// <seealso cref="RequireGroupOwnerAttribute"/>
+    /// <seealso cref="RequireGroupAdminAttribute"/>
+    /// <seealso cref="RequireGroupModAttribute"/>
     public class RequireGroupPrivilegeAttribute : CommandRequirementAttribute
     {
         /// <summary>Flags of privileges that fulfill this requirement.</summary>
