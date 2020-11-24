@@ -17,14 +17,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 throw new ArgumentException($"{this.GetType().Name} can only be used with {typeof(CommandAttribute).Name} commands", nameof(descriptor.Attribute));
 
             // check case sensitiviness, Priority: method attribute, handler attribute, options
-            bool? caseInsensitive = descriptor.Method.GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
-                descriptor.GetHandlerType().GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive;
+            bool? caseSensitive = descriptor.Method.GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive ??
+                descriptor.GetHandlerType().GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive;
 
             // read any additional requirements
             IEnumerable<CommandRequirementAttribute> requirements = descriptor.GetRequirements();
 
             // init instance
-            return new StandardCommandInstance(command.Text, caseInsensitive, descriptor.Method, requirements);
+            return new StandardCommandInstance(command.Text, caseSensitive, descriptor.Method, requirements);
         }
     }
 }

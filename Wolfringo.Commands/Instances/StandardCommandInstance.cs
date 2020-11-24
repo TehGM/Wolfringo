@@ -25,14 +25,14 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly IEnumerable<CommandRequirementAttribute> _requirements;
         private readonly Lazy<Regex> _regexCaseSensitive;
         private readonly Lazy<Regex> _regexCaseInsensitive;
-        private readonly bool? _caseInsensitive;
+        private readonly bool? _caseSensitiveOverride;
 
-        public StandardCommandInstance(string text, bool? caseInsensitive, MethodInfo method, IEnumerable<CommandRequirementAttribute> requirements)
+        public StandardCommandInstance(string text, bool? caseSensitive, MethodInfo method, IEnumerable<CommandRequirementAttribute> requirements)
         {
             this.Text = text.Trim();
             this._method = method;
             this._params = _method.GetParameters();
-            this._caseInsensitive = caseInsensitive;
+            this._caseSensitiveOverride = caseSensitive;
             this._requirements = requirements ?? Enumerable.Empty<CommandRequirementAttribute>();
 
             string pattern = $@"^{this.Text}\b(.*)$";
@@ -43,8 +43,8 @@ namespace TehGM.Wolfringo.Commands.Instances
                 this.HandlerType.GetCustomAttribute<PrefixAttribute>(true);
         }
 
-        public StandardCommandInstance(string text, bool? caseInsensitive, MethodInfo method)
-            : this(text, caseInsensitive, method, Enumerable.Empty<CommandRequirementAttribute>()) { }
+        public StandardCommandInstance(string text, bool? caseSensitive, MethodInfo method)
+            : this(text, caseSensitive, method, Enumerable.Empty<CommandRequirementAttribute>()) { }
 
         /// <inheritdoc/>
         public Task<ICommandResult> CheckMatchAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
@@ -61,20 +61,20 @@ namespace TehGM.Wolfringo.Commands.Instances
             if (message.SenderID == context.Client.CurrentUserID)
                 return FailureResult();
             // check prefix
-            bool caseInsensitive = this._caseInsensitive ?? context.Options.CaseInsensitive;
+            bool caseSensitive = this._caseSensitiveOverride ?? context.Options.CaseSensitivity;
             if (!message.MatchesPrefixRequirement(
                 this._prefixAttribute?.PrefixOverride ?? context.Options.Prefix,
                 this._prefixAttribute?.PrefixRequirementOverride ?? context.Options.RequirePrefix,
-                caseInsensitive, out int startIndex))
+                caseSensitive, out int startIndex))
                 return FailureResult();
             // check command text - ironically, I'll use regex here cause it makes things much simpler
-            Regex regex = caseInsensitive ? _regexCaseInsensitive.Value : _regexCaseSensitive.Value;
+            Regex regex = caseSensitive ? _regexCaseSensitive.Value : _regexCaseInsensitive.Value;
             Match match = regex.Match(message.Text.Substring(startIndex));
             if (match?.Success != true)
                 return FailureResult();
             // parse arguments
             // TODO: allow more advanced scenarios, such as "" - spaces only is just initial
-            string[] args = match.Groups[1].Value.Split(_argSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] args = match.Groups.Count > 1 ? match.Groups[1].Value.Split(_argSeparators, StringSplitOptions.RemoveEmptyEntries) : Array.Empty<string>();
             return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args));
 
             Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(StandardCommandMatchResult.Failure);

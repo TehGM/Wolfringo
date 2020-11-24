@@ -31,14 +31,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public static Type GetHandlerType(this ICommandInstanceDescriptor descriptor)
             => descriptor.Method.DeclaringType;
 
-        /// <summary>Checks if the command is case insensitive.</summary>
+        /// <summary>Checks if the command is case sensitive.</summary>
         /// <param name="descriptor">Command descriptor.</param>
-        /// <param name="defaultValue">Fallback value to use in case of <see cref="CaseInsensitiveAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
-        /// <remarks>See <see cref="CaseInsensitiveAttribute"/> for more information about command case insensitiviness.</remarks>
-        /// <returns>True if the command is case insensitive; otherwise false.</returns>
-        public static bool IsCaseInsensitive(this ICommandInstanceDescriptor descriptor, bool defaultValue)
-            => descriptor.Method.GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
-                descriptor.GetHandlerType().GetCustomAttribute<CaseInsensitiveAttribute>(true)?.CaseInsensitive ??
+        /// <param name="defaultValue">Fallback value to use in case of <see cref="CaseSensitivityAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
+        /// <remarks>See <see cref="CaseSensitivityAttribute"/> for more information about command case senstivity.</remarks>
+        /// <returns>True if the command is case sensitive; otherwise false.</returns>
+        public static bool IsCaseSensitive(this ICommandInstanceDescriptor descriptor, bool defaultValue)
+            => descriptor.Method.GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive ??
+                descriptor.GetHandlerType().GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive ??
                 defaultValue;
 
         /// <summary>Gets command's prefix.</summary>

@@ -17,11 +17,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 throw new ArgumentException($"{this.GetType().Name} can only be used with {typeof(RegexCommandAttribute).Name} commands", nameof(descriptor.Attribute));
 
             // check case sensitiviness, Priority: method attribute, handler attribute, options
-            bool caseInsensitive = descriptor.IsCaseInsensitive(defaultValue: options?.CaseInsensitive ?? false);
+            bool caseSensitive = descriptor.IsCaseSensitive(defaultValue: options?.CaseSensitivity ?? false);
 
             // prepare regex
             RegexOptions regexOptions = regexCommand.Options;
-            if (caseInsensitive)
+            if (!caseSensitive)
                 regexOptions |= RegexOptions.IgnoreCase;
             Regex regex = new Regex(regexCommand.Pattern, regexOptions);
 

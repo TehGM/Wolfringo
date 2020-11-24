@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Commands
         /// <inheritdoc/>
         public string Prefix { get; set; } = "!";
         /// <inheritdoc/>
-        public bool CaseInsensitive { get; set; } = true;
+        public bool CaseSensitivity { get; set; } = false;
         /// <inheritdoc/>
         public PrefixRequirement RequirePrefix { get; set; } = PrefixRequirement.Always;
 

@@ -10,12 +10,12 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="message">Message to check.</param>
         /// <param name="prefix">Prefix.</param>
         /// <param name="requirement">Prefix requirement to check.</param>
-        /// <param name="caseInsensitive">Whether the check should be performed case-insensitively.</param>
+        /// <param name="caseSensitive">Whether the check should be performed case-sensitively.</param>
         /// <param name="startIndex">Index of start of actual command message, without prefix.</param>
         /// <returns>True if the message matches prefix requirement; otherwise false.</returns>
-        public static bool MatchesPrefixRequirement(this ChatMessage message, string prefix, PrefixRequirement requirement, bool caseInsensitive, out int startIndex)
+        public static bool MatchesPrefixRequirement(this ChatMessage message, string prefix, PrefixRequirement requirement, bool caseSensitive, out int startIndex)
         {
-            StringComparison comparison = caseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            StringComparison comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
             bool startsWithPrefix = message.Text.StartsWith(prefix, comparison);
             startIndex = startsWithPrefix ? prefix.Length : 0;
             // if it does start with prefix, we know for sure it matches requirement
@@ -38,6 +38,6 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="startIndex">Index of start of actual command message, without prefix.</param>
         /// <returns>True if the message matches prefix requirement; otherwise false.</returns>
         public static bool MatchesPrefixRequirement(this ChatMessage message, ICommandsOptions options, out int startIndex)
-            => MatchesPrefixRequirement(message, options.Prefix, options.RequirePrefix, options.CaseInsensitive, out startIndex);
+            => MatchesPrefixRequirement(message, options.Prefix, options.RequirePrefix, options.CaseSensitivity, out startIndex);
     }
 }

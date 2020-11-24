@@ -55,7 +55,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             if (!message.MatchesPrefixRequirement(
                 this._prefixAttribute?.PrefixOverride ?? context.Options.Prefix,
                 this._prefixAttribute?.PrefixRequirementOverride ?? context.Options.RequirePrefix,
-                context.Options.CaseInsensitive, out int startIndex))
+                context.Options.CaseSensitivity, out int startIndex))
                 return FailureResult();
 
             // perform regex match
