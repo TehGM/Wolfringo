@@ -28,10 +28,9 @@ namespace TehGM.Wolfringo.Commands
         // TODO: using of CTS as it is kills and point of this. Redesign.
         public CancellationToken CancellationToken { get; set; }
 
-        private ICollection<ICommandInstanceDescriptor> _commands;
         private List<IDisposable> _disposables;
         private readonly SemaphoreSlim _lock;
-        private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _cachedInstances;
+        private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
 
         /// <summary>Initializes a command service.</summary>
         /// <param name="client">WOLF client. Required.</param>
@@ -62,9 +61,9 @@ namespace TehGM.Wolfringo.Commands
             this.CancellationToken = cancellationToken;
 
             // init private
-            this._commands = new List<ICommandInstanceDescriptor>();
+            // Dictionary doesn't necessarily need to preserve order, so we need 2 collections if we want to pre-calculate the priority
+            this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
             this._lock = new SemaphoreSlim(1, 1);
-            this._cachedInstances = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
             this._cts = CancellationTokenSource.CreateLinkedTokenSource(this.CancellationToken);
 
             // register event handlers
@@ -88,6 +87,7 @@ namespace TehGM.Wolfringo.Commands
         }
 
         /// <summary>Starts the Command Service.</summary>
+        /// <remarks>Once already started, calling this method again will cause commands to be re-loaded.</remarks>
         /// <param name="cancellationToken">Cancellation token to cancel loading with.</param>
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {
@@ -99,7 +99,6 @@ namespace TehGM.Wolfringo.Commands
                     this._log?.LogDebug("Initializing commands");
 
                     this._commands.Clear();
-                    this._cachedInstances.Clear();
 
                     // ask loader to load from all specified assemblies and types
                     IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
@@ -116,26 +115,24 @@ namespace TehGM.Wolfringo.Commands
                         // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
                         if (handlerAttribute?.PreInitialize == true)
                         {
-                            _log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.GetHandlerType().Name);
-                            _handlerProvider.GetCommandHandler(descriptor);
+                            this._log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.GetHandlerType().Name);
+                            this._handlerProvider.GetCommandHandler(descriptor);
                         }
 
-                        // for performance: pre-create and cache command instance if it's a persistent one anyway
-                        if (handlerAttribute?.IsPersistent == true)
-                        {
-                            _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.GetHandlerType().Name);
-                            ICommandInstance instance = CreateCommandInstance(descriptor);
-                            _cachedInstances.Add(descriptor, instance);
-                            if (instance is IDisposable disposableInstance)
-                                this._disposables.Add(disposableInstance);
-                        }
+                        // create all command instances
+                        this._log?.LogDebug("Creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.GetHandlerType().Name);
+                        ICommandInitializer initializer = this._initializers.GetMappedInitializer(descriptor.Attribute.GetType());
+                        ICommandInstance instance = initializer.InitializeCommand(descriptor, _options);
+                        this._commands.Add(descriptor, instance);
+
+                        // grab disposables so we can easily dispose them when we dispose this object
+                        if (descriptor is IDisposable disposableDescriptor)
+                            this._disposables.Add(disposableDescriptor);
+                        if (instance is IDisposable disposableInstance)
+                            this._disposables.Add(disposableInstance);
                     }
 
-                    // grab all Disposable command descriptors (if any) for future disposing
-                    this._disposables.AddRange(descriptors.Where(c => c is IDisposable).Cast<IDisposable>());
-
                     // order according to priority and put it into commands storage
-                    this._commands = descriptors.OrderByDescending(c => c.GetPriority()).ToArray();
                     this._log?.LogDebug("{Count} commands loaded", _commands.Count);
                 }
                 finally
@@ -149,11 +146,13 @@ namespace TehGM.Wolfringo.Commands
         {
             // make a copy - this might not be the fastest, but we should use a lock to prevent race conditions with StartAsync
             // and using a lock over the entire method could cause hanging if user is not carefull in their command method. Copying is just safer
-            ICommandInstanceDescriptor[] commandsCopy = new ICommandInstanceDescriptor[_commands.Count];
+            IEnumerable<KeyValuePair<ICommandInstanceDescriptor, ICommandInstance>> commandsCopy;
             await this._lock.WaitAsync(this._cts.Token).ConfigureAwait(false);
             try
             {
-                _commands.CopyTo(commandsCopy, 0);
+                // order commands by priority
+                // try to get from concrete Descriptor if possible, as it should be precached and avoid additional reflection and thus faster
+                commandsCopy = this._commands.OrderByDescending(kvp => (kvp.Key is CommandInstanceDescriptor cid) ? cid.Priority : kvp.Key.GetPriority());
             }
             finally
             {
@@ -161,17 +160,15 @@ namespace TehGM.Wolfringo.Commands
             }
 
             ICommandContext context = new CommandContext(message, this._client, this._options);
-            foreach (ICommandInstanceDescriptor command in commandsCopy)
+            foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
             {
-                using (_log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
+                ICommandInstanceDescriptor command = commandKvp.Key;
+                ICommandInstance instance = commandKvp.Value;
+                using (this._log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                 {
                     ICommandHandlerProviderResult handlerResult = null;
                     try
                     {
-                        // try to get instance from cache - or create if it's not there
-                        if (!_cachedInstances.TryGetValue(command, out ICommandInstance instance))
-                            instance = CreateCommandInstance(command);
-
                         // check if the command should run at all - if not, skip
                         ICommandResult matchResult = await instance.CheckMatchAsync(context, this._services, this._cts.Token).ConfigureAwait(false);
                         if (!matchResult.IsSuccess)
@@ -199,17 +196,11 @@ namespace TehGM.Wolfringo.Commands
                     finally
                     {
                         // if handler is allocated, not persistent and disposable, let's dispose it
-                        if (handlerResult?.Descriptor?.Attribute?.IsPersistent == true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
+                        if (handlerResult?.Descriptor?.Attribute?.IsPersistent != true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
                             try { disposableHandler?.Dispose(); } catch { }
                     }
                 }
             }
-        }
-
-        private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor)
-        {
-            ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());
-            return initializer.InitializeCommand(descriptor, _options);
         }
 
         /// <summary>Disposes the Command Service.</summary>
@@ -223,7 +214,6 @@ namespace TehGM.Wolfringo.Commands
             try { this._cts?.Cancel(); } catch { }
             try { this._cts?.Dispose(); } catch { }
             // purge collections
-            this._cachedInstances?.Clear();
             this._commands?.Clear();
             // dispose all objects (such as instances, descriptors, or services) that implement IDisposable
             foreach (IDisposable disposable in this._disposables)
