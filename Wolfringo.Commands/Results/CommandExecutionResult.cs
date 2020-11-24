@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Commands.Results
         public CommandExecutionResult(bool isSuccess, IEnumerable<string> messages, Exception exception)
         {
             this.IsSuccess = isSuccess;
-            this.Messages = messages ?? Enumerable.Empty<string>();
+            this.Messages = messages?.Where(text => !string.IsNullOrWhiteSpace(text)) ?? Enumerable.Empty<string>();
             this.Exception = exception;
         }
 
