@@ -149,11 +149,11 @@ namespace TehGM.Wolfringo.Commands
         {
             // make a copy - this might not be the fastest, but we should use a lock to prevent race conditions with StartAsync
             // and using a lock over the entire method could cause hanging if user is not carefull in their command method. Copying is just safer
-            IEnumerable<ICommandInstanceDescriptor> commandsCopy;
+            ICommandInstanceDescriptor[] commandsCopy = new ICommandInstanceDescriptor[_commands.Count];
             await this._lock.WaitAsync(this._cts.Token).ConfigureAwait(false);
             try
             {
-                 commandsCopy = _commands.ToArray();
+                _commands.CopyTo(commandsCopy, 0);
             }
             finally
             {
