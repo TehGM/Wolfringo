@@ -31,33 +31,26 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public static Type GetHandlerType(this ICommandInstanceDescriptor descriptor)
             => descriptor.Method.DeclaringType;
 
-        /// <summary>Checks if the command is case sensitive.</summary>
-        /// <param name="descriptor">Command descriptor.</param>
-        /// <param name="defaultValue">Fallback value to use in case of <see cref="CaseSensitivityAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
+        /// <summary>Checks if the command is overriding default case sensitivity.</summary>
         /// <remarks>See <see cref="CaseSensitivityAttribute"/> for more information about command case senstivity.</remarks>
-        /// <returns>True if the command is case sensitive; otherwise false.</returns>
-        public static bool IsCaseSensitive(this ICommandInstanceDescriptor descriptor, bool defaultValue)
+        /// <returns>True/false if command is overriding case sensitivity - true to be case sensitive, false to be case insensitive; null if not overriding.</returns>
+        public static bool? GetCaseSensitivityOverride(this ICommandInstanceDescriptor descriptor)
             => descriptor.Method.GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive ??
-                descriptor.GetHandlerType().GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive ??
-                defaultValue;
+                descriptor.GetHandlerType().GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive;
 
-        /// <summary>Gets command's prefix.</summary>
+        /// <summary>Gets command's prefix override.</summary>
         /// <param name="descriptor">Command descriptor.</param>
-        /// <param name="defaultValue">Fallback value to use in case of <see cref="PrefixAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
         /// <returns>Prefix value.</returns>
-        public static string GetPrefix(this ICommandInstanceDescriptor descriptor, string defaultValue)
+        public static string GetPrefixOverride(this ICommandInstanceDescriptor descriptor)
             => descriptor.Method.GetCustomAttribute<PrefixAttribute>(true)?.PrefixOverride ??
-                descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixOverride ??
-                defaultValue;
+                descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixOverride;
 
-        /// <summary>Gets command's prefix requirement.</summary>
+        /// <summary>Gets command's prefix requirement override.</summary>
         /// <param name="descriptor">Command descriptor.</param>
-        /// <param name="defaultValue">Fallback value to use in case of <see cref="PrefixAttribute"/> not being set on command method or handler. This is likely a value specified by <see cref="ICommandsOptions"/>.</param>
         /// <returns>Prefix requirement value.</returns>
-        public static PrefixRequirement GetPrefixRequirement(this ICommandInstanceDescriptor descriptor, PrefixRequirement defaultValue)
+        public static PrefixRequirement? GetPrefixRequirementOverride(this ICommandInstanceDescriptor descriptor)
             => descriptor.Method.GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride ??
-                descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride ??
-                defaultValue;
+                descriptor.GetHandlerType().GetCustomAttribute<PrefixAttribute>(true)?.PrefixRequirementOverride;
 
         /// <summary>Gets command's pre-execute checks.</summary>
         /// <param name="descriptor">Command descriptor.</param>

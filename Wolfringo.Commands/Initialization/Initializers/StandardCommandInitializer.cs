@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using TehGM.Wolfringo.Commands.Instances;
 
 namespace TehGM.Wolfringo.Commands.Initialization
@@ -16,15 +14,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (!(descriptor.Attribute is CommandAttribute command))
                 throw new ArgumentException($"{this.GetType().Name} can only be used with {typeof(CommandAttribute).Name} commands", nameof(descriptor.Attribute));
 
-            // check case sensitiviness, Priority: method attribute, handler attribute, options
-            bool? caseSensitive = descriptor.Method.GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive ??
-                descriptor.GetHandlerType().GetCustomAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive;
-
-            // read any additional requirements
-            IEnumerable<CommandRequirementAttribute> requirements = descriptor.GetRequirements();
-
             // init instance
-            return new StandardCommandInstance(command.Text, caseSensitive, descriptor.Method, requirements);
+            return new StandardCommandInstance(
+                text: command.Text,
+                method: descriptor.Method,
+                requirements: descriptor.GetRequirements(),
+                prefixOverride: descriptor.GetPrefixOverride(),
+                prefixRequirementOverride: descriptor.GetPrefixRequirementOverride(),
+                caseSensitivityOverride: descriptor.GetCaseSensitivityOverride());
         }
     }
 }

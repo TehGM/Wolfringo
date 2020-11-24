@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using TehGM.Wolfringo.Commands.Instances;
 
 namespace TehGM.Wolfringo.Commands.Initialization
@@ -16,20 +14,15 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (!(descriptor.Attribute is RegexCommandAttribute regexCommand))
                 throw new ArgumentException($"{this.GetType().Name} can only be used with {typeof(RegexCommandAttribute).Name} commands", nameof(descriptor.Attribute));
 
-            // check case sensitiviness, Priority: method attribute, handler attribute, options
-            bool caseSensitive = descriptor.IsCaseSensitive(defaultValue: options?.CaseSensitivity ?? false);
-
-            // prepare regex
-            RegexOptions regexOptions = regexCommand.Options;
-            if (!caseSensitive)
-                regexOptions |= RegexOptions.IgnoreCase;
-            Regex regex = new Regex(regexCommand.Pattern, regexOptions);
-
-            // read any additional requirements
-            IEnumerable<CommandRequirementAttribute> requirements = descriptor.GetRequirements();
-
             // init instance
-            return new RegexCommandInstance(regex, descriptor.Method, requirements);
+            return new RegexCommandInstance(
+                pattern: regexCommand.Pattern,
+                regexOptions: regexCommand.Options,
+                method: descriptor.Method,
+                requirements: descriptor.GetRequirements(),
+                prefixOverride: descriptor.GetPrefixOverride(),
+                prefixRequirementOverride: descriptor.GetPrefixRequirementOverride(),
+                caseSensitivityOverride: descriptor.GetCaseSensitivityOverride());
         }
     }
 }

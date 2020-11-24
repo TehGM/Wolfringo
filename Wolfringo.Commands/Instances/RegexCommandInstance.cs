@@ -6,36 +6,44 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Results;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TehGM.Wolfringo.Commands.Instances
 {
     /// <summary>Represents a regex command instance.</summary>
     public class RegexCommandInstance : ICommandInstance
     {
-        /// <summary>Regex this command will be triggered for.</summary>
-        public Regex Regex { get; }
+        /// <summary>Regex pattern that triggers this command.</summary>
+        public string Pattern { get; }
+        /// <summary>Method that will be executed.</summary>
+        public MethodInfo Method { get; }
+        /// <summary>Execution requirements.</summary>
+        public IEnumerable<CommandRequirementAttribute> Requirements { get; }
+        /// <summary>Prefix override; null for no overriding.</summary>
+        public string PrefixOverride { get; }
+        /// <summary>Prefix requireent override; null for no overriding.</summary>
+        public PrefixRequirement? PrefixRequirementOverride { get; }
+        /// <summary>Case sensitivity override; null for no overriding.</summary>
+        public bool? CaseSensitivityOverride { get; }
         /// <summary>Type of the handler containing the command.</summary>
-        public Type HandlerType => _method.DeclaringType;
+        public Type HandlerType => this.Method.DeclaringType;
 
-        private readonly MethodInfo _method;
+        private readonly Lazy<Regex> _caseSensitiveRegex;
+        private readonly Lazy<Regex> _caseInsensitiveRegex;
         private readonly ParameterInfo[] _params;
-        private readonly PrefixAttribute _prefixAttribute;
-        private readonly IEnumerable<CommandRequirementAttribute> _requirements;
 
-        public RegexCommandInstance(Regex regex, MethodInfo method, IEnumerable<CommandRequirementAttribute> requirements)
+        public RegexCommandInstance(string pattern, RegexOptions regexOptions, MethodInfo method, IEnumerable<CommandRequirementAttribute> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
         {
-            this.Regex = regex;
-            this._method = method;
-            this._params = _method.GetParameters();
-            this._requirements = requirements ?? Enumerable.Empty<CommandRequirementAttribute>();
+            this.Pattern = pattern;
+            this.Method = method;
+            this.Requirements = requirements;
+            this.PrefixOverride = prefixOverride;
+            this.PrefixRequirementOverride = prefixRequirementOverride;
+            this.CaseSensitivityOverride = caseSensitivityOverride;
 
-            this._prefixAttribute = this._method.GetCustomAttribute<PrefixAttribute>(true) ?? 
-                this.HandlerType.GetCustomAttribute<PrefixAttribute>(true);
+            this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions & ~RegexOptions.IgnoreCase));
+            this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions | RegexOptions.IgnoreCase));
+            this._params = method.GetParameters();
         }
-
-        public RegexCommandInstance(Regex regex, MethodInfo method)
-            : this(regex, method, Enumerable.Empty<CommandRequirementAttribute>()) { }
 
         /// <inheritdoc/>
         public Task<ICommandResult> CheckMatchAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
@@ -52,14 +60,16 @@ namespace TehGM.Wolfringo.Commands.Instances
             if (message.SenderID == context.Client.CurrentUserID)
                 return FailureResult();
             // check prefix
+            bool caseSensitive = this.CaseSensitivityOverride ?? context.Options.CaseSensitivity;
             if (!message.MatchesPrefixRequirement(
-                this._prefixAttribute?.PrefixOverride ?? context.Options.Prefix,
-                this._prefixAttribute?.PrefixRequirementOverride ?? context.Options.RequirePrefix,
-                context.Options.CaseSensitivity, out int startIndex))
+                this.PrefixOverride ?? context.Options.Prefix,
+                this.PrefixRequirementOverride ?? context.Options.RequirePrefix,
+                caseSensitive, out int startIndex))
                 return FailureResult();
 
             // perform regex match
-            Match match = this.Regex.Match(message.Text, startIndex);
+            Regex regex = caseSensitive ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
+            Match match = regex.Match(message.Text, startIndex);
             if (match?.Success != true)
                 return FailureResult();
             return Task.FromResult<ICommandResult>(RegexCommandMatchResult.Success(match));
@@ -79,7 +89,7 @@ namespace TehGM.Wolfringo.Commands.Instances
                 throw new ArgumentException($"{nameof(matchResult)} must be of type {typeof(RegexCommandMatchResult).FullName}", nameof(matchResult));
 
             // run all custom attributes
-            foreach (CommandRequirementAttribute check in _requirements)
+            foreach (CommandRequirementAttribute check in this.Requirements)
             {
                 if (!await check.RunAsync(context, services, cancellationToken).ConfigureAwait(false))
                     return new CommandExecutionResult(false, new string[] { check.ErrorMessage }, null);
@@ -117,7 +127,7 @@ namespace TehGM.Wolfringo.Commands.Instances
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();
-            if (_method.Invoke(handler, paramsValues) is Task returnTask)
+            if (this.Method.Invoke(handler, paramsValues) is Task returnTask)
                 await returnTask.ConfigureAwait(false);
             return CommandExecutionResult.Success;
         }
