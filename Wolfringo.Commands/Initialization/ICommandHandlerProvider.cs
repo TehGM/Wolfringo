@@ -5,7 +5,7 @@
     {
         /// <summary>Resolves a command handler instance.</summary>
         /// <param name="descriptor">Descriptor of the command instance.</param>
-        /// <returns>An instance of a command handler.</returns>
-        object GetCommandHandler(ICommandInstanceDescriptor descriptor);
+        /// <returns>A result of the command handler initialization.</returns>
+        ICommandHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor);
     }
 }
