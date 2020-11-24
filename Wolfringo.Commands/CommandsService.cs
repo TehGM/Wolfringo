@@ -180,9 +180,14 @@ namespace TehGM.Wolfringo.Commands
                         // execute the command
                         _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
                         handlerResult = _handlerProvider.GetCommandHandler(command);
+                        if (handlerResult?.HandlerInstance == null)
+                        {
+                            _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
+                            break;
+                        }
                         ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, this._cts.Token).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
-                            _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.Method.DeclaringType.Name);
+                            _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.GetHandlerType().Name);
                         break;
                     }
                     catch (OperationCanceledException)
@@ -194,7 +199,7 @@ namespace TehGM.Wolfringo.Commands
                     finally
                     {
                         // if handler is allocated, not persistent and disposable, let's dispose it
-                        if (handlerResult.Descriptor.Attribute.IsPersistent && handlerResult.HandlerInstance is IDisposable disposableHandler)
+                        if (handlerResult?.Descriptor?.Attribute?.IsPersistent == true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
                             try { disposableHandler?.Dispose(); } catch { }
                     }
                 }
