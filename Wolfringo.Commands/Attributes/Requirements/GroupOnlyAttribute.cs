@@ -4,9 +4,13 @@ using System.Threading.Tasks;
 namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Command requirement that checks if message is a group message.</summary>
+    /// <remarks><para>Default <see cref="CommandRequirementAttribute.ErrorMessage"/> for this requirement is "(n) This command can be used in groups only.".</para></remarks>
     /// <seealso cref="PrivateOnlyAttribute"/>
     public class GroupOnlyAttribute : CommandRequirementAttribute
     {
+        public GroupOnlyAttribute() : base() 
+            => ErrorMessage = "(n) This command can be used in groups only.";
+
         /// <inheritdoc/>
         public override Task<bool> RunAsync(ICommandContext context, CancellationToken cancellationToken = default)
             => Task.FromResult<bool>(context.Message.IsGroupMessage);

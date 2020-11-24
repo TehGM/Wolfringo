@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands.Initialization;
+using TehGM.Wolfringo.Commands.Results;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities.Internal;
 
@@ -61,7 +63,6 @@ namespace TehGM.Wolfringo.Commands
             this.CancellationToken = cancellationToken;
 
             // init private
-            // Dictionary doesn't necessarily need to preserve order, so we need 2 collections if we want to pre-calculate the priority
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
             this._lock = new SemaphoreSlim(1, 1);
             this._cts = CancellationTokenSource.CreateLinkedTokenSource(this.CancellationToken);
@@ -183,8 +184,13 @@ namespace TehGM.Wolfringo.Commands
                             break;
                         }
                         ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, this._cts.Token).ConfigureAwait(false);
-                        if (!executeResult.IsSuccess)
-                            _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.GetHandlerType().Name);
+                        if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
+                        {
+                            bool replyGroup = context.Message.IsGroupMessage;
+                            uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
+                            string text = string.Join("\n", messagesResult.Messages);
+                            await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), this._cts.Token).ConfigureAwait(false);
+                        }
                         break;
                     }
                     catch (OperationCanceledException)

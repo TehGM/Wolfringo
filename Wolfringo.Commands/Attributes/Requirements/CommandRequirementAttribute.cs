@@ -8,6 +8,9 @@ namespace TehGM.Wolfringo.Commands
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public abstract class CommandRequirementAttribute : Attribute
     {
+        /// <summary>The message that bot should reply with if requirement was not fulfilled.</summary>
+        public string ErrorMessage { get; set; }
+
         /// <summary>Checks requirement.</summary>
         /// <param name="context">Command to check the requirement for.</param>
         /// <param name="cancellationToken">Token for cancelling the task.</param>

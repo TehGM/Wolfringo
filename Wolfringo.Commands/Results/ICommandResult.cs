@@ -1,4 +1,4 @@
-﻿namespace TehGM.Wolfringo.Commands
+﻿namespace TehGM.Wolfringo.Commands.Results
 {
     /// <summary>Represents result of any command execution or check.</summary>
     public interface ICommandResult

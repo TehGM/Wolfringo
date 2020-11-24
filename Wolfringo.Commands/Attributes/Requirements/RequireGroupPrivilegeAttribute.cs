@@ -7,6 +7,7 @@ using TehGM.Wolfringo.Messages.Responses;
 namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Command requirement that checks if the user has correct group permissions.</summary>
+    /// <remarks><para>Default <see cref="CommandRequirementAttribute.ErrorMessage"/> for this requirement is "(n) You don't have enough group privileges to execute this command.".</para></remarks>
     /// <seealso cref="RequireGroupOwnerAttribute"/>
     /// <seealso cref="RequireGroupAdminAttribute"/>
     /// <seealso cref="RequireGroupModAttribute"/>
@@ -27,9 +28,10 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="privileges">Flags of privileges that fulfill this requirement.</param>
         /// <remarks>Only one of the privileges has to match. For example, Owner | Admin matches if user is either Owner or Admin.</remarks>
         /// <seealso cref="Privileges"/>
-        public RequireGroupPrivilegeAttribute(WolfGroupCapabilities privileges)
+        public RequireGroupPrivilegeAttribute(WolfGroupCapabilities privileges) : base()
         {
             this.Privileges = privileges;
+            base.ErrorMessage = "(n) You don't have enough group privileges to execute this command.";
         }
 
         /// <inheritdoc/>

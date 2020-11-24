@@ -82,7 +82,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             foreach (CommandRequirementAttribute check in _requirements)
             {
                 if (!await check.RunAsync(context, cancellationToken).ConfigureAwait(false))
-                    return CommandExecutionResult.Failure;
+                    return new CommandExecutionResult(false, new string[] { check.ErrorMessage });
             }
 
             // build params
