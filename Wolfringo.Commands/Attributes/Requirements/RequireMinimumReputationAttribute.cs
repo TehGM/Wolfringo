@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands
         }
 
         /// <inheritdoc/>
-        public override async Task<bool> RunAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+        public override async Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             WolfUser user = await context.GetSenderAsync(cancellationToken).ConfigureAwait(false);
             return user.Reputation >= this.MinimumReputation;

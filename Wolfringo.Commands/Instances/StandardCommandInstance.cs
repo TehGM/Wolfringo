@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Commands.Instances
         /// <summary>Method that will be executed.</summary>
         public MethodInfo Method { get; }
         /// <summary>Execution requirements.</summary>
-        public IEnumerable<CommandRequirementAttribute> Requirements { get; }
+        public IEnumerable<ICommandRequirement> Requirements { get; }
         /// <summary>Prefix override; null for no overriding.</summary>
         public string PrefixOverride { get; }
         /// <summary>Prefix requireent override; null for no overriding.</summary>
@@ -33,7 +33,7 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly Lazy<Regex> _caseInsensitiveRegex;
         private readonly ParameterInfo[] _params;
 
-        public StandardCommandInstance(string text, MethodInfo method, IEnumerable<CommandRequirementAttribute> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
+        public StandardCommandInstance(string text, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
         {
             this.Text = text.Trim();
             this.Method = method;
@@ -94,9 +94,9 @@ namespace TehGM.Wolfringo.Commands.Instances
                 throw new ArgumentException($"{nameof(matchResult)} must be of type {typeof(StandardCommandMatchResult).FullName}", nameof(matchResult));
 
             // run all custom attributes
-            foreach (CommandRequirementAttribute check in this.Requirements)
+            foreach (ICommandRequirement check in this.Requirements)
             {
-                if (!await check.RunAsync(context, services, cancellationToken).ConfigureAwait(false))
+                if (!await check.CheckAsync(context, services, cancellationToken).ConfigureAwait(false))
                     return new CommandExecutionResult(false, new string[] { check.ErrorMessage }, null);
             }
 

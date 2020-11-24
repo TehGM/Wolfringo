@@ -36,7 +36,7 @@ namespace TehGM.Wolfringo.Commands
         }
 
         /// <inheritdoc/>
-        public override Task<bool> RunAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+        public override Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             if (!context.Message.IsGroupMessage)
                 return Task.FromResult(IgnoreInPrivate);
