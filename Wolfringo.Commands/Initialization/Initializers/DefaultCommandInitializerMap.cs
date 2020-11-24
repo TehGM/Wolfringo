@@ -30,8 +30,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <inheritdoc/>
         public ICommandInitializer GetMappedInitializer(Type commandAttributeType)
         {
-            this._map.TryGetValue(commandAttributeType, out ICommandInitializer result);
-            return result;
+            lock (_map)
+            {
+                this._map.TryGetValue(commandAttributeType, out ICommandInitializer result);
+                return result;
+            }
         }
 
         /// <inheritdoc/>
@@ -42,15 +45,20 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             if (!typeof(CommandAttributeBase).IsAssignableFrom(commandAttributeType))
                 throw new ArgumentException($"Command attribute type must inherit from {typeof(CommandAttributeBase).Name}", nameof(commandAttributeType));
-            this._map[commandAttributeType] = initializer;
+            lock (_map)
+                this._map[commandAttributeType] = initializer;
         }
 
         /// <summary>Disposes the map.</summary>
         /// <remarks>If any of the mapped initializers implements <see cref="IDisposable"/>, it'll also be disposed.</remarks>
         public void Dispose()
         {
-            IEnumerable<object> disposables = _map.Values.Where(c => c is IDisposable);
-            _map.Clear();
+            IEnumerable<object> disposables;
+            lock (_map)
+            {
+                disposables = _map.Values.Where(c => c is IDisposable);
+                _map.Clear();
+            }
             foreach (object disposable in disposables)
                 try { (disposable as IDisposable)?.Dispose(); } catch { }
         }

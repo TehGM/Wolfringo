@@ -24,8 +24,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <inheritdoc/>
         public object GetService(Type serviceType)
         {
-            this._services.TryGetValue(serviceType, out object result);
-            return result;
+            lock (_services)
+            {
+                this._services.TryGetValue(serviceType, out object result);
+                return result;
+            }
         }
     }
 }

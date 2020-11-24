@@ -111,9 +111,13 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <remarks>Any persistent handler that implements <see cref="IDisposable"/> will also be disposed.</remarks>
         public void Dispose()
         {
-            IEnumerable<object> disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);
-            this._knownHandlerDescriptors.Clear();
-            this._persistentHandlers.Clear();
+            IEnumerable<object> disposableHandlers;
+            lock (_lock)
+            {
+                disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);
+                this._knownHandlerDescriptors.Clear();
+                this._persistentHandlers.Clear();
+            }
             foreach (object handler in disposableHandlers)
                 try { (handler as IDisposable).Dispose(); } catch { }
         }
