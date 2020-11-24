@@ -117,15 +117,8 @@ namespace TehGM.Wolfringo.Commands.Instances
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();
-            try
-            {
-                if (_method.Invoke(handler, paramsValues) is Task returnTask)
-                    await returnTask.ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                return CommandExecutionResult.FromException(ex);
-            }
+            if (_method.Invoke(handler, paramsValues) is Task returnTask)
+                await returnTask.ConfigureAwait(false);
             return CommandExecutionResult.Success;
         }
     }

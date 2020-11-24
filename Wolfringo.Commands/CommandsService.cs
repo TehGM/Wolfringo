@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ using TehGM.Wolfringo.Utilities.Internal;
 namespace TehGM.Wolfringo.Commands
 {
     /// <summary>A service that deals with commands loading, initialization and execution.</summary>
-    /// <remarks><para>This is a base service that runs the commands. It'll manage all other parts of Commands System.</para>
+    /// <remarks><para>This is a default service that runs the commands. It'll manage all other parts of Commands System.</para>
     /// <para>This command service can be customized partially by injecting custom services into its constructor. If these services are set to default or skipped, default instances will be automatically created and used, similarly to <see cref="WolfClient"/>.</para></remarks>
     public class CommandsService : ICommandsService, IDisposable
     {
@@ -25,12 +26,11 @@ namespace TehGM.Wolfringo.Commands
         private readonly ICommandInitializerMap _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly ILogger _log;
-        private readonly CancellationTokenSource _cts;
-
-        // TODO: using of CTS as it is kills and point of this. Redesign.
-        public CancellationToken CancellationToken { get; set; }
+        private CancellationTokenSource _cts;
 
         private List<IDisposable> _disposables;
+        private readonly bool _disposeHandlerProvider;
+        private bool _started;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
 
@@ -42,7 +42,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="initializers">Map of command initializers for each command attribute. Null will cause a default to be used.</param>
         /// <param name="commandsLoader">Service that loads command attributes from assemblies and types. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
-        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks. If not provided, task cancellation will not be possible.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
         public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
@@ -56,16 +56,16 @@ namespace TehGM.Wolfringo.Commands
             if (this._handlerProvider == null)
             {
                 this._handlerProvider = new CommandHandlerProvider(this._services);
-                this._disposables.Add(this._handlerProvider as IDisposable);
+                this._disposeHandlerProvider = true;
             }
             this._initializers = initializers ?? new DefaultCommandInitializerMap();
             this._commandsLoader = commandsLoader ?? new DefaultCommandsLoader(this._initializers, this._log);
-            this.CancellationToken = cancellationToken;
 
             // init private
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
+            this._disposables = new List<IDisposable>();
             this._lock = new SemaphoreSlim(1, 1);
-            this._cts = CancellationTokenSource.CreateLinkedTokenSource(this.CancellationToken);
+            this._cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
@@ -87,12 +87,11 @@ namespace TehGM.Wolfringo.Commands
             return new SimpleServiceProvider(servicesMap);
         }
 
-        /// <summary>Starts the Command Service.</summary>
+        /// <inheritdoc/>
         /// <remarks>Once already started, calling this method again will cause commands to be re-loaded.</remarks>
-        /// <param name="cancellationToken">Cancellation token to cancel loading with.</param>
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {
-            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token))
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._cts.Token))
             {
                 await this._lock.WaitAsync(cts.Token).ConfigureAwait(false);
                 try
@@ -100,6 +99,7 @@ namespace TehGM.Wolfringo.Commands
                     this._log?.LogDebug("Initializing commands");
 
                     this._commands.Clear();
+                    this._disposables.Clear();
 
                     // ask loader to load from all specified assemblies and types
                     IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
@@ -133,7 +133,12 @@ namespace TehGM.Wolfringo.Commands
                             this._disposables.Add(disposableInstance);
                     }
 
-                    // order according to priority and put it into commands storage
+                    // re-add handler provider to disposables if needed
+                    if (_disposeHandlerProvider)
+                        this._disposables.Add(this._handlerProvider as IDisposable);
+
+                    // mark as started
+                    this._started = true;
                     this._log?.LogDebug("{Count} commands loaded", _commands.Count);
                 }
                 finally
@@ -143,90 +148,115 @@ namespace TehGM.Wolfringo.Commands
             }
         }
 
-        private void OnMessageReceived(ChatMessage message)
-        {
-            ICommandContext context = new CommandContext(message, this._client, this._options);
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await ExecuteAsync(context, this.CancellationToken);
-                }
-                catch (Exception ex) when (ex.LogAsError(this._log, "Unhandled exception when executing commands")) { }
-            });
-        }
+        // 2 ways to handle errors:
+        // if executed from OnMessageReceived event handler, we need to capture all errors and log them, otherwise they're lost - ExecuteAsyncInternal will log per-command scope, so we just need to catch whatever was outside
+        // for the public ExecuteAsync, assume caller will handle exceptions on their own - for this reason, capture exception from ICommandResult, and rethrow it. Use ExceptionDispatchInfo to not lose stack trace
 
-        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        private async void OnMessageReceived(ChatMessage message)
         {
-            // make a copy - this might not be the fastest, but we should use a lock to prevent race conditions with StartAsync
-            // and using a lock over the entire method could cause hanging if user is not carefull in their command method. Copying is just safer
-            IEnumerable<KeyValuePair<ICommandInstanceDescriptor, ICommandInstance>> commandsCopy;
-            await this._lock.WaitAsync(this._cts.Token).ConfigureAwait(false);
+            if (!this._started)
+                return;
             try
             {
-                // order commands by priority
-                // try to get from concrete Descriptor if possible, as it should be precached and avoid additional reflection and thus faster
-                commandsCopy = this._commands.OrderByDescending(kvp => (kvp.Key is CommandInstanceDescriptor cid) ? cid.Priority : kvp.Key.GetPriority());
+                ICommandContext context = new CommandContext(message, this._client, this._options);
+                await ExecuteAsyncInternal(context).ConfigureAwait(false);
             }
-            finally
-            {
-                this._lock.Release();
-            }
+            catch (Exception ex) when (ex.LogAsError(this._log, "Unhandled exception when executing commands")) { }
+        }
 
-            foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
+        /// <inheritdoc/>
+        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        {
+            ICommandResult result = await ExecuteAsyncInternal(context, cancellationToken).ConfigureAwait(false);
+            if (result.Exception != null)
+                ExceptionDispatchInfo.Capture(result.Exception).Throw();
+            return result;
+        }
+
+        private async Task<ICommandResult> ExecuteAsyncInternal(ICommandContext context, CancellationToken cancellationToken = default)
+        {
+            if (!this._started)
+                throw new InvalidOperationException($"This {this.GetType().Name} is not started yet");
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._cts.Token))
             {
-                ICommandInstanceDescriptor command = commandKvp.Key;
-                ICommandInstance instance = commandKvp.Value;
-                using (this._log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
+                IEnumerable<KeyValuePair<ICommandInstanceDescriptor, ICommandInstance>> commandsCopy;
+                // copying might not be the fastest thing to do, but it'll ensure that commands won't be changed out of the lock
+                // locking only copying to prevent hangs if user is not careful with their commands, while still preventing race conditions with StartAsync
+                await this._lock.WaitAsync(cts.Token).ConfigureAwait(false);
+                try
                 {
-                    ICommandHandlerProviderResult handlerResult = null;
-                    try
-                    {
-                        // check if the command should run at all - if not, skip
-                        ICommandResult matchResult = await instance.CheckMatchAsync(context, this._services, this._cts.Token).ConfigureAwait(false);
-                        if (!matchResult.IsSuccess)
-                            continue;
+                    // order commands by priority
+                    // try to get from concrete Descriptor if possible, as it should be precached and avoid additional reflection and thus faster
+                    commandsCopy = this._commands.OrderByDescending(kvp => (kvp.Key is CommandInstanceDescriptor cid) ? cid.Priority : kvp.Key.GetPriority());
+                }
+                finally
+                {
+                    this._lock.Release();
+                }
 
-                        // execute the command
-                        _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                        handlerResult = _handlerProvider.GetCommandHandler(command);
-                        if (handlerResult?.HandlerInstance == null)
+                foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
+                {
+                    ICommandInstanceDescriptor command = commandKvp.Key;
+                    ICommandInstance instance = commandKvp.Value;
+                    using (this._log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
+                    {
+                        ICommandHandlerProviderResult handlerResult = null;
+                        try
                         {
-                            _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
-                            return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandHandlerProviderResult.HandlerInstance),
-                                $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
+                            cts.Token.ThrowIfCancellationRequested();
+
+                            // check if the command should run at all - if not, skip
+                            ICommandResult matchResult = await instance.CheckMatchAsync(context, this._services, cts.Token).ConfigureAwait(false);
+                            if (!matchResult.IsSuccess)
+                                continue;
+
+                            // initialize handler
+                            _log?.LogTrace("Initializing handler handler {Handler} for command {Name}", command.GetHandlerType().Name, command.Method.Name);
+                            handlerResult = _handlerProvider.GetCommandHandler(command);
+                            if (handlerResult?.HandlerInstance == null)
+                            {
+                                _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
+                                return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandHandlerProviderResult.HandlerInstance),
+                                    $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
+                            }
+                            _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+
+                            // execute the command
+                            ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
+                            if (executeResult.Exception != null)
+                            {
+                                this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+                                return executeResult;
+                            }
+                            if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
+                            {
+                                this._log?.LogTrace("Sending command results messages as a command response");
+                                bool replyGroup = context.Message.IsGroupMessage;
+                                uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
+                                string text = string.Join("\n", messagesResult.Messages);
+                                await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cts.Token).ConfigureAwait(false);
+                            }
+                            return executeResult;
                         }
-                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, this._cts.Token).ConfigureAwait(false);
-                        if (executeResult.Exception != null)
-                            this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                        if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
+                        catch (OperationCanceledException ex)
                         {
-                            this._log?.LogTrace("Sending command results messages as a command response");
-                            bool replyGroup = context.Message.IsGroupMessage;
-                            uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
-                            string text = string.Join("\n", messagesResult.Messages);
-                            await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), this._cts.Token).ConfigureAwait(false);
+                            _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
+                            return CommandExecutionResult.FromException(ex);
                         }
-                        return executeResult;
-                    }
-                    catch (OperationCanceledException ex)
-                    {
-                        _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
-                        return CommandExecutionResult.FromException(ex);
-                    }
-                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
-                    {
-                        return CommandExecutionResult.FromException(ex);
-                    }
-                    finally
-                    {
-                        // if handler is allocated, not persistent and disposable, let's dispose it
-                        if (handlerResult?.Descriptor?.Attribute?.IsPersistent != true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
-                            try { disposableHandler?.Dispose(); } catch { }
+                        catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
+                        {
+                            return CommandExecutionResult.FromException(ex);
+                        }
+                        finally
+                        {
+                            // if handler is allocated, not persistent and disposable, let's dispose it
+                            if (handlerResult?.Descriptor?.Attribute?.IsPersistent != true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
+                                try { disposableHandler?.Dispose(); } catch { }
+                        }
                     }
                 }
+                return CommandExecutionResult.Failure;
             }
-            return CommandExecutionResult.Failure;
         }
 
         /// <summary>Disposes the Command Service.</summary>
