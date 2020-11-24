@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Commands
     public class RegexCommandAttribute : CommandAttributeBase
     {
         /// <summary>Default regex options for the regex command.</summary>
-        public const RegexOptions DefaultOptions = RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.Compiled;
+        public const RegexOptions DefaultOptions = RegexOptions.CultureInvariant | RegexOptions.Singleline;
 
         /// <summary>Regex pattern for the command.</summary>
         public string Pattern { get; }
