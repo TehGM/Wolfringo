@@ -16,7 +16,7 @@ namespace TehGM.Wolfringo.Commands
     /// <summary>A service that deals with commands loading, initialization and execution.</summary>
     /// <remarks><para>This is a base service that runs the commands. It'll manage all other parts of Commands System.</para>
     /// <para>This command service can be customized partially by injecting custom services into its constructor. If these services are set to default or skipped, default instances will be automatically created and used, similarly to <see cref="WolfClient"/>.</para></remarks>
-    public class CommandsService : IDisposable
+    public class CommandsService : ICommandsService, IDisposable
     {
         private readonly IWolfClient _client;
         private readonly CommandsOptions _options;
@@ -143,7 +143,20 @@ namespace TehGM.Wolfringo.Commands
             }
         }
 
-        private async void OnMessageReceived(ChatMessage message)
+        private void OnMessageReceived(ChatMessage message)
+        {
+            ICommandContext context = new CommandContext(message, this._client, this._options);
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await ExecuteAsync(context, this.CancellationToken);
+                }
+                catch (Exception ex) when (ex.LogAsError(this._log, "Unhandled exception when executing commands")) { }
+            });
+        }
+
+        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
         {
             // make a copy - this might not be the fastest, but we should use a lock to prevent race conditions with StartAsync
             // and using a lock over the entire method could cause hanging if user is not carefull in their command method. Copying is just safer
@@ -160,7 +173,6 @@ namespace TehGM.Wolfringo.Commands
                 this._lock.Release();
             }
 
-            ICommandContext context = new CommandContext(message, this._client, this._options);
             foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
             {
                 ICommandInstanceDescriptor command = commandKvp.Key;
@@ -181,24 +193,31 @@ namespace TehGM.Wolfringo.Commands
                         if (handlerResult?.HandlerInstance == null)
                         {
                             _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
-                            break;
+                            return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandHandlerProviderResult.HandlerInstance),
+                                $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
                         }
                         ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, this._cts.Token).ConfigureAwait(false);
+                        if (executeResult.Exception != null)
+                            this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
                         if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
                         {
+                            this._log?.LogTrace("Sending command results messages as a command response");
                             bool replyGroup = context.Message.IsGroupMessage;
                             uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
                             string text = string.Join("\n", messagesResult.Messages);
                             await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), this._cts.Token).ConfigureAwait(false);
                         }
-                        break;
+                        return executeResult;
                     }
-                    catch (OperationCanceledException)
+                    catch (OperationCanceledException ex)
                     {
                         _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
-                        return;
+                        return CommandExecutionResult.FromException(ex);
                     }
-                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name)) { return; }
+                    catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
+                    {
+                        return CommandExecutionResult.FromException(ex);
+                    }
                     finally
                     {
                         // if handler is allocated, not persistent and disposable, let's dispose it
@@ -207,6 +226,7 @@ namespace TehGM.Wolfringo.Commands
                     }
                 }
             }
+            return CommandExecutionResult.Failure;
         }
 
         /// <summary>Disposes the Command Service.</summary>

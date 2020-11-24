@@ -82,7 +82,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             foreach (CommandRequirementAttribute check in _requirements)
             {
                 if (!await check.RunAsync(context, services, cancellationToken).ConfigureAwait(false))
-                    return new CommandExecutionResult(false, new string[] { check.ErrorMessage });
+                    return new CommandExecutionResult(false, new string[] { check.ErrorMessage }, null);
             }
 
             // build params
@@ -117,8 +117,15 @@ namespace TehGM.Wolfringo.Commands.Instances
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();
-            if (_method.Invoke(handler, paramsValues) is Task returnTask)
-                await returnTask.ConfigureAwait(false);
+            try
+            {
+                if (_method.Invoke(handler, paramsValues) is Task returnTask)
+                    await returnTask.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return CommandExecutionResult.FromException(ex);
+            }
             return CommandExecutionResult.Success;
         }
     }
