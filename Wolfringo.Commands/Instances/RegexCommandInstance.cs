@@ -20,27 +20,25 @@ namespace TehGM.Wolfringo.Commands.Instances
 
         private readonly MethodInfo _method;
         private readonly ParameterInfo[] _params;
-        private readonly object _handler;
         private readonly PrefixAttribute _prefixAttribute;
         private readonly IEnumerable<CommandRequirementAttribute> _requirements;
 
-        public RegexCommandInstance(Regex regex, MethodInfo method, object handler, IEnumerable<CommandRequirementAttribute> requirements)
+        public RegexCommandInstance(Regex regex, MethodInfo method, IEnumerable<CommandRequirementAttribute> requirements)
         {
             this.Regex = regex;
             this._method = method;
             this._params = _method.GetParameters();
-            this._handler = handler;
             this._requirements = requirements ?? Enumerable.Empty<CommandRequirementAttribute>();
 
             this._prefixAttribute = this._method.GetCustomAttribute<PrefixAttribute>(true) ?? 
                 this.HandlerType.GetCustomAttribute<PrefixAttribute>(true);
         }
 
-        public RegexCommandInstance(Regex regex, MethodInfo method, object handler)
-            : this(regex, method, handler, Enumerable.Empty<CommandRequirementAttribute>()) { }
+        public RegexCommandInstance(Regex regex, MethodInfo method)
+            : this(regex, method, Enumerable.Empty<CommandRequirementAttribute>()) { }
 
         /// <inheritdoc/>
-        public Task<ICommandResult> CheckMatchAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        public Task<ICommandResult> CheckMatchAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             // ignore non-text messages
             if (!(context.Message is ChatMessage message))
@@ -70,7 +68,7 @@ namespace TehGM.Wolfringo.Commands.Instances
         }
 
         /// <inheritdoc/>
-        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, IServiceProvider services, ICommandResult matchResult, CancellationToken cancellationToken = default)
+        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, IServiceProvider services, ICommandResult matchResult, object handler, CancellationToken cancellationToken = default)
         {
             // ensure provided check result is valid
             if (matchResult == null)
@@ -119,7 +117,7 @@ namespace TehGM.Wolfringo.Commands.Instances
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();
-            if (_method.Invoke(_handler, paramsValues) is Task returnTask)
+            if (_method.Invoke(handler, paramsValues) is Task returnTask)
                 await returnTask.ConfigureAwait(false);
             return CommandExecutionResult.Success;
         }

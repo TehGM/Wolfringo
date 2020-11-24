@@ -124,7 +124,7 @@ namespace TehGM.Wolfringo.Commands
                         if (handlerAttribute?.IsPersistent == true)
                         {
                             _log?.LogDebug("Pre-creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.GetHandlerType().Name);
-                            ICommandInstance instance = CreateCommandInstance(descriptor, out _);
+                            ICommandInstance instance = CreateCommandInstance(descriptor);
                             _cachedInstances.Add(descriptor, instance);
                             if (instance is IDisposable disposableInstance)
                                 this._disposables.Add(disposableInstance);
@@ -166,19 +166,24 @@ namespace TehGM.Wolfringo.Commands
                 using (_log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                 {
                     object handler = null;
+                    bool foundInCache = true;
                     try
                     {
                         // try to get instance from cache - or create if it's not there
                         if (!_cachedInstances.TryGetValue(command, out ICommandInstance instance))
-                            instance = CreateCommandInstance(command, out handler);
+                        {
+                            instance = CreateCommandInstance(command);
+                            foundInCache = false;
+                        }
 
                         // check if the command should run at all - if not, skip
-                        ICommandResult matchResult = await instance.CheckMatchAsync(context, this._cts.Token).ConfigureAwait(false);
+                        ICommandResult matchResult = await instance.CheckMatchAsync(context, this._services, this._cts.Token).ConfigureAwait(false);
                         if (!matchResult.IsSuccess)
                             continue;
 
                         // execute the command
                         _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+                        handler = _handlerProvider.GetCommandHandler(command);
                         ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, this._cts.Token).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
                             _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.Method.DeclaringType.Name);
@@ -192,19 +197,18 @@ namespace TehGM.Wolfringo.Commands
                     catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name)) { return; }
                     finally
                     {
-                        // if handler is allocated (which means it's not persistent) and disposable, let's dispose it
-                        if (handler is IDisposable disposableHandler)
+                        // if handler is allocated, not persistent and disposable, let's dispose it
+                        if (!foundInCache && handler is IDisposable disposableHandler)
                             try { disposableHandler?.Dispose(); } catch { }
                     }
                 }
             }
         }
 
-        private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor, out object handler)
+        private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor)
         {
-            handler = _handlerProvider.GetCommandHandler(descriptor);
             ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());
-            return initializer.InitializeCommand(descriptor, handler, _options);
+            return initializer.InitializeCommand(descriptor, _services, _options);
         }
 
         /// <summary>Disposes the Command Service.</summary>

@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
     public class RegexCommandInitializer : ICommandInitializer
     {
         /// <inheritdoc/>
-        public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, object handler, ICommandsOptions options)
+        public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, IServiceProvider services, ICommandsOptions options)
         {
             // validate this is a correct command attribute type
             if (!(descriptor.Attribute is RegexCommandAttribute regexCommand))
@@ -29,7 +29,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             IEnumerable<CommandRequirementAttribute> requirements = descriptor.GetRequirements();
 
             // init instance
-            return new RegexCommandInstance(regex, descriptor.Method, handler, requirements);
+            return new RegexCommandInstance(regex, descriptor.Method, requirements);
         }
     }
 }
