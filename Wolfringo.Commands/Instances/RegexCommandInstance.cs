@@ -81,7 +81,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             // run all custom attributes
             foreach (CommandRequirementAttribute check in _requirements)
             {
-                if (!await check.RunAsync(context, cancellationToken).ConfigureAwait(false))
+                if (!await check.RunAsync(context, services, cancellationToken).ConfigureAwait(false))
                     return new CommandExecutionResult(false, new string[] { check.ErrorMessage });
             }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TehGM.Wolfringo.Commands
@@ -32,7 +33,7 @@ namespace TehGM.Wolfringo.Commands
         }
 
         /// <inheritdoc/>
-        public override Task<bool> RunAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        public override Task<bool> RunAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             if (!context.Message.IsGroupMessage)
                 return Task.FromResult(IgnoreInPrivate);

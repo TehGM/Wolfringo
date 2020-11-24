@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TehGM.Wolfringo.Commands
@@ -12,7 +13,7 @@ namespace TehGM.Wolfringo.Commands
             => ErrorMessage = "(n) This command can be used in groups only.";
 
         /// <inheritdoc/>
-        public override Task<bool> RunAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        public override Task<bool> RunAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
             => Task.FromResult<bool>(context.Message.IsGroupMessage);
     }
 }
