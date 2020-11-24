@@ -38,7 +38,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            return Equals(obj as CommandHandlerDescriptor);
+            return Equals(obj as ICommandHandlerDescriptor);
         }
 
         /// <inheritdoc/>
