@@ -14,12 +14,17 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
         private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
         private readonly IDictionary<Type, CommandHandlerProviderResult> _persistentHandlers;
+        private readonly object _lock;
 
         /// <summary>Creates a new provider instance.</summary>
         /// <param name="services">Service provider with services to use for constructor injection.</param>
         public CommandHandlerProvider(IServiceProvider services)
         {
             this._services = services;
+
+            this._knownHandlerDescriptors = new Dictionary<Type, CommandHandlerDescriptor>();
+            this._persistentHandlers = new Dictionary<Type, CommandHandlerProviderResult>();
+            this._lock = new object();
         }
 
         /// <inheritdoc>/>
@@ -27,55 +32,58 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             Type handlerType = descriptor.GetHandlerType();
 
-            // if not shared, try persistent
-            if (_persistentHandlers.TryGetValue(handlerType, out CommandHandlerProviderResult handler))
-                return handler;
-
-            // if no persistent handler was found, we need to create a new one - check if descriptor is known yet
-            if (!_knownHandlerDescriptors.TryGetValue(handlerType, out CommandHandlerDescriptor handlerDescriptor))
+            lock (_lock)
             {
-                // if descriptor not cached, create new one
-                // start with grabbing all constructors
-                IEnumerable<ConstructorInfo> allConstructors = handlerType
-                    .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                // if not shared, try persistent
+                if (_persistentHandlers.TryGetValue(handlerType, out CommandHandlerProviderResult handler))
+                    return handler;
 
-                // check if any of the constructors are specifically designated to be used by Commands System
-                IEnumerable<ConstructorInfo> selectedConstructors = allConstructors
-                    .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandHandlerConstructorAttribute>(false)))
-                    .Where(ctor => ctor.attribute != null)
-                    .OrderByDescending(ctor => ctor.attribute.Priority)
-                    .ThenByDescending(ctor => ctor.constructor.GetParameters().Length)
-                    .Select(ctor => ctor.constructor);
-
-                // if no explicitly-attributed constructor found, grab all that are public
-                if (!selectedConstructors.Any())
-                    selectedConstructors = allConstructors
-                        .Where(ctor => ctor.IsPublic)
-                        .OrderByDescending(ctor => ctor.GetParameters().Length);
-
-                // try to resolve dependencies for each constructor. First one that can be resolved wins
-                foreach (ConstructorInfo ctor in selectedConstructors)
+                // if no persistent handler was found, we need to create a new one - check if descriptor is known yet
+                if (!_knownHandlerDescriptors.TryGetValue(handlerType, out CommandHandlerDescriptor handlerDescriptor))
                 {
-                    if (TryCreateHandlerDescriptor(ctor, out handlerDescriptor))
+                    // if descriptor not cached, create new one
+                    // start with grabbing all constructors
+                    IEnumerable<ConstructorInfo> allConstructors = handlerType
+                        .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                    // check if any of the constructors are specifically designated to be used by Commands System
+                    IEnumerable<ConstructorInfo> selectedConstructors = allConstructors
+                        .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandHandlerConstructorAttribute>(false)))
+                        .Where(ctor => ctor.attribute != null)
+                        .OrderByDescending(ctor => ctor.attribute.Priority)
+                        .ThenByDescending(ctor => ctor.constructor.GetParameters().Length)
+                        .Select(ctor => ctor.constructor);
+
+                    // if no explicitly-attributed constructor found, grab all that are public
+                    if (!selectedConstructors.Any())
+                        selectedConstructors = allConstructors
+                            .Where(ctor => ctor.IsPublic)
+                            .OrderByDescending(ctor => ctor.GetParameters().Length);
+
+                    // try to resolve dependencies for each constructor. First one that can be resolved wins
+                    foreach (ConstructorInfo ctor in selectedConstructors)
                     {
-                        // cache found descriptor
-                        _knownHandlerDescriptors.Add(handlerType, handlerDescriptor);
-                        break;
+                        if (TryCreateHandlerDescriptor(ctor, out handlerDescriptor))
+                        {
+                            // cache found descriptor
+                            _knownHandlerDescriptors.Add(handlerType, handlerDescriptor);
+                            break;
+                        }
                     }
+                    // throw if we didn't find any constructor we can resolve
+                    throw new InvalidOperationException($"Cannot create descriptor for type {handlerType.FullName} - none of the constructors can have its dependencies resolved");
                 }
-                // throw if we didn't find any constructor we can resolve
-                throw new InvalidOperationException($"Cannot create descriptor for type {handlerType.FullName} - none of the constructors can have its dependencies resolved");
+
+                // now that we have a descriptor, let's create an instance
+                handler = new CommandHandlerProviderResult(handlerDescriptor, handlerDescriptor.CreateInstance());
+
+                // if it's a persistent instance, store it
+                if (handlerDescriptor.IsPersistent())
+                    _persistentHandlers.Add(handlerType, handler);
+
+                // finally, return the fresh handler
+                return handler;
             }
-
-            // now that we have a descriptor, let's create an instance
-            handler = new CommandHandlerProviderResult(handlerDescriptor, handlerDescriptor.CreateInstance());
-
-            // if it's a persistent instance, store it
-            if (handlerDescriptor.IsPersistent())
-                _persistentHandlers.Add(handlerType, handler);
-
-            // finally, return the fresh handler
-            return handler;
         }
 
         private bool TryCreateHandlerDescriptor(ConstructorInfo constructor, out CommandHandlerDescriptor result)
@@ -104,7 +112,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public void Dispose()
         {
             IEnumerable<object> disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);
-            _persistentHandlers.Clear();
+            this._knownHandlerDescriptors.Clear();
+            this._persistentHandlers.Clear();
             foreach (object handler in disposableHandlers)
                 try { (handler as IDisposable).Dispose(); } catch { }
         }
