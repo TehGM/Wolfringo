@@ -13,7 +13,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         private readonly IServiceProvider _services;
 
         private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
-        private readonly IDictionary<Type, object> _persistentHandlers;
+        private readonly IDictionary<Type, CommandHandlerProviderResult> _persistentHandlers;
 
         /// <summary>Creates a new provider instance.</summary>
         /// <param name="services">Service provider with services to use for constructor injection.</param>
@@ -23,12 +23,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         /// <inheritdoc>/>
-        public object GetCommandHandler(ICommandInstanceDescriptor descriptor)
+        public ICommandHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor)
         {
             Type handlerType = descriptor.GetHandlerType();
 
             // if not shared, try persistent
-            if (_persistentHandlers.TryGetValue(handlerType, out object handler))
+            if (_persistentHandlers.TryGetValue(handlerType, out CommandHandlerProviderResult handler))
                 return handler;
 
             // if no persistent handler was found, we need to create a new one - check if descriptor is known yet
@@ -68,7 +68,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             }
 
             // now that we have a descriptor, let's create an instance
-            handler = handlerDescriptor.CreateInstance();
+            handler = new CommandHandlerProviderResult(handlerDescriptor, handlerDescriptor.CreateInstance());
 
             // if it's a persistent instance, store it
             if (handlerDescriptor.IsPersistent())

@@ -165,16 +165,12 @@ namespace TehGM.Wolfringo.Commands
             {
                 using (_log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                 {
-                    object handler = null;
-                    bool foundInCache = true;
+                    ICommandHandlerProviderResult handlerResult = null;
                     try
                     {
                         // try to get instance from cache - or create if it's not there
                         if (!_cachedInstances.TryGetValue(command, out ICommandInstance instance))
-                        {
                             instance = CreateCommandInstance(command);
-                            foundInCache = false;
-                        }
 
                         // check if the command should run at all - if not, skip
                         ICommandResult matchResult = await instance.CheckMatchAsync(context, this._services, this._cts.Token).ConfigureAwait(false);
@@ -183,8 +179,8 @@ namespace TehGM.Wolfringo.Commands
 
                         // execute the command
                         _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                        handler = _handlerProvider.GetCommandHandler(command);
-                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, this._cts.Token).ConfigureAwait(false);
+                        handlerResult = _handlerProvider.GetCommandHandler(command);
+                        ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult, this._cts.Token).ConfigureAwait(false);
                         if (!executeResult.IsSuccess)
                             _log?.LogError("Execution of command {Name} from handler {Handler} has failed", command.Method.Name, command.Method.DeclaringType.Name);
                         break;
@@ -198,7 +194,7 @@ namespace TehGM.Wolfringo.Commands
                     finally
                     {
                         // if handler is allocated, not persistent and disposable, let's dispose it
-                        if (!foundInCache && handler is IDisposable disposableHandler)
+                        if (handlerResult.Descriptor.Attribute.IsPersistent && handlerResult.HandlerInstance is IDisposable disposableHandler)
                             try { disposableHandler?.Dispose(); } catch { }
                     }
                 }
@@ -208,7 +204,7 @@ namespace TehGM.Wolfringo.Commands
         private ICommandInstance CreateCommandInstance(ICommandInstanceDescriptor descriptor)
         {
             ICommandInitializer initializer = _initializers.GetMappedInitializer(descriptor.Attribute.GetType());
-            return initializer.InitializeCommand(descriptor, _services, _options);
+            return initializer.InitializeCommand(descriptor, _options);
         }
 
         /// <summary>Disposes the Command Service.</summary>

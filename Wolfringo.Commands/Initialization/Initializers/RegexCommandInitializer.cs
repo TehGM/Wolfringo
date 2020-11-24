@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
     public class RegexCommandInitializer : ICommandInitializer
     {
         /// <inheritdoc/>
-        public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, IServiceProvider services, ICommandsOptions options)
+        public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, ICommandsOptions options)
         {
             // validate this is a correct command attribute type
             if (!(descriptor.Attribute is RegexCommandAttribute regexCommand))

@@ -7,9 +7,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
     {
         /// <summary>Initializes a command instance.</summary>
         /// <param name="descriptor">Descriptor of the command.</param>
-        /// <param name="handler">Handler object to init the command for.</param>
         /// <param name="options">Default options to initialize the instance with.</param>
         /// <returns>A new command instance.</returns>
-        ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, IServiceProvider services, ICommandsOptions options);
+        ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, ICommandsOptions options);
     }
 }
