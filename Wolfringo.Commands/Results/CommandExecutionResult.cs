@@ -16,6 +16,8 @@ namespace TehGM.Wolfringo.Commands.Results
 
         /// <summary>Creates a new result instance.</summary>
         /// <param name="isSuccess">Whether execution was successful.</param>
+        /// <param name="messages">Error messages to reply with.</param>
+        /// <param name="exception">Exception that resulted in given status.</param>
         public CommandExecutionResult(bool isSuccess, IEnumerable<string> messages, Exception exception)
         {
             this.IsSuccess = isSuccess;
@@ -28,6 +30,10 @@ namespace TehGM.Wolfringo.Commands.Results
         /// <summary>Shared failure result.</summary>
         public static readonly CommandExecutionResult Failure = new CommandExecutionResult(false, null, null);
 
+        /// <summary>Creates a failure result with exception and optional messages.</summary>
+        /// <param name="exception">Exception that is cause of a failure.</param>
+        /// <param name="messages">Messages to respond with.</param>
+        /// <returns>A new failure result.</returns>
         public static CommandExecutionResult FromException(Exception exception, IEnumerable<string> messages = null)
             => new CommandExecutionResult(false, messages, exception);
     }

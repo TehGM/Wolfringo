@@ -31,6 +31,14 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly Lazy<Regex> _caseInsensitiveRegex;
         private readonly ParameterInfo[] _params;
 
+        /// <summary>Creates a new command instance.</summary>
+        /// <param name="pattern">Regex pattern that triggers this command.</param>
+        /// <param name="regexOptions">Regex options to build Regex with.</param>
+        /// <param name="method">Method that will be executed.</param>
+        /// <param name="requirements">Execution requirements.</param>
+        /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
+        /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
+        /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
         public RegexCommandInstance(string pattern, RegexOptions regexOptions, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
         {
             this.Pattern = pattern;

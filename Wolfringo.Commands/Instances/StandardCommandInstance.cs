@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Commands.Instances
     {
         private static readonly char[] _argSeparators = { ' ' };
 
-        /// <summary>Text this command will be triggered for.</summary>
+        /// <summary>Text that triggers this command.</summary>
         public string Text { get; }
         /// <summary>Method that will be executed.</summary>
         public MethodInfo Method { get; }
@@ -33,6 +33,13 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly Lazy<Regex> _caseInsensitiveRegex;
         private readonly ParameterInfo[] _params;
 
+        /// <summary>Creates a new command instance.</summary>
+        /// <param name="text">Text that triggers this command.</param>
+        /// <param name="method">Method that will be executed.</param>
+        /// <param name="requirements">Execution requirements.</param>
+        /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
+        /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
+        /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
         public StandardCommandInstance(string text, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
         {
             this.Text = text.Trim();
