@@ -69,6 +69,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             // ignore own messages
             if (message.SenderID == context.Client.CurrentUserID)
                 return FailureResult();
+
             // check prefix
             bool caseSensitive = this.CaseSensitivityOverride ?? context.Options.CaseSensitivity;
             if (!message.MatchesPrefixRequirement(
@@ -76,14 +77,18 @@ namespace TehGM.Wolfringo.Commands.Instances
                 this.PrefixRequirementOverride ?? context.Options.RequirePrefix,
                 caseSensitive, out int startIndex))
                 return FailureResult();
+
             // check command text - ironically, I'll use regex here cause it makes things much simpler
             Regex regex = caseSensitive ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
-            Match match = regex.Match(message.Text.Substring(startIndex));
+            Match match = regex.Match(message.Text, startIndex);
             if (match?.Success != true)
                 return FailureResult();
+
             // parse arguments
-            // TODO: allow more advanced scenarios, such as "" - spaces only is just initial
-            string[] args = match.Groups.Count > 1 ? match.Groups[1].Value.Split(_argSeparators, StringSplitOptions.RemoveEmptyEntries) : Array.Empty<string>();
+            IArgumentsParser parser = (IArgumentsParser)services.GetService(typeof(IArgumentsParser));
+            if (parser == null)
+                throw new InvalidOperationException($"Couldn't resolve an instance of {typeof(IArgumentsParser).Name} from service provider");
+            string[] args = match.Groups.Count > 1 ? parser.ParseArguments(match.Groups[1].Value, 0).ToArray() : Array.Empty<string>();
             return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args));
 
             Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(StandardCommandMatchResult.Failure);

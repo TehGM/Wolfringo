@@ -25,6 +25,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly ICommandHandlerProvider _handlerProvider;
         private readonly ICommandInitializerMap _initializers;
         private readonly ICommandsLoader _commandsLoader;
+        private readonly IArgumentsParser _argumentsParser;
         private readonly ILogger _log;
         private CancellationTokenSource _cts;
 
@@ -43,7 +44,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="commandsLoader">Service that loads command attributes from assemblies and types. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, ILogger log = null, CancellationToken cancellationToken = default)
+        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -58,6 +59,7 @@ namespace TehGM.Wolfringo.Commands
                 this._handlerProvider = new CommandHandlerProvider(this._services);
                 this._disposeHandlerProvider = true;
             }
+            this._argumentsParser = argumentsParser ?? new DefaultArgumentsParser();
             this._initializers = initializers ?? new DefaultCommandInitializerMap();
             this._commandsLoader = commandsLoader ?? new DefaultCommandsLoader(this._initializers, this._log);
 
@@ -77,7 +79,9 @@ namespace TehGM.Wolfringo.Commands
                 {
                     { typeof(IWolfClient), this._client },
                     { this._client.GetType(), this._client },
-                    { typeof(CommandsOptions), this._options }
+                    { typeof(CommandsOptions), this._options },
+                    { typeof(IArgumentsParser), this._argumentsParser },
+                    { this._argumentsParser.GetType(), this._argumentsParser }
                 };
             if (this._log != null)
             {
@@ -134,8 +138,8 @@ namespace TehGM.Wolfringo.Commands
                     }
 
                     // re-add handler provider to disposables if needed
-                    if (_disposeHandlerProvider)
-                        this._disposables.Add(this._handlerProvider as IDisposable);
+                    if (_disposeHandlerProvider && this._handlerProvider is IDisposable disposableHandlerProvider)
+                        this._disposables.Add(disposableHandlerProvider);
 
                     // mark as started
                     this._started = true;
