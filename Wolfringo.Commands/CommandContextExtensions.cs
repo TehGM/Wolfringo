@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
@@ -53,5 +55,26 @@ namespace TehGM.Wolfringo.Commands
                 new UserProfileMessage(new uint[] { id }, true, true), cancellationToken).ConfigureAwait(false);
             return response?.UserProfiles?.FirstOrDefault(u => u.ID == id);
         }
+
+
+        // responding
+        /// <summary>Sends a text message response message to group or user.</summary>
+        /// <param name="incomingMessage">Message the user or group sent to the client.</param>
+        /// <param name="text">Content of the message.</param>
+        /// <returns>Message sending response.</returns>
+        public static Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, CancellationToken cancellationToken = default)
+        => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        /// <summary>Sends an image response message to group or user.</summary>
+        /// <param name="incomingMessage">Message the user or group sent to the client.</param>
+        /// <param name="imageBytes">Bytes of the image to send.</param>
+        /// <returns>Message sending response.</returns>
+        public static Task<ChatResponse> ReplyImageAsync(this ICommandContext context, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
+            => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Image, imageBytes), cancellationToken);
+        /// <summary>Sends a voice response message to group or user.</summary>
+        /// <param name="incomingMessage">Message the user or group sent to the client.</param>
+        /// <param name="voiceBytes">Bytes of the voice to send.</param>
+        /// <returns>Message sending response.</returns>
+        public static Task<ChatResponse> ReplyVoiceAsync(this ICommandContext context, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
+            => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
     }
 }
