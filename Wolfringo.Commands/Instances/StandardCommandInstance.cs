@@ -49,7 +49,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             this.PrefixRequirementOverride = prefixRequirementOverride;
             this.CaseSensitivityOverride = caseSensitivityOverride;
 
-            string pattern = $@"^{this.Text}\b(.*)$";
+            string pattern = $@"\G{this.Text}\b(.*)?$";
             this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.Singleline));
             this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline));
             this._params = this.Method.GetParameters();
