@@ -25,6 +25,8 @@ namespace TehGM.Wolfringo.Commands
         /// <returns>Log scope.</returns>
         public static IDisposable BeginCommandScope(this ILogger log, ICommandContext context, Type handlerType = null, [CallerMemberName] string methodName = null)
         {
+            if (log == null)
+                return null;
             Dictionary<string, object> state = new Dictionary<string, object>
             {
                 { "Command.SenderID", context.Message.SenderID.Value },
