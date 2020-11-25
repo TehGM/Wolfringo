@@ -52,6 +52,7 @@ namespace TehGM.Wolfringo.Commands
 
             // init optionals
             this._log = log;
+            this._argumentsParser = argumentsParser ?? new DefaultArgumentsParser();
             this._services = services ?? this.CreateDefaultServiceProvider();
             this._handlerProvider = handlerProvider;
             if (this._handlerProvider == null)
@@ -59,7 +60,6 @@ namespace TehGM.Wolfringo.Commands
                 this._handlerProvider = new CommandHandlerProvider(this._services);
                 this._disposeHandlerProvider = true;
             }
-            this._argumentsParser = argumentsParser ?? new DefaultArgumentsParser();
             this._initializers = initializers ?? new DefaultCommandInitializerMap();
             this._commandsLoader = commandsLoader ?? new DefaultCommandsLoader(this._initializers, this._log);
 
