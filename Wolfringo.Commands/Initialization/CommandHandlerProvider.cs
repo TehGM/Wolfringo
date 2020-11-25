@@ -71,7 +71,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
                         }
                     }
                     // throw if we didn't find any constructor we can resolve
-                    throw new InvalidOperationException($"Cannot create descriptor for type {handlerType.FullName} - none of the constructors can have its dependencies resolved");
+                    if (handlerDescriptor == null)
+                        throw new InvalidOperationException($"Cannot create descriptor for type {handlerType.FullName} - none of the constructors can have its dependencies resolved");
                 }
 
                 // now that we have a descriptor, let's create an instance
