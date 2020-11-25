@@ -15,7 +15,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             this._map = new Dictionary<Type, ICommandInitializer>()
             {
-                { typeof(RegexCommandAttribute), new RegexCommandInitializer() }
+                { typeof(RegexCommandAttribute), new RegexCommandInitializer() },
+                { typeof(CommandAttribute), new StandardCommandInitializer() }
             };
         }
 
