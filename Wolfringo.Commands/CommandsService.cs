@@ -29,7 +29,6 @@ namespace TehGM.Wolfringo.Commands
         private readonly ILogger _log;
         private CancellationTokenSource _cts;
 
-        private List<IDisposable> _disposables;
         private readonly bool _disposeHandlerProvider;
         private bool _started;
         private readonly SemaphoreSlim _lock;
@@ -65,7 +64,6 @@ namespace TehGM.Wolfringo.Commands
 
             // init private
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
-            this._disposables = new List<IDisposable>();
             this._lock = new SemaphoreSlim(1, 1);
             this._cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
@@ -102,8 +100,8 @@ namespace TehGM.Wolfringo.Commands
                 {
                     this._log?.LogDebug("Initializing commands");
 
-                    this._commands.Clear();
-                    this._disposables.Clear();
+                    // dispose commands since we're reloading them
+                    this.DisposeCommands();
 
                     // ask loader to load from all specified assemblies and types
                     IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
@@ -129,17 +127,7 @@ namespace TehGM.Wolfringo.Commands
                         ICommandInitializer initializer = this._initializers.GetMappedInitializer(descriptor.Attribute.GetType());
                         ICommandInstance instance = initializer.InitializeCommand(descriptor, _options);
                         this._commands.Add(descriptor, instance);
-
-                        // grab disposables so we can easily dispose them when we dispose this object
-                        if (descriptor is IDisposable disposableDescriptor)
-                            this._disposables.Add(disposableDescriptor);
-                        if (instance is IDisposable disposableInstance)
-                            this._disposables.Add(disposableInstance);
                     }
-
-                    // re-add handler provider to disposables if needed
-                    if (_disposeHandlerProvider && this._handlerProvider is IDisposable disposableHandlerProvider)
-                        this._disposables.Add(disposableHandlerProvider);
 
                     // mark as started
                     this._started = true;
@@ -273,14 +261,25 @@ namespace TehGM.Wolfringo.Commands
             // cancel all tasks
             try { this._cts?.Cancel(); } catch { }
             try { this._cts?.Dispose(); } catch { }
-            // purge collections
-            this._commands?.Clear();
-            // dispose all objects (such as instances, descriptors, or services) that implement IDisposable
-            foreach (IDisposable disposable in this._disposables)
-                try { disposable?.Dispose(); } catch { }
-            this._disposables.Clear();
+            // dispose all command instances and descriptors that implement IDisposable
+            this.DisposeCommands();
+            // dispose handler provider if was created in constructor
+            if (this._disposeHandlerProvider && this._handlerProvider is IDisposable disposableHandlerProvider)
+                try { disposableHandlerProvider?.Dispose(); } catch { }
             // dispose semaphore
             try { _lock?.Dispose(); } catch { }
+        }
+
+        private void DisposeCommands()
+        {
+            foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> cmd in this._commands)
+            {
+                if (cmd.Key is IDisposable disposableDescriptor)
+                    try { disposableDescriptor.Dispose(); } catch { }
+                if (cmd.Value is IDisposable disposableInstance)
+                    try { disposableInstance.Dispose(); } catch { }
+            }
+            this._commands.Clear();
         }
     }
 }
