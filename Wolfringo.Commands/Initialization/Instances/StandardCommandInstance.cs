@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Results;
-using System.Collections.Generic;
+using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Parsing;
 
-namespace TehGM.Wolfringo.Commands.Instances
+namespace TehGM.Wolfringo.Commands.Initialization
 {
-    /// <summary>Represents a regex command instance.</summary>
-    public class RegexCommandInstance : ICommandInstance
+    public class StandardCommandInstance : ICommandInstance
     {
-        /// <summary>Regex pattern that triggers this command.</summary>
-        public string Pattern { get; }
+        private static readonly char[] _argSeparators = { ' ' };
+
+        /// <summary>Text that triggers this command.</summary>
+        public string Text { get; }
         /// <summary>Method that will be executed.</summary>
         public MethodInfo Method { get; }
         /// <summary>Execution requirements.</summary>
@@ -34,25 +35,25 @@ namespace TehGM.Wolfringo.Commands.Instances
         private readonly ParameterInfo[] _params;
 
         /// <summary>Creates a new command instance.</summary>
-        /// <param name="pattern">Regex pattern that triggers this command.</param>
-        /// <param name="regexOptions">Regex options to build Regex with.</param>
+        /// <param name="text">Text that triggers this command.</param>
         /// <param name="method">Method that will be executed.</param>
         /// <param name="requirements">Execution requirements.</param>
         /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
         /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
         /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
-        public RegexCommandInstance(string pattern, RegexOptions regexOptions, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
+        public StandardCommandInstance(string text, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
         {
-            this.Pattern = pattern;
+            this.Text = text.Trim();
             this.Method = method;
             this.Requirements = requirements;
             this.PrefixOverride = prefixOverride;
             this.PrefixRequirementOverride = prefixRequirementOverride;
             this.CaseSensitivityOverride = caseSensitivityOverride;
 
-            this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions & ~RegexOptions.IgnoreCase));
-            this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions | RegexOptions.IgnoreCase));
-            this._params = method.GetParameters();
+            string pattern = $@"\G{this.Text}\b(.*)?$";
+            this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.Singleline));
+            this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            this._params = this.Method.GetParameters();
         }
 
         /// <inheritdoc/>
@@ -69,6 +70,7 @@ namespace TehGM.Wolfringo.Commands.Instances
             // ignore own messages
             if (message.SenderID == context.Client.CurrentUserID)
                 return FailureResult();
+
             // check prefix
             bool caseSensitive = this.CaseSensitivityOverride ?? context.Options.CaseSensitivity;
             if (!message.MatchesPrefixRequirement(
@@ -77,14 +79,20 @@ namespace TehGM.Wolfringo.Commands.Instances
                 caseSensitive, out int startIndex))
                 return FailureResult();
 
-            // perform regex match
+            // check command text - ironically, I'll use regex here cause it makes things much simpler
             Regex regex = caseSensitive ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
             Match match = regex.Match(message.Text, startIndex);
             if (match?.Success != true)
                 return FailureResult();
-            return Task.FromResult<ICommandResult>(RegexCommandMatchResult.Success(match));
 
-            Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(RegexCommandMatchResult.Failure);
+            // parse arguments
+            IArgumentsParser parser = (IArgumentsParser)services.GetService(typeof(IArgumentsParser));
+            if (parser == null)
+                throw new InvalidOperationException($"Couldn't resolve an instance of {typeof(IArgumentsParser).Name} from service provider");
+            string[] args = match.Groups.Count > 1 ? parser.ParseArguments(match.Groups[1].Value, 0).ToArray() : Array.Empty<string>();
+            return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args));
+
+            Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(StandardCommandMatchResult.Failure);
         }
 
         /// <inheritdoc/>
@@ -95,8 +103,8 @@ namespace TehGM.Wolfringo.Commands.Instances
                 throw new ArgumentNullException(nameof(matchResult));
             if (!matchResult.IsSuccess)
                 return CommandExecutionResult.Failure;
-            if (!(matchResult is RegexCommandMatchResult regexMatchResult))
-                throw new ArgumentException($"{nameof(matchResult)} must be of type {typeof(RegexCommandMatchResult).FullName}", nameof(matchResult));
+            if (!(matchResult is StandardCommandMatchResult standardMatchResult))
+                throw new ArgumentException($"{nameof(matchResult)} must be of type {typeof(StandardCommandMatchResult).FullName}", nameof(matchResult));
 
             // run all custom attributes
             foreach (ICommandRequirement check in this.Requirements)
@@ -109,13 +117,11 @@ namespace TehGM.Wolfringo.Commands.Instances
             cancellationToken.ThrowIfCancellationRequested();
             ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
-                Args = regexMatchResult.RegexMatch.Groups.Cast<Group>().Skip(1)
-                    .Select(s => s.Value ?? string.Empty).ToArray(),
+                Args = standardMatchResult.Arguments,
                 ArgumentConverterProvider = (IArgumentConverterProvider)services.GetService(typeof(IArgumentConverterProvider)),
                 CancellationToken = cancellationToken,
                 Context = context,
-                Services = services,
-                AdditionalObjects = new object[] { regexMatchResult.RegexMatch }
+                Services = services
             };
             ParameterBuildingResult paramsResult = await ParameterBuilder.BuildParamsAsync(_params, paramBuilderValues, cancellationToken).ConfigureAwait(false);
             if (!paramsResult.IsSuccess)

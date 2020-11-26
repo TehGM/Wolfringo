@@ -1,5 +1,4 @@
 ﻿using System;
-using TehGM.Wolfringo.Commands.Instances;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {

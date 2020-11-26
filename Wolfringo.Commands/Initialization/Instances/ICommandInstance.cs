@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Results;
 
-namespace TehGM.Wolfringo.Commands
+namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <summary>Represents a command instance.</summary>
     public interface ICommandInstance
