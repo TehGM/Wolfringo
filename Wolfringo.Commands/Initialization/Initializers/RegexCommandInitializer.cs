@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             // if pattern starts with ^, replace it with \G
             // this will ensure it'll match start of the string when starting from index after prefix
             string pattern = regexCommand.Pattern;
-            if (pattern[0] == '^')
+            if (pattern.Length > 0 && pattern[0] == '^')
                 pattern = $@"\G{pattern.Substring(1)}";
 
             // init instance

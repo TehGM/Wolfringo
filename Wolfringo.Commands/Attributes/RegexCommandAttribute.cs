@@ -22,6 +22,8 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="options">Regex options for the command.</param>
         public RegexCommandAttribute(string pattern, RegexOptions options) : base()
         {
+            if (pattern == null)
+                throw new ArgumentNullException(nameof(pattern));
             this.Pattern = pattern;
             this.Options = options;
         }

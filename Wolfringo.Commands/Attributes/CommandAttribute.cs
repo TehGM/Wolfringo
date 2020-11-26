@@ -14,6 +14,8 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="text">Text that will trigger the command.</param>
         public CommandAttribute(string text) : base()
         {
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
             this.Text = text;
         }
     }
