@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using TehGM.Wolfringo.Commands.Parsing;
 
-namespace TehGM.Wolfringo.Commands.Utilities
+namespace TehGM.Wolfringo.Commands.Parsing
 {
     public static class ParameterBuilder
     {
