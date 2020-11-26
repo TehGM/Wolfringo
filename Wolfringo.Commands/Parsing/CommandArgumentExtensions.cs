@@ -13,5 +13,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
         /// <returns>Instance of attribute.</returns>
         public static MissingErrorAttribute GetMissingErrorAttribute(this ParameterInfo parameter)
             => parameter.GetCustomAttribute<MissingErrorAttribute>(true) ?? MissingErrorAttribute.Default;
+
+        /// <summary>Gets name of the argument.</summary>
+        /// <remarks>If <see cref="ArgumentNameAttribute"/> is specified for the parameter, its value will be used. If it's missing, it will default to parameter name.</remarks>
+        /// <returns>Argument name.</returns>
+        public static string GetArgumentName(this ParameterInfo parameter)
+            => parameter.GetCustomAttribute<ArgumentNameAttribute>()?.Name ?? parameter.Name;
     }
 }
