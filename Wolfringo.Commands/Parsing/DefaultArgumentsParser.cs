@@ -70,18 +70,17 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 {
                     results.Add(new string(block.ToArray()));   // to maintain order
                     ParseBlock(input, ref cursor, subBlockTerminator, ref results);
-                    break;
+                    return;
                 }
                 // if character is not a terminator, add to result
                 else if (character != terminator)
                     block.Add(character);
                 // if it is a terminator, terminate block
                 else
-                {
-                    results.Add(new string(block.ToArray()));
                     break;
-                }
             }
+            if (block.Count != 0)
+                results.Add(new string(block.ToArray()));
         }
     }
 }

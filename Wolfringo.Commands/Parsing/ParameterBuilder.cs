@@ -44,9 +44,9 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     {
                         argIndex++;
                     }
-                    // if there's an error, let's return result with message
+                    // if there's an error, let's return result with message - but without exception, as we don't want input errors to be logged
                     else if (convertingError != null)
-                        return ParameterBuildingResult.Failure(convertingError, new string[] {
+                        return ParameterBuildingResult.Failure(null, new string[] {
                             await param.GetConvertingErrorAttribute().ToStringAsync(values.Context, values.Args[argIndex], param, cancellationToken).ConfigureAwait(false) });
                     // if it's optional, just let it pass
                     else if (param.IsOptional)
