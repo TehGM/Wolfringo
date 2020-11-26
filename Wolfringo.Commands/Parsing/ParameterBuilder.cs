@@ -52,9 +52,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     else if (param.IsOptional)
                         value = param.HasDefaultValue ? param.DefaultValue : null;
                     // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message - do not provide exception, as we don't want it logged
-                    else if (argIndex < values.Args.Length)
+                    else if (argIndex <= values.Args.Length)
                         return ParameterBuildingResult.Failure(null, new string[] {
-                            await param.GetMissingErrorAttribute().ToStringAsync(values.Context, values.Args[argIndex], param, cancellationToken).ConfigureAwait(false) });
+                            await param.GetMissingErrorAttribute().ToStringAsync(values.Context, 
+                            values.Args.Length > argIndex ? values.Args[argIndex] : string.Empty,
+                            param, cancellationToken).ConfigureAwait(false) });
                     // none found, throw
                     else
                         throw new InvalidOperationException($"Unsupported param type: {param.ParameterType.FullName}");
