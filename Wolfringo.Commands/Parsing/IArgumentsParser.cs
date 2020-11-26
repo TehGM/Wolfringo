@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TehGM.Wolfringo.Commands
+namespace TehGM.Wolfringo.Commands.Parsing
 {
     /// <summary>An argument parser for commands.</summary>
     public interface IArgumentsParser

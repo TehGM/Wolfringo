@@ -11,6 +11,7 @@ using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Commands.Results;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities.Internal;
+using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -26,6 +27,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly ICommandInitializerMap _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly IArgumentsParser _argumentsParser;
+        private readonly IArgumentConverterProvider _argumentConverterProvider;
         private readonly ILogger _log;
         private CancellationTokenSource _cts;
 
@@ -43,7 +45,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="commandsLoader">Service that loads command attributes from assemblies and types. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, ILogger log = null, CancellationToken cancellationToken = default)
+        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -52,6 +54,7 @@ namespace TehGM.Wolfringo.Commands
             // init optionals
             this._log = log;
             this._argumentsParser = argumentsParser ?? new DefaultArgumentsParser();
+            this._argumentConverterProvider = argumentConverterProvider ?? new DefaultArgumentConverterProvider();
             this._services = services ?? this.CreateDefaultServiceProvider();
             this._handlerProvider = handlerProvider;
             if (this._handlerProvider == null)
@@ -79,7 +82,9 @@ namespace TehGM.Wolfringo.Commands
                     { this._client.GetType(), this._client },
                     { typeof(CommandsOptions), this._options },
                     { typeof(IArgumentsParser), this._argumentsParser },
-                    { this._argumentsParser.GetType(), this._argumentsParser }
+                    { this._argumentsParser.GetType(), this._argumentsParser },
+                    { typeof(IArgumentConverterProvider), this._argumentConverterProvider },
+                    { this._argumentConverterProvider.GetType(), this._argumentConverterProvider }
                 };
             if (this._log != null)
             {

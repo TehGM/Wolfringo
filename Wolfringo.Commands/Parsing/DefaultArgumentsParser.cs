@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TehGM.Wolfringo.Commands
+namespace TehGM.Wolfringo.Commands.Parsing
 {
     /// <inheritdoc/>
     public class DefaultArgumentsParser : IArgumentsParser

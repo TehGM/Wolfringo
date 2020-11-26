@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
-    /// A map of command attributes, and the initializers that should be used with them.
+    /// <summary>A map of command attributes, and the initializers that should be used with them.</summary>
     public interface ICommandInitializerMap
     {
         /// <summary>Gets a command initializer for the command type.</summary>

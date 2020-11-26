@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Results;
 using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Commands.Parsing;
+using TehGM.Wolfringo.Commands.Utilities;
 
 namespace TehGM.Wolfringo.Commands.Instances
 {
@@ -114,33 +116,15 @@ namespace TehGM.Wolfringo.Commands.Instances
 
             // build params
             cancellationToken.ThrowIfCancellationRequested();
-            object[] paramsValues = new object[_params.Length];
-            foreach (ParameterInfo param in _params)
+            ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
-                object value = null;
-                if (param.ParameterType.IsAssignableFrom(context.GetType()))
-                    value = context;
-                else if (param.ParameterType.IsAssignableFrom(typeof(string[])))
-                    value = standardMatchResult.Arguments;
-                else if (param.ParameterType.IsAssignableFrom(context.Message.GetType()))
-                    value = context.Message;
-                else if (param.ParameterType.IsAssignableFrom(context.Client.GetType()))
-                    value = context.Client;
-                else if (param.ParameterType.IsAssignableFrom(typeof(CancellationToken)))
-                    value = cancellationToken;
-                else
-                {
-                    value = services.GetService(param.ParameterType);
-                    if (value == null)
-                    {
-                        if (param.IsOptional)
-                            value = param.HasDefaultValue ? param.DefaultValue : null;
-                        else
-                            throw new InvalidOperationException($"Unsupported param type: {param.ParameterType.FullName}");
-                    }
-                }
-                paramsValues[param.Position] = value;
-            }
+                Args = standardMatchResult.Arguments,
+                ArgumentConverterProvider = (IArgumentConverterProvider)services.GetService(typeof(IArgumentConverterProvider)),
+                CancellationToken = cancellationToken,
+                Context = context,
+                Services = services
+            };
+            object[] paramsValues = ParameterBuilder.BuildParamsAsync(_params, paramBuilderValues);
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();

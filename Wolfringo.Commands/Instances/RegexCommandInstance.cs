@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -6,6 +7,8 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Results;
 using System.Collections.Generic;
+using TehGM.Wolfringo.Commands.Utilities;
+using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Instances
 {
@@ -105,33 +108,17 @@ namespace TehGM.Wolfringo.Commands.Instances
 
             // build params
             cancellationToken.ThrowIfCancellationRequested();
-            object[] paramsValues = new object[_params.Length];
-            foreach (ParameterInfo param in _params)
+            ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
-                object value = null;
-                if (param.ParameterType.IsAssignableFrom(context.GetType()))
-                    value = context;
-                else if (param.ParameterType.IsAssignableFrom(typeof(Match)))
-                    value = regexMatchResult.RegexMatch;
-                else if (param.ParameterType.IsAssignableFrom(context.Message.GetType()))
-                    value = context.Message;
-                else if (param.ParameterType.IsAssignableFrom(context.Client.GetType()))
-                    value = context.Client;
-                else if (param.ParameterType.IsAssignableFrom(typeof(CancellationToken)))
-                    value = cancellationToken;
-                else
-                {
-                    value = services.GetService(param.ParameterType);
-                    if (value == null)
-                    {
-                        if (param.IsOptional)
-                            value = param.HasDefaultValue ? param.DefaultValue : null;
-                        else
-                            throw new InvalidOperationException($"Unsupported param type: {param.ParameterType.FullName}");
-                    }
-                }
-                paramsValues[param.Position] = value;
-            }
+                Args = regexMatchResult.RegexMatch.Groups.Cast<Group>().Skip(1)
+                    .Select(s => s.Value ?? string.Empty).ToArray(),
+                ArgumentConverterProvider = (IArgumentConverterProvider)services.GetService(typeof(IArgumentConverterProvider)),
+                CancellationToken = cancellationToken,
+                Context = context,
+                Services = services,
+                AdditionalObjects = new object[] { regexMatchResult.RegexMatch }
+            };
+            object[] paramsValues = ParameterBuilder.BuildParamsAsync(_params, paramBuilderValues);
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();
