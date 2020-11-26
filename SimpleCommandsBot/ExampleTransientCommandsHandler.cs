@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 {
     /*** Example: transient command handler
      * Transient command handler is stateless. That means, it'll be created just to execute a command method, and destroyed right after.
-     * This is good for very simple commands. If you need to use events or any other state, check ExamplePersistentCommandHandler.
+     * This is good for very simple commands. If you need to use events or any other state, check ExamplePersistentCommandsHandler.
      * 
      * Note: if your command handler implements IDisposable, its Dispose() method will be called once command finishes executing.
      ***/
@@ -50,6 +50,27 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         }
 
 
+        /*** Example: Command with arguments groups and catch-all.
+         * By defaults, arguments for a standard command is split using space.
+         * However it is possible to capture arguments as a group.
+         * Groups are defined by user - if user types something wrapped in a [], () or "", it'll be treated as a group.
+         * For example: !say "hello, I am a super bot" --- argument 1 will be: hello, I am a super bot
+         * 
+         * You can also capture all arguments. If any of the parameters is string[], all of the arguments will be put into it.
+         * For example: !say hello [group name] --- argument 1 will be: hello; string[] will contain "hello" and "group name"
+         * 
+         * Note: with [RegexCommand], default splitting and grouping rules do not apply. For RegexCommands, Regex Groups are used instead.
+         * Note: string[] does not make say optional - it is still required. If you want to make it optional, look below
+         * Note: group markers - (), [], "" - will not be included in any of arguments. If you want to include them, please use [RegexCommand] with one group.
+         ***/
+        [Command("say")]
+        public async Task CmdSayAsync(CommandContext context, string say, string[] catchAll)
+        {
+            await context.ReplyTextAsync($"You asked me to say {say}");
+            if (catchAll.Length > 1)
+                await context.ReplyTextAsync($"BUT I WILL SAY {string.Join(' ', catchAll)}");
+        }
+
         /*** Example: Private command with optional arguments.
          * This example shows a simple commands, with a mandatory and an optional argument.
          * Arguments that have defaults set in the method signature will use these defaults if user does not provide a value.
@@ -57,7 +78,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * This example also shows that commands don't need to be public. They cannot be static, but they can be private!
          ***/
         [Command("optionals")]
-        private async Task CmdOptionalsAsync(ICommandContext context, bool first, bool second = false)
+        private async Task CmdOptionalsAsync(CommandContext context, bool first, bool second = false)
         {
             await context.ReplyTextAsync($"First: {first}, Second: {second}");
         }
@@ -69,7 +90,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          ***/
         [RegexCommand("^hello (.+?)(?:\\s(.*))?$")]
         [Prefix(PrefixRequirement.Group)]
-        public async Task CmdHelloAsync(ICommandContext context, Match match, string arg1)
+        public async Task CmdHelloAsync(CommandContext context, Match match, string arg1)
         {
             await context.ReplyTextAsync($"Hello, but {arg1} is not my name!");
             if (match.Groups[2].Success && match.Groups[2].Length > 0)
@@ -85,11 +106,11 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          ***/
         [Command("priority")]
         [Priority(5)]
-        public Task CmdPriority5Async(ICommandContext context)
+        public Task CmdPriority5Async(CommandContext context)
             => context.ReplyTextAsync("Priority 5");
         [Command("priority")]
         [Priority(15)]
-        public Task CmdPriority15Async(ICommandContext context)
+        public Task CmdPriority15Async(CommandContext context)
             => context.ReplyTextAsync("Priority 15");
 
 
@@ -123,7 +144,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         [Command("admin only")]
         [RequireGroupAdmin]
         [GroupOnly]
-        public async Task CmdAdminOnly(ICommandContext context)
+        public async Task CmdAdminOnly(CommandContext context)
         {
             await context.ReplyTextAsync("You can execute this command!");
         }
