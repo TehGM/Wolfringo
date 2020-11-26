@@ -19,5 +19,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
         /// <returns>Argument name.</returns>
         public static string GetArgumentName(this ParameterInfo parameter)
             => parameter.GetCustomAttribute<ArgumentNameAttribute>()?.Name ?? parameter.Name;
+
+        /// <summary>Gets name of the argument's type.</summary>
+        /// <remarks>If <see cref="ArgumentTypeNameAttribute"/> is specified for the parameter, its value will be used. If it's missing, it will default to parameter Type's name.</remarks>
+        /// <returns>Argument's type name.</returns>
+        public static string GetTypeName(this ParameterInfo parameter)
+            => parameter.GetCustomAttribute<ArgumentTypeNameAttribute>()?.Name ?? parameter.ParameterType.Name;
     }
 }

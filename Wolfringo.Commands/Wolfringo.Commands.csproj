@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Attributes\Arguments\ArgumentTypeNameAttribute.cs~RF2155a279.TMP" />
     <None Remove="Attributes\RegexCommandAttribute.cs~RF1a304fc5.TMP" />
     <None Remove="Parsing\DefaultParameterConverterMap.cs~RF1f670801.TMP" />
   </ItemGroup>

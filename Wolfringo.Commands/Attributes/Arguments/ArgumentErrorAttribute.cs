@@ -24,6 +24,7 @@ namespace TehGM.Wolfringo.Commands.Attributes
         /// <summary>This placeholder will be replaced with argument value at runtime.</summary>
         public const string ArgPlaceholder = "{{Arg}}";
         /// <summary>This placeholder will be replaced with parameter type at runtime.</summary>
+        /// <remarks>Can be changed by using <see cref="ArgumentTypeNameAttribute"/>.</remarks>
         public const string TypePlaceholder = "{{Type}}";
         /// <summary>This placeholder will be replaced with parameter name at runtime.</summary>
         /// <remarks>Can be changed by using <see cref="ArgumentNameAttribute"/>.</remarks>
@@ -70,7 +71,7 @@ namespace TehGM.Wolfringo.Commands.Attributes
             string result = this.TextTemplate;
             // use regex for replacing - this allows for case insensitive replacements
             result = _argRegex.Value.Replace(result, arg);
-            result = _typeRegex.Value.Replace(result, parameter.ParameterType.Name);
+            result = _typeRegex.Value.Replace(result, parameter.GetTypeName());
             result = _nameRegex.Value.Replace(result, parameter.GetArgumentName());
             result = _messageRegex.Value.Replace(result, Encoding.UTF8.GetString(context.Message.RawData.ToArray()));
             result = _senderIdRegex.Value.Replace(result, context.Message.SenderID.Value.ToString());
