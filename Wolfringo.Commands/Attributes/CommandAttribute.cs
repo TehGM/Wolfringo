@@ -1,4 +1,5 @@
 ﻿using System;
+using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands
 {

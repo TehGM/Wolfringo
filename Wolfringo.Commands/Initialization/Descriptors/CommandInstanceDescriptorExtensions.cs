@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {

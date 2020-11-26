@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {

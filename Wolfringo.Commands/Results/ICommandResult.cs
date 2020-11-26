@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TehGM.Wolfringo.Commands.Results
+namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Represents result of any command execution or check.</summary>
     public interface ICommandResult

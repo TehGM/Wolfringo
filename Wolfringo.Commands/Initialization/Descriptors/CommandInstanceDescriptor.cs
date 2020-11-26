@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {

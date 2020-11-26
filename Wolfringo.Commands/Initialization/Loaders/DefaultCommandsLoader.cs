@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {

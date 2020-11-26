@@ -1,4 +1,6 @@
-﻿namespace TehGM.Wolfringo.Commands
+﻿using TehGM.Wolfringo.Commands.Attributes;
+
+namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Command requirement that checks if the bot has owner permissions.</summary>
     /// <remarks><para>Default <see cref="CommandRequirementAttribute.ErrorMessage"/> for this requirement is "(n) I need to be at least an owner to execute this command.".</para></remarks>

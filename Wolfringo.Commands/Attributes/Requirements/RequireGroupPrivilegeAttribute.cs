@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 
-namespace TehGM.Wolfringo.Commands
+namespace TehGM.Wolfringo.Commands.Attributes
 {
     /// <summary>Command requirement that checks if the user has correct group permissions.</summary>
     /// <remarks><para>Default <see cref="CommandRequirementAttribute.ErrorMessage"/> for this requirement is "(n) You don't have enough group privileges to execute this command.".</para></remarks>

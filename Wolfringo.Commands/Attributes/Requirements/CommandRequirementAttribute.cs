@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TehGM.Wolfringo.Commands
+namespace TehGM.Wolfringo.Commands.Attributes
 {
     /// <summary>Represents any special validation that message needs to pass for command to be executed.</summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]

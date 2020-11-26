@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TehGM.Wolfringo.Commands
+namespace TehGM.Wolfringo.Commands.Attributes
 {
     /// <summary>Command requirement that checks if the bot has correct group permissions.</summary>
     /// <remarks><para>Default <see cref="CommandRequirementAttribute.ErrorMessage"/> for this requirement is "(n) I don't have enough group privileges to execute this command.".</para></remarks>

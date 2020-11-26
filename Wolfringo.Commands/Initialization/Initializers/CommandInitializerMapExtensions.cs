@@ -1,4 +1,6 @@
-﻿namespace TehGM.Wolfringo.Commands.Initialization
+﻿using TehGM.Wolfringo.Commands.Attributes;
+
+namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <summary>Extensions for command initializer maps.</summary>
     public static class CommandInitializerMapExtensions

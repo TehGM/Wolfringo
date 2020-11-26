@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands
 {
