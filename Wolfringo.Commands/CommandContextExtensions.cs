@@ -14,15 +14,25 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Gets profile of the user that sent the command.</summary>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Profile of the user that sent the command</returns>
-        /// <seealso cref="GetRecipientAsync{T}(CancellationToken)"/>
+        /// <seealso cref="GetRecipientAsync{T}(ICommandContext, CancellationToken)"/>
+        /// <seealso cref="GetBotProfileAsync(ICommandContext, CancellationToken)"/>
         public static Task<WolfUser> GetSenderAsync(this ICommandContext context, CancellationToken cancellationToken = default)
             => GetUserAsync(context, context.Message.SenderID.Value, cancellationToken);
+
+        /// <summary>Gets profile of the bot user.</summary>
+        /// <param name="cancellationToken">Token to cancel server request with.</param>
+        /// <returns>Profile of the bot user.</returns>
+        /// <seealso cref="GetRecipientAsync{T}(ICommandContext, CancellationToken)"/>
+        /// <seealso cref="GetSenderAsync(ICommandContext, CancellationToken)"/>
+        public static Task<WolfUser> GetBotProfileAsync(this ICommandContext context, CancellationToken cancellationToken = default)
+            => GetUserAsync(context, context.Client.CurrentUserID.Value, cancellationToken);
 
         /// <summary>Gets profile of the recipient of the message.</summary>
         /// <typeparam name="T">Type of recipient, for example <see cref="WolfUser"/> or <see cref="WolfGroup"/>.</typeparam>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Profile of the message's recipient; if <typeparamref name="T"/> does not match the message type, null will be returned.</returns>
-        /// <seealso cref="GetSenderAsync(CancellationToken)"/>
+        /// <seealso cref="GetSenderAsync(ICommandContext, CancellationToken)"/>
+        /// <seealso cref="GetBotProfileAsync(ICommandContext, CancellationToken)"/>
         public static async Task<T> GetRecipientAsync<T>(this ICommandContext context, CancellationToken cancellationToken = default) where T : class, IWolfEntity
         {
             if (context.Message.IsGroupMessage)
