@@ -7,12 +7,11 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 {
     /*** Example: persistent command handler
      * Persistent command handler is kept in memory for as long as CommandService is alive - they won't be re-created for each new command execution.
-     * This is useful when you need to keep data in memory, or subscribe to any events.
+     * Instead, they'll be created once when CommandService starts. This is useful when you need to keep data in memory, or subscribe to any events.
      * 
      * Note: if your command handler implements IDisposable, its Dispose() method will be called once when CommandService is being disposed.
-     * Note: setting PreInitialize to true is not required, but it is recommended for persistent handlers - otherwise creation of handler will wait until command is executed.
      ***/
-    [CommandHandler(IsPersistent = true, PreInitialize = true)]
+    [CommandHandler(IsPersistent = true)]
     class ExamplePersistentCommandsHandler : IDisposable
     {
         private readonly IWolfClient _client;

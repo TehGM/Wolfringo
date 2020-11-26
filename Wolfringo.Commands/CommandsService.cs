@@ -120,8 +120,8 @@ namespace TehGM.Wolfringo.Commands
                     {
                         CommandHandlerAttribute handlerAttribute = descriptor.GetHandlerAttribute();
 
-                        // check if handler is meant to be pre-initialized. If so, request it from provider to pre-initialize
-                        if (handlerAttribute?.PreInitialize == true)
+                        // check if handler is persistent. If so, request it from provider to pre-initialize
+                        if (handlerAttribute?.IsPersistent == true)
                         {
                             this._log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.GetHandlerType().Name);
                             this._handlerProvider.GetCommandHandler(descriptor);
