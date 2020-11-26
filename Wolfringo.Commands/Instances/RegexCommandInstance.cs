@@ -117,11 +117,13 @@ namespace TehGM.Wolfringo.Commands.Instances
                 Services = services,
                 AdditionalObjects = new object[] { regexMatchResult.RegexMatch }
             };
-            object[] paramsValues = ParameterBuilder.BuildParamsAsync(_params, paramBuilderValues);
+            ParameterBuildingResult paramsResult = await ParameterBuilder.BuildParamsAsync(_params, paramBuilderValues, cancellationToken).ConfigureAwait(false);
+            if (!paramsResult.IsSuccess)
+                return paramsResult;
 
             // execute - if it's a task, await it
             cancellationToken.ThrowIfCancellationRequested();
-            if (this.Method.Invoke(handler, paramsValues) is Task returnTask)
+            if (this.Method.Invoke(handler, paramsResult.Values) is Task returnTask)
                 await returnTask.ConfigureAwait(false);
             return CommandExecutionResult.Success;
         }
