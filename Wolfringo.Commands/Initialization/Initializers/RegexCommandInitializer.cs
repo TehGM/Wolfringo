@@ -14,9 +14,15 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (!(descriptor.Attribute is RegexCommandAttribute regexCommand))
                 throw new ArgumentException($"{this.GetType().Name} can only be used with {typeof(RegexCommandAttribute).Name} commands", nameof(descriptor.Attribute));
 
+            // if pattern starts with ^, replace it with \G
+            // this will ensure it'll match start of the string when starting from index after prefix
+            string pattern = regexCommand.Pattern;
+            if (pattern[0] == '^')
+                pattern = $@"\G{pattern.Substring(1)}";
+
             // init instance
             return new RegexCommandInstance(
-                pattern: regexCommand.Pattern,
+                pattern: pattern,
                 regexOptions: regexCommand.Options,
                 method: descriptor.Method,
                 requirements: descriptor.GetRequirements(),
