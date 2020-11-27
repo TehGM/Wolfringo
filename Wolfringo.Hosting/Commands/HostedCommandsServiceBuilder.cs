@@ -7,7 +7,7 @@ using TehGM.Wolfringo.Commands.Parsing;
 namespace TehGM.Wolfringo.Hosting.Commands
 {
     /// <inheritdoc/>
-    public class HostedCommandsServiceBuilder : IHostedCommandsServiceBuilder
+    class HostedCommandsServiceBuilder : IHostedCommandsServiceBuilder
     {
         private readonly IServiceCollection _services;
 

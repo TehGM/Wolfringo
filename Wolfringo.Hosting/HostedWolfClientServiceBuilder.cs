@@ -4,6 +4,7 @@ using TehGM.Wolfringo.Messages.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <inheritdoc/>
     class HostedWolfClientServiceBuilder : IHostedWolfClientServiceBuilder
     {
         private readonly IServiceCollection _services;
