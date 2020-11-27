@@ -32,7 +32,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
         /// <inheritdoc/>
         public virtual IArgumentConverter GetConverter(ParameterInfo parameter)
         {
-            if (this.Options.Converters.TryGetValue(parameter.ParameterType, out IArgumentConverter converter) && converter.CanConvert(parameter))
+            if (this.Options.Converters.TryGetValue(parameter.ParameterType, out IArgumentConverter converter) && converter?.CanConvert(parameter) == true)
                 return converter;
             if (parameter.ParameterType.IsEnum)
                 return this.Options.EnumConverter;
@@ -54,8 +54,8 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     disposables = disposables.Union(new IDisposable[] { disposableEnumConverter });
                 this.Options.Converters.Clear();
             }
-            foreach (object disposable in disposables)
-                try { (disposable as IDisposable)?.Dispose(); } catch { }
+            foreach (IDisposable disposable in disposables)
+                try { disposable?.Dispose(); } catch { }
         }
     }
 }
