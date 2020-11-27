@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.Configure<CommandsOptions>(configure);
 
             // add all required services
-            services.TryAddSingleton<ICommandHandlerProvider, CommandHandlerProvider>();
+            services.TryAddSingleton<ICommandsHandlerProvider, CommandsHandlerProvider>();
             services.TryAddTransient<ICommandsLoader, CommandsLoader>();
             services.TryAdd(ServiceDescriptor.Transient<ICommandInitializerProvider, CommandInitializerProvider>(provider
                 => new CommandInitializerProvider(provider.GetRequiredService<IOptionsSnapshot<CommandInitializerProviderOptions>>().Value)));
@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Removes all default assemblies and classes from Commands Options.</summary>
         /// <param name="builder">Hosted Commands Service builder.</param>
         /// <seealso cref="CommandsOptions"/>
-        /// <seealso cref="CommandHandlerAttribute"/>
+        /// <seealso cref="CommandsHandlerAttribute"/>
         /// <seealso cref="ICommandsLoader"/>
         public static IHostedCommandsServiceBuilder RemoveDefaultHandlers(this IHostedCommandsServiceBuilder builder)
         {
@@ -98,7 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Adds handlers to Command Service.</summary>
         /// <param name="builder">Hosted Commands Service builder.</param>
         /// <param name="handlerTypes">Types of handlers to add.</param>
-        /// <seealso cref="CommandHandlerAttribute"/>
+        /// <seealso cref="CommandsHandlerAttribute"/>
         /// <seealso cref="ICommandsLoader.LoadFromTypeAsync(TypeInfo, System.Threading.CancellationToken)"/>
         /// <seealso cref="CommandsOptions.Classes"/>
         public static IHostedCommandsServiceBuilder AddHandlers(this IHostedCommandsServiceBuilder builder, params Type[] handlerTypes)
@@ -111,7 +111,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Adds handler to Command Service.</summary>
         /// <typeparam name="T">Type of handler to add.</typeparam>
         /// <param name="builder">Hosted Commands Service builder.</param>
-        /// <seealso cref="CommandHandlerAttribute"/>
+        /// <seealso cref="CommandsHandlerAttribute"/>
         /// <seealso cref="ICommandsLoader.LoadFromTypeAsync(TypeInfo, System.Threading.CancellationToken)"/>
         /// <seealso cref="CommandsOptions.Classes"/>
         public static IHostedCommandsServiceBuilder AddHandler<T>(this IHostedCommandsServiceBuilder builder)
@@ -120,7 +120,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Adds handlers to Command Service.</summary>
         /// <param name="assemblies">Assemblies to load handlers from.</param>
         /// <param name="builder">Hosted Commands Service builder.</param>
-        /// <seealso cref="CommandHandlerAttribute"/>
+        /// <seealso cref="CommandsHandlerAttribute"/>
         /// <seealso cref="ICommandsLoader.LoadFromAssemblyAsync(Assembly, System.Threading.CancellationToken)"/>
         /// <seealso cref="CommandsOptions.Assemblies"/>
         public static IHostedCommandsServiceBuilder AddHandlers(this IHostedCommandsServiceBuilder builder, params Assembly[] assemblies)

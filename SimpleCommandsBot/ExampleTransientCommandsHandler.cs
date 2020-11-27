@@ -14,7 +14,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
      * 
      * Note: if your command handler implements IDisposable, its Dispose() method will be called once command finishes executing.
      ***/
-    [CommandHandler]
+    [CommandsHandler]
     class ExampleTransientCommandsHandler
     {
         /*** Example: Command without arguments.

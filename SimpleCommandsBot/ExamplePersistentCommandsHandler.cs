@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
      * 
      * Note: if your command handler implements IDisposable, its Dispose() method will be called once when CommandService is being disposed.
      ***/
-    [CommandHandler(IsPersistent = true)]
+    [CommandsHandler(IsPersistent = true)]
     class ExamplePersistentCommandsHandler : IDisposable
     {
         private readonly IWolfClient _client;
@@ -31,7 +31,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * 
          * Note: constructors work the same with non-persistent handlers - but they're more useful with persistent ones, as non-persistent ones have lifetime of a command execution.
          ***/
-        [CommandHandlerConstructor]
+        [CommandsHandlerConstructor]
         public ExamplePersistentCommandsHandler(IWolfClient client, ILogger log = null)
         {
             this._client = client;

@@ -12,7 +12,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <inheritdoc/>
         public MethodInfo Method { get; }
         /// <summary>Command Handler Attribute present on the handler. Might be null if handler isn't tagged with that attribute.</summary>
-        public CommandHandlerAttribute HandlerAttribute { get; }
+        public CommandsHandlerAttribute HandlerAttribute { get; }
         /// <summary>Command priority.</summary>
         /// <remarks>See <see cref="PriorityAttribute"/> for more information about command priorities.</remarks>
         /// <seealso cref="PriorityAttribute"/>

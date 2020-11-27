@@ -1,7 +1,7 @@
 ﻿namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <summary>Represents a handler search result for handler provider.</summary>
-    public interface ICommandHandlerProviderResult
+    public interface ICommandsHandlerProviderResult
     {
         /// <summary>Descriptor of the handler.</summary>
         ICommandHandlerDescriptor Descriptor { get; }

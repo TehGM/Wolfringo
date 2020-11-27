@@ -8,34 +8,34 @@ namespace TehGM.Wolfringo.Commands.Initialization
     /// <inheritdoc>/>
     /// <remarks><para>This provider will keep persistent handlers in its own cache, and reuse them when applicable.</para>
     /// <para>The persistent handler instances that implement <see cref="IDisposable"/> will be automatically disposed when <see cref="Dispose"/> method is called.</para></remarks>
-    public class CommandHandlerProvider : ICommandHandlerProvider, IDisposable
+    public class CommandsHandlerProvider : ICommandsHandlerProvider, IDisposable
     {
         private readonly IServiceProvider _services;
 
         private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
-        private readonly IDictionary<Type, CommandHandlerProviderResult> _persistentHandlers;
+        private readonly IDictionary<Type, CommandsHandlerProviderResult> _persistentHandlers;
         private readonly object _lock;
 
         /// <summary>Creates a new provider instance.</summary>
         /// <param name="services">Service provider with services to use for constructor injection.</param>
-        public CommandHandlerProvider(IServiceProvider services)
+        public CommandsHandlerProvider(IServiceProvider services)
         {
             this._services = services;
 
             this._knownHandlerDescriptors = new Dictionary<Type, CommandHandlerDescriptor>();
-            this._persistentHandlers = new Dictionary<Type, CommandHandlerProviderResult>();
+            this._persistentHandlers = new Dictionary<Type, CommandsHandlerProviderResult>();
             this._lock = new object();
         }
 
         /// <inheritdoc>/>
-        public ICommandHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor)
+        public ICommandsHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor)
         {
             Type handlerType = descriptor.GetHandlerType();
 
             lock (_lock)
             {
                 // if not shared, try persistent
-                if (_persistentHandlers.TryGetValue(handlerType, out CommandHandlerProviderResult handler))
+                if (_persistentHandlers.TryGetValue(handlerType, out CommandsHandlerProviderResult handler))
                     return handler;
 
                 // if no persistent handler was found, we need to create a new one - check if descriptor is known yet
@@ -48,7 +48,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
                     // check if any of the constructors are specifically designated to be used by Commands System
                     IEnumerable<ConstructorInfo> selectedConstructors = allConstructors
-                        .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandHandlerConstructorAttribute>(false)))
+                        .Select(ctor => (constructor: ctor, attribute: ctor.GetCustomAttribute<CommandsHandlerConstructorAttribute>(false)))
                         .Where(ctor => ctor.attribute != null)
                         .OrderByDescending(ctor => ctor.attribute.Priority)
                         .ThenByDescending(ctor => ctor.constructor.GetParameters().Length)
@@ -76,7 +76,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 }
 
                 // now that we have a descriptor, let's create an instance
-                handler = new CommandHandlerProviderResult(handlerDescriptor, handlerDescriptor.CreateInstance());
+                handler = new CommandsHandlerProviderResult(handlerDescriptor, handlerDescriptor.CreateInstance());
 
                 // if it's a persistent instance, store it
                 if (handlerDescriptor.IsPersistent())

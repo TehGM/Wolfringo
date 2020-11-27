@@ -13,7 +13,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <summary>Dependencies resolved for constructor injection.</summary>
         public object[] ConstructorParams { get; }
         /// <inheritdoc/>
-        public CommandHandlerAttribute Attribute { get; }
+        public CommandsHandlerAttribute Attribute { get; }
         /// <inheritdoc/>
         public Type Type => this.Constructor.DeclaringType;
 
@@ -26,7 +26,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this.ConstructorParams = parameters.ToArray();
 
             // check [CommandHandler] attribute
-            this.Attribute = this.Constructor.DeclaringType.GetCustomAttribute<CommandHandlerAttribute>();
+            this.Attribute = this.Constructor.DeclaringType.GetCustomAttribute<CommandsHandlerAttribute>();
         }
 
         /// <summary>Creates a new instance of a handler.</summary>
@@ -46,7 +46,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             return other != null &&
                    EqualityComparer<Type>.Default.Equals(Type, other.Type) &&
-                   EqualityComparer<CommandHandlerAttribute>.Default.Equals(Attribute, other.Attribute);
+                   EqualityComparer<CommandsHandlerAttribute>.Default.Equals(Attribute, other.Attribute);
         }
 
         /// <inheritdoc/>
@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             int hashCode = -849586986;
             hashCode = hashCode * -1521134295 + EqualityComparer<ConstructorInfo>.Default.GetHashCode(Constructor);
-            hashCode = hashCode * -1521134295 + EqualityComparer<CommandHandlerAttribute>.Default.GetHashCode(Attribute);
+            hashCode = hashCode * -1521134295 + EqualityComparer<CommandsHandlerAttribute>.Default.GetHashCode(Attribute);
             return hashCode;
         }
 

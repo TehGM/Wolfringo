@@ -26,16 +26,16 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         /// <inheritdoc/>
-        /// <remarks>Only commands from types marked with <see cref="CommandHandlerAttribute"/> will be loaded.</remarks>
+        /// <remarks>Only commands from types marked with <see cref="CommandsHandlerAttribute"/> will be loaded.</remarks>
         public Task<IEnumerable<ICommandInstanceDescriptor>> LoadFromAssemblyAsync(Assembly assembly, CancellationToken cancellationToken = default)
         {
             List<ICommandInstanceDescriptor> results = new List<ICommandInstanceDescriptor>();
             _log?.LogTrace("Loading assembly {Name}", assembly.FullName);
             IEnumerable<TypeInfo> types = assembly.DefinedTypes.Where(t => !t.IsAbstract && !t.ContainsGenericParameters
-                && !Attribute.IsDefined(t, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(t, typeof(CommandHandlerAttribute), true));
+                && !Attribute.IsDefined(t, typeof(CompilerGeneratedAttribute)) && Attribute.IsDefined(t, typeof(CommandsHandlerAttribute), true));
             if (!types.Any())
             {
-                _log?.LogWarning("Cannot initialize commands from assembly {Name} - no non-static non-abstract non-generic classes with {Attribute}", assembly.FullName, nameof(CommandHandlerAttribute));
+                _log?.LogWarning("Cannot initialize commands from assembly {Name} - no non-static non-abstract non-generic classes with {Attribute}", assembly.FullName, nameof(CommandsHandlerAttribute));
                 return NullTask();
             }
             foreach (TypeInfo type in types)
@@ -44,7 +44,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         /// <inheritdoc/>
-        /// <remarks>Commands will be loaded regardless of presence of <see cref="CommandHandlerAttribute"/>.</remarks>
+        /// <remarks>Commands will be loaded regardless of presence of <see cref="CommandsHandlerAttribute"/>.</remarks>
         public Task<IEnumerable<ICommandInstanceDescriptor>> LoadFromTypeAsync(TypeInfo type, CancellationToken cancellationToken = default)
         {
             List<ICommandInstanceDescriptor> results = new List<ICommandInstanceDescriptor>();
@@ -61,7 +61,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         /// <inheritdoc/>
-        /// <remarks>Commands will be loaded regardless of presence of <see cref="CommandHandlerAttribute"/>.</remarks>
+        /// <remarks>Commands will be loaded regardless of presence of <see cref="CommandsHandlerAttribute"/>.</remarks>
         /// <exception cref="InvalidOperationException">No mapped initializer for a command was found.</exception>
         public Task<IEnumerable<ICommandInstanceDescriptor>> LoadFromMethodAsync(MethodInfo method, CancellationToken cancellationToken = default)
         {

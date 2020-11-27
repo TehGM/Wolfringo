@@ -12,8 +12,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <summary>Retrieves CommandHandler attribute for the command's handler.</summary>
         /// <param name="descriptor">Command descriptor.</param>
         /// <returns>CommandHandler attribute present on the command's handler type; null if not found.</returns>
-        public static CommandHandlerAttribute GetHandlerAttribute(this ICommandInstanceDescriptor descriptor)
-            => GetHandlerType(descriptor).GetCustomAttribute<CommandHandlerAttribute>(true);
+        public static CommandsHandlerAttribute GetHandlerAttribute(this ICommandInstanceDescriptor descriptor)
+            => GetHandlerType(descriptor).GetCustomAttribute<CommandsHandlerAttribute>(true);
 
         /// <summary>Gets command's priority.</summary>
         /// <remarks>See <see cref="PriorityAttribute"/> for more information about command priorities.</remarks>

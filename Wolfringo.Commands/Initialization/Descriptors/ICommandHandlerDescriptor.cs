@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
     {
         /// <summary>CommandHandler attribute the handler is decorated with.</summary>
         /// <remarks>This value might be null if descriptor was force-loaded from a type that wasn't automatically discovered.</remarks>
-        CommandHandlerAttribute Attribute { get; }
+        CommandsHandlerAttribute Attribute { get; }
         /// <summary>Command handler type.</summary>
         Type Type { get; }
     }

@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly IWolfClient _client;
         private readonly CommandsOptions _options;
         private readonly IServiceProvider _services;
-        private readonly ICommandHandlerProvider _handlerProvider;
+        private readonly ICommandsHandlerProvider _handlerProvider;
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly IArgumentsParser _argumentsParser;
@@ -48,7 +48,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="argumentConverterProvider">Provider of argument converters. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerProvider initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
+        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandsHandlerProvider handlerProvider = null, ICommandInitializerProvider initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -67,7 +67,7 @@ namespace TehGM.Wolfringo.Commands
             this._handlerProvider = handlerProvider;
             if (this._handlerProvider == null)
             {
-                this._handlerProvider = new CommandHandlerProvider(this._services);
+                this._handlerProvider = new CommandsHandlerProvider(this._services);
                 this._disposeHandlerProvider = true;
             }
             this._initializers = initializers ?? new CommandInitializerProvider();
@@ -126,7 +126,7 @@ namespace TehGM.Wolfringo.Commands
                     // for each loaded command, handle pre-initialization and caching
                     foreach (ICommandInstanceDescriptor descriptor in descriptors)
                     {
-                        CommandHandlerAttribute handlerAttribute = descriptor.GetHandlerAttribute();
+                        CommandsHandlerAttribute handlerAttribute = descriptor.GetHandlerAttribute();
 
                         // check if handler is persistent. If so, request it from provider to pre-initialize
                         if (handlerAttribute?.IsPersistent == true)
@@ -205,7 +205,7 @@ namespace TehGM.Wolfringo.Commands
                     ICommandInstance instance = commandKvp.Value;
                     using (this._log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                     {
-                        ICommandHandlerProviderResult handlerResult = null;
+                        ICommandsHandlerProviderResult handlerResult = null;
                         try
                         {
                             cts.Token.ThrowIfCancellationRequested();
@@ -221,7 +221,7 @@ namespace TehGM.Wolfringo.Commands
                             if (handlerResult?.HandlerInstance == null)
                             {
                                 _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
-                                return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandHandlerProviderResult.HandlerInstance),
+                                return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandsHandlerProviderResult.HandlerInstance),
                                     $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
                             }
                             _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
