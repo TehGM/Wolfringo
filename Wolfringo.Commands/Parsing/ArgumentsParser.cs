@@ -4,12 +4,12 @@ using System.Linq;
 namespace TehGM.Wolfringo.Commands.Parsing
 {
     /// <inheritdoc/>
-    public class DefaultArgumentsParser : IArgumentsParser
+    public class ArgumentsParser : IArgumentsParser
     {
-        private DefaultArgumentsParserOptions _options;
+        private ArgumentsParserOptions _options;
 
         /// <summary>Initial size allocated for an argument.</summary>
-        /// <remarks><para><see cref="DefaultArgumentsParser"/> uses a new list of <see cref="char"/> for each argument, and allocates initial size.
+        /// <remarks><para><see cref="ArgumentsParser"/> uses a new list of <see cref="char"/> for each argument, and allocates initial size.
         /// A good initial size is big enough to contain most commonly used arguments, but small enough to not allocate too much memory unnecessarily.</para>
         /// <para>Defaults to 8.</para></remarks>
         public int InitialBlockSizeAllocation => _options.InitialBlockSizeAllocation;
@@ -29,13 +29,13 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
         /// <summary>Create a new instance of default parser.</summary>
         /// <param name="options">Options to use with this parser.</param>
-        public DefaultArgumentsParser(DefaultArgumentsParserOptions options)
+        public ArgumentsParser(ArgumentsParserOptions options)
         {
             this._options = options;
         }
 
         /// <summary>Create a new instance of default parser using default options.</summary>
-        public DefaultArgumentsParser() : this(new DefaultArgumentsParserOptions()) { }
+        public ArgumentsParser() : this(new ArgumentsParserOptions()) { }
 
         /// <inheritdoc/>
         public IEnumerable<string> ParseArguments(string input, int startIndex)

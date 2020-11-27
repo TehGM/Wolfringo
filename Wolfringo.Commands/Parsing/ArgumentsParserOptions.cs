@@ -3,11 +3,11 @@
 namespace TehGM.Wolfringo.Commands.Parsing
 {
     /// <summary>Options for default argument parser.</summary>
-    /// <seealso cref="DefaultArgumentsParser"/>
-    public class DefaultArgumentsParserOptions
+    /// <seealso cref="ArgumentsParser"/>
+    public class ArgumentsParserOptions
     {
         /// <summary>Initial size allocated for an argument.</summary>
-        /// <remarks><para><see cref="DefaultArgumentsParser"/> uses a new list of <see cref="char"/> for each argument, and allocates initial size.
+        /// <remarks><para><see cref="ArgumentsParser"/> uses a new list of <see cref="char"/> for each argument, and allocates initial size.
         /// A good initial size is big enough to contain most commonly used arguments, but small enough to not allocate too much memory unnecessarily.</para>
         /// <para>Defaults to 8.</para></remarks>
         public int InitialBlockSizeAllocation { get; set; } = 8;

@@ -9,14 +9,14 @@ namespace TehGM.Wolfringo.Commands.Parsing
     /// <inheritdoc/>
     /// <remarks><para>This default command argument converter provider is designed to match a type to a converter, and automatically handle enums.</para>
     /// <para>Besides enums, all converters simply match the type. If your custom converter uses complex logic in its <see cref="IArgumentConverter.CanConvert(Type)"/> method, please create own provider class, or inherit from this class.</para></remarks>
-    public class DefaultArgumentConverterProvider : IArgumentConverterProvider
+    public class ArgumentConverterProvider : IArgumentConverterProvider
     {
         /// <summary>Map used for direct type to converter matching.</summary>
         protected IDictionary<Type, IArgumentConverter> Map { get; }
         protected IArgumentConverter EnumConverter { get; set; }
 
         /// <summary>Creates default converter provider.</summary>
-        public DefaultArgumentConverterProvider()
+        public ArgumentConverterProvider()
         {
             this.EnumConverter = new EnumConverter();
             this.Map = new Dictionary<Type, IArgumentConverter>()
@@ -45,7 +45,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
         /// <summary>Creates default command argument converter provider.</summary>
         /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
-        public DefaultArgumentConverterProvider(IEnumerable<KeyValuePair<Type, IArgumentConverter>> additionalMappings) : this()
+        public ArgumentConverterProvider(IEnumerable<KeyValuePair<Type, IArgumentConverter>> additionalMappings) : this()
         {
             foreach (var pair in additionalMappings)
                 this.MapConverter(pair.Key, pair.Value);

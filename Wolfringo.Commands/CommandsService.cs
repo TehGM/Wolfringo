@@ -55,8 +55,8 @@ namespace TehGM.Wolfringo.Commands
 
             // init optionals
             this._log = log;
-            this._argumentsParser = argumentsParser ?? new DefaultArgumentsParser();
-            this._argumentConverterProvider = argumentConverterProvider ?? new DefaultArgumentConverterProvider();
+            this._argumentsParser = argumentsParser ?? new ArgumentsParser();
+            this._argumentConverterProvider = argumentConverterProvider ?? new ArgumentConverterProvider();
             this._services = services ?? this.CreateDefaultServiceProvider();
             this._handlerProvider = handlerProvider;
             if (this._handlerProvider == null)
@@ -64,8 +64,8 @@ namespace TehGM.Wolfringo.Commands
                 this._handlerProvider = new CommandHandlerProvider(this._services);
                 this._disposeHandlerProvider = true;
             }
-            this._initializers = initializers ?? new DefaultCommandInitializerMap();
-            this._commandsLoader = commandsLoader ?? new DefaultCommandsLoader(this._initializers, this._log);
+            this._initializers = initializers ?? new CommandInitializerMap();
+            this._commandsLoader = commandsLoader ?? new CommandsLoader(this._initializers, this._log);
 
             // init private
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();

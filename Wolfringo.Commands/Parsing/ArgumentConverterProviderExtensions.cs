@@ -9,7 +9,7 @@
         /// <para>Providing a converter for an already mapped type will overwrite the mapped converter.</para></remarks>
         /// <typeparam name="T">Type of the parameter.</typeparam>
         /// <param name="converter">Converter to use for that parameter type.</param>
-        public static void MapConverter<T>(this DefaultArgumentConverterProvider provider, IArgumentConverter converter)
+        public static void MapConverter<T>(this ArgumentConverterProvider provider, IArgumentConverter converter)
             => provider.MapConverter(typeof(T), converter);
     }
 }

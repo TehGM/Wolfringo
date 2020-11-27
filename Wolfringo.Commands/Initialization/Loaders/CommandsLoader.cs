@@ -11,7 +11,7 @@ using TehGM.Wolfringo.Commands.Attributes;
 namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <inheritdoc/>
-    public class DefaultCommandsLoader : ICommandsLoader
+    public class CommandsLoader : ICommandsLoader
     {
         private readonly ILogger _log;
         private readonly ICommandInitializerMap _initializers;
@@ -19,7 +19,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <summary>Creates a new loader instance.</summary>
         /// <param name="initializers">Command initializers mapping.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
-        public DefaultCommandsLoader(ICommandInitializerMap initializers, ILogger log)
+        public CommandsLoader(ICommandInitializerMap initializers, ILogger log)
         {
             this._initializers = initializers;
             this._log = log;

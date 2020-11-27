@@ -7,12 +7,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <inheritdoc/>
     /// <remarks>This is a default initializer map, and contains all initializers provided with the Wolfringo.Commands library by default.</remarks>
-    public class DefaultCommandInitializerMap : ICommandInitializerMap, IDisposable
+    public class CommandInitializerMap : ICommandInitializerMap, IDisposable
     {
         private IDictionary<Type, ICommandInitializer> _map;
 
         /// <summary>Creates default command initializer map.</summary>
-        public DefaultCommandInitializerMap()
+        public CommandInitializerMap()
         {
             this._map = new Dictionary<Type, ICommandInitializer>()
             {
@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
         /// <summary>Creates default command initializer map.</summary>
         /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
-        public DefaultCommandInitializerMap(IEnumerable<KeyValuePair<Type, ICommandInitializer>> additionalMappings) : this()
+        public CommandInitializerMap(IEnumerable<KeyValuePair<Type, ICommandInitializer>> additionalMappings) : this()
         {
             foreach (var pair in additionalMappings)
                 this.MapInitializer(pair.Key, pair.Value);
