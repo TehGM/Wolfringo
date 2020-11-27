@@ -30,7 +30,7 @@ namespace TehGM.Wolfringo.Hosting
     /// <see cref="HostedWolfClientOptions.AutoLogin"/> is set to true. Otherwise, manual login will be required.</para></remarks>
     /// <seealso cref="WolfClient"/>
     /// <seealso cref="IWolfClient"/>
-    public class HostedWolfClient : IHostedWolfClient, IHostedService, IWolfClient, IWolfClientCacheAccessor, IDisposable
+    public class HostedWolfClient : IHostedService, IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
         // internal working vars
         private WolfClient _client;
