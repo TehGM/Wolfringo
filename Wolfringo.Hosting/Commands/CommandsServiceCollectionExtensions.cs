@@ -27,6 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // add all required services
             services.TryAddSingleton<ICommandsHandlerProvider, CommandsHandlerProvider>();
+            services.TryAddTransient<IParameterBuilder, ParameterBuilder>();
             services.TryAdd(ServiceDescriptor.Transient<ICommandsLoader, CommandsLoader>(provider
                 => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(), provider.GetRequiredService<ILogger<CommandsLoader>>())));
             services.TryAdd(ServiceDescriptor.Transient<ICommandInitializerProvider, CommandInitializerProvider>(provider

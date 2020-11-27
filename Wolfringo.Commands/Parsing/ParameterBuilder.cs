@@ -8,15 +8,11 @@ using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
-    /// <summary>Helper class for building parameters when invoking a command method.</summary>
-    public static class ParameterBuilder
+    /// <inheritdoc/>
+    public class ParameterBuilder : IParameterBuilder
     {
-        /// <summary>Builds parameters.</summary>
-        /// <param name="parameters">Collection of parameters to be built.</param>
-        /// <param name="values">Values to use when building params.</param>
-        /// <param name="cancellationToken">Cancellation token used to cancel building</param>
-        /// <returns>Result of the parameters building.</returns>
-        public static async Task<ParameterBuildingResult> BuildParamsAsync(IEnumerable<ParameterInfo> parameters, ParameterBuilderValues values, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public async Task<ParameterBuildingResult> BuildParamsAsync(IEnumerable<ParameterInfo> parameters, ParameterBuilderValues values, CancellationToken cancellationToken = default)
         {
             if (values == null)
                 throw new ArgumentNullException(nameof(values));
@@ -75,7 +71,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return ParameterBuildingResult.Success(paramsValues);
         }
 
-        private static bool TryFindAdditional(Type type, IEnumerable<object> additionals, out object result)
+        protected static bool TryFindAdditional(Type type, IEnumerable<object> additionals, out object result)
         {
             if (additionals?.Any() == true)
             {
@@ -93,7 +89,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return false;
         }
 
-        private static bool TryGetService(Type type, IServiceProvider services, out object result)
+        protected static bool TryGetService(Type type, IServiceProvider services, out object result)
         {
             if (services == null)
             {
@@ -104,7 +100,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return result != null;
         }
 
-        private static bool TryConvertArgument(ParameterInfo parameter, int argIndex, ParameterBuilderValues values, out object result, out Exception error)
+        protected static bool TryConvertArgument(ParameterInfo parameter, int argIndex, ParameterBuilderValues values, out object result, out Exception error)
         {
             if (argIndex < 0)
                 throw new ArgumentException("Argument index cannot be negative", nameof(argIndex));
@@ -135,22 +131,5 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 return false;
             }
         }
-    }
-
-    /// <summary>Values to use when building parameters.</summary>
-    public class ParameterBuilderValues
-    {
-        /// <summary>Args parsed from the message.</summary>
-        public string[] Args { get; set; }
-        /// <summary>Command context.</summary>
-        public ICommandContext Context { get; set; }
-        /// <summary>Services provider for Dependency Injection.</summary>
-        public IServiceProvider Services { get; set; }
-        /// <summary>Provider of argument converters.</summary>
-        public IArgumentConverterProvider ArgumentConverterProvider { get; set; }
-        /// <summary>Cancellation token to inject into command.</summary>
-        public CancellationToken CancellationToken { get; set; }
-        /// <summary>Any additional objects that can be used when injecting dependencies.</summary>
-        public IEnumerable<object> AdditionalObjects { get; set; }
     }
 }

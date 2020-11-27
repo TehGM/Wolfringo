@@ -115,6 +115,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
             // build params
             cancellationToken.ThrowIfCancellationRequested();
+            IParameterBuilder paramBuilder = (IParameterBuilder)services.GetService(typeof(IParameterBuilder));
+            if (paramBuilder == null)
+                throw new InvalidOperationException($"Couldn't resolve an instance of {typeof(IParameterBuilder).Name} from service provider");
             ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
                 Args = standardMatchResult.Arguments,
@@ -123,7 +126,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 Context = context,
                 Services = services
             };
-            ParameterBuildingResult paramsResult = await ParameterBuilder.BuildParamsAsync(_params, paramBuilderValues, cancellationToken).ConfigureAwait(false);
+            ParameterBuildingResult paramsResult = await paramBuilder.BuildParamsAsync(_params, paramBuilderValues, cancellationToken).ConfigureAwait(false);
             if (!paramsResult.IsSuccess)
                 return paramsResult;
 

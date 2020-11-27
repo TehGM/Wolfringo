@@ -27,6 +27,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly IArgumentsParser _argumentsParser;
+        private readonly IParameterBuilder _parameterBuilder;
         private readonly IArgumentConverterProvider _argumentConverterProvider;
         private readonly ILogger _log;
         private CancellationTokenSource _cts;
@@ -48,7 +49,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="argumentConverterProvider">Provider of argument converters. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandsHandlerProvider handlerProvider = null, ICommandInitializerProvider initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
+        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandsHandlerProvider handlerProvider = null, ICommandInitializerProvider initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, IParameterBuilder parameterBuilder = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -57,6 +58,7 @@ namespace TehGM.Wolfringo.Commands
             // init optionals
             this._log = log;
             this._argumentsParser = argumentsParser ?? new ArgumentsParser();
+            this._parameterBuilder = parameterBuilder ?? new ParameterBuilder();
             this._argumentConverterProvider = argumentConverterProvider;
             if (this._argumentConverterProvider == null)
             {
@@ -92,7 +94,8 @@ namespace TehGM.Wolfringo.Commands
                     { typeof(IArgumentsParser), this._argumentsParser },
                     { this._argumentsParser.GetType(), this._argumentsParser },
                     { typeof(IArgumentConverterProvider), this._argumentConverterProvider },
-                    { this._argumentConverterProvider.GetType(), this._argumentConverterProvider }
+                    { this._argumentConverterProvider.GetType(), this._argumentConverterProvider },
+                    { typeof(IParameterBuilder), this._parameterBuilder }
                 };
             if (this._log != null)
             {

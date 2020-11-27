@@ -43,6 +43,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly IArgumentsParser _argumentsParser;
+        private readonly IParameterBuilder _parameterBuilder;
         private readonly IArgumentConverterProvider _argumentConverterProvider;
         private readonly ILogger _underlyingServiceLog;
 
@@ -58,7 +59,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
         /// <param name="underlyingServiceLog">Logger that will be passed to underlying commands service.</param>
         /// <param name="hostLifetime">Host lifetime that will be used to dispose service when application is exiting.</param>
         /// <param name="log">Logger used by hosted commands service.</param>
-        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ICommandsHandlerProvider handlerProvider, ICommandInitializerProvider initializers, ICommandsLoader commandsLoader, IArgumentsParser argumentsParser, IArgumentConverterProvider argumentConverterProvider, ILogger<HostedCommandsService> log, ILogger<CommandsService> underlyingServiceLog,
+        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ICommandsHandlerProvider handlerProvider, ICommandInitializerProvider initializers, ICommandsLoader commandsLoader, IArgumentsParser argumentsParser, IArgumentConverterProvider argumentConverterProvider, IParameterBuilder parameterBuilder, ILogger<HostedCommandsService> log, ILogger<CommandsService> underlyingServiceLog,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
@@ -73,6 +74,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
             this._initializers = initializers;
             this._commandsLoader = commandsLoader;
             this._argumentsParser = argumentsParser;
+            this._parameterBuilder = parameterBuilder;
             this._argumentConverterProvider = argumentConverterProvider;
             this._log = log;
             this._underlyingServiceLog = underlyingServiceLog ?? this._log;
@@ -118,6 +120,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
                 this._commandsLoader,
                 this._argumentsParser,
                 this._argumentConverterProvider,
+                this._parameterBuilder,
                 this._underlyingServiceLog,
                 this._hostCancellationToken);
         }
