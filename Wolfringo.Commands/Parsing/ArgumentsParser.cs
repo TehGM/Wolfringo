@@ -39,7 +39,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
         public ArgumentsParser() : this(new ArgumentsParserOptions()) { }
 
         /// <inheritdoc/>
-        public IEnumerable<string> ParseArguments(string input, int startIndex)
+        public virtual IEnumerable<string> ParseArguments(string input, int startIndex)
         {
             ICollection<string> results = new List<string>();
 
@@ -50,7 +50,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return results.Where(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        private void ParseBlock(string input, ref int cursor, char? terminator, ref ICollection<string> results)
+        protected virtual void ParseBlock(string input, ref int cursor, char? terminator, ref ICollection<string> results)
         {
             List<char> block = new List<char>(this.InitialBlockSizeAllocation);
 

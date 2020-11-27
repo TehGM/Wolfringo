@@ -41,7 +41,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
         /// <summary>Disposes the provider.</summary>
         /// <remarks>If any of the mapped converters implements <see cref="IDisposable"/>, it'll also be disposed, unless options were provided via constructor from external source.</remarks>
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (!this.DisposeConverters)
                 return;

@@ -33,7 +33,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         /// <inheritdoc/>
-        public ICommandInitializer GetInitializer(Type commandAttributeType)
+        public virtual ICommandInitializer GetInitializer(Type commandAttributeType)
         {
             ThrowIfInvalidCommandType(commandAttributeType);
             lock (this.Options)
@@ -43,7 +43,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             }
         }
 
-        private void ThrowIfInvalidCommandType(Type commandAttributeType)
+        protected void ThrowIfInvalidCommandType(Type commandAttributeType)
         {
             if (!typeof(CommandAttributeBase).IsAssignableFrom(commandAttributeType))
                 throw new ArgumentException($"Command attribute type must inherit from {typeof(CommandAttributeBase).Name}", nameof(commandAttributeType));
@@ -51,7 +51,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
         /// <summary>Disposes the map.</summary>
         /// <remarks>If any of the mapped initializers implements <see cref="IDisposable"/>, it'll also be disposed, unless options were provided via constructor from external source.</remarks>
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (!this.DisposeInitializers)
                 return;
