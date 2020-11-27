@@ -8,8 +8,14 @@ using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
+    /// <summary>Helper class for building parameters when invoking a command method.</summary>
     public static class ParameterBuilder
     {
+        /// <summary>Builds parameters.</summary>
+        /// <param name="parameters">Collection of parameters to be built.</param>
+        /// <param name="values">Values to use when building params.</param>
+        /// <param name="cancellationToken">Cancellation token used to cancel building</param>
+        /// <returns>Result of the parameters building.</returns>
         public static async Task<ParameterBuildingResult> BuildParamsAsync(IEnumerable<ParameterInfo> parameters, ParameterBuilderValues values, CancellationToken cancellationToken = default)
         {
             if (values == null)
@@ -22,6 +28,8 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
             foreach (ParameterInfo param in parameters)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 // check additionals first, in case they override something
                 if (TryFindAdditional(param.ParameterType, values.AdditionalObjects, out object value)) { }
                 // from context
@@ -129,13 +137,20 @@ namespace TehGM.Wolfringo.Commands.Parsing
         }
     }
 
+    /// <summary>Values to use when building parameters.</summary>
     public class ParameterBuilderValues
     {
+        /// <summary>Args parsed from the message.</summary>
         public string[] Args { get; set; }
+        /// <summary>Command context.</summary>
         public ICommandContext Context { get; set; }
+        /// <summary>Services provider for Dependency Injection.</summary>
         public IServiceProvider Services { get; set; }
+        /// <summary>Provider of argument converters.</summary>
         public IArgumentConverterProvider ArgumentConverterProvider { get; set; }
+        /// <summary>Cancellation token to inject into command.</summary>
         public CancellationToken CancellationToken { get; set; }
+        /// <summary>Any additional objects that can be used when injecting dependencies.</summary>
         public IEnumerable<object> AdditionalObjects { get; set; }
     }
 }

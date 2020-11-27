@@ -43,6 +43,8 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="handlerProvider">Handler provider that deals with creation and caching of handler objects. Null will cause a default to be used.</param>
         /// <param name="initializers">Map of command initializers for each command attribute. Null will cause a default to be used.</param>
         /// <param name="commandsLoader">Service that loads command attributes from assemblies and types. Null will cause a default to be used.</param>
+        /// <param name="argumentsParser">Parser for the command arguments. Null will cause a default to be used.</param>
+        /// <param name="argumentConverterProvider">Provider of argument converters. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
         public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
