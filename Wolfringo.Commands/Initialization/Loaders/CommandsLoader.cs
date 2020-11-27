@@ -14,12 +14,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
     public class CommandsLoader : ICommandsLoader
     {
         private readonly ILogger _log;
-        private readonly ICommandInitializerMap _initializers;
+        private readonly ICommandInitializerProvider _initializers;
 
         /// <summary>Creates a new loader instance.</summary>
         /// <param name="initializers">Command initializers mapping.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
-        public CommandsLoader(ICommandInitializerMap initializers, ILogger log)
+        public CommandsLoader(ICommandInitializerProvider initializers, ILogger log)
         {
             this._initializers = initializers;
             this._log = log;

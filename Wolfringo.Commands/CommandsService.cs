@@ -24,7 +24,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly CommandsOptions _options;
         private readonly IServiceProvider _services;
         private readonly ICommandHandlerProvider _handlerProvider;
-        private readonly ICommandInitializerMap _initializers;
+        private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly IArgumentsParser _argumentsParser;
         private readonly IArgumentConverterProvider _argumentConverterProvider;
@@ -47,7 +47,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="argumentConverterProvider">Provider of argument converters. Null will cause a default to be used.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerMap initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
+        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, ICommandHandlerProvider handlerProvider = null, ICommandInitializerProvider initializers = null, ICommandsLoader commandsLoader = null, IArgumentsParser argumentsParser = null, IArgumentConverterProvider argumentConverterProvider = null, ILogger log = null, CancellationToken cancellationToken = default)
         {
             // init required
             this._client = client ?? throw new ArgumentNullException(nameof(client));
@@ -64,7 +64,7 @@ namespace TehGM.Wolfringo.Commands
                 this._handlerProvider = new CommandHandlerProvider(this._services);
                 this._disposeHandlerProvider = true;
             }
-            this._initializers = initializers ?? new CommandInitializerMap();
+            this._initializers = initializers ?? new CommandInitializerProvider();
             this._commandsLoader = commandsLoader ?? new CommandsLoader(this._initializers, this._log);
 
             // init private

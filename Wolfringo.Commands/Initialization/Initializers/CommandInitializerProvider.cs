@@ -7,18 +7,18 @@ namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <inheritdoc/>
     /// <remarks>This is a default initializer map, and contains all initializers provided with the Wolfringo.Commands library by default.</remarks>
-    public class CommandInitializerMap : ICommandInitializerMap, IDisposable
+    public class CommandInitializerProvider : ICommandInitializerProvider, IDisposable
     {
-        private CommandInitializerMapOptions _options;
+        private CommandInitializerProviderOptions _options;
         private bool _disposeInitializers;
 
         /// <summary>Creates default command initializer map.</summary>
-        public CommandInitializerMap(CommandInitializerMapOptions options) : this(options, false) { }
+        public CommandInitializerProvider(CommandInitializerProviderOptions options) : this(options, false) { }
 
         /// <summary>Creates default command initializer map with default options.</summary>
-        public CommandInitializerMap() : this(new CommandInitializerMapOptions(), true) { }
+        public CommandInitializerProvider() : this(new CommandInitializerProviderOptions(), true) { }
 
-        private CommandInitializerMap(CommandInitializerMapOptions options, bool disposeInitializers)
+        private CommandInitializerProvider(CommandInitializerProviderOptions options, bool disposeInitializers)
         {
             // validate options before assigning
             foreach (KeyValuePair<Type, ICommandInitializer> mapping in options.Initializers)
