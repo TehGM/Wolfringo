@@ -98,6 +98,20 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHostedWolfClientServiceBuilder SetServerURL(this IHostedWolfClientServiceBuilder builder, string url)
             => builder.Configure(options => options.ServerURL = url);
 
+        /// <summary>Sets server URL to Default.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
+        /// <seealso cref="WolfClient.DefaultServerURL"/>
+        public static IHostedWolfClientServiceBuilder SetDefaultServerURL(this IHostedWolfClientServiceBuilder builder)
+            => SetServerURL(builder, WolfClient.DefaultServerURL);
+
+        /// <summary>Sets server URL to Release Candidate server.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
+        /// <seealso cref="WolfClient.BetaServerURL"/>
+        public static IHostedWolfClientServiceBuilder SetBetaServerURL(this IHostedWolfClientServiceBuilder builder)
+            => SetServerURL(builder, WolfClient.BetaServerURL);
+
 
 
         // message serializers

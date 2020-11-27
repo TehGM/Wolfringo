@@ -30,7 +30,9 @@ namespace TehGM.Wolfringo
     public class WolfClient : IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
         /// <summary>Default Wolf server URL.</summary>
-        public const string DefaultServerURL = "wss://v3-rc.palringo.com:3051";
+        public const string DefaultServerURL = "wss://v3.palringo.com:3051";
+        /// <summary>Pre-release Wolf server URL.</summary>
+        public const string BetaServerURL = "wss://v3-rc.palringo.com:3051";
         /// <summary>Default device string to pass to the server when connecting.</summary>
         public const WolfDevice DefaultDevice = WolfDevice.Bot;
 
