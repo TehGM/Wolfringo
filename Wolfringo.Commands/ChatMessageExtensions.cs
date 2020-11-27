@@ -37,7 +37,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="options">Commands options to perform the check with.</param>
         /// <param name="startIndex">Index of start of actual command message, without prefix.</param>
         /// <returns>True if the message matches prefix requirement; otherwise false.</returns>
-        public static bool MatchesPrefixRequirement(this ChatMessage message, ICommandsOptions options, out int startIndex)
+        public static bool MatchesPrefixRequirement(this ChatMessage message, CommandsOptions options, out int startIndex)
             => MatchesPrefixRequirement(message, options.Prefix, options.RequirePrefix, options.CaseSensitivity, out startIndex);
     }
 }

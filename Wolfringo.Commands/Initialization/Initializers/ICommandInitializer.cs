@@ -9,6 +9,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <param name="descriptor">Descriptor of the command.</param>
         /// <param name="options">Default options to initialize the instance with.</param>
         /// <returns>A new command instance.</returns>
-        ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, ICommandsOptions options);
+        ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, CommandsOptions options);
     }
 }

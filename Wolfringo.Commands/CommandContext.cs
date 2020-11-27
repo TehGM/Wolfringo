@@ -12,7 +12,7 @@ namespace TehGM.Wolfringo.Commands
         /// <inheritdoc/>
         public IWolfClient Client { get; }
         /// <inheritdoc/>
-        public ICommandsOptions Options { get; }
+        public CommandsOptions Options { get; }
 
         /// <summary>Whether the message was sent in a group.</summary>
         public bool IsGroup => this.Message.IsGroupMessage;
@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="message">Chat message that triggered the command.</param>
         /// <param name="client">WOLF client that received the message.</param>
         /// <param name="options">Default options to use for processing the command.</param>
-        public CommandContext(ChatMessage message, IWolfClient client, ICommandsOptions options)
+        public CommandContext(ChatMessage message, IWolfClient client, CommandsOptions options)
         {
             this.Message = message;
             this.Client = client;

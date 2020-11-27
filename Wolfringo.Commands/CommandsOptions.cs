@@ -4,14 +4,22 @@ using System.Reflection;
 
 namespace TehGM.Wolfringo.Commands
 {
-    /// <inheritdoc/>
-    public class CommandsOptions : ICommandsOptions
+    /// <summary>Options used for command processing.</summary>
+    /// <remarks><para>These are default options for <see cref="CommandsService"/>. They contain minimum amount of settings for core of Commands System to work.</para>
+    /// <para>If you need to create custom options, inherit from this class. All properties are settable, so they can be changed from child classes.</para></remarks>
+    public class CommandsOptions
     {
-        /// <inheritdoc/>
+        /// <summary>Prefix commands need to have.</summary>
+        /// <remarks><para>The actual requirement for command to have a prefix is specified by <see cref="RequirePrefix"/>.</para></remarks>
+        /// <seealso cref="RequirePrefix"/>
         public string Prefix { get; set; } = "!";
-        /// <inheritdoc/>
+        /// <summary>Whether commands should behave case-sensitive by default.</summary>
+        /// <remarks><para>This setting can be overwritten per command using <see cref="CaseSensitivityAttribute"/>.</para></remarks>
+        /// <seealso cref="CaseSensitivityAttribute"/>
         public bool CaseSensitivity { get; set; } = false;
-        /// <inheritdoc/>
+        /// <summary>How prefix requirement is enforced by default.</summary>
+        /// <remarks><para>Prefix value can be set using <see cref="Prefix"/></para></remarks>
+        /// <seealso cref="Prefix"/>
         public PrefixRequirement RequirePrefix { get; set; } = PrefixRequirement.Always;
 
         // for loading

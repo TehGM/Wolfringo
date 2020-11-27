@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
     public class StandardCommandInitializer : ICommandInitializer
     {
         /// <inheritdoc/>
-        public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, ICommandsOptions options)
+        public ICommandInstance InitializeCommand(ICommandInstanceDescriptor descriptor, CommandsOptions options)
         {
             // validate this is a correct command attribute type
             if (!(descriptor.Attribute is CommandAttribute command))

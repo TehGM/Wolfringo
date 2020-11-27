@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Commands
         IChatMessage Message { get; }
         /// <summary>WOLF client that received the message.</summary>
         IWolfClient Client { get; }
-        /// <summary>Default options to use for processing the command.</summary>
-        ICommandsOptions Options { get; }
+        /// <summary>Options to use for processing the command.</summary>
+        CommandsOptions Options { get; }
     }
 }
