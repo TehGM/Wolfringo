@@ -40,7 +40,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
         private readonly IOptionsMonitor<CommandsOptions> _options;
         private readonly IServiceProvider _services;
         private readonly ICommandHandlerProvider _handlerProvider;
-        private readonly ICommandInitializerMap _initializers;
+        private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
         private readonly IArgumentsParser _argumentsParser;
         private readonly IArgumentConverterProvider _argumentConverterProvider;
@@ -58,7 +58,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
         /// <param name="underlyingServiceLog">Logger that will be passed to underlying commands service.</param>
         /// <param name="hostLifetime">Host lifetime that will be used to dispose service when application is exiting.</param>
         /// <param name="log">Logger used by hosted commands service.</param>
-        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ICommandHandlerProvider handlerProvider, ICommandInitializerMap initializers, ICommandsLoader commandsLoader, IArgumentsParser argumentsParser, IArgumentConverterProvider argumentConverterProvider, ILogger<HostedCommandsService> log, ILogger<CommandsService> underlyingServiceLog,
+        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ICommandHandlerProvider handlerProvider, ICommandInitializerProvider initializers, ICommandsLoader commandsLoader, IArgumentsParser argumentsParser, IArgumentConverterProvider argumentConverterProvider, ILogger<HostedCommandsService> log, ILogger<CommandsService> underlyingServiceLog,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
