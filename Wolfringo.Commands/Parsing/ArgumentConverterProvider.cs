@@ -1,73 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
+using System.Linq;
 using System.Reflection;
-using TehGM.Wolfringo.Commands.Parsing.ArgumentConverters;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
     /// <inheritdoc/>
     /// <remarks><para>This default command argument converter provider is designed to match a type to a converter, and automatically handle enums.</para>
     /// <para>Besides enums, all converters simply match the type. If your custom converter uses complex logic in its <see cref="IArgumentConverter.CanConvert(Type)"/> method, please create own provider class, or inherit from this class.</para></remarks>
-    public class ArgumentConverterProvider : IArgumentConverterProvider
+    public class ArgumentConverterProvider : IArgumentConverterProvider, IDisposable
     {
-        /// <summary>Map used for direct type to converter matching.</summary>
-        protected IDictionary<Type, IArgumentConverter> Map { get; }
-        protected IArgumentConverter EnumConverter { get; set; }
+        private ArgumentConverterProviderOptions _options;
+        private bool _disposeConverters;
 
         /// <summary>Creates default converter provider.</summary>
-        public ArgumentConverterProvider()
-        {
-            this.EnumConverter = new EnumConverter();
-            this.Map = new Dictionary<Type, IArgumentConverter>()
-            {
-                { typeof(string), new StringConverter() },
-                { typeof(char), new CharConverter() },
-                { typeof(bool), new BooleanConverter() },
-                // numerics
-                { typeof(short), new Int16Converter() },
-                { typeof(ushort), new UInt16Converter() },
-                { typeof(int), new Int32Converter() },
-                { typeof(uint), new UInt32Converter() },
-                { typeof(long), new Int64Converter() },
-                { typeof(ulong), new UInt64Converter() },
-                { typeof(float), new SingleConverter() },
-                { typeof(double), new DoubleConverter() },
-                { typeof(decimal), new DecimalConverter() },
-                { typeof(BigInteger), new BigIntegerConverter() },
-                // time
-                { typeof(TimeSpan), new TimeSpanConverter() },
-                { typeof(DateTime), new DateTimeConverter() },
-                { typeof(DateTimeOffset), new DateTimeOffsetConverter() },
-                { typeof(WolfTimestamp), new WolfTimestampConverter() }
-            };
-        }
+        public ArgumentConverterProvider(ArgumentConverterProviderOptions options) : this(options, false) { }
 
-        /// <summary>Creates default command argument converter provider.</summary>
-        /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
-        public ArgumentConverterProvider(IEnumerable<KeyValuePair<Type, IArgumentConverter>> additionalMappings) : this()
+        /// <summary>Creates default converter provider with default options.</summary>
+        public ArgumentConverterProvider() : this(new ArgumentConverterProviderOptions(), true) { }
+
+        private ArgumentConverterProvider(ArgumentConverterProviderOptions options, bool disposeConverters)
         {
-            foreach (var pair in additionalMappings)
-                this.MapConverter(pair.Key, pair.Value);
+            this._options = options;
+            this._disposeConverters = disposeConverters;
         }
 
         /// <inheritdoc/>
         public virtual IArgumentConverter GetConverter(ParameterInfo parameter)
         {
-            if (this.Map.TryGetValue(parameter.ParameterType, out IArgumentConverter converter) && converter.CanConvert(parameter))
+            if (this._options.Converters.TryGetValue(parameter.ParameterType, out IArgumentConverter converter) && converter.CanConvert(parameter))
                 return converter;
             if (parameter.ParameterType.IsEnum)
-                return this.EnumConverter;
+                return this._options.EnumConverter;
             return null;
         }
 
-        /// <summary>Maps an argument type to a converter.</summary>
-        /// <remarks><para>Using this method, it is possible to override converter for specified enum.<br/>
-        /// By default, <see cref="Map"/> is checked before attempting to parse enum. If a specific enum is mapped, it'll be found in map and use the converter before default enum converter is used.</para>
-        /// <para>Providing a converter for an already mapped type will overwrite the mapped converter.</para></remarks>
-        /// <param name="argumentType">Type of the parameter.</param>
-        /// <param name="converter">Converter to use for that parameter type.</param>
-        public virtual void MapConverter(Type argumentType, IArgumentConverter converter)
-            => this.Map[argumentType] = converter;
+        /// <summary>Disposes the provider.</summary>
+        /// <remarks>If any of the mapped converters implements <see cref="IDisposable"/>, it'll also be disposed, unless options were provided via constructor from external source.</remarks>
+        public void Dispose()
+        {
+            if (!this._disposeConverters)
+                return;
+
+            IEnumerable<IDisposable> disposables;
+            lock (_options)
+            {
+                disposables = _options.Converters.Values.Where(c => c is IDisposable).Select(c => c as IDisposable);
+                if (_options.EnumConverter is IDisposable disposableEnumConverter)
+                    disposables = disposables.Union(new IDisposable[] { disposableEnumConverter });
+                _options.Converters.Clear();
+            }
+            foreach (object disposable in disposables)
+                try { (disposable as IDisposable)?.Dispose(); } catch { }
+        }
     }
 }

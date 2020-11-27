@@ -31,7 +31,8 @@ namespace TehGM.Wolfringo.Commands
         private readonly ILogger _log;
         private CancellationTokenSource _cts;
 
-        private readonly bool _disposeHandlerProvider;
+        private readonly bool _disposeHandlerProvider = false;
+        private readonly bool _disposeArgumentConverterProvider = false;
         private bool _started;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
@@ -56,7 +57,12 @@ namespace TehGM.Wolfringo.Commands
             // init optionals
             this._log = log;
             this._argumentsParser = argumentsParser ?? new ArgumentsParser();
-            this._argumentConverterProvider = argumentConverterProvider ?? new ArgumentConverterProvider();
+            this._argumentConverterProvider = argumentConverterProvider;
+            if (this._argumentConverterProvider == null)
+            {
+                this._argumentConverterProvider = new ArgumentConverterProvider();
+                this._disposeArgumentConverterProvider = true;
+            }
             this._services = services ?? this.CreateDefaultServiceProvider();
             this._handlerProvider = handlerProvider;
             if (this._handlerProvider == null)
@@ -273,6 +279,8 @@ namespace TehGM.Wolfringo.Commands
             // dispose handler provider if was created in constructor
             if (this._disposeHandlerProvider && this._handlerProvider is IDisposable disposableHandlerProvider)
                 try { disposableHandlerProvider?.Dispose(); } catch { }
+            if (this._disposeArgumentConverterProvider && this._argumentConverterProvider is IDisposable disposableArgumentConverterProvider)
+                try { disposableArgumentConverterProvider?.Dispose(); } catch { }
             // dispose semaphore
             try { _lock?.Dispose(); } catch { }
         }
