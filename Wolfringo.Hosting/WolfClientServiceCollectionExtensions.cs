@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         /// <summary>Adds Hosted Wolf Client to services as a hosted service, and all related services.</summary>
         /// <remarks><para>This method will also add <see cref="ITokenProvider"/>, <see cref="IResponseTypeResolver"/>,
-        /// and <see cref="ISerializerMap{TKey, TSerializer}"/> for messages and responses, unless already added.</para>
+        /// and <see cref="ISerializerProvider{TKey, TSerializer}"/> for messages and responses, unless already added.</para>
         /// <para>Added client will be injectable as both <see cref="IHostedWolfClient"/> and <see cref="IWolfClient"/>.</para></remarks>
         /// <param name="configureOptions">Configuration of client options.</param>
         public static IServiceCollection AddWolfClient(this IServiceCollection services, Action<HostedWolfClientOptions> configureOptions = null)
@@ -23,8 +23,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<ITokenProvider, DefaultWolfTokenProvider>();
             services.TryAddTransient<IResponseTypeResolver, DefaultResponseTypeResolver>();
-            services.TryAddTransient<ISerializerMap<string, IMessageSerializer>, DefaultMessageSerializerMap>();
-            services.TryAddTransient<ISerializerMap<Type, IResponseSerializer>, DefaultResponseSerializerMap>();
+            services.TryAddTransient<ISerializerProvider<string, IMessageSerializer>, DefaultMessageSerializerProvider>();
+            services.TryAddTransient<ISerializerProvider<Type, IResponseSerializer>, DefaultResponseSerializerProvider>();
 
             services.TryAddSingleton<IWolfClient, HostedWolfClient>();
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IWolfClient>());

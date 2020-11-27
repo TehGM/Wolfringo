@@ -88,9 +88,9 @@ namespace TehGM.Wolfringo
         protected ISocketClient SocketClient { get; }
         protected MessageCallbackDispatcher CallbackDispatcher { get; }
         /// <summary>Message serializers mapping used when serializing and deserializing messages.</summary>
-        protected ISerializerMap<string, IMessageSerializer> MessageSerializers { get; }
+        protected ISerializerProvider<string, IMessageSerializer> MessageSerializers { get; }
         /// <summary>Response serializers mapping used when deserializing responses.</summary>
-        protected ISerializerMap<Type, IResponseSerializer> ResponseSerializers { get; }
+        protected ISerializerProvider<Type, IResponseSerializer> ResponseSerializers { get; }
         /// <summary>Response type resolver used when deserializing responses.</summary>
         protected IResponseTypeResolver ResponseTypeResolver { get; }
         /// <summary>Logger for all log messages.</summary>
@@ -104,8 +104,8 @@ namespace TehGM.Wolfringo
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerProvider"/><br/>
         /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
@@ -118,7 +118,7 @@ namespace TehGM.Wolfringo
         /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(string url, WolfDevice device, string token, ILogger logger = null, 
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
@@ -135,8 +135,8 @@ namespace TehGM.Wolfringo
             this.Token = token;
             this.Log = logger;
             this.ResponseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
-            this.MessageSerializers = messageSerializers ?? new DefaultMessageSerializerMap();
-            this.ResponseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
+            this.MessageSerializers = messageSerializers ?? new DefaultMessageSerializerProvider();
+            this.ResponseSerializers = responseSerializers ?? new DefaultResponseSerializerProvider();
 
             // init dispatcher
             this.CallbackDispatcher = new MessageCallbackDispatcher();
@@ -157,8 +157,8 @@ namespace TehGM.Wolfringo
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
         /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerProvider"/><br/>
         /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
@@ -172,15 +172,15 @@ namespace TehGM.Wolfringo
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(string url, WolfDevice device, ILogger logger = null, 
             ITokenProvider tokenProvider = null, 
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
         /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerProvider"/><br/>
         /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
@@ -192,7 +192,7 @@ namespace TehGM.Wolfringo
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(ILogger logger = null, 
             ITokenProvider tokenProvider = null,
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         /// <summary>Generates a new token using token provider.</summary>

@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// or pass custom mappings dictionary via the constructor. However, usage with .NET Core Host might require inheriting 
     /// and registering as a service in the service container - in this case, simply call <see cref="MapSerializer(Type, IResponseSerializer)"/>
     /// in child class constructor for each custom mapping that needs to be made.</para></remarks>
-    public class DefaultResponseSerializerMap : ISerializerMap<Type, IResponseSerializer>
+    public class DefaultResponseSerializerProvider : ISerializerProvider<Type, IResponseSerializer>
     {
         /// <inheritdoc/>
         public IResponseSerializer FallbackSerializer { get; set; }
@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
 
         /// <summary>Creates default response serializer map.</summary>
         /// <param name="fallbackSerializer">Serializer to use as fallback. If null, <see cref="DefaultResponseSerializer"/> will be used.</param>
-        public DefaultResponseSerializerMap(IResponseSerializer fallbackSerializer = null)
+        public DefaultResponseSerializerProvider(IResponseSerializer fallbackSerializer = null)
         {
             DefaultResponseSerializer defaultSerializer = new DefaultResponseSerializer();
             ChatHistoryResponseSerializer chatHistorySerializer = new ChatHistoryResponseSerializer();
@@ -65,7 +65,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <summary>Creates default response serializer map.</summary>
         /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
         /// <param name="fallbackSerializer">Serializer to use as fallback. If null, <see cref="DefaultResponseSerializer"/> will be used.</param>
-        public DefaultResponseSerializerMap(IEnumerable<KeyValuePair<Type, IResponseSerializer>> additionalMappings, 
+        public DefaultResponseSerializerProvider(IEnumerable<KeyValuePair<Type, IResponseSerializer>> additionalMappings, 
             IResponseSerializer fallbackSerializer = null) : this(fallbackSerializer)
         {
             foreach (var pair in additionalMappings)

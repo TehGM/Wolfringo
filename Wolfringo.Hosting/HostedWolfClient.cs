@@ -45,8 +45,8 @@ namespace TehGM.Wolfringo.Hosting
         private readonly ILogger _log;
         private readonly ILogger _underlyingClientLog;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
-        private readonly ISerializerMap<string, IMessageSerializer> _messageSerializers;
-        private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
+        private readonly ISerializerProvider<string, IMessageSerializer> _messageSerializers;
+        private readonly ISerializerProvider<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ITokenProvider _tokenProvider;
 #if NETCOREAPP3_0
@@ -83,7 +83,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="responseSerializers">Map of response serializers.</param>
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, ITokenProvider tokenProvider,
-            ISerializerMap<string, IMessageSerializer> messageSerializers, ISerializerMap<Type, IResponseSerializer> responseSerializers,
+            ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
