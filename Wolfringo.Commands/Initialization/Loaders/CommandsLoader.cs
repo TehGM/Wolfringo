@@ -76,7 +76,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             foreach (CommandAttributeBase attribute in attributes)
             {
                 // ensure there's a valid initializer
-                ICommandInitializer initializer = _initializers.GetMappedInitializer(attribute.GetType());
+                ICommandInitializer initializer = _initializers.GetInitializer(attribute.GetType());
                 if (initializer == null)
                     throw new InvalidOperationException($"No initializer found for command type {attribute.GetType().Name}");
 

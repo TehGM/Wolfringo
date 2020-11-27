@@ -9,57 +9,54 @@ namespace TehGM.Wolfringo.Commands.Initialization
     /// <remarks>This is a default initializer map, and contains all initializers provided with the Wolfringo.Commands library by default.</remarks>
     public class CommandInitializerMap : ICommandInitializerMap, IDisposable
     {
-        private IDictionary<Type, ICommandInitializer> _map;
+        private CommandInitializerMapOptions _options;
+        private bool _disposeInitializers;
 
         /// <summary>Creates default command initializer map.</summary>
-        public CommandInitializerMap()
-        {
-            this._map = new Dictionary<Type, ICommandInitializer>()
-            {
-                { typeof(RegexCommandAttribute), new RegexCommandInitializer() },
-                { typeof(CommandAttribute), new StandardCommandInitializer() }
-            };
-        }
+        public CommandInitializerMap(CommandInitializerMapOptions options) : this(options, false) { }
 
-        /// <summary>Creates default command initializer map.</summary>
-        /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
-        public CommandInitializerMap(IEnumerable<KeyValuePair<Type, ICommandInitializer>> additionalMappings) : this()
+        /// <summary>Creates default command initializer map with default options.</summary>
+        public CommandInitializerMap() : this(new CommandInitializerMapOptions(), true) { }
+
+        private CommandInitializerMap(CommandInitializerMapOptions options, bool disposeInitializers)
         {
-            foreach (var pair in additionalMappings)
-                this.MapInitializer(pair.Key, pair.Value);
+            // validate options before assigning
+            foreach (KeyValuePair<Type, ICommandInitializer> mapping in options.Initializers)
+                ThrowIfInvalidCommandType(mapping.Key);
+
+            this._options = options;
+            this._disposeInitializers = disposeInitializers;
         }
 
         /// <inheritdoc/>
-        public ICommandInitializer GetMappedInitializer(Type commandAttributeType)
+        public ICommandInitializer GetInitializer(Type commandAttributeType)
         {
-            lock (_map)
+            ThrowIfInvalidCommandType(commandAttributeType);
+            lock (_options)
             {
-                this._map.TryGetValue(commandAttributeType, out ICommandInitializer result);
+                this._options.Initializers.TryGetValue(commandAttributeType, out ICommandInitializer result);
                 return result;
             }
         }
 
-        /// <inheritdoc/>
-        /// <remarks><para>If the <paramref name="commandAttributeType"/> already has a mapped serializer, it'll be replaced.</para>
-        /// <paramref name="commandAttributeType"/> must be a type inheriting from <see cref="CommandAttributeBase"/>.</remarks>
-        /// <exception cref="ArgumentException">Provided command attribute type does not inherit from <see cref="CommandAttributeBase"/>.</exception>
-        public void MapInitializer(Type commandAttributeType, ICommandInitializer initializer)
+        private void ThrowIfInvalidCommandType(Type commandAttributeType)
         {
             if (!typeof(CommandAttributeBase).IsAssignableFrom(commandAttributeType))
                 throw new ArgumentException($"Command attribute type must inherit from {typeof(CommandAttributeBase).Name}", nameof(commandAttributeType));
-            lock (_map)
-                this._map[commandAttributeType] = initializer;
         }
 
         /// <summary>Disposes the map.</summary>
-        /// <remarks>If any of the mapped initializers implements <see cref="IDisposable"/>, it'll also be disposed.</remarks>
+        /// <remarks>If any of the mapped initializers implements <see cref="IDisposable"/>, it'll also be disposed, unless options were provided via constructor from external source.</remarks>
         public void Dispose()
         {
+            if (!this._disposeInitializers)
+                return;
+
             IEnumerable<object> disposables;
-            lock (_map)
+            lock (_options)
             {
-                disposables = _map.Values.Where(c => c is IDisposable);
-                _map.Clear();
+                disposables = _options.Initializers.Values.Where(c => c is IDisposable);
+                _options.Initializers.Clear();
             }
             foreach (object disposable in disposables)
                 try { (disposable as IDisposable)?.Dispose(); } catch { }

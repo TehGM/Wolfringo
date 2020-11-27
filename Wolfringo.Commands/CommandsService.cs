@@ -131,7 +131,7 @@ namespace TehGM.Wolfringo.Commands
 
                         // create all command instances
                         this._log?.LogDebug("Creating command instance {Name} from handler {Handler}", descriptor.Method.Name, descriptor.GetHandlerType().Name);
-                        ICommandInitializer initializer = this._initializers.GetMappedInitializer(descriptor.Attribute.GetType());
+                        ICommandInitializer initializer = this._initializers.GetInitializer(descriptor.Attribute.GetType());
                         ICommandInstance instance = initializer.InitializeCommand(descriptor, _options);
                         this._commands.Add(descriptor, instance);
                     }
