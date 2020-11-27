@@ -18,9 +18,9 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Collection of Types to load as Command Handlers.</summary>
         /// <remarks>Any type included in this collection does not need to have <see cref="CommandHandlerAttribute"/>.</remarks>
         /// <seealso cref="Assemblies"/>
-        public ICollection<Type> Classes { get; set; } = new List<Type>();
+        public ICollection<Type> Classes { get; set; } = new HashSet<Type>();
         /// <summary>Collection of Assemblies to load Command Handlers from.</summary>
         /// <remarks>Types need to have <see cref="CommandHandlerAttribute"/> to be treated as a loadable type. Any type without that attribute will be ignored.</remarks>
-        public ICollection<Assembly> Assemblies { get; set; } = new List<Assembly>() { Assembly.GetEntryAssembly() };
+        public ICollection<Assembly> Assemblies { get; set; } = new HashSet<Assembly>() { Assembly.GetEntryAssembly() };
     }
 }
