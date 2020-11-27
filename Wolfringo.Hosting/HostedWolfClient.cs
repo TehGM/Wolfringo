@@ -271,7 +271,7 @@ namespace TehGM.Wolfringo.Hosting
                 _hostCancellationToken = cancellationToken;
                 // only connect if not already connected
                 if (!this.IsConnected)
-                    await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
+                    await this.ConnectInternalAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when trying to connect as a hosted client"))
             {
