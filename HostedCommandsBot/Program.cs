@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,8 +39,10 @@ namespace TehGM.Wolfringo.Examples.HostedCommandsBot
                         //.SetCaseSensitive(false)
                         //.SetPrefixRequirement(PrefixRequirement.Group)
                         /** by default, all handlers from the same assembly as the bot will be loaded - commented example below shows how to override. **/
-                        .RemoveDefaultHandlers()
-                        .AddHandler<
+                        //.RemoveDefaultHandlers()                      -- this will stop commands from loading current assembly by default 
+                        //.AddHandler<HostedCommandsHandler>()          -- this will add a specific commands handler
+                        //.AddHandlers(typeof(IWolfClient).Assembly)    -- this shows how to add entire assemblies - for example, when commands are a part of some nuget package
+                        ;
                 })
                 .ConfigureLogging((context, config) =>
                 {

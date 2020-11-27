@@ -28,7 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Utilities.Interac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Commands", "Wolfringo.Commands\Wolfringo.Commands.csproj", "{C2F757AF-A4CA-4E31-BA2F-A0F0BFB72B36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCommandsBot", "SimpleCommandsBot\SimpleCommandsBot.csproj", "{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCommandsBot", "SimpleCommandsBot\SimpleCommandsBot.csproj", "{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostedCommandsBot", "HostedCommandsBot\HostedCommandsBot.csproj", "{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{6F0C05BE-73E6-44FB-859A-EA3595F6B955} = {F765215F-98D7-4199-8124-1FF254A35A21}
 		{DACC777F-F7B9-4609-B5CD-CFF689ECBF4B} = {F765215F-98D7-4199-8124-1FF254A35A21}
 		{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67} = {F765215F-98D7-4199-8124-1FF254A35A21}
+		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA} = {F765215F-98D7-4199-8124-1FF254A35A21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}
