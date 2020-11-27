@@ -10,7 +10,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// or pass custom mappings dictionary via the constructor. However, usage with .NET Core Host might require inheriting 
     /// and registering as a service in the service container - in this case, simply call <see cref="MapSerializer(string, IMessageSerializer)"/>
     /// in child class constructor for each custom mapping that needs to be made.</para></remarks>
-    public class DefaultMessageSerializerProvider : ISerializerProvider<string, IMessageSerializer>
+    public class MessageSerializerProvider : ISerializerProvider<string, IMessageSerializer>
     {
         /// <summary>Fallback serializer that can be used if key has no mapped serializer. 
         /// Note that this serializer cannot be used for deserialization, and will be used only for serialization.</summary>
@@ -21,7 +21,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <summary>Creates default message serializer map.</summary>
         /// <param name="fallbackSerializer">Serializer to use as fallback. If null, 
         /// <see cref="DefaultMessageSerializer{T}"/> for <see cref="IWolfMessage"/> will be used.</param>
-        public DefaultMessageSerializerProvider(IMessageSerializer fallbackSerializer = null)
+        public MessageSerializerProvider(IMessageSerializer fallbackSerializer = null)
         {
             this.FallbackSerializer = fallbackSerializer ?? new DefaultMessageSerializer<IWolfMessage>();
             this._map = new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
@@ -88,7 +88,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <param name="additionalMappings">Additional mappings. Can overwrite default mappings.</param>
         /// <param name="fallbackSerializer">Serializer to use as fallback. If null, 
         /// <see cref="DefaultMessageSerializer{T}"/> for <see cref="IWolfMessage"/> will be used.</param>
-        public DefaultMessageSerializerProvider(IEnumerable<KeyValuePair<string, IMessageSerializer>> additionalMappings, 
+        public MessageSerializerProvider(IEnumerable<KeyValuePair<string, IMessageSerializer>> additionalMappings, 
             IMessageSerializer fallbackSerializer = null) : this(fallbackSerializer)
         {
             foreach (var pair in additionalMappings)
