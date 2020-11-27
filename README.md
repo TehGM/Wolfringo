@@ -8,11 +8,11 @@ This library is designed with extensibility through Dependency Injection in mind
 
 Library works with strongly-typed messages and responses, that are serialized when sending and deserialized when receiving. Message listeners can be invoked by message type, giving full benefit of strong typing. Additionally, [Wolfringo.Utilities](https://www.nuget.org/packages/Wolfringo.Utilities/) package provides a Sender extensions class, which abstracts common sending tasks. Utilities package is included by default with [Wolfringo](https://www.nuget.org/packages/Wolfringo/) meta-package.
 
+Wolfringo provides a built in Commands System. Commands System uses attributes to mark commands, which greatly reduces amount of boilerplace code needed.  
+The Commands System follows the design principles of entire Wolfringo library, and therefore is easily extensible and easily customizable thanks to Dependency Injection.
+
 ### Download
-
-> This library is currently in preview and any update until version 1.0.0 might introduce breaking changes.
-
-Since version 0.4.0, this package is now downloadable via [nuget.org](https://www.nuget.org/packages/Wolfringo/)!
+Most recent versions of this package are downloadable via [nuget.org](https://www.nuget.org/packages/Wolfringo/)!
 
 1. Install package in your project
     ```cli
@@ -24,7 +24,7 @@ Since version 0.4.0, this package is now downloadable via [nuget.org](https://ww
     ```
 
 #### Older versions
-Older versions are available through GitHub Packages. See [Installation Guide on Wiki](https://github.com/TehGM/Wolfringo/wiki/Installing#older-versions) for steps to install version before 0.4.0.
+Older versions are available through GitHub Packages. See [Installation Guide on Wiki](https://github.com/TehGM/Wolfringo/wiki/Installing#older-versions) for steps to install version before v0.4.0.
 
 ## Usage example
 
@@ -67,7 +67,8 @@ async void OnChatMessage(ChatMessage message)
 }
 ```
 
-See [Example project](Examples/SimplePingBot) for a full example.
+See [Example project](Examples/SimplePingBot) for a full example.  
+See [Example commands project](Examples/SimpleCommandsBot) for example on how to use commands!
 
 ### .NET Core Host
 
@@ -81,10 +82,13 @@ services.Configure<HostedWolfClientOptions>(context.Configuration.GetSection("Wo
 // add hosted wolf client with it's default services
 services.AddWolfClient();
 // add message handler that implements IHostedService and takes IHostedWolfClient as one of constructor parameters
-services.AddHostedService<HostedMessageHandler>();
+//services.AddHostedService<HostedMessageHandler>();
+// SCRATCH THAT! Now you can add commands!
+services.Configure<CommandsOptions>(context.Configuration.GetSection("Commands"));
+services.AddWolfringoCommands();
 ```
 
-See [Example project](Examples/HostedPingBot) for a full example.
+See [Example project](Examples/HostedCommandsBot) for a full example.
 
 ## Features usage
 ### Auto-Reconnecting
@@ -168,11 +172,6 @@ Client automatically caches the entities based on message/response type. If you 
 [DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) respects [ResponseType](Wolfringo.Core/Messages/Responses/ResponseTypeAttribute.cs) attribute on the message type, and will ignore the generic type passed in with `SendAsync` method. If the attribute is missing, default client implementation will instruct the type resolver to use provided generic type. Client will attempt to cast the response to the provided generic type regardless of the actual response type, and might throw an exception if the cast is impossible.
 
 ## Further development
-> This library is still in preview, so breaking changes might be introduced with any version until 1.0.0 release.
-
-#### Planned features
-- Some kind of commands system.
-
 #### Known bugs and missing features
 - Avatar setting is not supported, due to Wolf protocol not supporting it yet.
 - Spam filter settings is not supported.
