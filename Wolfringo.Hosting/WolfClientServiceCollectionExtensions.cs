@@ -9,7 +9,7 @@ using TehGM.Wolfringo.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class WolfClientServiceCollectionExtensions
     {
         /// <summary>Adds Hosted Wolf Client to services as a hosted service, and all related services.</summary>
         /// <remarks><para>This method will also add <see cref="ITokenProvider"/>, <see cref="IResponseTypeResolver"/>,
