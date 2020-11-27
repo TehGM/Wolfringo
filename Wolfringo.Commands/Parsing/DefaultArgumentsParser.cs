@@ -6,42 +6,36 @@ namespace TehGM.Wolfringo.Commands.Parsing
     /// <inheritdoc/>
     public class DefaultArgumentsParser : IArgumentsParser
     {
-        private const int _assumedBlockSize = 8;
-        private char _baseMarker;
-        private char _baseTerminator;
+        private DefaultArgumentsParserOptions _options;
 
+        /// <summary>Initial size allocated for an argument.</summary>
+        /// <remarks><para><see cref="DefaultArgumentsParser"/> uses a new list of <see cref="char"/> for each argument, and allocates initial size.
+        /// A good initial size is big enough to contain most commonly used arguments, but small enough to not allocate too much memory unnecessarily.</para>
+        /// <para>Defaults to 8.</para></remarks>
+        public int InitialBlockSizeAllocation => _options.InitialBlockSizeAllocation;
         /// <summary>Base marker to use by default.</summary>
-        /// <remarks>Defaults to space.</remarks>
-        /// <exception cref="KeyNotFoundException">Thrown when setting base marker that is not defined in <see cref="BlockMarkers"/>.</exception>
-        public char BaseMarker
-        {
-            get => this._baseMarker;
-            set
-            {
-                this._baseTerminator = this.BlockMarkers[value];
-                this._baseMarker = value;
-            }
-        }
+        /// <remarks><para>Base marker is used by default, and will be skipped inside of a nested block.</para>
+        /// <para>Base marker must be contained as a key in <see cref="BlockMarkers"/>.</para>
+        /// <para>Defaults to space.</para></remarks>
+        public char BaseMarker => _options.BaseMarker;
+        private char _baseTerminator => this.BlockMarkers[this.BaseMarker];
         /// <summary>Argument start and end markers.</summary>
         /// <remarks>By default, following markers are used to split arguments:<br/>
         /// Start: ' ', End: ' '<br/>
         /// Start: '"', End: '"'<br/>
         /// Start: '(', End: ')'<br/>
         /// Start: '[', End: ']'<br/></remarks>
-        public IDictionary<char, char> BlockMarkers { get; }
+        public IDictionary<char, char> BlockMarkers => _options.BlockMarkers;
 
         /// <summary>Create a new instance of default parser.</summary>
-        public DefaultArgumentsParser()
+        /// <param name="options">Options to use with this parser.</param>
+        public DefaultArgumentsParser(DefaultArgumentsParserOptions options)
         {
-            this.BlockMarkers = new Dictionary<char, char>
-            {
-                { ' ', ' ' },
-                { '"', '"' },
-                { '(', ')' },
-                { '[', ']' }
-            };
-            this.BaseMarker = ' ';
+            this._options = options;
         }
+
+        /// <summary>Create a new instance of default parser using default options.</summary>
+        public DefaultArgumentsParser() : this(new DefaultArgumentsParserOptions()) { }
 
         /// <inheritdoc/>
         public IEnumerable<string> ParseArguments(string input, int startIndex)
@@ -57,7 +51,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
         private void ParseBlock(string input, ref int cursor, char? terminator, ref ICollection<string> results)
         {
-            List<char> block = new List<char>(_assumedBlockSize);
+            List<char> block = new List<char>(this.InitialBlockSizeAllocation);
 
             while (cursor < input.Length)
             {
@@ -66,7 +60,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 cursor++;   // move cursor early - so sub or parent block start with a next character
                 // if it's a start of a new block, parse it as a sub block with terminator, but only if we're in a base block
                 // terminate current block as well - nested blocks are not allowed, to avoid unnecessary complexity
-                if (terminator == _baseTerminator && character != _baseMarker && this.BlockMarkers.TryGetValue(character, out char subBlockTerminator))
+                if (terminator == _baseTerminator && character != this.BaseMarker && this.BlockMarkers.TryGetValue(character, out char subBlockTerminator))
                 {
                     results.Add(new string(block.ToArray()));   // to maintain order
                     ParseBlock(input, ref cursor, subBlockTerminator, ref results);
