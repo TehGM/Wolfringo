@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public interface IHostedWolfClientServiceBuilder
     {
         /// <summary>Alters configuration of WOLF Client.</summary>
-        IHostedWolfClientServiceBuilder Configure(Action<HostedWolfClient> configure);
+        IHostedWolfClientServiceBuilder Configure(Action<HostedWolfClientOptions> configure);
         /// <summary>Alters configuration of Message Serializer Provider.</summary>
         IHostedWolfClientServiceBuilder ConfigureMessageSerializerProvider(Action<MessageSerializerProviderOptions> configure);
         /// <summary>Alters configuration of Response Serializer Provider.</summary>

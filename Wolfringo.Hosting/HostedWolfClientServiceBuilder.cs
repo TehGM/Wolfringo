@@ -18,18 +18,21 @@ namespace Microsoft.Extensions.DependencyInjection
             this._services = services;
         }
 
-        public IHostedWolfClientServiceBuilder Configure(Action<HostedWolfClient> configure)
+        /// <inheritdoc/>
+        public IHostedWolfClientServiceBuilder Configure(Action<HostedWolfClientOptions> configure)
         {
-            this._services.Configure<HostedWolfClient>(configure);
+            this._services.Configure<HostedWolfClientOptions>(configure);
             return this;
         }
 
+        /// <inheritdoc/>
         public IHostedWolfClientServiceBuilder ConfigureMessageSerializerProvider(Action<MessageSerializerProviderOptions> configure)
         {
             this._services.Configure<MessageSerializerProviderOptions>(configure);
             return this;
         }
 
+        /// <inheritdoc/>
         public IHostedWolfClientServiceBuilder ConfigureResponseSerializerProvider(Action<ResponseSerializerProviderOptions> configure)
         {
             this._services.Configure<ResponseSerializerProviderOptions>(configure);
