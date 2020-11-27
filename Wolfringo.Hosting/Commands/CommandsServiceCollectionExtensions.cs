@@ -8,6 +8,7 @@ using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Commands.Parsing;
 using TehGM.Wolfringo.Commands.Attributes;
 using TehGM.Wolfringo.Hosting.Commands;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -26,13 +27,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // add all required services
             services.TryAddSingleton<ICommandsHandlerProvider, CommandsHandlerProvider>();
-            services.TryAddTransient<ICommandsLoader, CommandsLoader>();
+            services.TryAdd(ServiceDescriptor.Transient<ICommandsLoader, CommandsLoader>(provider
+                => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(), provider.GetRequiredService<ILogger<CommandsLoader>>())));
             services.TryAdd(ServiceDescriptor.Transient<ICommandInitializerProvider, CommandInitializerProvider>(provider
-                => new CommandInitializerProvider(provider.GetRequiredService<IOptionsSnapshot<CommandInitializerProviderOptions>>().Value)));
+                => new CommandInitializerProvider(provider.GetRequiredService<IOptions<CommandInitializerProviderOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Transient<IArgumentsParser, ArgumentsParser>(provider 
-                => new ArgumentsParser(provider.GetRequiredService<IOptionsSnapshot<ArgumentsParserOptions>>().Value)));
+                => new ArgumentsParser(provider.GetRequiredService<IOptions<ArgumentsParserOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Transient<IArgumentConverterProvider, ArgumentConverterProvider>(provider
-                => new ArgumentConverterProvider(provider.GetRequiredService<IOptionsSnapshot<ArgumentConverterProviderOptions>>().Value)));
+                => new ArgumentConverterProvider(provider.GetRequiredService<IOptions<ArgumentConverterProviderOptions>>().Value)));
 
             services.TryAddSingleton<ICommandsService, HostedCommandsService>();
             services.AddTransient<IHostedService>(provider => (IHostedService)provider.GetRequiredService<ICommandsService>());
