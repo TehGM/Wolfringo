@@ -93,7 +93,6 @@ namespace TehGM.Wolfringo.Hosting.Commands
                     if (_commands == null)
                         return;
                     _log?.LogDebug("Options changed, recreating commands service");
-                    this.DisposeCommandsService();
                     this.CreateCommandsService();
                     await this.StartInternalAsync(this._hostCancellationToken).ConfigureAwait(false);
                 }
@@ -107,6 +106,8 @@ namespace TehGM.Wolfringo.Hosting.Commands
 
         private void CreateCommandsService()
         {
+            this.DisposeCommandsService();
+
             this._log?.LogTrace("Creating underlying commands service");
             this._commands = new CommandsService(
                 this._client,
@@ -144,8 +145,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
 
         private Task StartInternalAsync(CancellationToken cancellationToken = default)
         {
-            if (this._client == null)
-                CreateCommandsService();
+            CreateCommandsService();
             return this._commands.StartAsync(cancellationToken);
         }
 
@@ -159,9 +159,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
                     return;
                 this._isStarted = true;
                 this._hostCancellationToken = cancellationToken;
-                if (this._commands == null)
-                    this.CreateCommandsService();
-                await this._commands.StartAsync(cancellationToken).ConfigureAwait(false);
+                await this.StartInternalAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when starting hosted commands service")) { }
             finally
