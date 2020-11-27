@@ -151,9 +151,11 @@ You can selectively opt out of caching by using following properties of the clie
 
 ## Extending the client
 #### Serializer providers
-Client uses power of Dependency Injection to allow customizability. The client accepts optional Message and Response Serializer providers which are used for serializing and deserializing the message and response objects. You can inject own instance of the map to change mapping, or even add new types if it's required.
+Client uses power of Dependency Injection to allow customizability. The client accepts optional Message and Response Serializer providers which are used for serializing and deserializing the message and response objects. You can inject own instance of the map to change mapping, or even add new types through their options if it's required.
 
-You can see [DefaultMessageSerializerProvider](Wolfringo.Core/Messages/Serialization/DefaultMessageSerializerProvider.cs), [DefaultResponseSerializerProvider](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerProvider.cs), [DefaultMessageSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultMessageSerializer.cs) and [DefaultResponseSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultResponseSerializer.cs) for examples of default base implementations.
+You can see [MessageSerializerProvider](Wolfringo.Core/Messages/Serialization/MessageSerializerProvider.cs), [ResponseSerializerProvider](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerProvider.cs), [DefaultMessageSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultMessageSerializer.cs) and [DefaultResponseSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultResponseSerializer.cs) for examples of default base implementations.
+
+To check the default mappings, see [MessageSerializerProviderOptions](Wolfringo.Core/Messages/Serialization/MessageSerializerProviderOptions.cs) and [ResponseSerializerProviderOptions](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerProviderOptions.cs).
 
 #### Overriding client methods
 Client automatically caches the entities based on message/response type. If you add a new type that needs to support this, you must create a new client class inheriting from [WolfClient](Wolfringo.Core/WolfClient.cs). You can override `OnMessageSentInternalAsync` method to change behaviour for sent messages and received responses, and `OnMessageReceivedInternalAsync` method to change behaviour for received events and messages.

@@ -22,7 +22,7 @@
         /// <returns>True if non-fallback serializer was found; otherwise false.</returns>
         public static bool TryFindMappedSerializer<TKey, TSerializer>(this ISerializerProvider<TKey, TSerializer> map, TKey key, out TSerializer serializer)
         {
-            serializer = map.FindMappedSerializer(key);
+            serializer = map.GetSerializer(key);
             return serializer != null;
         }
     }
