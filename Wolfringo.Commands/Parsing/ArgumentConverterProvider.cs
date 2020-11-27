@@ -10,8 +10,12 @@ namespace TehGM.Wolfringo.Commands.Parsing
     /// <para>Besides enums, all converters simply match the type. If your custom converter uses complex logic in its <see cref="IArgumentConverter.CanConvert(Type)"/> method, please create own provider class, or inherit from this class.</para></remarks>
     public class ArgumentConverterProvider : IArgumentConverterProvider, IDisposable
     {
-        private ArgumentConverterProviderOptions _options;
-        private bool _disposeConverters;
+        /// <summary>Options used by this provider.</summary>
+        protected ArgumentConverterProviderOptions Options { get; }
+        /// <summary>Whether this provider will dispose converters.</summary>
+        /// <remarks><para>This will be set to true if <see cref="Options"/> weren't provided to the constructor.</para>
+        /// <para>Disposing will happen when <see cref="Dispose"/> is called.</para></remarks>
+        protected bool DisposeConverters { get; }
 
         /// <summary>Creates default converter provider.</summary>
         public ArgumentConverterProvider(ArgumentConverterProviderOptions options) : this(options, false) { }
@@ -21,17 +25,17 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
         private ArgumentConverterProvider(ArgumentConverterProviderOptions options, bool disposeConverters)
         {
-            this._options = options;
-            this._disposeConverters = disposeConverters;
+            this.Options = options;
+            this.DisposeConverters = disposeConverters;
         }
 
         /// <inheritdoc/>
         public virtual IArgumentConverter GetConverter(ParameterInfo parameter)
         {
-            if (this._options.Converters.TryGetValue(parameter.ParameterType, out IArgumentConverter converter) && converter.CanConvert(parameter))
+            if (this.Options.Converters.TryGetValue(parameter.ParameterType, out IArgumentConverter converter) && converter.CanConvert(parameter))
                 return converter;
             if (parameter.ParameterType.IsEnum)
-                return this._options.EnumConverter;
+                return this.Options.EnumConverter;
             return null;
         }
 
@@ -39,16 +43,16 @@ namespace TehGM.Wolfringo.Commands.Parsing
         /// <remarks>If any of the mapped converters implements <see cref="IDisposable"/>, it'll also be disposed, unless options were provided via constructor from external source.</remarks>
         public void Dispose()
         {
-            if (!this._disposeConverters)
+            if (!this.DisposeConverters)
                 return;
 
             IEnumerable<IDisposable> disposables;
-            lock (_options)
+            lock (this.Options)
             {
-                disposables = _options.Converters.Values.Where(c => c is IDisposable).Select(c => c as IDisposable);
-                if (_options.EnumConverter is IDisposable disposableEnumConverter)
+                disposables = this.Options.Converters.Values.Where(c => c is IDisposable).Select(c => c as IDisposable);
+                if (this.Options.EnumConverter is IDisposable disposableEnumConverter)
                     disposables = disposables.Union(new IDisposable[] { disposableEnumConverter });
-                _options.Converters.Clear();
+                this.Options.Converters.Clear();
             }
             foreach (object disposable in disposables)
                 try { (disposable as IDisposable)?.Dispose(); } catch { }

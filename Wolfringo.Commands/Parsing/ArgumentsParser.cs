@@ -6,18 +6,19 @@ namespace TehGM.Wolfringo.Commands.Parsing
     /// <inheritdoc/>
     public class ArgumentsParser : IArgumentsParser
     {
-        private ArgumentsParserOptions _options;
+        /// <summary>Options used by this parser.</summary>
+        protected ArgumentsParserOptions Options { get; }
 
         /// <summary>Initial size allocated for an argument.</summary>
         /// <remarks><para><see cref="ArgumentsParser"/> uses a new list of <see cref="char"/> for each argument, and allocates initial size.
         /// A good initial size is big enough to contain most commonly used arguments, but small enough to not allocate too much memory unnecessarily.</para>
         /// <para>Defaults to 8.</para></remarks>
-        public int InitialBlockSizeAllocation => _options.InitialBlockSizeAllocation;
+        public int InitialBlockSizeAllocation => this.Options.InitialBlockSizeAllocation;
         /// <summary>Base marker to use by default.</summary>
         /// <remarks><para>Base marker is used by default, and will be skipped inside of a nested block.</para>
         /// <para>Base marker must be contained as a key in <see cref="BlockMarkers"/>.</para>
         /// <para>Defaults to space.</para></remarks>
-        public char BaseMarker => _options.BaseMarker;
+        public char BaseMarker => this.Options.BaseMarker;
         private char _baseTerminator => this.BlockMarkers[this.BaseMarker];
         /// <summary>Argument start and end markers.</summary>
         /// <remarks>By default, following markers are used to split arguments:<br/>
@@ -25,13 +26,13 @@ namespace TehGM.Wolfringo.Commands.Parsing
         /// Start: '"', End: '"'<br/>
         /// Start: '(', End: ')'<br/>
         /// Start: '[', End: ']'<br/></remarks>
-        public IDictionary<char, char> BlockMarkers => _options.BlockMarkers;
+        public IDictionary<char, char> BlockMarkers => this.Options.BlockMarkers;
 
         /// <summary>Create a new instance of default parser.</summary>
         /// <param name="options">Options to use with this parser.</param>
         public ArgumentsParser(ArgumentsParserOptions options)
         {
-            this._options = options;
+            this.Options = options;
         }
 
         /// <summary>Create a new instance of default parser using default options.</summary>
@@ -44,7 +45,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
             int cursor = startIndex;
             while (cursor < input.Length)
-                ParseBlock(input, ref cursor, _baseTerminator, ref results);
+                this.ParseBlock(input, ref cursor, _baseTerminator, ref results);
 
             return results.Where(s => !string.IsNullOrWhiteSpace(s));
         }
@@ -63,7 +64,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 if (terminator == _baseTerminator && character != this.BaseMarker && this.BlockMarkers.TryGetValue(character, out char subBlockTerminator))
                 {
                     results.Add(new string(block.ToArray()));   // to maintain order
-                    ParseBlock(input, ref cursor, subBlockTerminator, ref results);
+                    this.ParseBlock(input, ref cursor, subBlockTerminator, ref results);
                     return;
                 }
                 // if character is not a terminator, add to result

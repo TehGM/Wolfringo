@@ -9,8 +9,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
     /// <remarks>This is a default initializer map, and contains all initializers provided with the Wolfringo.Commands library by default.</remarks>
     public class CommandInitializerProvider : ICommandInitializerProvider, IDisposable
     {
-        private CommandInitializerProviderOptions _options;
-        private bool _disposeInitializers;
+        /// <summary>Options used by this provider.</summary>
+        protected CommandInitializerProviderOptions Options { get; }
+        /// <summary>Whether this provider will dispose initializers.</summary>
+        /// <remarks><para>This will be set to true if <see cref="Options"/> weren't provided to the constructor.</para>
+        /// <para>Disposing will happen when <see cref="Dispose"/> is called.</para></remarks>
+        protected bool DisposeInitializers { get; }
 
         /// <summary>Creates default command initializer map.</summary>
         public CommandInitializerProvider(CommandInitializerProviderOptions options) : this(options, false) { }
@@ -24,17 +28,17 @@ namespace TehGM.Wolfringo.Commands.Initialization
             foreach (KeyValuePair<Type, ICommandInitializer> mapping in options.Initializers)
                 ThrowIfInvalidCommandType(mapping.Key);
 
-            this._options = options;
-            this._disposeInitializers = disposeInitializers;
+            this.Options = options;
+            this.DisposeInitializers = disposeInitializers;
         }
 
         /// <inheritdoc/>
         public ICommandInitializer GetInitializer(Type commandAttributeType)
         {
             ThrowIfInvalidCommandType(commandAttributeType);
-            lock (_options)
+            lock (this.Options)
             {
-                this._options.Initializers.TryGetValue(commandAttributeType, out ICommandInitializer result);
+                this.Options.Initializers.TryGetValue(commandAttributeType, out ICommandInitializer result);
                 return result;
             }
         }
@@ -49,14 +53,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <remarks>If any of the mapped initializers implements <see cref="IDisposable"/>, it'll also be disposed, unless options were provided via constructor from external source.</remarks>
         public void Dispose()
         {
-            if (!this._disposeInitializers)
+            if (!this.DisposeInitializers)
                 return;
 
             IEnumerable<object> disposables;
-            lock (_options)
+            lock (this.Options)
             {
-                disposables = _options.Initializers.Values.Where(c => c is IDisposable);
-                _options.Initializers.Clear();
+                disposables = this.Options.Initializers.Values.Where(c => c is IDisposable);
+                this.Options.Initializers.Clear();
             }
             foreach (object disposable in disposables)
                 try { (disposable as IDisposable)?.Dispose(); } catch { }
