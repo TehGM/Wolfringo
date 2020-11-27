@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages.Responses
     /// <inheritdoc/>
     /// <remarks>This default resolver makes use of <see cref="ResponseTypeAttribute"/> to check if message type
     /// has a preferred type of response. If so, this type will be returned.</remarks>
-    public class DefaultResponseTypeResolver : IResponseTypeResolver
+    public class ResponseTypeResolver : IResponseTypeResolver
     {
         private static readonly Type _mappingAttributeType = typeof(ResponseTypeAttribute);
         private static readonly Type _baseResponseType = typeof(IWolfResponse);

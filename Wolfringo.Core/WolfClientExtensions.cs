@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo
     public static class WolfClientExtensions
     {
         /// <summary>Sends message, and waits for response from the server.</summary>
-        /// <remarks><para>If client uses <see cref="DefaultResponseTypeResolver"/>, the type of response provided with 
+        /// <remarks><para>If client uses <see cref="ResponseTypeResolver"/>, the type of response provided with 
         /// <see cref="ResponseTypeAttribute"/> on <paramref name="message"/> will be used for deserialization.<br/>
         /// Otherwise, response will be deserialized as<see cref="WolfResponse"/>.</para></remarks>
         /// <param name="message">Message to send.</param>

@@ -3,7 +3,7 @@
 namespace TehGM.Wolfringo.Messages.Responses
 {
     /// <summary>Sets preferred type of response for a message.</summary>
-    /// <remarks>This attribute is honoured by <see cref="DefaultResponseTypeResolver"/>. The default resolver will 
+    /// <remarks>This attribute is honoured by <see cref="ResponseTypeResolver"/>. The default resolver will 
     /// return type set by this attribute, regardless of the response type requested by user when sending the message.</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ResponseTypeAttribute : Attribute

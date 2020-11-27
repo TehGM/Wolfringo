@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
 
             services.TryAddTransient<ITokenProvider, DefaultWolfTokenProvider>();
-            services.TryAddTransient<IResponseTypeResolver, DefaultResponseTypeResolver>();
+            services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
             services.TryAddTransient<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>();
             services.TryAddTransient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>();
 

@@ -108,7 +108,7 @@ namespace TehGM.Wolfringo
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
         /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
         /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
@@ -136,7 +136,7 @@ namespace TehGM.Wolfringo
             this.Device = device;
             this.Token = token;
             this.Log = logger;
-            this.ResponseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
+            this.ResponseTypeResolver = responseTypeResolver ?? new ResponseTypeResolver();
             this.MessageSerializers = messageSerializers ?? new MessageSerializerProvider();
             this.ResponseSerializers = responseSerializers ?? new ResponseSerializerProvider();
 
@@ -161,7 +161,7 @@ namespace TehGM.Wolfringo
         /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
         /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
         /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
@@ -183,7 +183,7 @@ namespace TehGM.Wolfringo
         /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
         /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
         /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
@@ -287,7 +287,7 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Waits for response for sent message.</summary>
-        /// <remarks><para>If client uses <see cref="DefaultResponseTypeResolver"/>, the type of response provided with 
+        /// <remarks><para>If client uses <see cref="Messages.Responses.ResponseTypeResolver"/>, the type of response provided with 
         /// <see cref="ResponseTypeAttribute"/> on <paramref name="message"/> will be used for deserialization, 
         /// and <typeparamref name="TResponse"/> will be used only for casting. If <see cref="ResponseTypeAttribute"/> is not set on
         /// <paramref name="message"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
