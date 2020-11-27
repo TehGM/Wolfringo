@@ -39,6 +39,67 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
 
+        // general
+        /// <summary>Sets login credentials.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <param name="login">Login.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="loginType">Login Type.</param>
+        /// <seealso cref="HostedWolfClientOptions.LoginUsername"/>
+        /// <seealso cref="HostedWolfClientOptions.LoginPassword"/>
+        /// <seealso cref="HostedWolfClientOptions.LoginType"/>
+        public static IHostedWolfClientServiceBuilder SetCredentials(this IHostedWolfClientServiceBuilder builder, string login, string password, WolfLoginType loginType = WolfLoginType.Email)
+            => builder.Configure(options =>
+            {
+                options.LoginUsername = login;
+                options.LoginPassword = password;
+                options.LoginType = loginType;
+            });
+
+        /// <summary>Sets auto-reconnect behaviour.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <param name="attempts">Max reconnect attempts. 0 to disable. Negative values to infinite.</param>
+        /// <param name="delay">Delay between autoreconnect attempts.</param>
+        /// <seealso cref="HostedWolfClientOptions.AutoReconnectAttempts"/>
+        /// <seealso cref="HostedWolfClientOptions.AutoReconnectDelay"/>
+        public static IHostedWolfClientServiceBuilder SetAutoReconnect(this IHostedWolfClientServiceBuilder builder, int attempts, TimeSpan delay)
+            => builder.SetAutoReconnectDelay(delay).SetAutoReconnectAttempts(attempts);
+
+        /// <summary>Sets delay between auto-reconnect attempts.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <param name="delay">Delay between autoreconnect attempts.</param>
+        /// <seealso cref="HostedWolfClientOptions.AutoReconnectDelay"/>
+        public static IHostedWolfClientServiceBuilder SetAutoReconnectDelay(this IHostedWolfClientServiceBuilder builder, TimeSpan delay)
+            => builder.Configure(options => options.AutoReconnectDelay = delay);
+
+        /// <summary>Sets max auto-reconnect attempts.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <param name="attempts">Max reconnect attempts. 0 to disable. Negative values to infinite.</param>
+        /// <seealso cref="HostedWolfClientOptions.AutoReconnectAttempts"/>
+        public static IHostedWolfClientServiceBuilder SetAutoReconnectAttempts(this IHostedWolfClientServiceBuilder builder, int attempts)
+            => builder.Configure(options => options.AutoReconnectAttempts = attempts);
+
+        /// <summary>Sets infinite auto-reconnect attempts.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <seealso cref="HostedWolfClientOptions.AutoReconnectAttempts"/>
+        public static IHostedWolfClientServiceBuilder SetInfiniteAutoReconnectAttempts(this IHostedWolfClientServiceBuilder builder)
+            => SetAutoReconnectAttempts(builder, -1);
+
+        /// <summary>Disables auto-reconnect behaviour.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <seealso cref="HostedWolfClientOptions.AutoReconnectAttempts"/>
+        public static IHostedWolfClientServiceBuilder DisableAutoReconnect(this IHostedWolfClientServiceBuilder builder)
+            => SetAutoReconnectAttempts(builder, 0);
+
+        /// <summary>Sets server URL to connect to.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <param name="url">URL of WOLF servers.</param>
+        /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
+        public static IHostedWolfClientServiceBuilder SetServerURL(this IHostedWolfClientServiceBuilder builder, string url)
+            => builder.Configure(options => options.ServerURL = url);
+
+
+
         // message serializers
         /// <summary>Sets fallback message serializer in Message Serializer Provider.</summary>
         /// <param name="builder">Hosted WOLF Client Service builder.</param>
