@@ -17,6 +17,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePingBot", "Examples\SimplePingBot\SimplePingBot.csproj", "{6F0C05BE-73E6-44FB-859A-EA3595F6B955}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F765215F-98D7-4199-8124-1FF254A35A21}"
+	ProjectSection(SolutionItems) = preProject
+		Examples\README.md = Examples\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Utilities", "Wolfringo.Utilities\Wolfringo.Utilities.csproj", "{E1B420D8-2E46-41F1-921D-0AC40F477FEA}"
 EndProject
@@ -30,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfringo.Commands", "Wolfr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCommandsBot", "Examples\SimpleCommandsBot\SimpleCommandsBot.csproj", "{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostedCommandsBot", "Examples\HostedCommandsBot\HostedCommandsBot.csproj", "{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostedCommandsBot", "Examples\HostedCommandsBot\HostedCommandsBot.csproj", "{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
