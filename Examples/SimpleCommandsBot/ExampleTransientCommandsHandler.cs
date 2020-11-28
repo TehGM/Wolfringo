@@ -144,9 +144,22 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         [Command("admin only")]
         [RequireGroupAdmin]
         [GroupOnly]
-        public async Task CmdAdminOnly(CommandContext context)
+        public async Task CmdAdminOnlyAsync(CommandContext context)
         {
             await context.ReplyTextAsync("You can execute this command!");
         }
+
+
+        /*** Example: PM only command.
+         * This example shows how to make a PM-only command.
+         * Because this is command is PM-only, this example also disables prefix requirement.
+         * 
+         * Note: if you use both [GroupOnly] and [PrivateOnly], the command will be disabled completely. This is also true if [PrivateOnly] is used with any privileges requirement from example above.
+         ***/
+        [Command("private only")]
+        [PrivateOnly]
+        [Prefix(PrefixRequirement.Never)]
+        public Task CmdPrivateOnlyAsync(CommandContext context)
+            => context.ReplyTextAsync("Welcome to my PM!");
     }
 }
