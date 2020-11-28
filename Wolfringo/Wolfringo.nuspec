@@ -6,7 +6,7 @@
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
-    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities and Utilities.Interactive libraries.</description>
+    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Commands, Utilities and Utilities.Interactive libraries.</description>
     <tags>wolf palringo wolfringo pal bot client</tags>
     <projectUrl>https://github.com/TehGM/Wolfringo</projectUrl>
     <icon>wolfringo_logo.png</icon>
