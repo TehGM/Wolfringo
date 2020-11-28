@@ -7,6 +7,7 @@ using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Messages;
+using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -25,9 +26,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<ITokenProvider, WolfTokenProvider>();
             services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
             services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
-                => new MessageSerializerProvider(provider.GetRequiredService<MessageSerializerProviderOptions>())));
+                => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
-                => new ResponseSerializerProvider(provider.GetRequiredService<ResponseSerializerProviderOptions>())));
+                => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value)));
 
             services.TryAddSingleton<IWolfClient, HostedWolfClient>();
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IWolfClient>());
