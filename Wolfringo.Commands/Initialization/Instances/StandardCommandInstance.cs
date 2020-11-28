@@ -124,7 +124,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 ArgumentConverterProvider = (IArgumentConverterProvider)services.GetService(typeof(IArgumentConverterProvider)),
                 CancellationToken = cancellationToken,
                 Context = context,
-                Services = services
+                Services = services,
+                CommandInstance = this
             };
             ParameterBuildingResult paramsResult = await paramBuilder.BuildParamsAsync(_params, paramBuilderValues, cancellationToken).ConfigureAwait(false);
             if (!paramsResult.IsSuccess)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using TehGM.Wolfringo.Commands.Initialization;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
@@ -19,5 +20,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
         public CancellationToken CancellationToken { get; set; }
         /// <summary>Any additional objects that can be used when injecting dependencies.</summary>
         public IEnumerable<object> AdditionalObjects { get; set; }
+        /// <summary>Instance of a command that is being executed.</summary>
+        public ICommandInstance CommandInstance { get; set; }
     }
 }

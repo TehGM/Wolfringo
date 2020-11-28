@@ -118,6 +118,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 CancellationToken = cancellationToken,
                 Context = context,
                 Services = services,
+                CommandInstance = this,
                 AdditionalObjects = new object[] { regexMatchResult.RegexMatch }
             };
             ParameterBuildingResult paramsResult = await paramBuilder.BuildParamsAsync(_params, paramBuilderValues, cancellationToken).ConfigureAwait(false);

@@ -35,6 +35,9 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     value = values.Context.Message;
                 else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.Client.GetType()))
                     value = values.Context.Client;
+                // command instance
+                else if (values.CommandInstance != null && param.ParameterType.IsAssignableFrom(values.CommandInstance.GetType()))
+                    value = values.CommandInstance;
                 // cancellation token
                 else if (param.ParameterType.IsAssignableFrom(typeof(CancellationToken)))
                     value = values.CancellationToken;
@@ -58,7 +61,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message - do not provide exception, as we don't want it logged
                     else if (argIndex <= values.Args.Length)
                         return ParameterBuildingResult.Failure(null, new string[] {
-                            await param.GetMissingErrorAttribute().ToStringAsync(values.Context, 
+                            await param.GetMissingErrorAttribute().ToStringAsync(values.Context,
                             values.Args.Length > argIndex ? values.Args[argIndex] : string.Empty,
                             param, cancellationToken).ConfigureAwait(false) });
                     // none found, throw
