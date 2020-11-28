@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Commands;
 using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Commands.Parsing;
-using TehGM.Wolfringo.Utilities.Internal;
+using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo.Hosting.Commands
 {

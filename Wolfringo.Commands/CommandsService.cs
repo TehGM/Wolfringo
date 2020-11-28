@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Commands.Results;
 using TehGM.Wolfringo.Messages;
-using TehGM.Wolfringo.Utilities.Internal;
+using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands
