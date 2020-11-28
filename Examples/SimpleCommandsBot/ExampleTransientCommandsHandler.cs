@@ -154,11 +154,14 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         /*** Example: PM only command.
          * This example shows how to make a PM-only command.
          * Because this is command is PM-only, this example also disables prefix requirement.
+         * In this example, ErrorMessage is also set to null - doing so will prevent bot responding with an error - to the user, the command simply will appear to not exist.
          * 
          * Note: if you use both [GroupOnly] and [PrivateOnly], the command will be disabled completely. This is also true if [PrivateOnly] is used with any privileges requirement from example above.
+         * Note: ErrorMessage can be changed to any text to customize it. This parameter is optional - if not provided, default error message is used.
+         * Note: Any command requirement - such as [RequireGroupAdmin] for example - can also specify ErrorMessage in the same manner.
          ***/
         [Command("private only")]
-        [PrivateOnly]
+        [PrivateOnly(ErrorMessage = null)]
         [Prefix(PrefixRequirement.Never)]
         public Task CmdPrivateOnlyAsync(CommandContext context)
             => context.ReplyTextAsync("Welcome to my PM!");
