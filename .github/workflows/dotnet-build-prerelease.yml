@@ -1,4 +1,4 @@
-name: .NET Core Build
+name: .NET Core Build - Pre-release Branch
 
 on:
   push:
