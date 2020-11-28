@@ -158,7 +158,7 @@ namespace TehGM.Wolfringo
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
+        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
         /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
         /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
         /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
@@ -180,7 +180,7 @@ namespace TehGM.Wolfringo
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
+        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
         /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
         /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
         /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
@@ -198,13 +198,13 @@ namespace TehGM.Wolfringo
             : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         /// <summary>Generates a new token using token provider.</summary>
-        /// <remarks>If token provider is null, <see cref="DefaultWolfTokenProvider"/> will be used.</remarks>
+        /// <remarks>If token provider is null, <see cref="WolfTokenProvider"/> will be used.</remarks>
         /// <param name="tokenProvider">Token provider to use when generating token.</param>
         /// <returns>Generated connection token.</returns>
         private static string GetNewToken(ITokenProvider tokenProvider = null)
         {
             if (tokenProvider == null)
-                tokenProvider = new DefaultWolfTokenProvider();
+                tokenProvider = new WolfTokenProvider();
             return tokenProvider.GenerateToken(18);
         }
         #endregion

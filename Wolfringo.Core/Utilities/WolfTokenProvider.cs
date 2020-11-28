@@ -4,7 +4,7 @@ using System.Text;
 namespace TehGM.Wolfringo.Utilities
 {
     /// <inheritdoc/>
-    public class DefaultWolfTokenProvider : ITokenProvider
+    public class WolfTokenProvider : ITokenProvider
     {
         private const string _charset = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPSADFGHJKLZXCVBNM1234567890";
         private static readonly Random _random = new Random();
