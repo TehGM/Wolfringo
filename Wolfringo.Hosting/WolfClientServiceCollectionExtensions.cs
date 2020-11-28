@@ -24,8 +24,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<ITokenProvider, DefaultWolfTokenProvider>();
             services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
-            services.TryAddTransient<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>();
-            services.TryAddTransient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>();
+            services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
+                => new MessageSerializerProvider(provider.GetRequiredService<MessageSerializerProviderOptions>())));
+            services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
+                => new ResponseSerializerProvider(provider.GetRequiredService<ResponseSerializerProviderOptions>())));
 
             services.TryAddSingleton<IWolfClient, HostedWolfClient>();
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IWolfClient>());
