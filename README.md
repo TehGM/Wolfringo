@@ -28,6 +28,8 @@ Older versions are available through GitHub Packages. See [Installation Guide on
 
 ## Usage example
 
+> More examples are available in [Examples folder](Examples).
+
 ```csharp
 using TehGM.Wolfringo;
 
