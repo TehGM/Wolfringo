@@ -143,8 +143,8 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Note: To make command PM only, use [PrivateOnly] attribute.
          ***/
         [Command("admin only")]
-        [RequireGroupAdmin]
         [GroupOnly]
+        [RequireGroupAdmin]
         public async Task CmdAdminOnlyAsync(CommandContext context)
         {
             await context.ReplyTextAsync("You can execute this command!");
