@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands;
+using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Messages;
 
 namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
@@ -116,7 +117,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 
         /*** Example: Dependency Injection.
          * This example shows that Dependency Injection can be used with commands.
-         * You can inject IWolfClient, ChatMessage, IServiceProvider etc.
+         * You can inject IWolfClient, ChatMessage, IServiceProvider, ICommandInstance etc.
          * Any service added to the service provider can also be injected, which makes it really useful with .NET Generic Host.
          * In this example, ILogger and CommandsOptions are both resolved from IServiceProvider.
          * 
@@ -161,5 +162,26 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         [Prefix(PrefixRequirement.Never)]
         public Task CmdPrivateOnlyAsync(CommandContext context)
             => context.ReplyTextAsync("Welcome to my PM!");
+
+
+        /*** Example: Aliases.
+         * Currently Wolfringo Commands System doesn't have [Alias] attribute.
+         * Instead, you can add multiple [Command] and [RegexCommand] attributes to a single method.
+         * Internally they'll be treated as separate commands, but on surface, they'll work like aliases.
+         * 
+         * Note: [Command] and [RegexCommand] can be freely mixed.
+         * Note: Only one "alias" (and command in general) will ever be executed per command invokation.
+         ***/
+        [Command("alias 1")]
+        [Command("alias 2")]
+        public Task CmdAliasesAsync(CommandContext context, ICommandInstance instance)
+        {
+            if (instance is StandardCommandInstance standardInstance)
+                return context.ReplyTextAsync($"Executed alias `{standardInstance.Text}`");
+            else if (instance is RegexCommandInstance regexInstance)
+                return context.ReplyTextAsync($"Executed alias `{regexInstance.Pattern}`");
+            else
+                return context.ReplyTextAsync($"Executed some alias ({instance.GetType().Name})");
+        }
     }
 }
