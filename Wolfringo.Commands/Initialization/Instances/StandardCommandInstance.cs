@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Results;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Parsing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
@@ -86,9 +87,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 return FailureResult();
 
             // parse arguments
-            IArgumentsParser parser = (IArgumentsParser)services.GetService(typeof(IArgumentsParser));
-            if (parser == null)
-                throw new InvalidOperationException($"Couldn't resolve an instance of {typeof(IArgumentsParser).Name} from service provider");
+            IArgumentsParser parser = services.GetRequiredService<IArgumentsParser>();
             string[] args = match.Groups.Count > 1 ? parser.ParseArguments(match.Groups[1].Value, 0).ToArray() : Array.Empty<string>();
             return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args));
 
@@ -115,13 +114,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
             // build params
             cancellationToken.ThrowIfCancellationRequested();
-            IParameterBuilder paramBuilder = (IParameterBuilder)services.GetService(typeof(IParameterBuilder));
-            if (paramBuilder == null)
-                throw new InvalidOperationException($"Couldn't resolve an instance of {typeof(IParameterBuilder).Name} from service provider");
+            IParameterBuilder paramBuilder = services.GetRequiredService<IParameterBuilder>();
             ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
                 Args = standardMatchResult.Arguments,
-                ArgumentConverterProvider = (IArgumentConverterProvider)services.GetService(typeof(IArgumentConverterProvider)),
+                ArgumentConverterProvider = services.GetService<IArgumentConverterProvider>(),
                 CancellationToken = cancellationToken,
                 Context = context,
                 Services = services,

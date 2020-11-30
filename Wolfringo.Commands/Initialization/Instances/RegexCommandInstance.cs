@@ -8,6 +8,7 @@ using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Commands.Results;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Commands.Parsing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
@@ -107,14 +108,12 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
             // build params
             cancellationToken.ThrowIfCancellationRequested();
-            IParameterBuilder paramBuilder = (IParameterBuilder)services.GetService(typeof(IParameterBuilder));
-            if (paramBuilder == null)
-                throw new InvalidOperationException($"Couldn't resolve an instance of {typeof(IParameterBuilder).Name} from service provider");
+            IParameterBuilder paramBuilder = services.GetRequiredService<IParameterBuilder>();
             ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
                 Args = regexMatchResult.RegexMatch.Groups.Cast<Group>().Skip(1)
                     .Select(s => s.Value ?? string.Empty).ToArray(),
-                ArgumentConverterProvider = (IArgumentConverterProvider)services.GetService(typeof(IArgumentConverterProvider)),
+                ArgumentConverterProvider = services.GetService<IArgumentConverterProvider>(),
                 CancellationToken = cancellationToken,
                 Context = context,
                 Services = services,

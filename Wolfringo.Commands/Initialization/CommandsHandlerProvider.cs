@@ -10,25 +10,21 @@ namespace TehGM.Wolfringo.Commands.Initialization
     /// <para>The persistent handler instances that implement <see cref="IDisposable"/> will be automatically disposed when <see cref="Dispose"/> method is called.</para></remarks>
     public class CommandsHandlerProvider : ICommandsHandlerProvider, IDisposable
     {
-        private readonly IServiceProvider _services;
-
         private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
         private readonly IDictionary<Type, CommandsHandlerProviderResult> _persistentHandlers;
         private readonly object _lock;
 
         /// <summary>Creates a new provider instance.</summary>
         /// <param name="services">Service provider with services to use for constructor injection.</param>
-        public CommandsHandlerProvider(IServiceProvider services)
+        public CommandsHandlerProvider()
         {
-            this._services = services;
-
             this._knownHandlerDescriptors = new Dictionary<Type, CommandHandlerDescriptor>();
             this._persistentHandlers = new Dictionary<Type, CommandsHandlerProviderResult>();
             this._lock = new object();
         }
 
         /// <inheritdoc>/>
-        public ICommandsHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor)
+        public ICommandsHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor, IServiceProvider services)
         {
             Type handlerType = descriptor.GetHandlerType();
 
@@ -63,7 +59,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                     // try to resolve dependencies for each constructor. First one that can be resolved wins
                     foreach (ConstructorInfo ctor in selectedConstructors)
                     {
-                        if (TryCreateHandlerDescriptor(ctor, out handlerDescriptor))
+                        if (TryCreateHandlerDescriptor(ctor, services, out handlerDescriptor))
                         {
                             // cache found descriptor
                             _knownHandlerDescriptors.Add(handlerType, handlerDescriptor);
@@ -87,14 +83,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
             }
         }
 
-        private bool TryCreateHandlerDescriptor(ConstructorInfo constructor, out CommandHandlerDescriptor result)
+        private bool TryCreateHandlerDescriptor(ConstructorInfo constructor, IServiceProvider services, out CommandHandlerDescriptor result)
         {
             result = null;
             ParameterInfo[] ctorParams = constructor.GetParameters();
             object[] paramsValues = new object[ctorParams.Length];
             foreach (ParameterInfo param in ctorParams)
             {
-                object value = this._services.GetService(param.ParameterType);
+                object value = services.GetService(param.ParameterType);
                 if (value == null)
                 {
                     if (param.IsOptional)

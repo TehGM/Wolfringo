@@ -12,6 +12,7 @@ using TehGM.Wolfringo.Commands.Results;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands.Parsing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -65,15 +66,15 @@ namespace TehGM.Wolfringo.Commands
                 this._argumentConverterProvider = new ArgumentConverterProvider();
                 this._disposeArgumentConverterProvider = true;
             }
-            this._services = services ?? this.CreateDefaultServiceProvider();
             this._handlerProvider = handlerProvider;
             if (this._handlerProvider == null)
             {
-                this._handlerProvider = new CommandsHandlerProvider(this._services);
+                this._handlerProvider = new CommandsHandlerProvider();
                 this._disposeHandlerProvider = true;
             }
             this._initializers = initializers ?? new CommandInitializerProvider();
             this._commandsLoader = commandsLoader ?? new CommandsLoader(this._initializers, this._log);
+            this._services = services ?? this.CreateDefaultServiceProvider();
 
             // init private
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
@@ -135,7 +136,7 @@ namespace TehGM.Wolfringo.Commands
                         if (handlerAttribute?.IsPersistent == true)
                         {
                             this._log?.LogDebug("Pre-initializing command handler {Handler}", descriptor.GetHandlerType().Name);
-                            this._handlerProvider.GetCommandHandler(descriptor);
+                            this._handlerProvider.GetCommandHandler(descriptor, this._services);
                         }
 
                         // create all command instances
@@ -202,64 +203,67 @@ namespace TehGM.Wolfringo.Commands
                     this._lock.Release();
                 }
 
-                foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
+                using (IServiceScope serviceScope = this._services.CreateScope())
                 {
-                    ICommandInstanceDescriptor command = commandKvp.Key;
-                    ICommandInstance instance = commandKvp.Value;
-                    using (this._log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
+                    foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
                     {
-                        ICommandsHandlerProviderResult handlerResult = null;
-                        try
+                        ICommandInstanceDescriptor command = commandKvp.Key;
+                        ICommandInstance instance = commandKvp.Value;
+                        using (this._log.BeginCommandScope(context, command.GetHandlerType().Name, command.Method.Name))
                         {
-                            cts.Token.ThrowIfCancellationRequested();
-
-                            // check if the command should run at all - if not, skip
-                            ICommandResult matchResult = await instance.CheckMatchAsync(context, this._services, cts.Token).ConfigureAwait(false);
-                            if (!matchResult.IsSuccess)
-                                continue;
-
-                            // initialize handler
-                            _log?.LogTrace("Initializing handler handler {Handler} for command {Name}", command.GetHandlerType().Name, command.Method.Name);
-                            handlerResult = _handlerProvider.GetCommandHandler(command);
-                            if (handlerResult?.HandlerInstance == null)
+                            ICommandsHandlerProviderResult handlerResult = null;
+                            try
                             {
-                                _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
-                                return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandsHandlerProviderResult.HandlerInstance),
-                                    $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
-                            }
-                            _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+                                cts.Token.ThrowIfCancellationRequested();
 
-                            // execute the command
-                            ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
-                            if (executeResult.Exception != null)
-                            {
-                                this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+                                // check if the command should run at all - if not, skip
+                                ICommandResult matchResult = await instance.CheckMatchAsync(context, serviceScope.ServiceProvider, cts.Token).ConfigureAwait(false);
+                                if (!matchResult.IsSuccess)
+                                    continue;
+
+                                // initialize handler
+                                _log?.LogTrace("Initializing handler handler {Handler} for command {Name}", command.GetHandlerType().Name, command.Method.Name);
+                                handlerResult = _handlerProvider.GetCommandHandler(command, serviceScope.ServiceProvider);
+                                if (handlerResult?.HandlerInstance == null)
+                                {
+                                    _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
+                                    return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandsHandlerProviderResult.HandlerInstance),
+                                        $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
+                                }
+                                _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+
+                                // execute the command
+                                ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
+                                if (executeResult.Exception != null)
+                                {
+                                    this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+                                    return executeResult;
+                                }
+                                if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
+                                {
+                                    this._log?.LogTrace("Sending command results messages as a command response");
+                                    bool replyGroup = context.Message.IsGroupMessage;
+                                    uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
+                                    string text = string.Join("\n", messagesResult.Messages);
+                                    await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cts.Token).ConfigureAwait(false);
+                                }
                                 return executeResult;
                             }
-                            if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
+                            catch (OperationCanceledException ex)
                             {
-                                this._log?.LogTrace("Sending command results messages as a command response");
-                                bool replyGroup = context.Message.IsGroupMessage;
-                                uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
-                                string text = string.Join("\n", messagesResult.Messages);
-                                await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cts.Token).ConfigureAwait(false);
+                                _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
+                                return CommandExecutionResult.FromException(ex);
                             }
-                            return executeResult;
-                        }
-                        catch (OperationCanceledException ex)
-                        {
-                            _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
-                            return CommandExecutionResult.FromException(ex);
-                        }
-                        catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
-                        {
-                            return CommandExecutionResult.FromException(ex);
-                        }
-                        finally
-                        {
-                            // if handler is allocated, not persistent and disposable, let's dispose it
-                            if (handlerResult?.Descriptor?.Attribute?.IsPersistent != true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
-                                try { disposableHandler?.Dispose(); } catch { }
+                            catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
+                            {
+                                return CommandExecutionResult.FromException(ex);
+                            }
+                            finally
+                            {
+                                // if handler is allocated, not persistent and disposable, let's dispose it
+                                if (handlerResult?.Descriptor?.Attribute?.IsPersistent != true && handlerResult?.HandlerInstance is IDisposable disposableHandler)
+                                    try { disposableHandler?.Dispose(); } catch { }
+                            }
                         }
                     }
                 }
