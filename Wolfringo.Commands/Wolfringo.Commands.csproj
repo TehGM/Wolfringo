@@ -17,6 +17,8 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0.0.2</AssemblyVersion>
     <FileVersion>1.0.0.2</FileVersion>
+    <PackageReleaseNotes>- Added support for scoped services.
+- Compatibility patch with Wolfringo.Core 1.0.0-beta2.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

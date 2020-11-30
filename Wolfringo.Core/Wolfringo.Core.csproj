@@ -18,6 +18,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
+    <PackageReleaseNotes>- Moved ExceptionLoggingHelper from Utilities.Internal namespace to Utilities.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
