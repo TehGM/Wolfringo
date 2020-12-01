@@ -18,6 +18,10 @@
     <PackageIcon>wolfringo_logo.png</PackageIcon>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Wolfringo.Core\Wolfringo.Core.csproj" />
   </ItemGroup>

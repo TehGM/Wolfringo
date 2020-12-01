@@ -20,6 +20,10 @@
     <PackageIcon>wolfringo_logo.png</PackageIcon>
     <PackageReleaseNotes>- Moved ExceptionLoggingHelper from Utilities.Internal namespace to Utilities.</PackageReleaseNotes>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Remove="IWolfClient.cs~RF21a0863.TMP" />

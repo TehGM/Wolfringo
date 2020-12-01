@@ -21,6 +21,10 @@
 - Compatibility patch with Wolfringo.Core 1.0.0-beta2.</PackageReleaseNotes>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Attributes\Arguments\ArgumentTypeNameAttribute.cs~RF2155a279.TMP" />
     <None Remove="Attributes\RegexCommandAttribute.cs~RF1a304fc5.TMP" />
