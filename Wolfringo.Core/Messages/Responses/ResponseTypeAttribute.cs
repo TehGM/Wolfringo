@@ -8,6 +8,8 @@ namespace TehGM.Wolfringo.Messages.Responses
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ResponseTypeAttribute : Attribute
     {
+        /// <summary>Base type of all Wolf Responses.</summary>
+        /// <remarks>Equals to <see cref="IWolfResponse"/> type.</remarks>
         public static readonly Type BaseResponseType = typeof(IWolfResponse);
         /// <summary>Preferred type of the response.</summary>
         public Type ResponseType { get; }

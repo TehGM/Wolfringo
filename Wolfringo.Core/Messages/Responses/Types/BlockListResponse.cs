@@ -11,6 +11,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("body", ItemConverterType = typeof(EntityIdConverter))]
         public IEnumerable<uint> BlockedUsersIDs { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected BlockListResponse() : base() { }
     }

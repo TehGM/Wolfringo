@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class CharmListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.CharmList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.CharmList;
 
@@ -17,6 +18,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("idList", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<uint> CharmIDs { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected CharmListMessage() { }
 

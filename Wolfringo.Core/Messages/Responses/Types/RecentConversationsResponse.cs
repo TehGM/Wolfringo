@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("headers")]
         public IReadOnlyDictionary<string, object> Headers { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected RecentConversationsResponse() : base() { }
     }

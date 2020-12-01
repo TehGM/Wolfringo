@@ -6,6 +6,7 @@ namespace TehGM.Wolfringo.Messages
     public class UserUpdateEvent : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberUpdate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.SubscriberUpdate;
 
@@ -16,6 +17,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("hash")]
         public string Hash { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserUpdateEvent() { }
     }

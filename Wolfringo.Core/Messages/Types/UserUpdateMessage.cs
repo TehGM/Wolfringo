@@ -13,6 +13,7 @@ namespace TehGM.Wolfringo
     public class UserUpdateMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberProfileUpdate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.SubscriberProfileUpdate;
 
@@ -46,9 +47,11 @@ namespace TehGM.Wolfringo
         [JsonProperty("urls")]
         public IEnumerable<string> Links { get; protected set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserUpdateMessage() { }
 
+        /// <summary>A builder class for <see cref="UserUpdateMessage"/>.</summary>
         public class Builder
         {
             // main props

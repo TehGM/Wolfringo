@@ -18,6 +18,7 @@ namespace TehGM.Wolfringo.Messages
 
 
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageSend"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.MessageSend;
 
@@ -65,9 +66,11 @@ namespace TehGM.Wolfringo.Messages
         }
 
         // helper props 
+        /// <inheritdoc/>
         [JsonIgnore]
         public bool IsPrivateMessage => !this.IsGroupMessage;
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupActionChatEvent()
         {

@@ -11,6 +11,7 @@ namespace TehGM.Wolfringo.Messages
     public interface IChatMessage : IWolfMessage, IRawDataMessage
     {
         // json data
+        /// <summary>WOLF protocol internal flight ID.</summary>
         [JsonProperty("flightId", NullValueHandling = NullValueHandling.Ignore)]
         string FlightID { get; }
         /// <summary>Unique ID of the message.</summary>
@@ -43,6 +44,7 @@ namespace TehGM.Wolfringo.Messages
         uint RecipientID { get; }
     }
 
+    /// <summary>Represents a message containing raw binary data.</summary>
     public interface IRawDataMessage
     {
         // binary data

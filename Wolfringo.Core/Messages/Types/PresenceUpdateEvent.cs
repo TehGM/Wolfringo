@@ -6,6 +6,7 @@ namespace TehGM.Wolfringo.Messages
     public class PresenceUpdateEvent : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.PresenceUpdate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.PresenceUpdate;
 
@@ -19,6 +20,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("onlineState")]
         public WolfOnlineState OnlineState { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected PresenceUpdateEvent() { }
     }

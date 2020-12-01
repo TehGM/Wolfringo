@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("body")]
         public IEnumerable<WolfCharmSubscription> Charms { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected UserCharmsListResponse() : base() { }
     }

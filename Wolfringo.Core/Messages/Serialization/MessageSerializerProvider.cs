@@ -8,6 +8,7 @@
     {
         /// <inheritdoc/>
         public IMessageSerializer FallbackSerializer => this.Options.FallbackSerializer;
+        /// <summary>Instance of options used by this provider.</summary>
         protected MessageSerializerProviderOptions Options { get; }
 
         /// <summary>Create a new instance of default provider.</summary>

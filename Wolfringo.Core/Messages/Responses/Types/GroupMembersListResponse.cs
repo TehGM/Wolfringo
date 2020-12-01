@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("body")]
         public IEnumerable<WolfGroupMember> GroupMembers { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected GroupMembersListResponse() : base() { }
     }

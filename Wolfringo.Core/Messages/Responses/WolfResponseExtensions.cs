@@ -1,5 +1,6 @@
 ﻿namespace TehGM.Wolfringo.Messages.Responses
 {
+    /// <summary>Extension methods for <see cref="IWolfResponse"/>.</summary>
     public static class WolfResponseExtensions
     {
         /// <summary>Is response a success?</summary>

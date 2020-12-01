@@ -38,6 +38,7 @@ namespace TehGM.Wolfringo
         /// <summary>Is group premium?</summary>
         [JsonProperty("premium")]
         public bool IsPremium { get; private set; }
+        /// <summary>Group icon ID.</summary>
         [JsonProperty("icon")]
         public int Icon { get; private set; }
 
@@ -82,21 +83,27 @@ namespace TehGM.Wolfringo
         [JsonProperty("longDescription", NullValueHandling = NullValueHandling.Ignore)]
         public string LongDescription { get; private set; }
 
+        /// <summary>Creates a new instance of WOLF group object.</summary>
         [JsonConstructor]
         protected WolfGroup() { }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
             => Equals(obj as WolfGroup);
 
+        /// <inheritdoc/>
         public bool Equals(WolfGroup other)
             => other != null && ID == other.ID && Hash == other.Hash;
 
+        /// <inheritdoc/>
         public override int GetHashCode()
             => 1213502048 + ID.GetHashCode();
 
+        /// <inheritdoc/>
         public static bool operator ==(WolfGroup left, WolfGroup right)
             => EqualityComparer<WolfGroup>.Default.Equals(left, right);
 
+        /// <inheritdoc/>
         public static bool operator !=(WolfGroup left, WolfGroup right)
             => !(left == right);
 
@@ -116,6 +123,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("stageId")]
             public WolfStageType? StageType { get; private set; }
 
+            /// <summary>Creates a new instance of WOLF group audio config object.</summary>
             [JsonConstructor]
             protected WolfGroupAudioConfig() { }
         }
@@ -133,6 +141,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("consumerCount")]
             public int ListenersCount { get; private set; }
 
+            /// <summary>Creates a new instance of WOLF group audio counts object.</summary>
             [JsonConstructor]
             protected WolfGroupAudioCounts() { }
         }

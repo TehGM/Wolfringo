@@ -74,6 +74,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return ParameterBuildingResult.Success(paramsValues);
         }
 
+        /// <summary>Attempts to find an object of specific type from enumerable of objects.</summary>
+        /// <param name="type">Type of object to find.</param>
+        /// <param name="additionals">Enumerable of objects to find from.</param>
+        /// <param name="result">Found object. Null if not found.</param>
+        /// <returns>True if object was found successfully; otherwise false.</returns>
         protected static bool TryFindAdditional(Type type, IEnumerable<object> additionals, out object result)
         {
             if (additionals?.Any() == true)
@@ -92,6 +97,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return false;
         }
 
+        /// <summary>Attempts to find a service of type from service provider.</summary>
+        /// <param name="type">Type of service to find.</param>
+        /// <param name="services">Service provider to get service from.</param>
+        /// <param name="result">Found service. Null if not found.</param>
+        /// <returns>True if service was found successfully; otherwise false.</returns>
         protected static bool TryGetService(Type type, IServiceProvider services, out object result)
         {
             if (services == null)
@@ -103,6 +113,13 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return result != null;
         }
 
+        /// <summary>Attempts to convert argument to parameter type.</summary>
+        /// <param name="parameter">Parameter to convert argument to.</param>
+        /// <param name="argIndex">Index of argument.</param>
+        /// <param name="values">Builder values. Must contain Args and ArgumentConverterProvider.</param>
+        /// <param name="result">Result of the conversion. Null if conversion failed.</param>
+        /// <param name="error">Exception that occured when converting. Null if there was no exception.</param>
+        /// <returns>True if converting was successful; otherwise false.</returns>
         protected static bool TryConvertArgument(ParameterInfo parameter, int argIndex, ParameterBuilderValues values, out object result, out Exception error)
         {
             if (argIndex < 0)

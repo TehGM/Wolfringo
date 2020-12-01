@@ -28,11 +28,13 @@ namespace TehGM.Wolfringo
         /// <summary>User's current device.</summary>
         [JsonProperty("deviceType")]
         public WolfDevice Device { get; private set; }
+        /// <summary>User icon ID.</summary>
         [JsonProperty("icon")]
         public int Icon { get; private set; }
         /// <summary>User's online state.</summary>
         [JsonProperty("onlineState")]
         public WolfOnlineState OnlineState { get; private set; }
+        /// <summary>WOLF privileges flags.</summary>
         [JsonProperty("privileges")]
         public int Privileges { get; private set; }
 
@@ -77,21 +79,27 @@ namespace TehGM.Wolfringo
         [JsonConverter(typeof(MinutesTimespanConverter))]
         public TimeSpan? UtcOffset { get; private set; }
 
+        /// <summary>Creates a new instance of WOLF user.</summary>
         [JsonConstructor]
         protected WolfUser() { }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
             => Equals(obj as WolfUser);
 
+        /// <inheritdoc/>
         public bool Equals(WolfUser other)
             => other != null && ID == other.ID && Hash == other.Hash;
 
+        /// <inheritdoc/>
         public override int GetHashCode()
             => 1213502048 + ID.GetHashCode();
 
+        /// <inheritdoc/>
         public static bool operator ==(WolfUser left, WolfUser right)
             => EqualityComparer<WolfUser>.Default.Equals(left, right);
 
+        /// <inheritdoc/>
         public static bool operator !=(WolfUser left, WolfUser right)
             => !(left == right);
     }

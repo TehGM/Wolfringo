@@ -10,6 +10,8 @@ namespace TehGM.Wolfringo.Messages
     /// <summary>Message and event for adding a tip, and receiving notifications of messages being tipped.</summary>
     public class TipAddMessage : IWolfMessage
     {
+        /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.TipAdd"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.TipAdd;
 
@@ -34,9 +36,11 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>The person who tipped.</summary>
         [JsonProperty("sourceSubscriberId", NullValueHandling = NullValueHandling.Ignore)]
         public uint? TipperID { get; private set; }
+        /// <summary>Version of the tip. (?)</summary>
         [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
         public int? Version { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected TipAddMessage() { }
 

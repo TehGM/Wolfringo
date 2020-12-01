@@ -8,12 +8,16 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(UserCharmsListResponse))]
     public class UserExpiredCharmsListMessage : IWolfMessage
     {
+        /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.CharmSubscriberExpiredList"/>.</remarks>
+        [JsonIgnore]
         public string EventName => MessageEventNames.CharmSubscriberExpiredList;
 
         /// <summary>ID of the user.</summary>
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserExpiredCharmsListMessage() { }
 

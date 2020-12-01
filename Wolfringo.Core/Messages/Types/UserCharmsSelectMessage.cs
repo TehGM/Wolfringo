@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class UserCharmsSelectMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.CharmSubscriberSetSelected"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.CharmSubscriberSetSelected;
 
@@ -17,6 +18,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonConverter(typeof(ObjectPropertiesDictionaryConverter<int, uint>), "position", "charmId")]
         public IReadOnlyDictionary<int, uint> SelectedCharmsIDs { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserCharmsSelectMessage() { }
 

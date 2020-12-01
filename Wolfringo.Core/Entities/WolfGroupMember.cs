@@ -19,9 +19,13 @@ namespace TehGM.Wolfringo
         /// <summary>Does the member have mod or greater privileges?</summary>
         public bool HasModPrivileges => HasAdminPrivileges || Capabilities == WolfGroupCapabilities.Mod;
 
+        /// <summary>Creates a new instance of WOLF group member object.</summary>
         [JsonConstructor]
         protected WolfGroupMember() { }
 
+        /// <summary>Creates a new instance of WOLF group member object.</summary>
+        /// <param name="userID">ID of the user.</param>
+        /// <param name="capabilities">User's group permissions.</param>
         public WolfGroupMember(uint userID, WolfGroupCapabilities capabilities) : this()
         {
             this.UserID = userID;

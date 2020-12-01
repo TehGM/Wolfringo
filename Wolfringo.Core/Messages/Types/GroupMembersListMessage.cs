@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class GroupMembersListMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.GroupMemberList;
         /// <inheritdoc/>
@@ -26,6 +27,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupMembersListMessage() { }
 

@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class UserActiveCharmsListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.CharmSubscriberActiveList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.CharmSubscriberActiveList;
 
@@ -16,6 +17,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserActiveCharmsListMessage() { }
 

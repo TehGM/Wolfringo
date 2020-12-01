@@ -6,6 +6,7 @@ namespace TehGM.Wolfringo.Messages
     public class BlockAddMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberBlockAdd"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.SubscriberBlockAdd;
 
@@ -13,6 +14,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected BlockAddMessage() { }
 

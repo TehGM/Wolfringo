@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("body")]
         public WolfGroup GroupProfile { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected GroupEditResponse() : base() { }
     }

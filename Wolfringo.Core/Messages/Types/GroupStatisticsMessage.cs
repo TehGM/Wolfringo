@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class GroupStatisticsMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupStats"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.GroupStats;
 
@@ -16,6 +17,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint GroupID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupStatisticsMessage() { }
 

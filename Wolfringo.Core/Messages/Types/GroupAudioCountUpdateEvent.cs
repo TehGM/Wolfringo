@@ -6,6 +6,7 @@ namespace TehGM.Wolfringo.Messages
     public class GroupAudioCountUpdateEvent : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupAudioCountUpdate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.GroupAudioCountUpdate;
 
@@ -19,6 +20,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("consumerCount")]
         public int ListenersCount { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupAudioCountUpdateEvent() { }
     }
