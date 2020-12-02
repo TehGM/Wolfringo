@@ -4,18 +4,18 @@
       "src": [
         {
           "files": [
-			"**.csproj"
+			      "**.csproj"
           ],
-		  "exclude": [
-		    "Examples/**",
-			"**/obj/**",
-			"**/bin/**"
-		  ],
-		  "src": ".."
+		      "exclude": [
+		      "Examples/**",
+			    "**/obj/**",
+			    "**/bin/**"
+		      ],
+		      "src": ".."
         }
       ],
-	  "filter": "filter.yml",
-	  "dest": "api",
+	    "filter": "filter.yml",
+	    "dest": "api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -25,15 +25,19 @@
       {
         "files": [
           "api/**.yml",
-          "api/index.md"
+          "api/**.md"
         ]
       },
       {
         "files": [
           "articles/**.md",
-          "articles/**/toc.yml",
+          "articles/**/toc.yml"
+        ]
+      },
+      {
+        "files": [
           "toc.yml",
-          "*.md"
+          "index.md"
         ]
       }
     ],
@@ -41,6 +45,12 @@
       {
         "files": [
           "images/**"
+        ]
+      },
+      {
+        "src": "..",
+        "files": [
+          "wolfringo_logo.png"
         ]
       }
     ],
@@ -56,17 +66,30 @@
       }
     ],
     "dest": "_site",
+    "globalMetadata": {
+      "_appName": "Wolfringo",
+      "_appTitle": "Wolfringo Documentation",
+      "_appLogoPath": "wolfringo_logo.png",
+      "_enableSearch": true,
+      "_disableAffix": false,
+      "_disableSideFilter": true,
+      "_appFooter": "Generated with DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme."
+    },
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-	  "statictoc",
-	  "templates/darkfx"
+      "default",
+      "templates/darkfx",
+      "templates/discordfx"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,
     "keepFileLink": false,
     "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "disableGitFeatures": false,
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
+    ]
   }
 }
