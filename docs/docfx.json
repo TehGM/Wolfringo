@@ -70,6 +70,7 @@
       "_appName": "Wolfringo",
       "_appTitle": "Wolfringo Documentation",
       "_appLogoPath": "wolfringo_logo.png",
+      "_appFaviconPath": "wolfringo_logo.png",
       "_enableSearch": true,
       "_disableAffix": false,
       "_disableSideFilter": true,
