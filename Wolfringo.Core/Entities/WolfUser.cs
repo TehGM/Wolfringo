@@ -34,9 +34,9 @@ namespace TehGM.Wolfringo
         /// <summary>User's online state.</summary>
         [JsonProperty("onlineState")]
         public WolfOnlineState OnlineState { get; private set; }
-        /// <summary>WOLF privileges flags.</summary>
+        /// <summary>User's privileges.</summary>
         [JsonProperty("privileges")]
-        public int Privileges { get; private set; }
+        public WolfPrivilege Privileges { get; private set; }
 
 
         /// <summary>User's selected active charm.</summary>
