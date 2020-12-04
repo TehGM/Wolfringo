@@ -1,0 +1,11 @@
+h1, h2 {
+    margin-block-start: 1.5em;
+}
+h3, h4, h5 {
+    margin-block-start: 2em;
+}
+
+/* Kill the silly huge margins between headers, if one is after another */
+h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
+    margin-block-start: 1em;
+}

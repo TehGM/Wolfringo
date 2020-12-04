@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		LICENSE = LICENSE
+		docs\_templates\discordfx\styles\main.css = docs\_templates\discordfx\styles\main.css
 		README.md = README.md
 		Wolfringo\Wolfringo.nuspec = Wolfringo\Wolfringo.nuspec
 		wolfringo_logo.png = wolfringo_logo.png
@@ -42,6 +43,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleCommandsBot", "Examples\SimpleCommandsBot\SimpleCommandsBot.csproj", "{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostedCommandsBot", "Examples\HostedCommandsBot\HostedCommandsBot.csproj", "{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{50454062-77EE-49E0-A7FC-3CBE1ECCBF39}"
+	ProjectSection(SolutionItems) = preProject
+		docs\guides\index.md = docs\guides\index.md
+		docs\guides\toc.yml = docs\guides\toc.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{AC1DBCBA-8B3B-4A37-81D8-811D48EC2200}"
+	ProjectSection(SolutionItems) = preProject
+		docs\api\.gitignore = docs\api\.gitignore
+		docs\api\index.md = docs\api\index.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +108,8 @@ Global
 		{5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46} = {93B12389-3D03-4FF6-9A1A-41C4709683B7}
 		{E72145BB-DBFC-4EED-B3BA-E08E4BAA7F67} = {F765215F-98D7-4199-8124-1FF254A35A21}
 		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA} = {F765215F-98D7-4199-8124-1FF254A35A21}
+		{50454062-77EE-49E0-A7FC-3CBE1ECCBF39} = {5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}
+		{AC1DBCBA-8B3B-4A37-81D8-811D48EC2200} = {5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}

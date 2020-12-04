@@ -30,8 +30,8 @@
       },
       {
         "files": [
-          "articles/**.md",
-          "articles/**/toc.yml"
+          "guides/**.md",
+          "guides/**/toc.yml"
         ]
       },
       {
@@ -80,8 +80,8 @@
     "fileMetadataFiles": [],
     "template": [
       "default",
-      "templates/darkfx",
-      "templates/discordfx"
+      "_templates/darkfx",
+      "_templates/discordfx"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
