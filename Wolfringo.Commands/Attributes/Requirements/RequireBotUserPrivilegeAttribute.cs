@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TehGM.Wolfringo.Commands.Attributes.Requirements
+namespace TehGM.Wolfringo.Commands.Attributes
 {
     /// <summary>Command requirement that checks if the bot has correct privileges.</summary>
     /// <remarks><para>Default <see cref="CommandRequirementAttribute.ErrorMessage"/> for this requirement is "(n) I don't have enough user privileges to execute this command.".</para></remarks>
