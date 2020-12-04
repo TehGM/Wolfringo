@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 
-namespace TehGM.Wolfringo
+namespace TehGM.Wolfringo.Messages
 {
     /// <summary>A message for updating a group.</summary>
     /// <remarks>Uses <see cref="UserUpdateResponse"/> as response type.</remarks>
