@@ -63,6 +63,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "faq", "faq", "{99F60E57-3A0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "getting-started", "getting-started", "{75FD77F3-3F02-48A2-89D1-4D2749D3DED3}"
 	ProjectSection(SolutionItems) = preProject
+		docs\guides\getting-started\connecting-bot.md = docs\guides\getting-started\connecting-bot.md
 		docs\guides\getting-started\installation.md = docs\guides\getting-started\installation.md
 	EndProjectSection
 EndProject

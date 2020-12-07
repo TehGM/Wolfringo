@@ -5,3 +5,5 @@
   items:
     - name: Installation
       topicUid: Guides.GettingStarted.Installation
+    - name: Connecting the Bot
+      topicUid: Guides.GettingStarted.Connecting
