@@ -56,6 +56,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{AC1DBCBA-8B3
 		docs\api\index.md = docs\api\index.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "faq", "faq", "{99F60E57-3A0B-4BA5-85F7-4FE184EA596C}"
+	ProjectSection(SolutionItems) = preProject
+		docs\faq\index.md = docs\faq\index.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +115,7 @@ Global
 		{A36A30A7-F451-4BB6-99E2-77D8ED5E63FA} = {F765215F-98D7-4199-8124-1FF254A35A21}
 		{50454062-77EE-49E0-A7FC-3CBE1ECCBF39} = {5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}
 		{AC1DBCBA-8B3B-4A37-81D8-811D48EC2200} = {5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}
+		{99F60E57-3A0B-4BA5-85F7-4FE184EA596C} = {5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}
