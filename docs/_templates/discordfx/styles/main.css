@@ -52,10 +52,14 @@ li {
         border-left: none;
         border-right: none;
         overflow: hidden;
-        /*padding: 5px 0px;*/
     }
 
 /* Reduce footer font size */
 .footer {
     font-size: 12px;
+}
+
+/* Remove empty breadcrumb on index page */
+#breadcrumb:empty {
+    display: none;
 }
