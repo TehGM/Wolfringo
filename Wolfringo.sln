@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		LICENSE = LICENSE
-		docs\_templates\discordfx\styles\main.css = docs\_templates\discordfx\styles\main.css
 		README.md = README.md
 		Wolfringo\Wolfringo.nuspec = Wolfringo\Wolfringo.nuspec
 		wolfringo_logo.png = wolfringo_logo.png
@@ -35,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{5457BCD4-C
 		docs\docfx.json = docs\docfx.json
 		docs\filter.yml = docs\filter.yml
 		docs\index.md = docs\index.md
+		docs\_templates\discordfx\styles\main.css = docs\_templates\discordfx\styles\main.css
 		docs\toc.yml = docs\toc.yml
 	EndProjectSection
 EndProject

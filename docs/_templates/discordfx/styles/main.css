@@ -54,3 +54,8 @@ li {
         overflow: hidden;
         /*padding: 5px 0px;*/
     }
+
+/* Reduce footer font size */
+.footer {
+    font-size: 12px;
+}
