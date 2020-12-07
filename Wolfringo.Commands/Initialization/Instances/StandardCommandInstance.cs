@@ -12,10 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
+    /// <summary>Represents a standard command instance.</summary>
     public class StandardCommandInstance : ICommandInstance
     {
-        private static readonly char[] _argSeparators = { ' ' };
-
         /// <summary>Text that triggers this command.</summary>
         public string Text { get; }
         /// <summary>Method that will be executed.</summary>
