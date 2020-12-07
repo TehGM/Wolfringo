@@ -10,13 +10,30 @@ The Commands System follows the design principles of entire Wolfringo library, a
 
 ## Contents
 ### This documentation page
-Check [Documentation](/guides) for guides on how to use Wolfringo library.
+Check [Documentation](xref:Guides.Introduction) for guides on how to use Wolfringo library.
 
-Check [API Reference](/api) to check documentation on all Wolfringo types and methods.
+Check [API Reference](xref:API) for documentation on all Wolfringo types and methods.
 
-Check [Changelog](/changelog) to view Wolfringo changelog.
+Check [FAQ](xref:FAQ) for frequently asked questions.
+
+Check [Changelog](https://github.com/TehGM/Wolfringo/releases) to view Wolfringo changelog.
 
 ### Examples
-Check [Example projects](https://github.com/TehGM/Wolfringo/Examples) for basic examples on getting started.
+Check [Example projects](https://github.com/TehGM/Wolfringo/tree/master/Examples) for basic examples on getting started.
 
-Check [Pic Size Bot by TehGM](https://github.com/TehGM/WolfBot-Size) for live example.
+Check [Pic Size Bot by TehGM](https://github.com/TehGM/WolfBot-Size) for live example (uses Wolfringo.Hosting).
+
+### Source Code & Contributing
+Source code is available on [GitHub](https://github.com/TehGM/Wolfringo).
+
+To report bugs or request features for Wolfringo, please use [GitHub Issues](https://github.com/TehGM/Wolfringo/issues).
+
+## Sponsoring
+If you want to sponsor my work, please check my page on [GitHub Sponsors](https://github.com/sponsors/TehGM)!
+
+Alternatively, I also have [Patreon](https://patreon.com/TehGMdev) and [Buy Me a Coffee](https://www.buymeacoffee.com/TehGM) profiles.
+
+## License
+Copyright (c) 2020 TehGM
+
+Wolfringo is licensed under [MIT License](https://github.com/TehGM/Wolfringo/blob/master/LICENSE).

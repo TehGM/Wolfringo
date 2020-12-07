@@ -1,11 +1,9 @@
 - name: Documentation
-  href: guides/
-  homepage: guides/index.md
+  topicUid: Guides.Introduction
 - name: API Reference
   href: api/
-  homepage: api/index.md
+  topicUid: API
 - name: FAQ
-  href: faq/
-  homepage: faq/index.md
+  topicUid: FAQ
 - name: Changelog
   href: https://github.com/TehGM/Wolfringo/releases

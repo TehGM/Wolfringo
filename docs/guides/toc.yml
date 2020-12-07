@@ -1,2 +1,7 @@
 - name: Introduction
   href: index.md
+- name: Getting Started
+  topicUid: Guides.GettingStarted.Installation
+  items:
+    - name: Installation
+      topicUid: Guides.GettingStarted.Installation

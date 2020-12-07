@@ -5,7 +5,52 @@ h3, h4, h5 {
     margin-block-start: 2em;
 }
 
+h1 {
+    font-size: 28px;
+}
+
 /* Kill the silly huge margins between headers, if one is after another */
 h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
     margin-block-start: 1em;
 }
+
+li {
+    display: list-item;
+}
+
+
+/* Add tabs list support */
+.tabGroup {
+    margin-top: 1.5rem;
+}
+
+    .tabGroup ul[role="tablist"] {
+        list-style: none;
+        margin-bottom: 0;
+    }
+
+        .tabGroup ul[role="tablist"] > li {
+            list-style: none;
+            display: inline-block;
+        }
+
+    .tabGroup a[role="tab"] {
+        padding: 5px 15px 0px;
+        text-decoration: none;
+        display: inline-block;
+        box-sizing: border-box;
+        color: white;
+        border-bottom: 2px solid white;
+    }
+        .tabGroup a[role="tab"][aria-selected="true"], .tabGroup a[role="tab"]:hover, .tabGroup a[role="tab"]:focus {
+            color: #81D4FA;
+            border-bottom: 2px solid #81D4FA;
+        }
+
+    .tabGroup section[role="tabpanel"] {
+        border: 1px solid #607D8B;
+        border-left: none;
+        border-right: none;
+        overflow: hidden;
+        /*padding: 5px 0px;*/
+    }
