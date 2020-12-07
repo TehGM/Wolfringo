@@ -7,3 +7,5 @@
 - name: FAQ
   href: faq/
   homepage: faq/index.md
+- name: Changelog
+  href: https://github.com/TehGM/Wolfringo/releases
