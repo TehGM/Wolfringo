@@ -63,3 +63,8 @@ li {
 #breadcrumb:empty {
     display: none;
 }
+
+/* pad at bottom a bit, to move bottom text a little up */
+div.hide-when-search[role="main"] {
+    padding-bottom: 25px;
+}
