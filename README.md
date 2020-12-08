@@ -183,9 +183,9 @@ Client automatically caches the entities based on message/response type. If you 
 - Spam filter settings is not supported.
 
 ### Contributing
-In case you want to report a bug, open a new [Issue](https://github.com/TehGM/Wolfringo/issues).
-
 To ask questions or give ideas for Wolfringo, start a new [Discussion](https://github.com/TehGM/Wolfringo/discussions).
+
+In case you want to report a bug or request a new feature, open a new [Issue](https://github.com/TehGM/Wolfringo/issues).
 
 If you want to contribute a patch or update, fork repository, implement the change, and open a pull request.
 
