@@ -14,6 +14,7 @@ h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
     margin-block-start: 1em;
 }
 
+/* Fix numbered lists */
 li {
     display: list-item;
 }
@@ -67,4 +68,13 @@ li {
 /* pad at bottom a bit, to move bottom text a little up */
 div.hide-when-search[role="main"] {
     padding-bottom: 25px;
+}
+
+/* Make title look like an actual title */
+.brand:hover {
+    text-decoration: underline solid white;
+}
+.brand .brand-title {
+    font-size: 22px;
+    font-weight: bold;
 }
