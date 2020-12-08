@@ -26,7 +26,9 @@ Check [Pic Size Bot by TehGM](https://github.com/TehGM/WolfBot-Size) for live ex
 ### Source Code & Contributing
 Source code is available on [GitHub](https://github.com/TehGM/Wolfringo).
 
-To report bugs or request features for Wolfringo, please use [GitHub Issues](https://github.com/TehGM/Wolfringo/issues).
+Any bugs? Please report them on [GitHub Issues](https://github.com/TehGM/Wolfringo/issues).
+
+To ask questions or share ideas, feel free to start a new [GitHub Discussion](https://github.com/TehGM/Wolfringo/discussions).
 
 ## Sponsoring
 If you want to sponsor my work, please check my page on [GitHub Sponsors](https://github.com/sponsors/TehGM)!
