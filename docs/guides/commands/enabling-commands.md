@@ -5,7 +5,7 @@ uid: Guides.Commands.Intro
 # Wolfringo Commands System
 Using [AddMessageListener](xref:TehGM.Wolfringo.IWolfClient#TehGM_Wolfringo_IWolfClient_AddMessageListener_TehGM_Wolfringo_Utilities_Internal_IMessageCallback_) works well for testing, or for events that aren't [Chat Messages](xref:TehGM.Wolfringo.Messages.ChatMessage). However having a bot written using just the message listeners would mean that you manually need to handle errors logging, prefix checking, checking if user is admin, etc - that's A LOT of repetitive boilerplate code.
 
-To address this, Wolfringo has an extensible Commands System. This System is [attribute-based](xref:Guides.Commands.Attributes), and supports [Dependency Injection](xref:Guides.Commands.DependencyInjection) out of the box.
+To address this, Wolfringo has an extensible Commands System. This System is attribute-based, and supports [Dependency Injection](xref:Guides.Commands.DependencyInjection) out of the box.
 
 ## Enable Commands System in your bot
 Commands System is included in both [Wolfringo metapackage](https://www.nuget.org/packages/Wolfringo) and [Wolfringo.Hosting](https://www.nuget.org/packages/Wolfringo.Hosting). If you're not using either (for example when using [Wolfringo.Core](https://www.nuget.org/packages/Wolfringo.Core) directly), it can be installed with [Wolfringo.Commands](https://www.nuget.org/packages/Wolfringo.Commands) package. See [Installation instructions](xref:Guides.GettingStarted.Installation) for guide how to install Wolfringo components.
@@ -18,7 +18,7 @@ First add following using directive to your Program.cs:
 using Wolfringo.Commands;
 ```
 
-Commands System's main entry point is @TehGM.Wolfringo.Commands.CommandsSystem class. Its constructor takes minimum of 2 parameters: @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.CommandsOptions. @TehGM.Wolfringo.IWolfClient should be created by you already - see [Connecting the Bot guide](xref:Guides.GettingStarted.Connecting) if not - so let's skip to creating @TehGM.Wolfringo.Commands.CommandsOptions.
+Commands System's main entry point is @TehGM.Wolfringo.Commands.CommandsService class. Its constructor takes minimum of 2 parameters: @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.CommandsOptions. @TehGM.Wolfringo.IWolfClient should be created by you already - see [Connecting the Bot guide](xref:Guides.GettingStarted.Connecting) if not - so let's skip to creating @TehGM.Wolfringo.Commands.CommandsOptions.
 
 ```csharp
 CommandsOptions options = new CommandsOptions()
@@ -48,16 +48,16 @@ await commands.StartAsync();
 > Note: Calling `commands.StartAsync();` will reload all commands each time. However, it will not dispose persistent handlers. To dispose them, call `commands.Dispose()` and recreate the CommandsSystem entirely.
 
 ### Choose where commands are loaded from
-By default, all commands in the project that starts your bot process are loaded. You can change that using CommandsOptions.
+By default, all commands in the project that starts your bot process are loaded. You can change that using @TehGM.Wolfringo.Commands.CommandsOptions.
 
 #### Load commands from other assemblies
-You can load commands from other projects, or even different libraries. To do so, simply add assembly to `Assemblies` property:
+You can load commands from other projects, or even different libraries. To do so, simply add assembly to [Assemblies](xref:TehGM.Wolfringo.Commands.CommandsOptions#TehGM_Wolfringo_Commands_CommandsOptions_Assemblies) property:
 ```csharp
 options.Assemblies.Add(typeof(HandlerInAnotherProject).Assembly));
 ```
 
 #### Add commands individually
-You can also add individual [Handler](xref:Guides.Commands.Handlers) to be loaded. Simply add its type to `Classes` property:
+You can also add individual [Handler](xref:Guides.Commands.Handlers) to be loaded. Simply add its type to [Classes](xref:TehGM.Wolfringo.Commands.CommandsOptions#TehGM_Wolfringo_Commands_CommandsOptions_Classes) property:
 ```csharp
 options.Classes.Add(typeof(Handler));
 ```
@@ -68,7 +68,7 @@ options.Assemblies.Clear();
 ```
 
 ### Logging
-Part of purpose of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Commands.CommandsSystem fully supports logging, however you still need to provide an ILogger instance to its constructor:
+One of purposes of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Commands.CommandsSystem fully supports logging, however you still need to provide an ILogger instance to its constructor:
 ```csharp
 ILogger log = // ... create logger according to your logging library isntructions
 CommandsService commands = new CommandsService(_client, options, log);
@@ -120,7 +120,7 @@ services.AddWolfringoCommands()
 ```
 
 ### Logging
-Part of purpose of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Hosting.Commands.HostedCommandsHandler will automatically use logging as [configured for your Host](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/logging/?view=aspnetcore-3.0).
+One of purposes of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Hosting.Commands.HostedCommandsHandler will automatically use logging as [configured for your Host](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/logging/?view=aspnetcore-3.0).
 
 Check [Logging guide](xref:Guides.Features.Logging) for more information.
 ***
