@@ -69,6 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "getting-started", "getting-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{7B152FB9-663F-4F27-8B80-8F6F7DCD56FD}"
 	ProjectSection(SolutionItems) = preProject
+		docs\guides\commands\creating-commands.md = docs\guides\commands\creating-commands.md
 		docs\guides\commands\enabling-commands.md = docs\guides\commands\enabling-commands.md
 	EndProjectSection
 EndProject

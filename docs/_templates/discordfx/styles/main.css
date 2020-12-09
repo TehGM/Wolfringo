@@ -1,3 +1,8 @@
+h1, h2, h3, h4 {
+    padding-left: 8px;
+    border-left: 3px solid var(--h3-color);
+}
+
 h1, h2 {
     margin-block-start: 1.5em;
 }
@@ -5,8 +10,23 @@ h3, h4, h5 {
     margin-block-start: 2em;
 }
 
+/* Switch headings appearance so they make more sense in order they tend to appear */
 h1 {
     font-size: 28px;
+}
+h3 {
+    font-weight: bold;
+    color: var(--h4-color);
+}
+h4 {
+    font-size: 18px;
+    border-bottom: none;
+    font-weight: bold;
+    color: var(--h3-color);
+}
+h5 {
+    font-weight: bold;
+    color: var(--h3-color);
 }
 
 /* Kill the silly huge margins between headers, if one is after another */
@@ -17,6 +37,9 @@ h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
 /* Fix numbered lists */
 li {
     display: list-item;
+}
+article ul {
+    list-style-type: unset;
 }
 
 

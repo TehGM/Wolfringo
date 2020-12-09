@@ -12,3 +12,5 @@
   items:
     - name: Enabling Commands
       topicUid: Guides.Commands.Intro
+    - name: Creating Commands
+      topicUid: Guides.Commands.Handlers
