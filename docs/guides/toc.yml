@@ -7,3 +7,8 @@
       topicUid: Guides.GettingStarted.Installation
     - name: Connecting the Bot
       topicUid: Guides.GettingStarted.Connecting
+- name: Commands System
+  topicUid: Guides.Commands.Intro
+  items:
+    - name: Enabling Commands
+      topicUid: Guides.Commands.Intro

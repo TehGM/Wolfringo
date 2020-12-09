@@ -232,8 +232,8 @@ You're now ready to run the project. Go ahead, and send "!mybot hello" to your b
 ![](/_images/guides/connect-bot-1.png)
 
 ### Moving forward
-While using `_client.AddMessageListener<ChatMessage>(OnChatMessage);` and `async void OnChatMessage(ChatMessage message)` works fine for testing, you probably want to develop fully fledged commands with your bot. Check Commands System guides to see how!
+While using `_client.AddMessageListener<ChatMessage>(OnChatMessage);` and `async void OnChatMessage(ChatMessage message)` works fine for testing, you probably want to develop fully fledged commands with your bot. Check [Commands System](xref:Guides.Commands.Intro) guides to see how!
 
 Bot is a background program by nature, and as with any background program, knowing what is going on can be useful. For this reason Wolfringo has full logging support - check [Logging Guide](xref:Guides.Features.Logging) to see how to enable it.
 
-You can also check [SimplePingBot Example](https://github.com/TehGM/Wolfringo/tree/feature/docs/Examples/SimplePingBot) (Normal Bot) or [HostedPingBot Example](https://github.com/TehGM/Wolfringo/tree/feature/docs/Examples/HostedPingBot) (.NET Generic Host/ASP.NET Core) for full example on basic Wolfringo usage. Feel free to also check [other example projects](https://github.com/TehGM/Wolfringo/tree/feature/docs/Examples)!
+You can also check [SimplePingBot Example](https://github.com/TehGM/Wolfringo/tree/master/Examples/SimplePingBot) (Normal Bot) or [HostedPingBot Example](https://github.com/TehGM/Wolfringo/tree/master/Examples/HostedPingBot) (.NET Generic Host/ASP.NET Core) for full example on basic Wolfringo usage. Feel free to also check [other example projects](https://github.com/TehGM/Wolfringo/tree/master/Examples)!

@@ -7,7 +7,7 @@ Default means to install Wolfringo is through NuGet package.
 
 [Wolfringo](https://www.nuget.org/packages/Wolfringo) metapackage will automatically install [Wolfringo.Core](https://www.nuget.org/packages/Wolfringo.Core), [Wolfringo.Commands](https://www.nuget.org/packages/Wolfringo.Commands), [Wolfringo.Utilities](https://www.nuget.org/packages/Wolfringo.Utilities) and [Wolfringo.Utilities.Interactive](https://www.nuget.org/packages/Wolfringo.Utilities.Interactive).  
 
-### [Visual Studio Package Manager](#tab/install-with-vs-1)
+### [Visual Studio Package Manager](#tab/install-with-vs)
 1. Manage NuGet Packages for your bot project.  
 ![](/_images/guides/install-vs-1.png)
 2. Click "Browse" and type "Wolfringo". Note: checking "Include prerelease" allows downloading beta versions.
@@ -16,7 +16,7 @@ Default means to install Wolfringo is through NuGet package.
 4. Press install in the window on the right.  
 ![](/_images/guides/install-vs-3.png)
 
-### [CLI](#tab/install-with-cli-1)
+### [CLI](#tab/install-with-cli)
 Run following command in VS Developer Command Prompt:
 ```cli
 Install-Package Wolfringo
@@ -30,12 +30,12 @@ Wolfringo includes support for [.NET Generic Host](https://docs.microsoft.com/en
 
 [Wolfringo.Hosting](https://www.nuget.org/packages/Wolfringo.Hosting) includes extension methods for @Microsoft.Extensions.DependencyInjection.IServiceCollection that can be used when registering services (for example, in ASP.NET Core's `Startup.cs`). Additionally, this package includes wrappers @TehGM.Wolfringo.Hosting.HostedWolfClient and @TehGM.Wolfringo.Hosting.Commands.HostedCommandsService, both of which implement @Microsoft.Extensions.Hosting.IHostedService to integrate with host lifetime.
 
-### [Visual Studio Package Manager](#tab/install-with-vs-2)
+### [Visual Studio Package Manager](#tab/install-with-vs)
 1. Follow steps to [Install Wolfringo](#installation-guide).
 2. Additionally install Wolfringo.Hosting package.  
 ![](/_images/guides/install-vs-4.png)
 
-### [CLI](#tab/install-with-cli-2)
+### [CLI](#tab/install-with-cli)
 1. Follow steps to [Install Wolfringo](#installation-guide).
 2. Run following command in VS Developer Command Prompt:  
     ```cli
@@ -49,7 +49,7 @@ If you need to install older version ([0.1.0](https://github.com/TehGM/Wolfringo
 > Note: versions 0.1.X and 0.2.X are unstable and therefore deprecated. Use at own risk.  
 > The first version that can be considered safe for use is [0.3.1](https://github.com/TehGM/Wolfringo/releases/tag/0.3.1).
 
-### [Visual Studio Package Manager](#tab/install-with-vs-3)
+### [Visual Studio Package Manager](#tab/install-with-vs)
 1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
 2. Manage NuGet Packages for your bot project.  
 ![](/_images/guides/install-vs-1.png)
@@ -70,7 +70,7 @@ If you need to install older version ([0.1.0](https://github.com/TehGM/Wolfringo
 ![](/_images/guides/install-vs-9.png)
 
 
-### [CLI](#tab/install-with-cli-3)
+### [CLI](#tab/install-with-cli)
 1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
 2. Run following commands to authenticate with GitHub Packages, replacing <GithubUsername> and <GithubToken> with your github username and generated PAT, respectively:
     ```cli
