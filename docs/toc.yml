@@ -7,3 +7,5 @@
   topicUid: FAQ
 - name: Changelog
   href: https://github.com/TehGM/Wolfringo/releases
+- name: Examples
+  href: https://github.com/TehGM/Wolfringo/tree/master/Examples
