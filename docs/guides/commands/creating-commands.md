@@ -2,8 +2,8 @@
 uid: Guides.Commands.Handlers
 title: Creating Commands
 ---
-
-# Handlers
+# Creating Commands
+## Handlers
 Wolfringo Commands System works using "Handlers". Commands Handlers are classes where all command methods reside. Commands System will automatically create instances of these classes.
 
 Commands Handlers have a few requirements:
@@ -53,13 +53,13 @@ private class MyDisposableCommandsHandler : IDisposable
 
 @TehGM.Wolfringo.Commands.CommandsService will automatically call Dispose() on these handlers. Non-persistent handlers will be disposed as soon as command execution finishes. Persistent handlers will be disposed when [CommandsService.Dispose()](xref:TehGM.Wolfringo.Commands.CommandsService.Dispose) is called, or application is exiting.
 
-# Commands methods
+## Commands methods
 Commands methods are the methods that are executed when command is invoked. Commands methods:
 - **Cannot** be static
 - Should **not** be "async void". If you need "async" in your command, return a @System.Threading.Tasks.Task or a @System.Threading.Tasks.Task`1 instead.
 - Need to be marked as a command.
 
-## Marking method as a command
+### Marking method as a command
 Wolfringo Commands System includes support for 2 types of commands - Standard and Regex.
 
 Standard Commands are marked with [\[Command\] attribute](xref:TehGM.Wolfringo.Commands.CommandAttribute). They are most basic commands, and you might be accomodated with them if you used other bot libraries.  
@@ -80,11 +80,11 @@ private async Task RegexCommandExampleAsync()
 
 ```
 
-## Command parameters
+### Command parameters
 A command would be useless if it had no knowledge on what the message is, or how to reply to the user. This information is provided to commands methods by Commands System via parameters.  
 Commands can have following types of parameters:
 
-### CommandContext
+#### CommandContext
 Command context represents fundamental information about the command being executed, such as the message or wolf client instance. To use the context, use @TehGM.Wolfringo.Commands.CommandContext or @TehGM.Wolfringo.Commands.ICommandContext as parameter type.
 ```csharp
 [Command("example")]
@@ -118,13 +118,13 @@ private async Task ExampleAsync(CommandContext context)
 }
 ```
 
-### IWolfClient
+#### IWolfClient
 You can pass @TehGM.Wolfringo.IWolfClient as parameter. It'll be the same client as [CommandContext.Client](xref:TehGM.Wolfringo.Commands.CommandContext.Client) property.
 
-### ChatMessage
+#### ChatMessage
 You can pass @TehGM.Wolfringo.Messages.ChatMessage as parameter. It'll be the same message as [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message) property.
 
-### Command Arguments
+#### Command Arguments
 Any text from message after the command itself is treated as arguments. A parameter will be treated as an argument if its type isn't any of the types mentioned above, and an @TehGM.Wolfringo.Commands.Parsing.IArgumentConverter is registered in @TehGM.Wolfringo.Commands.Parsing.IArgumentConverterProvider. Types supported by default:
 - @System.String
 - @System.Boolean
@@ -143,7 +143,7 @@ Any text from message after the command itself is treated as arguments. A parame
 - @TehGM.Wolfringo.WolfTimestamp
 - Any enum type
 
-#### Arguments splitting
+##### Arguments splitting
 The way arguments are split varies between Standard and Regex commands.
 
 In Standard commands, arguments are split by space, unless they're grouped. Commands are grouped if they're wrapped into `" "`, `[ ]` or `( )`.  
@@ -158,7 +158,7 @@ In Regex commands, arguments will represent value of each of [regex groups](http
 > In normal bots, manual creation of @TehGM.Wolfringo.Commands.Parsing.ArgumentsParser and providing it to Commands Service using [Dependency Injection](xref:Guides.Commands.DependencyInjection).  
 > In bots using Wolfringo.Hosting, you can use methods like [AddArgumentBlockMarker(char, char)](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.AddArgumentBlockMarker(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder,System.Char,System.Char)) or [RemoveArgumentBlockMarker(char)](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.RemoveArgumentBlockMarker(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder,System.Char)), or use [Options Pattern](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.0).
 
-#### Arguments order
+##### Arguments order
 Arguments are ordered as they appear in message. They'll be attempted to be converted and inserted into the method in the same order.
 
 Assume that you have a command `[Command("test")]`, and prefix is `!`.  
@@ -172,7 +172,7 @@ private async Task TestAsync(string argument1, string argument2)
 }
 ```
 
-#### Customizing error messages
+##### Customizing error messages
 When user invokes a command and argument is missing or cannot be converted, Commands System will automatically reply with a default error message. You can customize these errors using attributes:
 - [\[MissingError(text)\]](xref:TehGM.Wolfringo.Commands.MissingErrorAttribute) to customize error when user didn't provide the argument at all;
 - [\[ConvertingError(text)\]](xref:TehGM.Wolfringo.Commands.ConvertingErrorAttribute) to customize error when converting of an argument failed.
@@ -201,7 +201,7 @@ You can also set text to `null` or empty string - in such case, error response w
 > [!TIP]
 > [\[ConvertingError(text)\]](xref:TehGM.Wolfringo.Commands.ConvertingErrorAttribute) will never be triggered if parameter type is @System.String, as arguments are handled as strings internally.
 
-#### Optional arguments
+##### Optional arguments
 To mark argument as optional, set a default value for that parameter:
 ```csharp
 [Command("example")]
@@ -215,12 +215,12 @@ Optional arguments will not cause an error if they're missing - command will sti
 > [!WARNING]
 > Optional values disable [\[MissingError(text)\]](xref:TehGM.Wolfringo.Commands.MissingErrorAttribute), but they do **not** disable [\[ConvertingError(text)\]](xref:TehGM.Wolfringo.Commands.ConvertingErrorAttribute) - bot will still reply with an error if optional argument was provided, but converting has failed.
 
-#### Catch-all
+##### Catch-all
 If you use @System.String[] as a parameter type, all arguments will be inserted into it.  
 > [!WARNING]
 > [Argument Group](#arguments-splitting) markers will not be included, only the values themselves. If you want to grab full text of the message, use `Text` property of [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message).
 
-### CancellationToken
+#### CancellationToken
 You can pass @System.Threading.CancellationToken as paremeter. You can then use this cancellation token in your other asynchronous calls. This cancellation token will be set to cancelled when @TehGM.Wolfringo.Commands.CommandsService is being disposed - for example when the application is exiting.
 
 ```csharp
@@ -231,16 +231,16 @@ private async Task ExampleAsync(CommandContext context, CancellationToken cancel
 }
 ```
 
-### ILogger
+#### ILogger
 If you enabled logging when you were creating @TehGM.Wolfringo.Commands.CommandsService (by passing a logger into constructor, or using .NET Generic Host/ASP.NET Core), you can pass in an instance of @Microsoft.Extensions.Logging.ILogger. You can then use that in your command code to log anything you want.
 
-### Dependency Injection services
+#### Dependency Injection services
 Any services registered with [Dependency Injection](xref:Guides.Commands.DependencyInjection) can also be used as a parameter. Please check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more information.
 
-### ICommandInstance
+#### ICommandInstance
 Internally, all [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) and [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) are converted into command instance objects. For most scenarios this just a fun-fact, but sometimes (for example, when using [Aliases](#aliases)) you may want to get access to the instance of the class. To do so, simply add a parameter of type @TehGM.Wolfringo.Commands.Initialization.ICommandInstance.
 
-## Commands Priorities
+### Commands Priorities
 Commands System will always execute maximum of **one** command method, even if multiple commands could be triggered by user's text. For example: `[Command("test")]` and `[Command("test2")]`.  
 If you want to control which command gets attempted first, use [\[Priority(value)\] attribute](xref:TehGM.Wolfringo.Commands.PriorityAttribute). Commands with highest priority value will be checked first.
 
@@ -261,7 +261,7 @@ public async Task Example2()
 
 In the example above, command Example1 will never be executed, because Example2 has the same text, but higher priority.
 
-## Aliases
+### Aliases
 Wolfringo does not have `[Alias]` attribute. Instead, the same method can have multiple attributes. Internally they're completely separate command instances, but because Commands System only ever runs one command at once, they'll work as if they were aliases.
 
 ```csharp
@@ -273,13 +273,13 @@ public Task ExampleAsync()
 }
 ```
 
-# What's next?
-## Examples
+## What's next?
+### Examples
 Example projects include example Commands Handlers:
 - Check [ExampleTransientCommandsHandler.cs](https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/ExampleTransientCommandsHandler.cs) for more examples on creating commands methods.
 - Check [ExamplePersistentCommandsHandler.cs](https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/ExamplePersistentCommandsHandler.cs) for example on Persistent (singleton) handler.
 
-## Moving further
+### Moving further
 Now you are able to create new commands using Wolfringo Commands System, but the system's possibilities do not end here.
 
 If you want to check how to avoid repetitive code even further, check out [Commands Requirements guide](xref:Guides.Commands.RequirementAttributes).  

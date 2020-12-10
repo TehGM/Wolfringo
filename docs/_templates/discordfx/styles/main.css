@@ -1,42 +1,49 @@
+/* Kill the silly huge margins between headers, if one is after another */
 h1, h2 {
     margin-block-start: 1.5em;
 }
+
 h3, h4, h5 {
     margin-block-start: 2em;
+    border-bottom: none;
+}
+
+h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
+    margin-block-start: 1em;
 }
 
 /* Switch headings appearance so they make more sense in order they tend to appear */
 h1 {
     font-size: 30px;
-    padding-bottom: 4px;
-    border-bottom: 2px solid var(--separator-color);
 }
 h2 {
-    padding-left: 8px;
-    border-left: 3px solid var(--h3-color);
-    font-size: 24px;
+    padding-left: 3px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--separator-color);
+    font-size: 26px;
 }
 h3 {
-    padding-left: 4px;
-    font-size: 21px;
+    padding-left: 5px;
+    font-size: 23px;
     font-weight: bold;
     color: var(--h4-color);
+    border-left: 3px solid var(--h3-color);
 }
 h4 {
+    font-size: 20.5px;
+    color: var(--h4-color);
+}
+h5 {
     font-size: 18px;
-    border-bottom: none;
     font-weight: bold;
     color: var(--h3-color);
 }
-h5 {
+h6 {
+    font-size: 15px;
     font-weight: bold;
     color: var(--h3-color);
 }
 
-/* Kill the silly huge margins between headers, if one is after another */
-h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
-    margin-block-start: 1em;
-}
 
 /* Fix numbered lists */
 li {
@@ -82,6 +89,7 @@ article ul {
         overflow: hidden;
     }
 
+
 /* Reduce footer font size */
 .footer {
     font-size: 12px;
@@ -109,5 +117,8 @@ div.hide-when-search[role="main"] {
 /* Fix anchor links */
 h1 > .anchorjs-link, h2 > .anchorjs-link, h3 > .anchorjs-link, h4 > .anchorjs-link, h5 > .anchorjs-link {
     position: relative !important;
-    margin-left: 0 !important;
+    left: -5px;
+}
+h3 > .anchorjs-link {
+    left: -10px;
 }

@@ -231,7 +231,7 @@ services.AddWolfClient()
 You're now ready to run the project. Go ahead, and send "!mybot hello" to your bot's account. It should reply!  
 ![](/_images/guides/connect-bot-1.png)
 
-### Moving forward
+## Moving forward
 While using `_client.AddMessageListener<ChatMessage>(OnChatMessage);` and `async void OnChatMessage(ChatMessage message)` works fine for testing, you probably want to develop fully fledged commands with your bot. Check [Commands System](xref:Guides.Commands.Intro) guides to see how!
 
 Bot is a background program by nature, and as with any background program, knowing what is going on can be useful. For this reason Wolfringo has full logging support - check [Logging Guide](xref:Guides.Features.Logging) to see how to enable it.
