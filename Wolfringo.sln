@@ -71,6 +71,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{7B
 	ProjectSection(SolutionItems) = preProject
 		docs\guides\commands\commands-requirements.md = docs\guides\commands\commands-requirements.md
 		docs\guides\commands\creating-commands.md = docs\guides\commands\creating-commands.md
+		docs\guides\commands\dependency-injection.md = docs\guides\commands\dependency-injection.md
 		docs\guides\commands\enabling-commands.md = docs\guides\commands\enabling-commands.md
 	EndProjectSection
 EndProject

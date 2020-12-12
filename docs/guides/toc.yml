@@ -16,3 +16,5 @@
       topicUid: Guides.Commands.Handlers
     - name: Commands Requirements
       topicUid: Guides.Commands.Requirements
+    - name: Dependency Injection
+      topicUid: Guides.Commands.DependencyInjection
