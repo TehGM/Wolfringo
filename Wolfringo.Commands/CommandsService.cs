@@ -29,6 +29,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly IWolfClient _client;
         private readonly CommandsOptions _options;
         private readonly IServiceProvider _services;
+        private readonly IServiceProvider _fallbackServices;
         private readonly ICommandsHandlerProvider _handlerProvider;
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
@@ -72,7 +73,8 @@ namespace TehGM.Wolfringo.Commands
             this._commandsLoader = services?.GetService<ICommandsLoader>() ?? new CommandsLoader(this._initializers, this._log);
 
             // init service provider - use combine, to use fallback one as well
-            this._services = CombinedServiceProvider.Combine(services, this.CreateFallbackServiceProvider());
+            this._fallbackServices = this.CreateFallbackServiceProvider();
+            this._services = CombinedServiceProvider.Combine(services, this._fallbackServices);
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
@@ -214,6 +216,12 @@ namespace TehGM.Wolfringo.Commands
 
                 using (IServiceScope serviceScope = this._services.CreateScope())
                 {
+                    // Because scope won't have fallback services, and commands might need them, combine scope with fallback services
+                    // TODO: think of a nicer way to solve fallback services problem - I don't like it as it is now
+                    IServiceProvider services = serviceScope.ServiceProvider;
+                    if (!object.ReferenceEquals(services, this._fallbackServices))
+                        services = CombinedServiceProvider.Combine(serviceScope.ServiceProvider, this._fallbackServices);
+
                     foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
                     {
                         ICommandInstanceDescriptor command = commandKvp.Key;
@@ -226,23 +234,23 @@ namespace TehGM.Wolfringo.Commands
                                 cts.Token.ThrowIfCancellationRequested();
 
                                 // check if the command should run at all - if not, skip
-                                ICommandResult matchResult = await instance.CheckMatchAsync(context, serviceScope.ServiceProvider, cts.Token).ConfigureAwait(false);
+                                ICommandResult matchResult = await instance.CheckMatchAsync(context, services, cts.Token).ConfigureAwait(false);
                                 if (!matchResult.IsSuccess)
                                     continue;
 
                                 // initialize handler
-                                _log?.LogTrace("Initializing handler handler {Handler} for command {Name}", command.GetHandlerType().Name, command.Method.Name);
-                                handlerResult = _handlerProvider.GetCommandHandler(command, serviceScope.ServiceProvider);
+                                this._log?.LogTrace("Initializing handler handler {Handler} for command {Name}", command.GetHandlerType().Name, command.Method.Name);
+                                handlerResult = this._handlerProvider.GetCommandHandler(command, services);
                                 if (handlerResult?.HandlerInstance == null)
                                 {
-                                    _log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
+                                    this._log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
                                     return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandsHandlerProviderResult.HandlerInstance),
                                         $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
                                 }
-                                _log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
+                                this._log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
 
                                 // execute the command
-                                ICommandResult executeResult = await instance.ExecuteAsync(context, _services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
+                                ICommandResult executeResult = await instance.ExecuteAsync(context, services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
                                 if (executeResult.Exception != null)
                                 {
                                     this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
@@ -251,16 +259,13 @@ namespace TehGM.Wolfringo.Commands
                                 if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
                                 {
                                     this._log?.LogTrace("Sending command results messages as a command response");
-                                    bool replyGroup = context.Message.IsGroupMessage;
-                                    uint replyRecipientID = replyGroup ? context.Message.RecipientID : context.Message.SenderID.Value;
-                                    string text = string.Join("\n", messagesResult.Messages);
-                                    await context.Client.SendAsync(new ChatMessage(replyRecipientID, replyGroup, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cts.Token).ConfigureAwait(false);
+                                    await context.ReplyTextAsync(string.Join("\n", messagesResult.Messages), cts.Token).ConfigureAwait(false);
                                 }
                                 return executeResult;
                             }
                             catch (OperationCanceledException ex)
                             {
-                                _log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
+                                this._log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
                                 return CommandExecutionResult.FromException(ex);
                             }
                             catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
