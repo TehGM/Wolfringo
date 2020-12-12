@@ -8,3 +8,6 @@ apiRules:
     - exclude:
         uidRegex: ^System\.Exception
         type: Type
+    - exclude:
+        uidRegex: ^System\.Attribute
+        type: Type

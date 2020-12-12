@@ -261,6 +261,34 @@ public async Task Example2()
 
 In the example above, command Example1 will never be executed, because Example2 has the same text, but higher priority.
 
+### Overriding Options
+@TehGM.Wolfringo.Commands.CommandsOptions class holds default settings for commands - you can customize them when [enabling Commands System](xref:Guides.Commands.Intro). On top of that, you can also change these settings using attributes.  
+These attributes can be put on the command method or on the entire handler. Commands options are checked in the following order:
+1. Attributes on the method.
+2. Attributes on the handler.
+3. @TehGM.Wolfringo.Commands.CommandsOptions instance.
+
+For example, in following example, Prefix for ExampleCommand1 will be `!`, but for ExampleCommand2 it will be `?`:
+```csharp
+[CommandsHandler]
+[Prefix("!")]
+private class ExampleCommandsHandler
+{
+    [Command("example1")]
+    private void ExampleCommand1() { }
+
+    [Command("example2")]
+    [Prefix("?")]
+    private void ExampleCommand2() { }
+}
+```
+
+Following attributes are available for use:
+- [\[Prefix(string)\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute) - overrides command's prefix.
+- [\[Prefix(PrefixRequirement)\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute) - overrides command's prefix requirement.
+- [\[Prefix(string, PrefixRequirement)\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute) - overrides both command's prefix and prefix requirement.
+- [\[CaseSensitivity(bool)\]](xref:TehGM.Wolfringo.Commands.CaseSensitivityAttribute) - overrides command's case sensitivity.
+
 ### Aliases
 Wolfringo does not have `[Alias]` attribute. Instead, the same method can have multiple attributes. Internally they're completely separate command instances, but because Commands System only ever runs one command at once, they'll work as if they were aliases.
 
