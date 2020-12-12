@@ -310,5 +310,5 @@ Example projects include example Commands Handlers:
 ### Moving further
 Now you are able to create new commands using Wolfringo Commands System, but the system's possibilities do not end here.
 
-If you want to check how to avoid repetitive code even further, check out [Commands Requirements guide](xref:Guides.Commands.RequirementAttributes).  
+If you want to check how to avoid repetitive code even further, check out [Commands Requirements guide](xref:Guides.Commands.Requirements).  
 Make sure to also check out [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) to learn how to let commands use other systems in your bot!

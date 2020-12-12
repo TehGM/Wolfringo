@@ -14,3 +14,5 @@
       topicUid: Guides.Commands.Intro
     - name: Creating Commands
       topicUid: Guides.Commands.Handlers
+    - name: Commands Requirements
+      topicUid: Guides.Commands.Requirements
