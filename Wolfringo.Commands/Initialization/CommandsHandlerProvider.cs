@@ -10,15 +10,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
     /// <para>The persistent handler instances that implement <see cref="IDisposable"/> will be automatically disposed when <see cref="Dispose"/> method is called.</para></remarks>
     public class CommandsHandlerProvider : ICommandsHandlerProvider, IDisposable
     {
-        private readonly IDictionary<Type, CommandHandlerDescriptor> _knownHandlerDescriptors;
+        private readonly IDictionary<Type, ConstructorInfo> _knownConstructors;
         private readonly IDictionary<Type, CommandsHandlerProviderResult> _persistentHandlers;
         private readonly object _lock;
 
         /// <summary>Creates a new provider instance.</summary>
-        /// <param name="services">Service provider with services to use for constructor injection.</param>
         public CommandsHandlerProvider()
         {
-            this._knownHandlerDescriptors = new Dictionary<Type, CommandHandlerDescriptor>();
+            this._knownConstructors = new Dictionary<Type, ConstructorInfo>();
             this._persistentHandlers = new Dictionary<Type, CommandsHandlerProviderResult>();
             this._lock = new object();
         }
@@ -27,15 +26,19 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public ICommandsHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor, IServiceProvider services)
         {
             Type handlerType = descriptor.GetHandlerType();
+            CommandHandlerDescriptor handlerDescriptor = null;
 
             lock (_lock)
             {
-                // if not shared, try persistent
+                // check if persistent
                 if (_persistentHandlers.TryGetValue(handlerType, out CommandsHandlerProviderResult handler))
                     return handler;
 
-                // if no persistent handler was found, we need to create a new one - check if descriptor is known yet
-                if (!_knownHandlerDescriptors.TryGetValue(handlerType, out CommandHandlerDescriptor handlerDescriptor))
+                // keep resolved services to avoid recreating them in case of multiple constructors
+                IDictionary<Type, object> resolvedServices = new Dictionary<Type, object>();
+
+                // if no persistent handler was found, we need to create a new one - check if constructor is known yet
+                if (!_knownConstructors.TryGetValue(handlerType, out ConstructorInfo handlerConstructor))
                 {
                     // if descriptor not cached, create new one
                     // start with grabbing all constructors
@@ -59,10 +62,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
                     // try to resolve dependencies for each constructor. First one that can be resolved wins
                     foreach (ConstructorInfo ctor in selectedConstructors)
                     {
-                        if (TryCreateHandlerDescriptor(ctor, services, out handlerDescriptor))
+                        if (TryCreateHandlerDescriptor(ctor, services, out handlerDescriptor, ref resolvedServices))
                         {
                             // cache found descriptor
-                            _knownHandlerDescriptors.Add(handlerType, handlerDescriptor);
+                            _knownConstructors.Add(handlerType, ctor);
+                            handlerConstructor = ctor;
                             break;
                         }
                     }
@@ -70,6 +74,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
                     if (handlerDescriptor == null)
                         throw new InvalidOperationException($"Cannot create descriptor for type {handlerType.FullName} - none of the constructors can have its dependencies resolved");
                 }
+                // if constructor is already known, just create a descriptor
+                else
+                    TryCreateHandlerDescriptor(handlerConstructor, services, out handlerDescriptor, ref resolvedServices);
 
                 // now that we have a descriptor, let's create an instance
                 handler = new CommandsHandlerProviderResult(handlerDescriptor, handlerDescriptor.CreateInstance());
@@ -83,20 +90,24 @@ namespace TehGM.Wolfringo.Commands.Initialization
             }
         }
 
-        private bool TryCreateHandlerDescriptor(ConstructorInfo constructor, IServiceProvider services, out CommandHandlerDescriptor result)
+        private bool TryCreateHandlerDescriptor(ConstructorInfo constructor, IServiceProvider services, out CommandHandlerDescriptor result, ref IDictionary<Type, object> resolvedServices)
         {
             result = null;
             ParameterInfo[] ctorParams = constructor.GetParameters();
             object[] paramsValues = new object[ctorParams.Length];
             foreach (ParameterInfo param in ctorParams)
             {
-                object value = services.GetService(param.ParameterType);
-                if (value == null)
+                if (!resolvedServices.TryGetValue(param.ParameterType, out object value))
                 {
-                    if (param.IsOptional)
-                        value = param.HasDefaultValue ? param.DefaultValue : null;
-                    else
-                        return false;
+                    value = services.GetService(param.ParameterType);
+                    if (value == null)
+                    {
+                        if (param.IsOptional)
+                            value = param.HasDefaultValue ? param.DefaultValue : null;
+                        else
+                            return false;
+                    }
+                    resolvedServices[param.ParameterType] = value;
                 }
                 paramsValues[param.Position] = value;
             }
@@ -112,7 +123,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             lock (_lock)
             {
                 disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);
-                this._knownHandlerDescriptors.Clear();
+                this._knownConstructors.Clear();
                 this._persistentHandlers.Clear();
             }
             foreach (object handler in disposableHandlers)
