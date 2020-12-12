@@ -53,6 +53,27 @@ private class MyDisposableCommandsHandler : IDisposable
 
 @TehGM.Wolfringo.Commands.CommandsService will automatically call Dispose() on these handlers. Non-persistent handlers will be disposed as soon as command execution finishes. Persistent handlers will be disposed when [CommandsService.Dispose()](xref:TehGM.Wolfringo.Commands.CommandsService.Dispose) is called, or application is exiting.
 
+### Multiple constructors
+If your handler has multiple constructors, the commands system will attempt to use the one that it can resolve the most parameters for. If it can't resolve any of the parameters, @TehGM.Wolfringo.Commands.CommandsService will log an error, and fail to execute any command from that handler.
+
+By default, all non-static constructors in the handler will be taken into account. If you have a constructor (or multiple constructors) that you want to be used by Commands System, you can give it a [\[CommandsHandlerConstructor\] attribute](xref:TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute). If any of the constructors has this attribute, Commands System will ignore all constructors without this attribute.
+
+If multiple constructors are marked with [\[CommandsHandlerConstructor\] attribute](xref:TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute), by default Commands System will try to find the constructor that it can resolve most attributes for - just like when none of the constructors have the attribute. You can override this by giving [\[CommandsHandlerConstructor\]](xref:TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute) a priority value.
+```csharp
+[CommandsHandler]
+private class ExampleCommandsHandler
+{
+    // constructor with priority of 10
+    [CommandsHandlerConstructor(10)]
+    public ExampleCommandsHandler(IWolfClient client)
+    {
+        // ...
+    }
+}
+```
+
+Commands System will attempt to use constructors with higher priority before constructors with lower priority. If you don't specify priority, the constructor will have default priority of 0.
+
 ## Commands methods
 Commands methods are the methods that are executed when command is invoked. Commands methods:
 - **Cannot** be static
