@@ -10,6 +10,8 @@ Please check navigation on the left ⬅ for more articles.
 ## Getting Started
 Installation and Basic usage of the bot is explained in [Getting Started](xref:Guides.GettingStarted.Installation) section.
 
+For more details on how to use Wolfringo, check [Working with Wolfringo](xref:Guides.Features.Logging) section.
+
 To learn how to use Commands System for your bots' commands, check [Commands System](xref:Guides.Commands.Intro) section.
 
 ## Questions?

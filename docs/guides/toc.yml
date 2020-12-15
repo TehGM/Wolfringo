@@ -10,10 +10,10 @@
 - name: Working with Wolfringo
   topicUid: Guides.Features.Logging
   items:
-    - name: Reconnecting
-      topicUid: Guides.Features.Reconnection
     - name: Logging
       topicUid: Guides.Features.Logging
+    - name: Reconnecting
+      topicUid: Guides.Features.Reconnection
     - name: Handling Errors
       topicUid: Guides.Features.ErrorHandling
     - name: Interactive Commands
