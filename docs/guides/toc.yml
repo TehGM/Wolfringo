@@ -7,6 +7,11 @@
       topicUid: Guides.GettingStarted.Installation
     - name: Connecting the Bot
       topicUid: Guides.GettingStarted.Connecting
+- name: Working with Wolfringo
+  topicUid: Guides.Features.Logging
+  items:
+    - name: Logging
+      topicUid: Guides.Features.Logging
 - name: Commands System
   topicUid: Guides.Commands.Intro
   items:
