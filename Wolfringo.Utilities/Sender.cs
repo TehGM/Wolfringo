@@ -471,7 +471,7 @@ namespace TehGM.Wolfringo
         /// <summary>Get profile of specified group.</summary>
         /// <remarks><para>If group is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para>
         /// <para>Group will be retrieved with members list populated.</para></remarks>
-        /// <param name="groupID">ID of group to retrieve.</param>
+        /// <param name="groupName">ID of group to retrieve.</param>
         /// <returns>Retrieved group.</returns>
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>

@@ -12,6 +12,8 @@
   items:
     - name: Logging
       topicUid: Guides.Features.Logging
+    - name: Receiving Profile Updates
+      topicUid: Guides.Features.ReceivingProfileUpdates
 - name: Commands System
   topicUid: Guides.Commands.Intro
   items:
