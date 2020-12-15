@@ -23,11 +23,11 @@ public ExampleCommandsHandler(IWolfClient client, IMySuperDatabase database)
 }
 ```
 
-If Commands System cannot resolve required dependencies for any of the available constructors, it'll log error and commands in that handler won't work. Check [Registering Services](Guides.Commands.DependencyInjection#registering-services) to check how to add services to DI - for example your custom *IMySuperDatabase*.  
+If Commands System cannot resolve required dependencies for any of the available constructors, it'll log error and commands in that handler won't work. Check [Registering Services](xref:Guides.Commands.DependencyInjection#registering-services) to check how to add services to DI - for example your custom *IMySuperDatabase*.  
 You can also mark services as optional by giving the parameter a default value. Commands Service will still try to resolve the dependency, but if it fails to do so, it'll simply use the default value instead of throwing errors.
 
 #### Command Method Dependency Injection
-Command methods support dependency injection in a similar manner as [Handler Constructors](Guides.Commands.DependencyInjection#handler-constructor-dependency-injection) - simply specify them as the parameters.
+Command methods support dependency injection in a similar manner as [Handler Constructors](xref:Guides.Commands.DependencyInjection#handler-constructor-dependency-injection) - simply specify them as the parameters.
 ```csharp
 [Command("example")]
 private async Task ExampleAsync(ICommandContext context, IWolfClient client, IMySuperDatabase database)
@@ -36,7 +36,7 @@ private async Task ExampleAsync(ICommandContext context, IWolfClient client, IMy
 }
 ```
 
-If Commands System cannot resolve a required dependency of any of the parameters, it'll log an error and abort executing the command. Check [Registering Services](Guides.Commands.DependencyInjection#registering-services) to check how to add services to DI - for example your custom *IMySuperDatabase*.  
+If Commands System cannot resolve a required dependency of any of the parameters, it'll log an error and abort executing the command. Check [Registering Services](xref:Guides.Commands.DependencyInjection#registering-services) to check how to add services to DI - for example your custom *IMySuperDatabase*.  
 You can also mark services as optional by giving the parameter a default value. Commands Service will still try to resolve the dependency, but if it fails to do so, it'll simply use the default value instead of throwing errors.
 
 #### Command Requirement Dependency Injection

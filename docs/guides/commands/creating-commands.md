@@ -239,7 +239,7 @@ Optional arguments will not cause an error if they're missing - command will sti
 ##### Catch-all
 If you use @System.String[] as a parameter type, all arguments will be inserted into it.  
 > [!WARNING]
-> [Argument Group](Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab full text of the message, use `Text` property of [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message).
+> [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab full text of the message, use `Text` property of [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message).
 
 #### CancellationToken
 You can pass @System.Threading.CancellationToken as paremeter. You can then use this cancellation token in your other asynchronous calls. This cancellation token will be set to cancelled when @TehGM.Wolfringo.Commands.CommandsService is being disposed - for example when the application is exiting.
@@ -259,7 +259,7 @@ If you enabled logging when you were creating @TehGM.Wolfringo.Commands.Commands
 Any services registered with [Dependency Injection](xref:Guides.Commands.DependencyInjection) can also be used as a parameter. Please check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more information.
 
 #### ICommandInstance
-Internally, all [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) and [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) are converted into command instance objects. For most scenarios this just a fun-fact, but sometimes (for example, when using [Aliases](Guides.Commands.Handlers#aliases)) you may want to get access to the instance of the class. To do so, simply add a parameter of type @TehGM.Wolfringo.Commands.Initialization.ICommandInstance.
+Internally, all [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) and [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) are converted into command instance objects. For most scenarios this just a fun-fact, but sometimes (for example, when using [Aliases](xref:Guides.Commands.Handlers#aliases)) you may want to get access to the instance of the class. To do so, simply add a parameter of type @TehGM.Wolfringo.Commands.Initialization.ICommandInstance.
 
 ### Commands Priorities
 Commands System will always execute maximum of **one** command method, even if multiple commands could be triggered by user's text. For example: `[Command("test")]` and `[Command("test2")]`.  
