@@ -30,7 +30,7 @@ private async void OnChatMessage(ChatMessage message)
 > This is a neat idea that I directly borrowed, so figured a credit is due. :) 
 
 ### Timeouts
-You most likely do not want to keep waiting for user's response forever - this could cause memory leaks, groups being blocked, etc. For this reason, you most likely want a timeout on your interactive commands.
+You most likely do not want to keep waiting for user's response forever - this could cause memory leaks, groups being blocked, etc. For this reason, you can add a timeout to your interactive commands.
 
 Interactive extension methods take @System.TimeSpan as one of the parameters. If no received message matches criteria within that time, the interactive method will simply return `null`.
 
@@ -50,11 +50,11 @@ private async void OnChatMessage(ChatMessage message)
 ```
 
 > [!TIP]
-> Like most of async methods in Wolfringo, Interactive Utilities support @System.Threading.CancellationToken - combined with @System.Threading.CancellationTokenSource, you can implement custom timeouts if simple @System.TimeSpan does not suit your needs.
+> Like most of async methods in Wolfringo, Interactive Utilities support @System.Threading.CancellationToken - combined with @System.Threading.CancellationTokenSource, you can implement custom timeouts if simple @System.TimeSpan does not suit your needs.  
 > Fun-fact: internally, that's exactly what Wolfringo does with the provided @System.TimeSpan.
 
 ### Custom Criteria
-If the custom criteria do not match your needs, you can use [AwaitNextAsync&lt;T&gt;](xref:TehGM.Wolfringo.InteractiveExtensions.AwaitNextAsync``1(TehGM.Wolfringo.IWolfClient,System.Func{``0,System.Boolean},System.TimeSpan,System.Threading.CancellationToken)) which takes `Func<T, bool>` as one of parameters. That delegate should return true if message matches your custom criteria, otherwise it should return false.
+If the built-in simple criteria do not match your needs, you can use [AwaitNextAsync&lt;T&gt;](xref:TehGM.Wolfringo.InteractiveExtensions.AwaitNextAsync``1(TehGM.Wolfringo.IWolfClient,System.Func{``0,System.Boolean},System.TimeSpan,System.Threading.CancellationToken)) which takes `Func<T, bool>` as one of parameters. That delegate should return true if message matches your custom criteria, otherwise it should return false.
 
 The example below will await next image sent by the same user that sent the first message - regardless if the message is sent in private, or any of the groups.
 

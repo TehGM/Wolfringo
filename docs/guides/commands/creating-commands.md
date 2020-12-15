@@ -237,7 +237,7 @@ Optional arguments will not cause an error if they're missing - command will sti
 > Optional values disable [\[MissingError(text)\]](xref:TehGM.Wolfringo.Commands.MissingErrorAttribute), but they do **not** disable [\[ConvertingError(text)\]](xref:TehGM.Wolfringo.Commands.ConvertingErrorAttribute) - bot will still reply with an error if optional argument was provided, but converting has failed.
 
 ##### Catch-all
-If you use @System.String[] as a parameter type, all arguments will be inserted into it.  
+If you use an array of [strings](xref:System.String) (`string[]`) as a parameter type, all arguments will be inserted into it.  
 > [!WARNING]
 > [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab full text of the message, use `Text` property of [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message).
 

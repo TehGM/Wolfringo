@@ -72,7 +72,7 @@ After raising the error, the client will act accordingly to [HostedWolfClientOpt
 > [HostedWolfClientOptions.CloseOnCriticalError](xref:TehGM.Wolfringo.Hosting.HostedWolfClientOptions.CloseOnCriticalError) setting is used by more than just reconnection attempts - it also determines how the application will behave when initial connection fails, and when bot has failed to log in automatically.
 
 ### Disabling auto-reconnection
-To disable auto-reconnection, simply set @TehGM.Wolfringo.Hosting.HostedWolfClientOptions.ReconnectAttempts to 0. Alternatively, you can disable it in *ConfigureServices*:
+To disable auto-reconnection, simply set @TehGM.Wolfringo.Hosting.HostedWolfClientOptions.AutoReconnectAttempts to 0. Alternatively, you can disable it in *ConfigureServices*:
 ```csharp
 services.AddWolfClient()
     .DisableAutoReconnect();

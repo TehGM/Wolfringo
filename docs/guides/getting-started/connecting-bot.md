@@ -94,6 +94,8 @@ reconnectorConfig.ReconnectAttempts = -1;       // by default, ReconnectorConfig
 WolfClientReconnector reconnector = new WolfClientReconnector(_client, reconnectorConfig);
 ```
 
+> [!TIP]
+> Pro tip: Check out [Reconnecting guide](xref:Guides.Features.Reconnection) for more details.
 
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
@@ -223,8 +225,9 @@ services.AddWolfClient()
     .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email)
     .SetAutoReconnectAttempts(-1);  // by default, bot will try to reconnect 5 times - here we change it to -1, which makes it infinite
 ```
+> [!TIP]
+> Pro tip: Check out [Reconnecting guide](xref:Guides.Features.Reconnection) for more details.
 ***
-
 
 
 ### Testing the bot

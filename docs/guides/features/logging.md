@@ -7,7 +7,7 @@ title: Logging
 A bot is a background process - most often it'll be running in background, without user interaction. For that reason, it's important to **log** information.
 
 Wolfringo on its own doesn't have a logger. It also doesn't have "Log" event or anything like that - these events often are error-prone, and require additional work when setting up.  
-Instead Wolfringo has full support for @Microsoft.Extensions.Logging.ILogger interface. This makes it fully compatible with any relevant .NET logging library - [Serilog](https://serilog.net/), [NLog](https://nlog-project.org/), [Log4Net](https://logging.apache.org/log4net/), you name it! (Well, as long as it works with [Microsoft.Extensions.Logging.ILogger](xref:Microsoft.Extensions.Logging.ILogger).
+Instead Wolfringo has full support for @Microsoft.Extensions.Logging.ILogger interface. This makes it fully compatible with any relevant .NET logging library - [Serilog](https://serilog.net/), [NLog](https://nlog-project.org/), [Log4Net](https://logging.apache.org/log4net/), you name it! (Well, as long as it works with [Microsoft.Extensions.Logging.ILogger](xref:Microsoft.Extensions.Logging.ILogger)).
 
 ## Setting logging up
 The exact way to set up logging might vary between libraries. Here I show a few examples.
@@ -87,7 +87,7 @@ private static ILogger CreateLogger()
 {
     ILoggerFactory loggerFactory = new LoggerFactory(                   // create Microsoft.Extensions.Logging.ILogger factory
             new[] { new ConsoleLoggerProvider((_, level)                // enable logging to console
-              => level != LogLevel.Trace && level != LogLevel.Debug,    // disable any logs below Information - feel free to change it to whatever suitsyour needs
+              => level != LogLevel.Trace && level != LogLevel.Debug,    // disable any logs below Information - feel free to change it to whatever suits your needs
             true) }                                                     // do include log scopes
         );
     return loggerFactory.CreateLogger<T>();     // create and return our logger
@@ -105,7 +105,7 @@ Logging is built into [.NET Generic Host](https://docs.microsoft.com/en-gb/aspne
 
 Wolfringo.Hosting's wrappers for Wolfringo services (@TehGM.Wolfringo.Hosting.HostedWolfClient and <xref:TehGM.Wolfringo.Hosting.Commands.HostedCommandsService>) will automatically use logging if it's configured in your host.
 
-> Note: In addition to steps I include as examples below, I recommend checking [Logging in .NET Core and ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/logging/?view=aspnetcore-3.0) to check details!
+> Note: In addition to steps I include as examples below, I recommend checking [Logging in .NET Core and ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/logging/?view=aspnetcore-3.0) for more details!
 
 ### Serilog
 [Serilog](https://serilog.net/) is one of the most popular (if not *the* most popular) logging libraries for .NET. It is my personal choice in my projects, so let's start with it!
@@ -189,7 +189,7 @@ Many other libraries support Microsoft.Extensions.Logging. Some might support it
 ***
 
 ## Logging in Handlers and Services
-Any service registered with Dependency Injection and all Handlers that @TehGM.Wolfringo.Commands.CommandsService loads can use @Microsoft.Extensions.Logging.ILogger - simply inject it via constructor or method parameters. Check [Dependency Injection guide(xref:Guides.Commands.DependencyInjection) for more details.
+Any service registered with Dependency Injection and all Handlers that @TehGM.Wolfringo.Commands.CommandsService loads can use @Microsoft.Extensions.Logging.ILogger - simply inject it via constructor or method parameters. Check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more details.
 
 ```csharp
 [CommandsHandler]

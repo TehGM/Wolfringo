@@ -30,9 +30,9 @@ CommandsOptions options = new CommandsOptions()
 ```
 
 Basic Commands Options are pretty straightforward:
-- `Prefix` determines what all the commands should start with - for example "!", "!mybot" etc. Default value is "!".
-- `RequirePrefix` determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to [PrefixRequirement.Group](xref:TehGM.Wolfringo.Commands.PrefixRequirement.Group).
-- `CaseSensitivity` determines whether commands are case-sensitive. By default, all commands are case-insensitive (the value is set to "false").
+- [Prefix](xref:TehGM.Wolfringo.Commands.CommandsOptions.Prefix) determines what all the commands should start with - for example "!", "!mybot" etc. Default value is "!".
+- [RequirePrefix](xref:TehGM.Wolfringo.Commands.CommandsOptions.RequirePrefix) determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to [PrefixRequirement.Group](xref:TehGM.Wolfringo.Commands.PrefixRequirement.Group).
+- [CaseSensitivity](xref:TehGM.Wolfringo.Commands.CommandsOptions.CaseSensitivity) determines whether commands are case-sensitive. By default, all commands are case-insensitive (the value is set to "false").
 
 Once you have your options set, you can create and start Commands System. You should do it after creating bot client, but before you connect your bot:
 ```csharp
@@ -45,7 +45,7 @@ await commands.StartAsync();
 // connect bot here with "_client.ConnectAsync();"
 ```
 
-> Note: Calling `commands.StartAsync();` will reload all commands each time. However, it will not dispose persistent handlers. To dispose them, call `commands.Dispose()` and recreate the CommandsSystem entirely.
+> Note: Calling [commands.StartAsync()](xref:TehGM.Wolfringo.Commands.CommandsService.StartAsync(System.Threading.CancellationToken)) will reload all commands each time. However, it will not dispose persistent handlers. To dispose them, call [commands.Dispose()](xref:TehGM.Wolfringo.Commands.CommandsService.Dispose) and recreate the CommandsSystem entirely.
 
 ### Choose where commands are loaded from
 By default, all commands in the project that starts your bot process are loaded. You can change that using @TehGM.Wolfringo.Commands.CommandsOptions.
@@ -86,9 +86,9 @@ services.AddWolfringoCommands()
 ```
 
 Basic Commands configuration is pretty straightforward:
-- `SetPrefix` determines what all the commands should start with - for example "!", "!mybot" etc. Default value is "!".
-- `SetPrefixRequirement` determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to [PrefixRequirement.Group](xref:TehGM.Wolfringo.Commands.PrefixRequirement.Group).
-- `SetCaseSensitive` determines whether commands are case-sensitive. By default, all commands are case-insensitive (the value is set to "false").
+- [SetPrefix](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.SetPrefix(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder,System.String,TehGM.Wolfringo.Commands.PrefixRequirement)) determines what all the commands should start with - for example "!", "!mybot" etc. Default value is "!".
+- [SetPrefixRequirement](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.SetPrefixRequirement(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder,TehGM.Wolfringo.Commands.PrefixRequirement)) determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to [PrefixRequirement.Group](xref:TehGM.Wolfringo.Commands.PrefixRequirement.Group).
+- [SetCaseSensitive](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.SetCaseSensitive(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder,System.Boolean)) determines whether commands are case-sensitive. By default, all commands are case-insensitive (the value is set to "false").
 
 > [!TIP]
 > Using application settings file is recommended instead of hardcoding the settings. See [appsettings.json example](https://github.com/TehGM/Wolfringo/blob/master/Examples/HostedCommandsBot/appsettings.json), and add following method call to your ConfigureServices:  
@@ -100,14 +100,14 @@ Basic Commands configuration is pretty straightforward:
 By default, all commands in the project that starts your bot process are loaded. You can change that with method calls straight after AddWolfringoCommands().
 
 #### Load commands from other assemblies
-You can load commands from other projects, or even different libraries. To do so, simply call `AddHandlers()`:
+You can load commands from other projects, or even different libraries. To do so, simply call [AddHandlers()](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.AddHandlers(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder,System.Reflection.Assembly[])):
 ```csharp
 services.AddWolfringoCommands()
     .AddHandlers(typeof(HandlerInAnotherProject).Assembly));
 ```
 
 #### Add commands individually
-You can also add individual [Handler](xref:Guides.Commands.Handlers) to be loaded. Simply call `AddHandler<T>()`:
+You can also add individual [Handler](xref:Guides.Commands.Handlers) to be loaded. Simply call [AddHandler<T>()](xref:Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.AddHandler``1(Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder)):
 ```csharp
 services.AddWolfringoCommands()
     .AddHandler<Handler>();

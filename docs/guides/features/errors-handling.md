@@ -3,7 +3,7 @@ uid: Guides.Features.ErrorHandling
 ---
 
 # Handling Errors
-Errors handling is very important in bots libraries. In Wolfringo, there are 2 types of errors: those that happen when you call some Wolfringo method, and those that occur on the background thread.
+Errors handling is very important to keep your bot running, and to diagnose any bugs and problems your bot might have. In Wolfringo, there are 2 types of errors: those that happen when you call some Wolfringo method, and those that occur on the background thread.
 
 ### Errors from your calls
 Wolfringo will throw an exception whenever there is an error that is caused by your action. You can use try-catch block to handle them.

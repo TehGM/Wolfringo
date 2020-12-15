@@ -66,9 +66,9 @@ Wolfringo Commands System has some requirements built-in for convenience.
 ## Custom Requirements
 You can also create your own requirements easily. All you need to do is create a new class that inherits from @TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute (from *TehGM.Wolfringo.Commands.Attributes* namespace), and attach the new attribute to your command.
 
-Command Requirement's [CheckAsync](xref:TehGM.Wolfringo.Commands.ICommandRequirement.CheckAsync(TehGM.Wolfringo.Commands.ICommandContext,System.IServiceProvider,System.Threading.CancellationToken)) method has @System.IServiceProvider as one of its parameters. Whenever @TehGM.Wolfringo.Commands.CommandsService runs checks, its services will be provided via this parameter. You can use it to gain access to your own services - for example your Database class, or whatever else you might need! To check how to add your services to the provider, check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection)!
+Command Requirement's [CheckAsync](xref:TehGM.Wolfringo.Commands.ICommandRequirement.CheckAsync(TehGM.Wolfringo.Commands.ICommandContext,System.IServiceProvider,System.Threading.CancellationToken)) method has @System.IServiceProvider as one of its parameters. Whenever @TehGM.Wolfringo.Commands.CommandsService runs checks, its services will be provided via this parameter. You can use it to gain access to your own services - for example your Database class, or whatever else you might need! To check how to add your services to the provider, see [Dependency Injection guide](xref:Guides.Commands.DependencyInjection)!
 
-Example below is taken directly from my Size Bot. It uses dependency injection to access one of database services (*IUserDataStore*), and then checks if user has administrative privileges within the bot - which allows to prevent unauthorized users from changing bot's settings, restarting it, etc:
+The example below is taken directly from my Size Bot. It uses dependency injection to access one of database services (*IUserDataStore*), and then checks if user has administrative privileges within the bot - which allows to prevent unauthorized users from changing bot's settings, restarting it, etc:
 ```csharp
 using TehGM.Wolfringo.Commands.Attributes;
 
