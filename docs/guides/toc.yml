@@ -12,6 +12,8 @@
   items:
     - name: Logging
       topicUid: Guides.Features.Logging
+    - name: Handling Errors
+      topicUid: Guides.Features.ErrorHandling
     - name: Interactive Commands
       topicUid: Guides.Features.Interactive
     - name: Receiving Profile Updates
