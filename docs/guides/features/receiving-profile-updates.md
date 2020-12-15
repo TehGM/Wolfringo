@@ -55,4 +55,4 @@ _client.MessageSent += async (sender, e) =>
 };
 ```
 
-It is recommended to limit requested entities, and to use [GetUsersAsync](xref:TehGM.Wolfringo.Sender.GetUsersAsync(TehGM.Wolfringo.IWolfClient,System.Collections.Generic.IEnumerable{System.UInt32},System.Threading.CancellationToken)) and [GetGroupsAsync](xref:TehGM.Wolfringo.Sender.GetGroupsAsync(TehGM.Wolfringo.IWolfClient,System.Collections.Generic.IEnumerable{System.UInt32},System.Threading.CancellationToken)) that take any IEnumerable>uint< instead of individual ID. If you spam the server too much, it may temporarily suspend your bot's account.
+It is recommended to limit requested entities, and to use [GetUsersAsync](xref:TehGM.Wolfringo.Sender.GetUsersAsync(TehGM.Wolfringo.IWolfClient,System.Collections.Generic.IEnumerable{System.UInt32},System.Threading.CancellationToken)) and [GetGroupsAsync](xref:TehGM.Wolfringo.Sender.GetGroupsAsync(TehGM.Wolfringo.IWolfClient,System.Collections.Generic.IEnumerable{System.UInt32},System.Threading.CancellationToken)) that take any IEnumerable&lt;uint&gt; instead of individual ID. If you spam the server too much, it may temporarily suspend your bot's account.
