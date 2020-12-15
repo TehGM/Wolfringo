@@ -9,7 +9,7 @@ title: Interactive
 Interactive Utilities function by listening to <xref:TehGM.Wolfringo.IWolfClient>'s events, and completing the Task when a received message matches criteria. This can be useful if for example user is using a command that has multiple steps.
 
 Interactive Utilities by default can await a private message from user, a message from user in a specified group, or any message in a specified group. To do this, use [AwaitNextPrivateByUserAsync](xref:TehGM.Wolfringo.InteractiveExtensions.AwaitNextPrivateByUserAsync(TehGM.Wolfringo.IWolfClient,System.UInt32,System.TimeSpan,System.Threading.CancellationToken)), [AwaitNextGroupByUserAsync](xref:TehGM.Wolfringo.InteractiveExtensions.AwaitNextGroupByUserAsync(TehGM.Wolfringo.IWolfClient,System.UInt32,System.UInt32,System.TimeSpan,System.Threading.CancellationToken)) and [AwaitNextInGroupAsync](xref:TehGM.Wolfringo.InteractiveExtensions.AwaitNextInGroupAsync(TehGM.Wolfringo.IWolfClient,System.UInt32,System.TimeSpan,System.Threading.CancellationToken)), respectively.  
-You can also provide custom criteria - check [Custom Criteria](#custom-criteria) below for details.
+You can also provide custom criteria - check [Custom Criteria](xref:Guides.Features.Interactive#custom-criteria) below for details.
 
 ```csharp
 private async void OnChatMessage(ChatMessage message)
