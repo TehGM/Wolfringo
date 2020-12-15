@@ -18,6 +18,8 @@
       topicUid: Guides.Features.Interactive
     - name: Receiving Profile Updates
       topicUid: Guides.Features.ReceivingProfileUpdates
+    - name: Caching
+      topicUid: Guides.Features.Caching
 - name: Commands System
   topicUid: Guides.Commands.Intro
   items:
