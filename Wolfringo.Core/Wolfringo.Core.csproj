@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>1.0.0-beta2</Version>
+    <Version>1.0.0-beta3</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -11,14 +11,15 @@
     <Description>A .NET Library for WOLF (previously Palringo)</Description>
     <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
-    <FileVersion>1.0.0.2</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
-    <PackageReleaseNotes>- Moved ExceptionLoggingHelper from Utilities.Internal namespace to Utilities.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added WolfPrivilege enum
+- Moved UserUpdateMessage to TehGM.Wolfringo.Messages namespace</PackageReleaseNotes>
   </PropertyGroup>
   
   <PropertyGroup>

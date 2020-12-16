@@ -6,10 +6,10 @@
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
-    <Version>0.4.1</Version>
+    <Version>1.0.0-beta3</Version>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
-    <AssemblyVersion>0.4.1.0</AssemblyVersion>
-    <FileVersion>0.4.1.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
@@ -20,6 +20,7 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReleaseNotes>- Added additional logs to Reconnector utility</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

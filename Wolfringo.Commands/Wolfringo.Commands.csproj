@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>1.0.0-beta2</Version>
+    <Version>1.0.0-beta3</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -17,8 +17,11 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0.0.2</AssemblyVersion>
     <FileVersion>1.0.0.2</FileVersion>
-    <PackageReleaseNotes>- Added support for scoped services.
-- Compatibility patch with Wolfringo.Core 1.0.0-beta2.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Moved RequireBotUserPrivilegeAttribute to TehGM.Wolfringo.Commands.Attributes namespace
+- Simplified CommandService constructor
+- Fixed using fallback services when using DI
+- Make HandlerProvider respect services lifetimes
+- Added support for generic ILoggers</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
