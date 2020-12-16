@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
@@ -99,14 +100,13 @@ namespace TehGM.Wolfringo.Commands.Initialization
             {
                 if (!resolvedServices.TryGetValue(param.ParameterType, out object value))
                 {
-                    value = services.GetService(param.ParameterType);
-                    if (value == null)
-                    {
-                        if (param.IsOptional)
-                            value = param.HasDefaultValue ? param.DefaultValue : null;
-                        else
-                            return false;
-                    }
+                    if (ParameterBuilder.TryGetService(param.ParameterType, services, out value)) { }
+                    else if (ParameterBuilder.TryGetGenericLogger(param.ParameterType, services, out value)) { }
+                    else if (param.IsOptional)
+                        value = param.HasDefaultValue ? param.DefaultValue : null;
+                    else
+                        return false;
+
                     resolvedServices[param.ParameterType] = value;
                 }
                 paramsValues[param.Position] = value;

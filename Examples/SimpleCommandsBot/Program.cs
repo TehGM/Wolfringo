@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 {
@@ -17,11 +18,14 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
             // this allows logging exceptions that were not handled with a try-catch block
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
-            // optional: create a logger
-            ILogger<WolfClient> log = CreateLogger<WolfClient>();
+            // optional: create a logger factory
+            ILoggerFactory logFactory = CreateLoggerFactory();
+            // optional: enable DI - add logger factory to it as well
+            IServiceCollection services = new ServiceCollection()
+                .AddSingleton<ILoggerFactory>(logFactory);
 
             // create client and listen to events we're interested in
-            _client = new WolfClient(log);
+            _client = new WolfClient(logFactory.CreateLogger<WolfClient>());
             _client.AddMessageListener<WelcomeEvent>(OnWelcome);        // these 2 callbacks are invoked if received message is a WolfEvent (first callback)
 
             // initialize commands system
@@ -31,7 +35,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
                 RequirePrefix = PrefixRequirement.Always,   // make prefix always required - can also for example require it in group only
                 CaseSensitivity = false                     // make commands case insensitive
             };
-            CommandsService commands = new CommandsService(_client, options, log: log);
+            CommandsService commands = new CommandsService(_client, options, logFactory.CreateLogger<CommandsService>(), services.BuildServiceProvider());
             await commands.StartAsync();                    // calling StartAsync causes reload of all commands
 
             // start connection and prevent the application from closing
@@ -41,25 +45,24 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 
         // using Microsoft.Extensions.Logging.Console here for the sake of an example
         // in real life scenario, probably a full-fledged logging framework would be used, like Serilog, NLog or Log4Net
-        private static ILogger<T> CreateLogger<T>()
+        private static ILoggerFactory CreateLoggerFactory()
         {
-            ILoggerFactory loggerFactory = new LoggerFactory(
-                            new[] { new ConsoleLoggerProvider((_, level) => true, true) }
-                        );
-            return loggerFactory.CreateLogger<T>();
+            return new LoggerFactory(
+                new[] { new ConsoleLoggerProvider((_, level) => true, true) }
+            );
         }
 
         /// <summary>Log exceptions that were unhandled.</summary>
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            ILogger log = CreateLogger<Program>();
+            ILogger log = CreateLoggerFactory().CreateLogger<Program>();
             log.LogCritical(e.ExceptionObject as Exception, "An exception was unhandled");
         }
 
         /// <summary>Log exceptions that were raised by reconnector.</summary>
         private static void OnFailedToReconnect(object sender, UnhandledExceptionEventArgs e)
         {
-            ILogger log = CreateLogger<WolfClientReconnector>();
+            ILogger log = CreateLoggerFactory().CreateLogger<WolfClientReconnector>();
             log.LogCritical(e.ExceptionObject as Exception, "Failed to reconnect");
         }
 

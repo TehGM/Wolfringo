@@ -59,7 +59,7 @@ using Microsoft.Extensions.DependencyInjection;
 // in your MainAsync method:
 IServiceProvider services = new ServiceCollection()
     .AddSingleton<IMySuperDatabase, MySuperDatabase>()
-    // alternatively: .AddSingleton<IMySuperDatabase>((provider) => new MySuperDatabase())
+    // alternatively: .AddSingleton<IMySuperDatabase>(new MySuperDatabase())
     .BuildServiceProvider();
 
 // put into CommandsService constructor

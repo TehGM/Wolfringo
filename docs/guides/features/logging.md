@@ -14,28 +14,40 @@ The exact way to set up logging might vary between libraries. Here I show a few 
 
 ## [Without Wolfringo.Hosting (Normal Bot)](#tab/logging-normal-bot)
 
-All examples will use a special method called "*CreateLogger*" in Program.cs. It'll be called before creating @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.ICommandsService:
+All examples will use a special method called "*CreateLogger*" in Program.cs. It'll be called before creating @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.ICommandsService. We'll also add it to service provider. You can also register other services - check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more info.
+
+You should install [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection/) NuGet package and then alter Program.cs as follows:
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+```
 
 ```csharp
 private static async Task MainAsync(string[] args)
 {
     // ... other code ...
 
-    ILogger log = CreateLogger();   // create the logger
-    _client = new WolfClient(log);  // create wolf client - pass logger via constructor
-    CommandsService commands = new CommandsService(_client, options, log: log);     // create commands service - pass logger via constructor
+    ILoggerFactory logFactory = CreateLoggerFactory();                  // create the logger factory
+    IServiceCollection services = new ServiceCollection()               // create service collection
+        .AddSingleton<ILoggerFactory>(logFactory);                      // include the logger factory
+
+    _client = new WolfClient(logFactory.CreateLogger<WolfClient>());    // create wolf client - pass logger via constructor
+    CommandsService commands = new CommandsService(_client, options,    // initialize commands service
+        logFactory.CreateLogger<CommandsService>(),                 // pass logger via constructor
+        services.BuildServiceProvider());                           // add Dependency Injection Service provider
 
     // ... other code ...
 }
 
-private static ILogger CreateLogger()
+private static ILoggerFactory CreateLoggerFactory()
 {
-    // creating a logger depends on the library - see below!
+    // creating a logger factory depends on the library - see below!
 }
 ```
 
-> Note: You can also create separate loggers for @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.ICommandsService - this way, your logging will put both in separate log categories.  
-> This is actually recommended - examples below don't do it just for simplicity.
+> [!TIP]
+> While installation of [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection/) and registering logging factory is optional, it's **recommended** - this way the commands can use generic @Microsoft.Extensions.Logging.ILogger`1.
+> [!NOTE]
+> You can find example on [GitHub](https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/Program.cs).
 
 ### Serilog
 [Serilog](https://serilog.net/) is one of the most popular (if not *the* most popular) logging libraries for .NET. It is my personal choice in my projects, so let's start with it!
@@ -49,9 +61,9 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 ```
 
-Finally, populate your *CreateLogger* method:
+Finally, populate your *CreateLoggerFactory* method:
 ```csharp
-private static ILogger CreateLogger()
+private static ILoggerFactory CreateLoggerFactory()
 {
     Log.Logger = new LoggerConfiguration()  // initialize Serilog configuration
         .MinimumLevel.Information()         // set minimum logs level to Information - feel free to change it to whatever suits your needs
@@ -61,8 +73,7 @@ private static ILogger CreateLogger()
         .CreateLogger();                    // create logger instance
 
     return new LoggerFactory()              // create factory for Microsoft.Extensions.Logging.ILogger
-        .AddSerilog(Log.Logger)             // add our Serilog logger
-        .CreateLogger<IWolfClient>();       // create and return our logger
+        .AddSerilog(Log.Logger);            // add our Serilog logger
 }
 ```
 
@@ -73,7 +84,7 @@ Check [Serilog repo on GitHub](https://github.com/serilog/serilog) for more guid
 ### Microsoft.Extensions.Logging
 Microsoft extensions logging also has some providers. These tend to be quite basic, and using logging libraries such as [Serilog](https://serilog.net/), [NLog](https://nlog-project.org/) or [Log4Net](https://logging.apache.org/log4net/) is recommended - but it is enough to get most basic logs!
 
-First, using your NuGet package manager, install [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/microsoft.extensions.logging.console).  
+First, using your NuGet package manager, install [Microsoft.Extensions.Logging.Console 2.0.0](https://www.nuget.org/packages/microsoft.extensions.logging.console/2.0.0).  
 ![](/_images/guides/logging-microsoft-1.png)
 
 Once downloaded, add following *using* directive to your Program.cs:
@@ -81,18 +92,21 @@ Once downloaded, add following *using* directive to your Program.cs:
 using Microsoft.Extensions.Logging;
 ```
 
-Finally, populate your *CreateLogger* method:
+Finally, populate your *CreateLoggerFactory* method:
 ```csharp
-private static ILogger CreateLogger()
+private static ILoggerFactory CreateLoggerFactory()
 {
-    ILoggerFactory loggerFactory = new LoggerFactory(                   // create Microsoft.Extensions.Logging.ILogger factory
-            new[] { new ConsoleLoggerProvider((_, level)                // enable logging to console
-              => level != LogLevel.Trace && level != LogLevel.Debug,    // disable any logs below Information - feel free to change it to whatever suits your needs
-            true) }                                                     // do include log scopes
-        );
-    return loggerFactory.CreateLogger<T>();     // create and return our logger
+    return new LoggerFactory(                                       // create Microsoft.Extensions.Logging.ILogger factory
+        new[] { new ConsoleLoggerProvider((_, level)                // enable logging to console
+          => level != LogLevel.Trace && level != LogLevel.Debug,    // disable any logs below Information - feel free to change it to whatever suits yourneeds
+        true) }                                                     // do include log scopes
+    );
 }
 ```
+
+> [!WARNING]
+> Note that this *ConsoleLoggerProvider* constructor is removed since version 3.0.0 of [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/microsoft.extensions.logging.console). The new versions require use of @Microsoft.Extensions.Options.IOptionsMonitor`1.  
+> If you don't want to hack your way around it, you can either switch to [versions 2.0.0-2.2.0 of Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/microsoft.extensions.logging.console/2.0.0), or use a different logging library.
 
 ### Other libraries
 Many other libraries support Microsoft.Extensions.Logging. Some might support it out of the box, while some might have a wrapper package available (like Serilog). Check out their documentations to see how to use them!
@@ -189,7 +203,8 @@ Many other libraries support Microsoft.Extensions.Logging. Some might support it
 ***
 
 ## Logging in Handlers and Services
-Any service registered with Dependency Injection and all Handlers that @TehGM.Wolfringo.Commands.CommandsService loads can use @Microsoft.Extensions.Logging.ILogger - simply inject it via constructor or method parameters. Check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more details.
+Any service registered with Dependency Injection and all Handlers that @TehGM.Wolfringo.Commands.CommandsService loads can use @Microsoft.Extensions.Logging.ILogger - simply inject it via constructor or method parameters. Check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more details.  
+You can inject either @Microsoft.Extensions.Logging.ILogger or @Microsoft.Extensions.Logging.ILogger`1 - if you use the generic one, the logs will use that type's full name as a category. 
 
 ```csharp
 [CommandsHandler]
@@ -197,7 +212,7 @@ private class ExampleCommandsHandler
 {
     private readonly ILogger _log;
 
-    public ExampleCommandsHandler(ILogger log)
+    public ExampleCommandsHandler(ILogger<ExampleCommandsHandler> log)
     {
         this._log = log;
     }
@@ -210,5 +225,3 @@ private class ExampleCommandsHandler
     }
 }
 ```
-
-> Note: When using Wolfringo.Hosting approach, you can also inject @Microsoft.Extensions.Logging.ILogger`1 if you want your logs categorized. This is currently unavailable in "normal" bots.
