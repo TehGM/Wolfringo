@@ -1,0 +1,13 @@
+apiRules:
+    - exclude:
+        uidRegex: ^TehGM\.Wolfringo\.Examples
+        type: Namespace
+    - exclude:
+        uidRegex: ^System\.Object
+        type: Type
+    - exclude:
+        uidRegex: ^System\.Exception
+        type: Type
+    - exclude:
+        uidRegex: ^System\.Attribute
+        type: Type

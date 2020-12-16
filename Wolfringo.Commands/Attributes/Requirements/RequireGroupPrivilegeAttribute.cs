@@ -44,7 +44,13 @@ namespace TehGM.Wolfringo.Commands.Attributes
             return CheckPrivilegeAsync(context, context.Message.SenderID.Value, this.Privileges, cancellationToken);
         }
 
-        internal static async Task<bool> CheckPrivilegeAsync(ICommandContext context, uint userID, WolfGroupCapabilities privileges, CancellationToken cancellationToken = default)
+        /// <summary>Checks if user has a specified privilege.</summary>
+        /// <param name="context">Context of the command execution.</param>
+        /// <param name="userID">ID of the user.</param>
+        /// <param name="privileges">Required privileges flags.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling the task.</param>
+        /// <returns>True if user has at least one of specified privileges; otherwise false.</returns>
+        public static async Task<bool> CheckPrivilegeAsync(ICommandContext context, uint userID, WolfGroupCapabilities privileges, CancellationToken cancellationToken = default)
         {
             WolfGroup group = await context.GetRecipientAsync<WolfGroup>(cancellationToken).ConfigureAwait(false);
             if (!group.Members.TryGetValue(userID, out WolfGroupMember member) && group.Members?.Any() != true)

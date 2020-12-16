@@ -2,7 +2,7 @@
 
 namespace TehGM.Wolfringo.Commands
 {
-    /// <summary>Overwrites prefix or prefix requirement specified by <see cref="ICommandsOptions"/>.</summary>
+    /// <summary>Overwrites prefix or prefix requirement specified by <see cref="CommandsOptions"/>.</summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class PrefixAttribute : Attribute
     {

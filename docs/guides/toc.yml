@@ -1,0 +1,37 @@
+- name: Introduction
+  href: index.md
+- name: Getting Started
+  topicUid: Guides.GettingStarted.Installation
+  items:
+    - name: Installation
+      topicUid: Guides.GettingStarted.Installation
+    - name: Connecting the Bot
+      topicUid: Guides.GettingStarted.Connecting
+- name: Working with Wolfringo
+  topicUid: Guides.Features.Logging
+  items:
+    - name: Logging
+      topicUid: Guides.Features.Logging
+    - name: Reconnecting
+      topicUid: Guides.Features.Reconnection
+    - name: Sender Utility
+      topicUid: Guides.Features.Sender
+    - name: Handling Errors
+      topicUid: Guides.Features.ErrorHandling
+    - name: Interactive Commands
+      topicUid: Guides.Features.Interactive
+    - name: Receiving Profile Updates
+      topicUid: Guides.Features.ReceivingProfileUpdates
+    - name: Caching
+      topicUid: Guides.Features.Caching
+- name: Commands System
+  topicUid: Guides.Commands.Intro
+  items:
+    - name: Enabling Commands
+      topicUid: Guides.Commands.Intro
+    - name: Creating Commands
+      topicUid: Guides.Commands.Handlers
+    - name: Commands Requirements
+      topicUid: Guides.Commands.Requirements
+    - name: Dependency Injection
+      topicUid: Guides.Commands.DependencyInjection

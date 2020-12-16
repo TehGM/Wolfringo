@@ -9,9 +9,11 @@ using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo.Commands
 {
+    /// <summary>Extensions for <see cref="ICommandContext"/>.</summary>
     public static class CommandContextExtensions
     {
         /// <summary>Gets profile of the user that sent the command.</summary>
+        /// <param name="context">Command context to get message sender of.</param>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Profile of the user that sent the command</returns>
         /// <seealso cref="GetRecipientAsync{T}(ICommandContext, CancellationToken)"/>
@@ -20,6 +22,7 @@ namespace TehGM.Wolfringo.Commands
             => GetUserAsync(context, context.Message.SenderID.Value, cancellationToken);
 
         /// <summary>Gets profile of the bot user.</summary>
+        /// <param name="context">Command context.</param>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Profile of the bot user.</returns>
         /// <seealso cref="GetRecipientAsync{T}(ICommandContext, CancellationToken)"/>
@@ -29,6 +32,7 @@ namespace TehGM.Wolfringo.Commands
 
         /// <summary>Gets profile of the recipient of the message.</summary>
         /// <typeparam name="T">Type of recipient, for example <see cref="WolfUser"/> or <see cref="WolfGroup"/>.</typeparam>
+        /// <param name="context">Command context.</param>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Profile of the message's recipient; if <typeparamref name="T"/> does not match the message type, null will be returned.</returns>
         /// <seealso cref="GetSenderAsync(ICommandContext, CancellationToken)"/>
@@ -69,19 +73,19 @@ namespace TehGM.Wolfringo.Commands
 
         // responding
         /// <summary>Sends a text message response message to group or user.</summary>
-        /// <param name="incomingMessage">Message the user or group sent to the client.</param>
+        /// <param name="context">Command context.</param>
         /// <param name="text">Content of the message.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, CancellationToken cancellationToken = default)
         => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
         /// <summary>Sends an image response message to group or user.</summary>
-        /// <param name="incomingMessage">Message the user or group sent to the client.</param>
+        /// <param name="context">Command context.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyImageAsync(this ICommandContext context, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
             => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Image, imageBytes), cancellationToken);
         /// <summary>Sends a voice response message to group or user.</summary>
-        /// <param name="incomingMessage">Message the user or group sent to the client.</param>
+        /// <param name="context">Command context.</param>
         /// <param name="voiceBytes">Bytes of the voice to send.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyVoiceAsync(this ICommandContext context, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)

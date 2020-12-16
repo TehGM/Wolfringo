@@ -11,6 +11,6 @@ namespace TehGM.Wolfringo.Commands
     {
         /// <inheritdoc/>
         public RequireGroupOwnerAttribute() : base(WolfGroupCapabilities.Owner)
-            => ErrorMessage = "(n) You need to be at least an owner to execute this command.";
+            => ErrorMessage = "(n) You need to be an owner to execute this command.";
     }
 }
