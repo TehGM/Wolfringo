@@ -39,7 +39,7 @@ If @TehGM.Wolfringo.Utilities.ReconnectorConfig.Log property of @TehGM.Wolfringo
 If reconnector makes [ReconnectorConfig.ReconnectAttempts](xref:TehGM.Wolfringo.Utilities.ReconnectorConfig.ReconnectAttempts) to reconnect and each attempt fails, the reconnector will invoke @TehGM.Wolfringo.Utilities.WolfClientReconnector.FailedToReconnect event - you can listen to that event to handle reconnection failed in your code. @TehGM.Wolfringo.Utilities.WolfClientReconnector.FailedToReconnect event provides @System.UnhandledExceptionEventArgs, which in turn has @System.UnhandledExceptionEventArgs.ExceptionObject. This object will be set to an @System.AggregateException, which contains all exceptions that occured when trying to reconnect. See [Microsoft docs](https://docs.microsoft.com/en-gb/dotnet/api/system.aggregateexception?view=netcore-3.0) to see how to handle that exception.
 
 > [!WARNING]
-> If @TehGM.Wolfringo.Utilities.ReconnectorConfig.ReconnectAttempts are set to infinite (negative value), no error will be logged and no error will be raised!
+> If @TehGM.Wolfringo.Utilities.ReconnectorConfig.ReconnectAttempts are set to infinite (negative value), no error event will be raised!
 
 ### Disabling auto-reconnection
 @TehGM.Wolfringo.Utilities.WolfClientReconnector will attempt to reconnect no matter what was the cause of disconnection. If you want to disable this behaviour, simply call @TehGM.Wolfringo.Utilities.WolfClientReconnector.Dispose(). Once disposed, reconnector will be disabled permanently - to re-enable, create a new @TehGM.Wolfringo.Utilities.WolfClientReconnector instance.
