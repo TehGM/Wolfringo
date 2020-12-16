@@ -21,36 +21,46 @@ namespace TehGM.Wolfringo
         /* LOGGING IN AND OUT */
         #region Logging in and out
         /// <summary>Log in.</summary>
+        /// <param name="client">The client to login with.</param>
         /// <param name="login">User email to use to login with.</param>
         /// <param name="password">User password.</param>
         /// <param name="loginType">Login type to use.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel logging in.</param>
         /// <returns>Response with login result.</returns>
         /// <seealso cref="LogoutAsync(IWolfClient, CancellationToken)"/>
         public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, WolfLoginType loginType, CancellationToken cancellationToken = default)
             => client.SendAsync<LoginResponse>(new LoginMessage(login, password, loginType), cancellationToken);
 
         /// <summary>Log in, using Email login type.</summary>
+        /// <param name="client">The client to login with.</param>
         /// <param name="login">User email to use to login with.</param>
         /// <param name="password">User password.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel logging in.</param>
         /// <returns>Response with login result.</returns>
         /// <seealso cref="LogoutAsync(IWolfClient, CancellationToken)"/>
         public static Task<LoginResponse> LoginAsync(this IWolfClient client, string login, string password, CancellationToken cancellationToken = default)
             => LoginAsync(client, login, password, WolfLoginType.Email, cancellationToken);
 
         /// <summary>Log out.</summary>
-        /// <seealso cref="LoginAsync(IWolfClient, string, string, bool, CancellationToken)"/>
+        /// <seealso cref="LoginAsync(IWolfClient, string, string, WolfLoginType, CancellationToken)"/>
         public static Task LogoutAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new LogoutMessage(), cancellationToken);
 
 
         // messages subscribing
         /// <summary>Subscribes to all incoming messages.</summary>
+        /// <param name="client">Client that subscribes to messages.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel subscribing.</param>
         public static Task SubscribeAllMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => Task.WhenAll(SubscribePrivateMessagesAsync(client, cancellationToken), SubscribeGroupMessagesAsync(client, cancellationToken));
         /// <summary>Subscribes to incoming private message.</summary>
+        /// <param name="client">Client that subscribes to messages.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel subscribing.</param>
         public static Task SubscribePrivateMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
             => client.SendAsync(new SubscribeToPmMessage(), cancellationToken);
         /// <summary>Subscribes to incoming group message.</summary>
+        /// <param name="client">Client that subscribes to messages.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel subscribing.</param>
         public static async Task<IReadOnlyDictionary<uint, HttpStatusCode>> SubscribeGroupMessagesAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             EntitiesSubscribeResponse response = await client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupMessage(), cancellationToken).ConfigureAwait(false);
@@ -59,6 +69,9 @@ namespace TehGM.Wolfringo
 
 
         // tips subscribing
+        /// <summary>Subscribes to message tips notifications.</summary>
+        /// <param name="client">Client that subscribes to tips.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel subscribing.</param>
         public static async Task<IReadOnlyDictionary<uint, HttpStatusCode>> SubscribeGroupTipsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
             EntitiesSubscribeResponse response = await client.SendAsync<EntitiesSubscribeResponse>(new SubscribeToGroupTipsMessage(), cancellationToken).ConfigureAwait(false);
@@ -68,6 +81,8 @@ namespace TehGM.Wolfringo
 
         // online presence
         /// <summary>Update current user's online state.</summary>
+        /// <param name="client">Client to set online state of.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <param name="state">Online state to set.</param>
         public static Task SetOnlineStateAsync(this IWolfClient client, WolfOnlineState state, CancellationToken cancellationToken = default)
             => client.SendAsync(new OnlineStateUpdateMessage(state), cancellationToken);
@@ -77,8 +92,10 @@ namespace TehGM.Wolfringo
         /* NOTIFICATIONS */
         #region Notifications
         /// <summary>Get current user's notifications.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="language">Language to get notifications in.</param>
         /// <param name="device">Device to use.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved notifications.</returns>
         /// <seealso cref="GetNotificationsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="ClearNotificationsAsync(IWolfClient, CancellationToken)"/>
@@ -88,6 +105,8 @@ namespace TehGM.Wolfringo
             return response.Notifications?.Any() == true ? response.Notifications : Enumerable.Empty<WolfNotification>();
         }
         /// <summary>Get current user's notifications in English.</summary>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved notifications.</returns>
         /// <seealso cref="GetNotificationsAsync(IWolfClient, WolfLanguage, WolfDevice, CancellationToken)"/>
         /// <seealso cref="ClearNotificationsAsync(IWolfClient, CancellationToken)"/>
@@ -95,6 +114,8 @@ namespace TehGM.Wolfringo
             => client.GetNotificationsAsync(WolfLanguage.English, WolfDevice.Bot, cancellationToken);
 
         /// <summary>Clear notifications list.</summary>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetNotificationsAsync(IWolfClient, WolfLanguage, WolfDevice, CancellationToken)"/>
         /// <seealso cref="GetNotificationsAsync(IWolfClient, CancellationToken)"/>
         public static Task ClearNotificationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
@@ -107,7 +128,9 @@ namespace TehGM.Wolfringo
         // retrieving
         /// <summary>Retrieve profiles of users by their IDs.</summary>
         /// <remarks>Users already cached will be retrieved from cache. Others will be requested from the server.</remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userIDs">IDs of users to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved users.</returns>
         /// <seealso cref="GetCurrentUserAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetUserAsync(IWolfClient, uint, CancellationToken)"/>
@@ -134,6 +157,8 @@ namespace TehGM.Wolfringo
 
         /// <summary>Get profile of currently logged in user.</summary>
         /// <remarks>If user is already cached, cached instance will be returned. Otherwise a request to the server will be made.</remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Currently logged in user.</returns>
         /// <exception cref="InvalidOperationException">Not logged in.</exception>
         /// <seealso cref="GetUserAsync(IWolfClient, uint, CancellationToken)"/>
@@ -147,7 +172,9 @@ namespace TehGM.Wolfringo
 
         /// <summary>Get profile of specified user.</summary>
         /// <remarks>If user is already cached, cached instance will be returned. Otherwise a request to the server will be made.</remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Retrieved user.</returns>
         /// <seealso cref="GetUsersAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetCurrentUserAsync(IWolfClient, CancellationToken)"/>
@@ -160,6 +187,8 @@ namespace TehGM.Wolfringo
         // contacts
         /// <summary>Get current user's contact list.</summary>
         /// <remarks>Users already cached will be retrieved from cache. Others will be requested from the server.</remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of profiles of all contacts.</returns>
         /// <seealso cref="AddContactAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="DeleteContactAsync(IWolfClient, uint, CancellationToken)"/>
@@ -175,14 +204,18 @@ namespace TehGM.Wolfringo
         /// <summary>Add contact.</summary>
         /// <remarks>Before adding, it's recommended to check if user is already a contact. 
         /// Adding user that's already in contacts list will result in an exception being thrown.</remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to add.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetContactListAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="DeleteContactAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task AddContactAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync(new ContactAddMessage(userID), cancellationToken);
 
         /// <summary>Delete contact.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to add.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetContactListAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="AddContactAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task DeleteContactAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
@@ -191,6 +224,8 @@ namespace TehGM.Wolfringo
         // blocking
         /// <summary>Get users blocked by current user.</summary>
         /// <remarks>Users already cached will be retrieved from cache. Others will be requested from the server.</remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of profiles of blocked users.</returns>
         /// <seealso cref="BlockUserAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="UnblockUserAsync(IWolfClient, uint, CancellationToken)"/>
@@ -204,14 +239,18 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Block user.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to block.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetBlockedUsersAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="UnblockUserAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task BlockUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
             => client.SendAsync(new BlockAddMessage(userID), cancellationToken);
 
         /// <summary>Unblock user.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to block.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetBlockedUsersAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="BlockUserAsync(IWolfClient, uint, CancellationToken)"/>
         public static Task UnblockUserAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
@@ -219,7 +258,9 @@ namespace TehGM.Wolfringo
 
         // updating
         /// <summary>Update current user's profile.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="updates">Profile changes to apply.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Updated current user.</returns>
         /// <seealso cref="UpdateNicknameAsync(IWolfClient, string, CancellationToken)"/>
         /// <seealso cref="UpdateStatusAsync(IWolfClient, string, CancellationToken)"/>
@@ -233,7 +274,9 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Update current user's nickname.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="newNickname">Nickname to set.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Updated current user.</returns>
         /// <seealso cref="UpdateProfileAsync(IWolfClient, Action{UserUpdateMessage.Builder}, CancellationToken)"/>
         /// <seealso cref="UpdateStatusAsync(IWolfClient, string, CancellationToken)"/>
@@ -241,7 +284,9 @@ namespace TehGM.Wolfringo
             => client.UpdateProfileAsync(user => user.Nickname = newNickname, cancellationToken);
 
         /// <summary>Update current user's status.</summary>
-        /// <param name="newNickname">Status to set.</param>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="newStatus">Status to set.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Updated current user.</returns>
         /// <seealso cref="UpdateProfileAsync(IWolfClient, Action{UserUpdateMessage.Builder}, CancellationToken)"/>
         /// <seealso cref="UpdateNicknameAsync(IWolfClient, string, CancellationToken)"/>
@@ -254,9 +299,11 @@ namespace TehGM.Wolfringo
         #region History
         // private history
         /// <summary>Retrieve private messages history.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to get message history with.</param>
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static async Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, WolfTimestamp? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
@@ -268,13 +315,16 @@ namespace TehGM.Wolfringo
                 response.Messages.OrderByDescending(msg => msg.Timestamp);
         }
         /// <summary>Retrieve private messages history, ordered from newest to oldest.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to get message history with.</param>
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, WolfTimestamp? beforeTime, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, beforeTime, false, cancellationToken);
         /// <summary>Retrieve private messages history, starting with most recent message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to get message history with.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
@@ -282,7 +332,9 @@ namespace TehGM.Wolfringo
         public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, bool oldestFirst, CancellationToken cancellationToken = default)
             => client.GetPrivateMessageHistoryAsync(userID, null, oldestFirst, cancellationToken);
         /// <summary>Retrieve private messages history, ordered from newest to oldest, starting with most recent message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to get message history with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, CancellationToken cancellationToken = default)
@@ -290,9 +342,11 @@ namespace TehGM.Wolfringo
 
         // group history
         /// <summary>Retrieve group messages history.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to get message history from.</param>
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static async Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, WolfTimestamp? beforeTime, bool oldestFirst, CancellationToken cancellationToken = default)
@@ -304,21 +358,27 @@ namespace TehGM.Wolfringo
                 response.Messages.OrderByDescending(msg => msg.Timestamp);
         }
         /// <summary>Retrieve group messages history, ordered from newest to oldest.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to get message history from.</param>
         /// <param name="beforeTime">Timestamp of oldest already retrieved message; null to retrieve from newest.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, WolfTimestamp? beforeTime, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, beforeTime, false, cancellationToken);
         /// <summary>Retrieve group messages history, starting with most recent message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to get message history from.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, bool oldestFirst, CancellationToken cancellationToken = default)
             => client.GetGroupMessageHistoryAsync(groupID, null, oldestFirst, cancellationToken);
         /// <summary>Retrieve group messages history, ordered from newest to oldest, starting with most recent message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to get message history from.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetPrivateMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetGroupMessageHistoryAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
@@ -326,6 +386,8 @@ namespace TehGM.Wolfringo
 
         // recent conversations
         /// <summary>Retrieve list of most recent messages.</summary>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable with most recent messages.</returns>
         public static async Task<IEnumerable<IChatMessage>> GetRecentConversationsAsync(this IWolfClient client, CancellationToken cancellationToken = default)
         {
@@ -340,8 +402,10 @@ namespace TehGM.Wolfringo
         #region Groups
         // join
         /// <summary>Join a group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to join.</param>
         /// <param name="password">Password to use when joining.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Joined group's profile.</returns>
         /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -353,7 +417,9 @@ namespace TehGM.Wolfringo
             return await client.GetGroupAsync(groupID, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Join a group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to join.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Joined group's profile.</returns>
         /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -362,8 +428,10 @@ namespace TehGM.Wolfringo
         public static Task<WolfGroup> JoinGroupAsync(this IWolfClient client, uint groupID, CancellationToken cancellationToken = default)
             => client.JoinGroupAsync(groupID, string.Empty, cancellationToken);
         /// <summary>Join group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupName">ID of the group to join.</param>
         /// <param name="password">Password to use when joining.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Joined group's profile.</returns>
         /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -375,7 +443,9 @@ namespace TehGM.Wolfringo
             return await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Join a group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupName">Name of the group to join.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Joined group's profile.</returns>
         /// <seealso cref="LeaveGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -386,7 +456,9 @@ namespace TehGM.Wolfringo
 
         // leave
         /// <summary>Leave a group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to leave.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="JoinGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
@@ -398,7 +470,9 @@ namespace TehGM.Wolfringo
         /// <summary>Retrieve profiles of groups by their IDs.</summary>
         /// <remarks><para>Groups already cached will be retrieved from cache. Others will be requested from the server.</para>
         /// <para>Groups will be retrieved with members list populated.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupIDs">IDs of groups to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved groups.</returns>
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -457,7 +531,9 @@ namespace TehGM.Wolfringo
         /// <summary>Get profile of specified group.</summary>
         /// <remarks><para>If group is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para>
         /// <para>Group will be retrieved with members list populated.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Retrieved group.</returns>
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
@@ -471,7 +547,9 @@ namespace TehGM.Wolfringo
         /// <summary>Get profile of specified group.</summary>
         /// <remarks><para>If group is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para>
         /// <para>Group will be retrieved with members list populated.</para></remarks>
-        /// <param name="groupID">ID of group to retrieve.</param>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="groupName">ID of group to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Retrieved group.</returns>
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
@@ -502,6 +580,8 @@ namespace TehGM.Wolfringo
         /// <summary>Retrieve profiles of groups current user is in.</summary>
         /// <remarks><para>Groups already cached will be retrieved from cache. Others will be requested from the server.</para>
         /// <para>Groups will be retrieved with members list populated.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved groups.</returns>
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -516,7 +596,9 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Gets statistics of a group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to retrieve statistics for.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Retrieved group statistics.</returns>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -530,9 +612,11 @@ namespace TehGM.Wolfringo
 
         // create
         /// <summary>Creates a new group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupName">Name of group to create.</param>
         /// <param name="groupDescription">Short description for the group.</param>
         /// <param name="groupSettings">Group profile settings to apply.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Profile of created group.</returns>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
@@ -546,8 +630,10 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Creates a new group.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupName">Name of group to create.</param>
         /// <param name="groupDescription">Short description for the group.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Profile of created group.</returns>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
@@ -557,7 +643,9 @@ namespace TehGM.Wolfringo
 
         // update
         /// <summary>Updates group profile.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to update.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <param name="updates">Group profile changes to apply.</param>
         /// <returns>Profile of updated group.</returns>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
@@ -575,8 +663,10 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Updates group audio configuration.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="groupID">ID of group to update.</param>
         /// <param name="updates">Group audio configuration changes to apply.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Updated audio configuration.</returns>
         /// <seealso cref="GetGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetGroupsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
@@ -600,7 +690,9 @@ namespace TehGM.Wolfringo
         // charms
         /// <summary>Retrieve charms by their IDs.</summary>
         /// <remarks>Charms already cached will be retrieved from cache. Others will be requested from the server.</remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="charmIDs">IDs of charms to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved charms.</returns>
         /// <seealso cref="GetAllCharmsAsync(IWolfClient, CancellationToken)"/>
         /// <seealso cref="GetCharmAsync(IWolfClient, uint, CancellationToken)"/>
@@ -627,6 +719,8 @@ namespace TehGM.Wolfringo
         }
         /// <summary>Retrieve all charms.</summary>
         /// <remarks>Charms already cached will be retrieved from cache. Others will be requested from the server.</remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved charms.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetCharmAsync(IWolfClient, uint, CancellationToken)"/>
@@ -635,7 +729,9 @@ namespace TehGM.Wolfringo
             => client.GetCharmsAsync(null, cancellationToken);
         /// <summary>Get charm by ID.</summary>
         /// <remarks>If charm is already cached, cached instance will be returned. Otherwise a request to the server will be made.</remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="charmID">ID of charm to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Retrieved charm.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetAllCharmsAsync(IWolfClient, CancellationToken)"/>
@@ -649,7 +745,9 @@ namespace TehGM.Wolfringo
 
         // charm ownership
         /// <summary>Get user's charm statistics.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve charm statistics of.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>User's charm statistics.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
@@ -659,7 +757,9 @@ namespace TehGM.Wolfringo
         /// <summary>Get user's selected charm.</summary>
         /// <remarks><para>If charm is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para>
         /// <para>If user is already cached, cached instance will be returned. Otherwise a request to the server will be made.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve selected charm of.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>User's currently selected charm.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
@@ -675,7 +775,9 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Get user's currently owned charms.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve owned charms of.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of owned charms subscriptions.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
@@ -688,7 +790,9 @@ namespace TehGM.Wolfringo
             return response.Charms;
         }
         /// <summary>Get user's expired charms.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve expired charms of.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of expired charms subscriptions.</returns>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
@@ -701,7 +805,9 @@ namespace TehGM.Wolfringo
 
         // setting charm
         /// <summary>Set current user's selected charm.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="charmID">ID of charm to set as active.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
@@ -709,6 +815,8 @@ namespace TehGM.Wolfringo
         public static Task SetActiveCharmAsync(this IWolfClient client, uint charmID, CancellationToken cancellationToken = default)
             => client.SendAsync(new UserCharmsSelectMessage(new Dictionary<int, uint>() { { 0, charmID } }), cancellationToken);
         /// <summary>Remove current user's selected charm.</summary>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="GetCharmsAsync(IWolfClient, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserActiveCharmsAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="GetUserCurrentCharmAsync(IWolfClient, uint, CancellationToken)"/>
@@ -724,8 +832,10 @@ namespace TehGM.Wolfringo
         /// <remarks><para>Achievements already cached will be retrieved from cache.</para>
         /// <para>Due to the construction of the protocol, if any achievement is not cached, the client will request all achievements again.</para>
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="language">Language to retrieve achievements in.</param>
         /// <param name="achievementIDs">IDs of achievements to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved achievements.</returns>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
@@ -755,8 +865,10 @@ namespace TehGM.Wolfringo
         /// <summary>Retrieve achievement by ID.</summary>
         /// <remarks><para>Achievement already cached will be retrieved from cache.</para>
         /// <para>Due to the construction of the protocol, if achievement is not cached, the client will request all achievements again.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="language">Language to retrieve achievements in.</param>
         /// <param name="id">ID of achievement to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Retrieved achievement.</returns>
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
@@ -770,7 +882,9 @@ namespace TehGM.Wolfringo
         /// <summary>Retrieve all achievements.</summary>
         /// <remarks><para>This method skips cache completely, and all achievements will be downloaded from the server.</para>
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="language">Language to retrieve achievements in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved achievements.</returns>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
@@ -786,8 +900,10 @@ namespace TehGM.Wolfringo
         /// <remarks><para>Achievements already cached will be retrieved from cache.</para>
         /// <para>Due to the construction of the protocol, if any achievement is not cached, the client will request all achievements again.</para>
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve achievements of.</param>
         /// <param name="language">Language to retrieve achievements in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Dictionary of user achievements, with keys being achievement and value being unlock time.</returns>
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
@@ -815,8 +931,10 @@ namespace TehGM.Wolfringo
         /* ADMIN ACTIONS */
         #region Admin Actions
         /// <summary>Admin a group member.</summary>
+        /// <param name="client">Client to perform the admin action with.</param>
         /// <param name="userID">User ID of group member to admin.</param>
         /// <param name="groupID">ID of group to admin the user in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="ModUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ResetUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="SilenceUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -825,8 +943,10 @@ namespace TehGM.Wolfringo
         public static Task AdminUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Admin), cancellationToken);
         /// <summary>Mod a group member.</summary>
+        /// <param name="client">Client to perform the admin action with.</param>
         /// <param name="userID">User ID of group member to mod.</param>
         /// <param name="groupID">ID of group to mod the user in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="AdminUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ResetUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="SilenceUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -835,8 +955,10 @@ namespace TehGM.Wolfringo
         public static Task ModUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Mod), cancellationToken);
         /// <summary>Reset a group member.</summary>
+        /// <param name="client">Client to perform the admin action with.</param>
         /// <param name="userID">User ID of group member to reset.</param>
         /// <param name="groupID">ID of group to reset the user in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="AdminUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ModUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="SilenceUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -845,8 +967,10 @@ namespace TehGM.Wolfringo
         public static Task ResetUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.User), cancellationToken);
         /// <summary>Silence a group member.</summary>
+        /// <param name="client">Client to perform the admin action with.</param>
         /// <param name="userID">User ID of group member to silence.</param>
         /// <param name="groupID">ID of group to silence the user in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="AdminUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ModUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ResetUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -855,8 +979,10 @@ namespace TehGM.Wolfringo
         public static Task SilenceUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.Silenced), cancellationToken);
         /// <summary>Kick a group member.</summary>
+        /// <param name="client">Client to perform the admin action with.</param>
         /// <param name="userID">User ID of group member to kick.</param>
         /// <param name="groupID">ID of group to kick the user from.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="AdminUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ModUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ResetUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -865,8 +991,10 @@ namespace TehGM.Wolfringo
         public static Task KickUserAsync(this IWolfClient client, uint userID, uint groupID, CancellationToken cancellationToken = default)
             => client.SendAsync(new GroupAdminMessage(userID, groupID, WolfGroupCapabilities.NotMember), cancellationToken);
         /// <summary>Ban a group member.</summary>
+        /// <param name="client">Client to perform the admin action with.</param>
         /// <param name="userID">User ID of group member to ban.</param>
         /// <param name="groupID">ID of group to ban the user from.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <seealso cref="AdminUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ModUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
         /// <seealso cref="ResetUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -881,63 +1009,81 @@ namespace TehGM.Wolfringo
         #region Chat messages
         // sending
         /// <summary>Sends a private text message.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="userID">ID of user to send the message to.</param>
         /// <param name="text">Content of the message.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
         /// <summary>Sends a group text message.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
         /// <param name="text">Content of the message.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
 
 
         /// <summary>Sends a private image message.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="userID">ID of user to send the message to.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendPrivateImageMessageAsync(this IWolfClient client, uint userID, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Image, imageBytes), cancellationToken);
         /// <summary>Sends a group image message.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendGroupImageMessageAsync(this IWolfClient client, uint groupID, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Image, imageBytes), cancellationToken);
 
         /// <summary>Sends a private voice message.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="userID">ID of user to send the message to.</param>
         /// <param name="voiceBytes">Bytes of the voice to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendPrivateVoiceMessageAsync(this IWolfClient client, uint userID, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
         /// <summary>Sends a group voice message.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
         /// <param name="voiceBytes">Bytes of the voice to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendGroupVoiceMessageAsync(this IWolfClient client, uint groupID, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
 
         // responding
         /// <summary>Sends a text message response message to group or user.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
         /// <param name="text">Content of the message.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyTextAsync(this IWolfClient client, ChatMessage incomingMessage, string text, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
         /// <summary>Sends an image response message to group or user.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyImageAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Image, imageBytes), cancellationToken);
         /// <summary>Sends a voice response message to group or user.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
         /// <param name="voiceBytes">Bytes of the voice to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyVoiceAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
@@ -946,12 +1092,16 @@ namespace TehGM.Wolfringo
 
         // deleting
         /// <summary>Requests chat message to be deleted.</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="message">Chat message to delete.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message updating result.</returns>
         public static Task<ChatUpdateResponse> DeleteChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = true }.Build(), cancellationToken);
         /// <summary>Requests chat message to be restored (un-deleted).</summary>
+        /// <param name="client">Client to send the message with.</param>
         /// <param name="message">Chat message to restore.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message updating result.</returns>
         public static Task<ChatUpdateResponse> RestoreChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = false }.Build(), cancellationToken);
@@ -962,7 +1112,9 @@ namespace TehGM.Wolfringo
         #region Tips
         // summaries
         /// <summary>Requests tips summaries for messages.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="messages">Messages to get tips statistics for.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Dictionary, where key is message timestamp, and value is collection of its tips summaries.</returns>
         public static async Task<IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>>> GetMessageTipsSummaryAsync(this IWolfClient client, IEnumerable<ChatMessage> messages, CancellationToken cancellationToken = default)
         {
@@ -979,7 +1131,9 @@ namespace TehGM.Wolfringo
             return results.Tips;
         }
         /// <summary>Requests tips summaries for a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="message">Message to get tips statistics for.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Collection of message's tips summaries.</returns>
         public static async Task<IEnumerable<WolfTip>> GetMessageTipsSummaryAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
         {
@@ -989,7 +1143,9 @@ namespace TehGM.Wolfringo
 
         // details
         /// <summary>Requests tips details for messages.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="message">Message to get tips statistics for.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Collection of tips details.</returns>
         public static async Task<IEnumerable<WolfTip>> GetMessageTipsDetailsAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
         {
@@ -1005,23 +1161,31 @@ namespace TehGM.Wolfringo
 
         // tipping
         /// <summary>Tips a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="message">Message to tip.</param>
         /// <param name="charmID">ID of charm to tip the message with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, uint charmID, CancellationToken cancellationToken = default)
             => TipMessageAsync(client, message, new uint[] { charmID }, cancellationToken);
         /// <summary>Tips a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="message">Message to tip.</param>
         /// <param name="charmIDs">IDs of charms to tip the message with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, IEnumerable<uint> charmIDs, CancellationToken cancellationToken = default)
             => TipMessageAsync(client, message, charmIDs.Select(charm => new WolfTip(charm, 1)), cancellationToken);
         /// <summary>Tips a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="message">Message to tip.</param>
         /// <param name="tip">Tip to tip the message with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, WolfTip tip, CancellationToken cancellationToken = default)
             => TipMessageAsync(client, message, new WolfTip[] { tip }, cancellationToken);
         /// <summary>Tips a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
         /// <param name="message">Message to tip.</param>
         /// <param name="tips">Tips to tip the message with.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         public static Task TipMessageAsync(this IWolfClient client, ChatMessage message, IEnumerable<WolfTip> tips, CancellationToken cancellationToken = default)
         {
             if (message == null)

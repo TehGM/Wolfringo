@@ -30,28 +30,37 @@ namespace TehGM.Wolfringo
         /// <summary>Is this a secret achievement?</summary>
         [JsonProperty("isSecret")]
         public bool IsSecret { get; private set; }
+        /// <summary>ID of achievement type.</summary>
         [JsonProperty("typeId")]
         public int? TypeID { get; private set; }
+        /// <summary>Achievement weight. (?)</summary>
         [JsonProperty("weight")]
         public int? Weight { get; private set; }
+        /// <summary>Achievement client. (?)</summary>
         [JsonProperty("client")]
         public int? Client { get; private set; }
 
+        /// <summary>Creates a new instance of this WOLF entity.</summary>
         [JsonConstructor]
         protected WolfAchievement() { }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
             => Equals(obj as WolfAchievement);
 
+        /// <inheritdoc/>
         public bool Equals(WolfAchievement other)
             => other != null && ID == other.ID;
 
+        /// <inheritdoc/>
         public override int GetHashCode()
             => 1213502048 + ID.GetHashCode();
 
+        /// <inheritdoc/>
         public static bool operator ==(WolfAchievement left, WolfAchievement right)
             => EqualityComparer<WolfAchievement>.Default.Equals(left, right);
 
+        /// <inheritdoc/>
         public static bool operator !=(WolfAchievement left, WolfAchievement right)
             => !(left == right);
     }

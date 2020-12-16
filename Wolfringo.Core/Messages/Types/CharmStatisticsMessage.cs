@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class CharmStatisticsMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.CharmSubscriberStatistics"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.CharmSubscriberStatistics;
 
@@ -16,11 +17,12 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected CharmStatisticsMessage() { }
 
         /// <summary>Creates a message instance.</summary>
-        /// <param name="userId">ID of user to request charms statistics of.</param>
+        /// <param name="userID">ID of user to request charms statistics of.</param>
         public CharmStatisticsMessage(uint userID) : this()
         {
             this.UserID = userID;

@@ -1,0 +1,102 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+			      "**.csproj"
+          ],
+		      "exclude": [
+		      "Examples/**",
+			    "**/obj/**",
+			    "**/bin/**"
+		      ],
+		      "src": ".."
+        }
+      ],
+	    "filter": "filter.yml",
+	    "dest": "api",
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/**.md"
+        ]
+      },
+      {
+        "files": [
+          "guides/**.md",
+          "guides/**/toc.yml"
+        ]
+      },
+      {
+        "files": [
+          "faq/**.md",
+          "faq/**/toc.yml"
+        ]
+      },
+      {
+        "files": [
+          "toc.yml",
+          "index.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "_images/**"
+        ]
+      },
+      {
+        "src": "..",
+        "files": [
+          "wolfringo_logo.png"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadata": {
+      "_appName": "Wolfringo",
+      "_appTitle": "Wolfringo Documentation",
+      "_appLogoPath": "wolfringo_logo.png",
+      "_appFaviconPath": "wolfringo_logo.png",
+      "_enableSearch": true,
+      "_disableAffix": false,
+      "_disableSideFilter": true,
+      "_appFooter": "Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br/>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme."
+    },
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default",
+      "_templates/darkfx",
+      "_templates/discordfx"
+    ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": false,
+    "disableGitFeatures": false,
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
+    ]
+  }
+}

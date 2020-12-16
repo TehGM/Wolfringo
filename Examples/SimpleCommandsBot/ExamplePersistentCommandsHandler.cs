@@ -32,7 +32,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Note: constructors work the same with non-persistent handlers - but they're more useful with persistent ones, as non-persistent ones have lifetime of a command execution.
          ***/
         [CommandsHandlerConstructor]
-        public ExamplePersistentCommandsHandler(IWolfClient client, ILogger log = null)
+        public ExamplePersistentCommandsHandler(IWolfClient client, ILogger<ExamplePersistentCommandsHandler> log = null)
         {
             this._client = client;
             this._client.Disconnected += OnClientDisconnected;

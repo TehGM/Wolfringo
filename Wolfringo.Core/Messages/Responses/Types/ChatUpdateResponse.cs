@@ -56,6 +56,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonIgnore]
         public bool IsVoice => this.MimeType == ChatMessageTypes.VoiceLink || this.MimeType == ChatMessageTypes.Voice;
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected ChatUpdateResponse() : base()
         {

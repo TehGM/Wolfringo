@@ -12,6 +12,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonConverter(typeof(ExtractValuesOnlyConverter<WolfGroup>))]
         public IEnumerable<WolfGroup> GroupProfiles { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected GroupProfileResponse() : base() { }
     }

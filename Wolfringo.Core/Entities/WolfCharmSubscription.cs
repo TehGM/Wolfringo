@@ -22,6 +22,7 @@ namespace TehGM.Wolfringo
         [JsonProperty("expireTime")]
         public DateTime? ExpirationTime { get; private set; }
 
+        /// <summary>Creates a new instance.</summary>
         [JsonConstructor]
         protected WolfCharmSubscription() { }
     }

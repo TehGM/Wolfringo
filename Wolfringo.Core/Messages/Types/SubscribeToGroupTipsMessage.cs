@@ -8,8 +8,12 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(EntitiesSubscribeResponse))]
     public class SubscribeToGroupTipsMessage : IWolfMessage
     {
+        /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.TipGroupSubscribe"/>.</remarks>
+        [JsonIgnore]
         public string EventName => MessageEventNames.TipGroupSubscribe;
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         public SubscribeToGroupTipsMessage() { }
     }

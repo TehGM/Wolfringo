@@ -13,6 +13,8 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(ChatUpdateResponse))]
     public class ChatUpdateMessage : IWolfMessage, IRawDataMessage
     {
+        /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageUpdate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.MessageUpdate;
 
@@ -50,12 +52,14 @@ namespace TehGM.Wolfringo.Messages
         [JsonIgnore]
         public string Text => Encoding.UTF8.GetString(this.RawData.ToArray());
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected ChatUpdateMessage()
         {
             this.RawData = new List<byte>();
         }
 
+        /// <summary>A builder class for <see cref="ChatUpdateMessage"/>.</summary>
         public class Builder
         {
             /// <summary>Message's timestamp. Used by protocol as message ID.</summary>
@@ -68,6 +72,7 @@ namespace TehGM.Wolfringo.Messages
             /// <summary>Is this message soft-deleted by group admin?</summary>
             public bool? IsDeleted { get; set; }
 
+            /// <summary>Creates a builder instance from an existing message object.</summary>
             public Builder(ChatMessage message)
                 : this(message.Timestamp ?? throw new ArgumentException($"{nameof(ChatUpdateMessage)} can only be used for messages already processed by the Wolf server", nameof(message)),
                       message.RecipientID, message.IsGroupMessage)
@@ -76,6 +81,7 @@ namespace TehGM.Wolfringo.Messages
                     this.IsDeleted = message.IsDeleted;
             }
 
+            /// <summary>Creates a builder instance from message information.</summary>
             public Builder(WolfTimestamp timestamp, uint recipientID, bool isGroupMessage)
             {
                 this.Timestamp = timestamp;
@@ -83,6 +89,8 @@ namespace TehGM.Wolfringo.Messages
                 this.IsGroupMessage = isGroupMessage;
             }
 
+            /// <summary>Builds the message.</summary>
+            /// <returns>Built <see cref="ChatUpdateMessage"/>.</returns>
             public ChatUpdateMessage Build()
             {
                 return new ChatUpdateMessage

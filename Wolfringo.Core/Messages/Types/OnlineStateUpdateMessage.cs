@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class OnlineStateUpdateMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberSettingsUpdate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.SubscriberSettingsUpdate;
 
@@ -18,6 +19,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonConverter(typeof(ObjectPropertyConverter), "state")]
         public WolfOnlineState OnlineState { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected OnlineStateUpdateMessage() { }
 

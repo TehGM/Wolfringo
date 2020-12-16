@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class GroupChatHistoryMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageGroupHistoryList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.MessageGroupHistoryList;
         /// <inheritdoc/>
@@ -32,12 +33,14 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("chronological")]
         public bool RequestChronologicalOrder { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupChatHistoryMessage() { }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupId">ID of the group.</param>
         /// <param name="before">Timestamp of the oldest already received message.</param>
+        /// <param name="after">Timestamp of the youngest already received message.</param>
         /// <param name="chronological">Should history be ordered chronologically?</param>
         public GroupChatHistoryMessage(uint groupId, WolfTimestamp? before, WolfTimestamp? after, bool chronological = false)
         {

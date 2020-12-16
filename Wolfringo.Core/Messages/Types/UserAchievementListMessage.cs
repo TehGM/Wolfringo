@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class UserAchievementListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.AchievementSubscriberList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.AchievementSubscriberList;
 
@@ -16,6 +17,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserAchievementListMessage() { }
 

@@ -14,6 +14,7 @@ namespace TehGM.Wolfringo.Messages
     public class ChatMessage : IChatMessage, IWolfMessage, IRawDataMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageSend"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.MessageSend;
 
@@ -65,6 +66,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonIgnore]
         public bool IsVoice => this.MimeType == ChatMessageTypes.VoiceLink || this.MimeType == ChatMessageTypes.Voice;
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected ChatMessage()
         {
@@ -89,8 +91,10 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>Represents metadata about chat message edit.</summary>
         public struct EditMetadata
         {
+            /// <summary>User that edited the message.</summary>
             [JsonProperty("subscriberId")]
             public uint UserID { get; private set; }
+            /// <summary>Timestamp of message edit.</summary>
             [JsonProperty("timestamp")]
             public WolfTimestamp Timestamp { get; private set; }
         }

@@ -32,12 +32,15 @@ namespace TehGM.Wolfringo.Utilities.Internal
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
             => Equals(obj as TypedMessageCallback<T>);
 
+        /// <inheritdoc/>
         public bool Equals(TypedMessageCallback<T> other)
             => other != null && CallbackInfo.Equals(other.CallbackInfo);
 
+        /// <inheritdoc/>
         public override int GetHashCode()
             => -1397514458 + CallbackInfo.GetHashCode();
     }

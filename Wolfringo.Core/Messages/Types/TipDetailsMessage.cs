@@ -9,6 +9,8 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(TipDetailsResponse))]
     public class TipDetailsMessage : IWolfMessage
     {
+        /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.TipDetail"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.TipDetail;
 
@@ -23,6 +25,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonConverter(typeof(StringEnumConverter), true)]
         public WolfTip.ContextType ContextType { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected TipDetailsMessage() { }
 

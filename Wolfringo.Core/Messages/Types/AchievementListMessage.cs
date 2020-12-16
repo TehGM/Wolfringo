@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class AchievementListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.AchievementList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.AchievementList;
 
@@ -16,6 +17,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("language")]
         public WolfLanguage Language { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected AchievementListMessage() { }
 

@@ -9,6 +9,7 @@ namespace TehGM.Wolfringo.Messages
     public class BlockListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberBlockList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.SubscriberBlockList;
     }

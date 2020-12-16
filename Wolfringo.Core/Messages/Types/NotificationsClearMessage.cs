@@ -6,6 +6,7 @@ namespace TehGM.Wolfringo.Messages
     public class NotificationsClearMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.NotificationListClear"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.NotificationListClear;
     }

@@ -24,6 +24,7 @@ namespace TehGM.Wolfringo
         /// <paramref name="message"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
         /// <typeparam name="TResponse">Response type to use for casting of response.</typeparam>
         /// <param name="message">Message to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         /// <returns>Sending response.</returns>
         /// <exception cref="MessageSendingException">Server responded with error.</exception>
         Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse;

@@ -47,8 +47,9 @@ namespace TehGM.Wolfringo.Utilities
             this.Config.Log?.LogDebug("Attempting to reconnect, max {Attempts} times. Delay: {Delay}",
                 this.Config.ReconnectAttempts, this.Config.ReconnectionDelay);
 
-            ICollection<Exception> exceptions = new List<Exception>(this.Config.ReconnectAttempts);
-            for (int i = 1; this.Config.ReconnectAttempts < 0 || i <= this.Config.ReconnectAttempts; i++)
+            bool isInfinite = this.Config.ReconnectAttempts < 0;
+            ICollection<Exception> exceptions = new List<Exception>(isInfinite ? 0 : this.Config.ReconnectAttempts);
+            for (int i = 1; isInfinite || i <= this.Config.ReconnectAttempts; i++)
             {
                 try
                 {
@@ -68,7 +69,9 @@ namespace TehGM.Wolfringo.Utilities
                     exceptions.Add(ex);
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (
+                    (isInfinite && ex.LogAsError(this.Config.Log, "Failed to auto-reconnect")) ||
+                    ex.LogAsWarning(this.Config.Log, "Failed to auto-reconnect"))
                 {
                     exceptions.Add(ex);
                 }
@@ -77,7 +80,7 @@ namespace TehGM.Wolfringo.Utilities
             AggregateException aggrEx = exceptions.Any() ?
                 new AggregateException("Error(s) occured when trying to automatically reconnect", exceptions) :
                 new AggregateException("Failed to reconnect, but no exceptions were thrown");
-            this.Config.Log?.LogError(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts > 0 ? this.Config.ReconnectAttempts.ToString() : "Infinite");
+            this.Config.Log?.LogCritical(aggrEx, "Failed to reconnect after {Attempts} attempts", this.Config.ReconnectAttempts > 0 ? this.Config.ReconnectAttempts.ToString() : "Infinite");
             FailedToReconnect?.Invoke(this, new UnhandledExceptionEventArgs(aggrEx, true));
             throw aggrEx;
         }

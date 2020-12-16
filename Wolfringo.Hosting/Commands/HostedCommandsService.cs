@@ -8,8 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Commands;
-using TehGM.Wolfringo.Commands.Initialization;
-using TehGM.Wolfringo.Commands.Parsing;
 using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo.Hosting.Commands
@@ -39,27 +37,14 @@ namespace TehGM.Wolfringo.Hosting.Commands
         private readonly IWolfClient _client;
         private readonly IOptionsMonitor<CommandsOptions> _options;
         private readonly IServiceProvider _services;
-        private readonly ICommandsHandlerProvider _handlerProvider;
-        private readonly ICommandInitializerProvider _initializers;
-        private readonly ICommandsLoader _commandsLoader;
-        private readonly IArgumentsParser _argumentsParser;
-        private readonly IParameterBuilder _parameterBuilder;
-        private readonly IArgumentConverterProvider _argumentConverterProvider;
-        private readonly ILogger _underlyingServiceLog;
 
         /// <summary>Creates a new hosted commands service.</summary>
         /// <param name="client">WOLF client.</param>
         /// <param name="options">Commands options that will be used as default when running a command.</param>
         /// <param name="services">Services provider that will be used by all commands.</param>
-        /// <param name="handlerProvider">Handler provider that deals with creation and caching of handler objects.</param>
-        /// <param name="initializers">Map of command initializers for each command attribute.</param>
-        /// <param name="commandsLoader">Service that loads command attributes from assemblies and types.</param>
-        /// <param name="argumentsParser">Parser for the command arguments.</param>
-        /// <param name="argumentConverterProvider">Provider of argument converters.</param>
-        /// <param name="underlyingServiceLog">Logger that will be passed to underlying commands service.</param>
         /// <param name="hostLifetime">Host lifetime that will be used to dispose service when application is exiting.</param>
         /// <param name="log">Logger used by hosted commands service.</param>
-        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ICommandsHandlerProvider handlerProvider, ICommandInitializerProvider initializers, ICommandsLoader commandsLoader, IArgumentsParser argumentsParser, IArgumentConverterProvider argumentConverterProvider, IParameterBuilder parameterBuilder, ILogger<HostedCommandsService> log, ILogger<CommandsService> underlyingServiceLog,
+        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ILogger<HostedCommandsService> log,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
@@ -70,14 +55,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
             this._client = client;
             this._options = options;
             this._services = services;
-            this._handlerProvider = handlerProvider;
-            this._initializers = initializers;
-            this._commandsLoader = commandsLoader;
-            this._argumentsParser = argumentsParser;
-            this._parameterBuilder = parameterBuilder;
-            this._argumentConverterProvider = argumentConverterProvider;
             this._log = log;
-            this._underlyingServiceLog = underlyingServiceLog ?? this._log;
             this._hostLifetime = hostLifetime;
 
             this._commandsLock = new SemaphoreSlim(1, 1);
@@ -114,15 +92,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
             this._commands = new CommandsService(
                 this._client,
                 this._options.CurrentValue,
-                this._services,
-                this._handlerProvider,
-                this._initializers,
-                this._commandsLoader,
-                this._argumentsParser,
-                this._argumentConverterProvider,
-                this._parameterBuilder,
-                this._underlyingServiceLog,
-                this._hostCancellationToken);
+                this._services);
         }
 
         /// <inheritdoc/>

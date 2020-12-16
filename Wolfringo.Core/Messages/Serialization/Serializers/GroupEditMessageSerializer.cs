@@ -8,6 +8,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// <typeparam name="T">Type of group edit message.</typeparam>
     public class GroupEditMessageSerializer<T> : DefaultMessageSerializer<T> where T : IGroupEditMessage, IWolfMessage
     {
+        /// <inheritdoc/>
         public override SerializedMessageData Serialize(IWolfMessage message)
         {
             SerializedMessageData result = base.Serialize(message);

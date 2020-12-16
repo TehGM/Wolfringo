@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands.Parsing
@@ -43,6 +44,8 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     value = values.CancellationToken;
                 // from services
                 else if (TryGetService(param.ParameterType, values.Services, out value)) { }
+                // logger from factory
+                else if (TryGetGenericLogger(param.ParameterType, values.Services, out value)) { }
                 // from args
                 else
                 {
@@ -74,6 +77,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return ParameterBuildingResult.Success(paramsValues);
         }
 
+        /// <summary>Attempts to find an object of specific type from enumerable of objects.</summary>
+        /// <param name="type">Type of object to find.</param>
+        /// <param name="additionals">Enumerable of objects to find from.</param>
+        /// <param name="result">Found object. Null if not found.</param>
+        /// <returns>True if object was found successfully; otherwise false.</returns>
         protected static bool TryFindAdditional(Type type, IEnumerable<object> additionals, out object result)
         {
             if (additionals?.Any() == true)
@@ -92,7 +100,12 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return false;
         }
 
-        protected static bool TryGetService(Type type, IServiceProvider services, out object result)
+        /// <summary>Attempts to find a service of type from service provider.</summary>
+        /// <param name="type">Type of service to find.</param>
+        /// <param name="services">Service provider to get service from.</param>
+        /// <param name="result">Found service. Null if not found.</param>
+        /// <returns>True if service was found successfully; otherwise false.</returns>
+        public static bool TryGetService(Type type, IServiceProvider services, out object result)
         {
             if (services == null)
             {
@@ -103,6 +116,13 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return result != null;
         }
 
+        /// <summary>Attempts to convert argument to parameter type.</summary>
+        /// <param name="parameter">Parameter to convert argument to.</param>
+        /// <param name="argIndex">Index of argument.</param>
+        /// <param name="values">Builder values. Must contain Args and ArgumentConverterProvider.</param>
+        /// <param name="result">Result of the conversion. Null if conversion failed.</param>
+        /// <param name="error">Exception that occured when converting. Null if there was no exception.</param>
+        /// <returns>True if converting was successful; otherwise false.</returns>
         protected static bool TryConvertArgument(ParameterInfo parameter, int argIndex, ParameterBuilderValues values, out object result, out Exception error)
         {
             if (argIndex < 0)
@@ -133,6 +153,34 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 error = ex;
                 return false;
             }
+        }
+
+        /// <summary>Attempts to create a generic ILogger&gt;T&lt;.</summary>
+        /// <param name="type">Parameter type to create the logger for.</param>
+        /// <param name="services">Service provider to get logger factory from.</param>
+        /// <param name="result">Created logger. Null if failed to create.</param>
+        /// <returns>True if successfully created the logger. Otherwise false.</returns>
+        public static bool TryGetGenericLogger(Type type, IServiceProvider services, out object result)
+        {
+            result = null;
+            if (!type.IsGenericType || !type.IsInterface)
+                return false;
+            if (!typeof(ILogger).IsAssignableFrom(type))
+                return false;
+
+            Type[] generics = type.GetGenericArguments();
+            if (generics.Length != 1)
+                return false;
+            if (!(services.GetService(typeof(ILoggerFactory)) is ILoggerFactory factory))
+                return false; 
+
+            // we need to invoke the method using reflection to get generic ILogger
+            MethodInfo creationMethod = typeof(LoggerFactoryExtensions)
+                .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                .First(x => x.ContainsGenericParameters && x.Name == "CreateLogger")
+                .MakeGenericMethod(generics[0]);
+            result = creationMethod.Invoke(null, new object[] { factory });
+            return true;
         }
     }
 }

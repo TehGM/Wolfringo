@@ -4,6 +4,7 @@ using System.Text;
 
 namespace TehGM.Wolfringo.Socket
 {
+    /// <summary>A Socket.IO protocol message.</summary>
     public class SocketMessage
     {
         /// <summary>Type of SocketIO message.</summary>
@@ -17,6 +18,11 @@ namespace TehGM.Wolfringo.Socket
 
         private string _rawMessage;
 
+        /// <summary>Creates a new Socket.IO protocol message.</summary>
+        /// <param name="type">Type of SocketIO message.</param>
+        /// <param name="id">ID of the message in case of events.</param>
+        /// <param name="payload">Raw JSON payload.</param>
+        /// <param name="binaryCount">Count of binary messages that will be sent after this message.</param>
         public SocketMessage(SocketMessageType type, uint? id, JToken payload, int binaryCount = 0)
         {
             this.Type = type;
@@ -103,6 +109,7 @@ namespace TehGM.Wolfringo.Socket
             return JToken.Parse(rawMessage.Substring(payloadIndex));
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             if (_rawMessage == null)
@@ -128,16 +135,27 @@ namespace TehGM.Wolfringo.Socket
     /// <summary>Represents type of SocketIO message.</summary>
     public enum SocketMessageType
     {
+        /// <summary>Session ID message.</summary>
         SID = 0,
+        /// <summary>Transport closing message.</summary>
         TransportClose = 1,
+        /// <summary>Ping message.</summary>
         Ping = 2,
+        /// <summary>Response for ping message.</summary>
         Pong = 3,
+        /// <summary>Connection initialize message.</summary>
         Connect = 40,
+        /// <summary>Connection close message.</summary>
         Disconnect = 41,
+        /// <summary>Non-binary event.</summary>
         Event = 42,
+        /// <summary>Non-binary event acknowledge response.</summary>
         EventAck = 43,
+        /// <summary>Error message.</summary>
         Error = 44,
+        /// <summary>Binary event.</summary>
         BinaryEvent = 45,
+        /// <summary>Binary event acknowledge response.</summary>
         BinaryEventAck = 46
     }
 }

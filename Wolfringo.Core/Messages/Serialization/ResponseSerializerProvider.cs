@@ -10,10 +10,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
     {
         /// <inheritdoc/>
         public IResponseSerializer FallbackSerializer => this.Options.FallbackSerializer;
+        /// <summary>Instance of options used by this provider.</summary>
         protected ResponseSerializerProviderOptions Options { get; }
 
         /// <summary>Creates default response serializer map.</summary>
-        /// <param name="fallbackSerializer">Serializer to use as fallback. If null, <see cref="DefaultResponseSerializer"/> will be used.</param>
+        /// <param name="options">Instance of options to use with this provider.</param>
         public ResponseSerializerProvider(ResponseSerializerProviderOptions options)
         {
             this.Options = options;

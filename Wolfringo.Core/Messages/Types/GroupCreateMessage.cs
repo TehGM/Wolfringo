@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class GroupCreateMessage : IWolfMessage, IGroupEditMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupCreate"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.GroupCreate;
 
@@ -40,9 +41,11 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("longDescription")]
         public string LongDescription { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupCreateMessage() { }
 
+        /// <summary>A builder class for <see cref="GroupCreateMessage"/>.</summary>
         public class Builder
         {
             /// <summary>Group public name.</summary>

@@ -7,6 +7,7 @@ namespace TehGM.Wolfringo.Messages
     public class SubscribeToPmMessage : IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessagePrivateSubscribe"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.MessagePrivateSubscribe;
         /// <inheritdoc/>

@@ -17,6 +17,7 @@ namespace TehGM.Wolfringo.Messages
         public static readonly IEnumerable<string> DefaultRequestEntities = new string[] { "base", "audioConfig", "audioCounts", "extended" };
 
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupProfile"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.GroupProfile;
         /// <inheritdoc/>
@@ -26,9 +27,10 @@ namespace TehGM.Wolfringo.Messages
             { "version", 4 }
         };
 
-        /// <summary>IDs of requested groups.</summary>
+        /// <summary>IDs of requested groups. Mutually exclusive with <see cref="RequestGroupName"/></summary>
         [JsonProperty("idList", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<uint> RequestGroupIDs { get; private set; }
+        /// <summary>Name of the requested group. Mutually exclusive with <see cref="RequestGroupIDs"/>.</summary>
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string RequestGroupName { get; private set; }
 
@@ -39,6 +41,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("entities")]
         public IEnumerable<string> RequestEntities { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupProfileMessage() { }
 
@@ -80,7 +83,7 @@ namespace TehGM.Wolfringo.Messages
             this.RequestEntities = new ReadOnlyCollection<string>((requestEntities as IList<string>) ?? requestEntities.ToArray());
             this.RequestGroupIDs = null;
             this.SubscribeToUpdates = subscribe;
-            this.RequestGroupName = groupName ;
+            this.RequestGroupName = groupName;
         }
 
         /// <summary>Creates a message instance.</summary>

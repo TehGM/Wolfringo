@@ -41,6 +41,7 @@ namespace TehGM.Wolfringo.Messages.Responses
             }
         }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected AchievementListResponse() : base() { }
     }

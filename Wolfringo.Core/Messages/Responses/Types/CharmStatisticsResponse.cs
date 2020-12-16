@@ -28,6 +28,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("totalLifetime")]
         public int? TotalLifetime { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected CharmStatisticsResponse() : base() { }
     }

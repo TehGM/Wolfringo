@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Messages
     public class RecentConversationsMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageConversationList"/>.</remarks>
         [JsonIgnore]
         public string EventName => MessageEventNames.MessageConversationList;
         /// <inheritdoc/>

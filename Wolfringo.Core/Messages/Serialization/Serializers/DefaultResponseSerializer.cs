@@ -29,7 +29,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             => GetResponseJson(responseData.Payload);
 
         /// <summary>Gets response json, stripping off wrapping array.</summary>
-        /// <param name="responseData">Serialized raw response payload.</param>
+        /// <param name="payload">JSON response payload.</param>
         /// <returns>Core response payload.</returns>
         protected static JToken GetResponseJson(JToken payload)
             => payload is JArray ? payload.First : payload;
