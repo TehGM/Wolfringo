@@ -83,6 +83,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{2F
 		docs\guides\features\logging.md = docs\guides\features\logging.md
 		docs\guides\features\receiving-profile-updates.md = docs\guides\features\receiving-profile-updates.md
 		docs\guides\features\reconnection.md = docs\guides\features\reconnection.md
+		docs\guides\features\sender.md = docs\guides\features\sender.md
 	EndProjectSection
 EndProject
 Global

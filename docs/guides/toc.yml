@@ -14,6 +14,8 @@
       topicUid: Guides.Features.Logging
     - name: Reconnecting
       topicUid: Guides.Features.Reconnection
+    - name: Sender Utility
+      topicUid: Guides.Features.Sender
     - name: Handling Errors
       topicUid: Guides.Features.ErrorHandling
     - name: Interactive Commands
