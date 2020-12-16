@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>1.0.0-beta3</version>
+    <version>1.0.0-beta4</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -31,10 +31,10 @@
     </releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="1.0.0-beta4" />
-        <dependency id="Wolfringo.Utilities" version="1.0.0-beta4" />
+        <dependency id="Wolfringo.Core" version="1.0.0-beta3" />
+        <dependency id="Wolfringo.Utilities" version="1.0.0-beta3" />
         <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
-        <dependency id="Wolfringo.Commands" version="1.0.0-beta4"/>
+        <dependency id="Wolfringo.Commands" version="1.0.0-beta3"/>
       </group>
     </dependencies>
   </metadata>
