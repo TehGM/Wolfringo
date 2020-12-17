@@ -499,33 +499,9 @@ namespace TehGM.Wolfringo
             // request members for group that has it's member list empty
             IEnumerable<WolfGroup> memberRequests = results.Where(group => group.Members?.Any() != true);
             foreach (WolfGroup group in memberRequests)
-                await client.RequestGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
+                await client.RevalidateGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
 
             return results;
-        }
-
-        private static async Task<IEnumerable<WolfGroupMember>> RequestGroupMembersAsync(this IWolfClient client, WolfGroup group, 
-            CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                GroupMembersListResponse membersResponse = await client.SendAsync<GroupMembersListResponse>(
-                    new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
-                // client should be configured to intercept this response
-                // however, just in case it's not (like when caching is disabled), do it here as well
-                if (membersResponse?.GroupMembers?.Any() == true)
-                {
-                    try
-                    {
-                        EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
-                    }
-                    catch (NotSupportedException) { }
-                    return membersResponse.GroupMembers;
-                }
-            }
-            // handle case when requesting profiles for group the user is not in
-            catch (MessageSendingException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden) { }
-            return null;
         }
 
         /// <summary>Get profile of specified group.</summary>
@@ -573,7 +549,7 @@ namespace TehGM.Wolfringo
                 new GroupProfileMessage(trimmedName), cancellationToken).ConfigureAwait(false);
             result = response?.GroupProfiles?.FirstOrDefault();
             if (result != null)
-                await client.RequestGroupMembersAsync(result, cancellationToken).ConfigureAwait(false);
+                await client.RevalidateGroupMembersAsync(result, cancellationToken).ConfigureAwait(false);
             return result;
         }
 
