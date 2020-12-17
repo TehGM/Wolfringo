@@ -25,20 +25,27 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     
   generate-docs:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: DocFX Build
-        uses: nikeee/docfx-action@v1.0.0
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          args: docs/docfx.json
+          dotnet-version: 3.1.101
+      - name: Setup DocFX
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install docfx
+      - name: DocFX Build
+        working-directory: docs
+        run: docfx docfx.json
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          publish_dir: docs/_site
           cname: docs.tehgm.net
           force_orphan: true
