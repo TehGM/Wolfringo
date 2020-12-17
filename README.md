@@ -12,7 +12,7 @@ Wolfringo provides a built in Commands System. Commands System uses attributes t
 The Commands System follows the design principles of entire Wolfringo library, and therefore is easily extensible and easily customizable thanks to Dependency Injection.
 
 ### Documentation
-A full [Documentation](https://tehgm.github.io/Wolfringo) is now available - it includes Tutorials and Guides, as well as full API Reference.
+A full [Documentation](https://wolfringo.tehgm.net) is now available - it includes Tutorials and Guides, as well as full API Reference.
 
 ### Download
 Most recent versions of this package are downloadable via [nuget.org](https://www.nuget.org/packages/Wolfringo/)!
