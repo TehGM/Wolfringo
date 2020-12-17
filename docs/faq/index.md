@@ -7,7 +7,7 @@ uid: FAQ
 ###### Short answer
 No.
 ###### Long answer
-I believe a bot library is not supposed to deal with translations. If it's well-planned, it should focus on server connection, messages, etc. If a bot library tries to also support translations, it clearly tries to do more things than it should not be concerned with. It's simply out of scope.
+I believe a bot library is not supposed to deal with translations. If it's well-planned, it should focus on server connection, messages, etc. If a bot library tries to also support translations, it clearly tries to do things that it should not be concerned with. It's simply out of scope.
 
 If you want to use translations in your bot, you can make a separate standalone service class. [Commands System](xref:Guides.Commands.Intro) in Wolfringo supports [dependency injection](xref:Guides.Commands.DependencyInjection), so your translator can easily be injected into any handler.  
 You most likely can also find other C# libraries designed specifically for this purpose. They should work with Wolfringo just fine.
