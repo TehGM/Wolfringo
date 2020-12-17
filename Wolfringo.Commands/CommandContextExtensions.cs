@@ -41,16 +41,23 @@ namespace TehGM.Wolfringo.Commands
         {
             if (context.Message.IsGroupMessage)
             {
+                WolfGroup result;
                 if (context.Client is IWolfClientCacheAccessor cache)
                 {
-                    WolfGroup result = cache.GetCachedGroup(context.Message.RecipientID);
+                    result = cache.GetCachedGroup(context.Message.RecipientID);
                     if (result != null)
+                    {
+                        await context.Client.RevalidateGroupMembersAsync(result, cancellationToken).ConfigureAwait(false);
                         return result as T;
+                    }
                 }
 
                 GroupProfileResponse response = await context.Client.SendAsync<GroupProfileResponse>(
                     new GroupProfileMessage(new uint[] { context.Message.RecipientID }, true), cancellationToken).ConfigureAwait(false);
-                return response?.GroupProfiles?.FirstOrDefault(g => g.ID == context.Message.RecipientID) as T;
+                result = response?.GroupProfiles?.FirstOrDefault(g => g.ID == context.Message.RecipientID);
+                if (result != null)
+                    await context.Client.RevalidateGroupMembersAsync(result, cancellationToken).ConfigureAwait(false);
+                return result as T;
             }
             else
                 return await GetUserAsync(context, context.Message.RecipientID, cancellationToken) as T;
