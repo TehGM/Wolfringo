@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>1.0.0-beta4</version>
+    <version>1.0.0-beta5</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -15,26 +15,19 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <releaseNotes>
-      Wolfringo.Core:
-      - Added WolfPrivilege enum
-      - Moved UserUpdateMessage to TehGM.Wolfringo.Messages namespace
-      Wolfringo.Utilities:
-      - Added additional logs to Reconnector utility
-      Wolfringo.Commands:
-      - Moved RequireBotUserPrivilegeAttribute to TehGM.Wolfringo.Commands.Attributes namespace
-      - Simplified CommandService constructor
-      - Fixed using fallback services when using DI
-      - Make HandlerProvider respect services lifetimes
-      - Added support for generic ILoggers
-      Wolfringo.Hosting:
-      - Compatibility patch
+Wolfringo.Core:
+- Added internal helper class for handling WOLF protocol group members bug
+Wolfringo.Utilities:
+- Removed private method for requesting group members in favour of shared helper in Wolfringo.Core 1.0.0-beta5
+Wolfringo.Commands:
+- Fix bug where ICommandContext extensions don't request group members
     </releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="1.0.0-beta3" />
-        <dependency id="Wolfringo.Utilities" version="1.0.0-beta3" />
+        <dependency id="Wolfringo.Core" version="1.0.0-beta5" />
+        <dependency id="Wolfringo.Utilities" version="1.0.0-beta5" />
         <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
-        <dependency id="Wolfringo.Commands" version="1.0.0-beta3"/>
+        <dependency id="Wolfringo.Commands" version="1.0.0-beta5"/>
       </group>
     </dependencies>
   </metadata>

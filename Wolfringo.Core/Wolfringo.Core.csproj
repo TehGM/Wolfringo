@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>1.0.0-beta3</Version>
+    <Version>1.0.0-beta5</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -18,8 +18,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
-    <PackageReleaseNotes>- Added WolfPrivilege enum
-- Moved UserUpdateMessage to TehGM.Wolfringo.Messages namespace</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added internal helper class for handling WOLF protocol group members bug</PackageReleaseNotes>
   </PropertyGroup>
   
   <PropertyGroup>
