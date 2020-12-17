@@ -5,8 +5,8 @@
     <RootNamespace>TehGM.Wolfringo.Utilities</RootNamespace>
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
-    <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
-    <Version>1.0.0-beta5</Version>
+    <PackageProjectUrl>https://tehgm.github.io/Wolfringo</PackageProjectUrl>
+    <Version>1.0.0</Version>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
@@ -20,7 +20,7 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>- Removed private method for requesting group members in favour of shared helper in Wolfringo.Core 1.0.0-beta5</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/TehGM/Wolfringo/releases/tag/1.0.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
