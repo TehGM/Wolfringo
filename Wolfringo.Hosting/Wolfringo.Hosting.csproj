@@ -5,7 +5,7 @@
     <Version>1.0.0</Version>
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
-    <PackageProjectUrl>https://tehgm.github.io/Wolfringo</PackageProjectUrl>
+    <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <RootNamespace>TehGM.Wolfringo.Hosting</RootNamespace>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

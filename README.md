@@ -27,7 +27,7 @@ Most recent versions of this package are downloadable via [nuget.org](https://ww
     ```
 
 #### Older versions
-Older versions are available through GitHub Packages. See [Installation guide in Documentation](https://tehgm.github.io/Wolfringo/guides/getting-started/installation#older-versions) for steps to install version before v0.4.0.
+Older versions are available through GitHub Packages. See [Installation guide in Documentation](https://wolfringo.tehgm.net/guides/getting-started/installation#older-versions) for steps to install version before v0.4.0.
 
 
 ## Extending the client

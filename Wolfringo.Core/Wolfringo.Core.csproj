@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <Description>A .NET Library for WOLF (previously Palringo)</Description>
-    <PackageProjectUrl>https://tehgm.github.io/Wolfringo</PackageProjectUrl>
+    <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>

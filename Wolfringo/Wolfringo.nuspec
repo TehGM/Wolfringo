@@ -8,7 +8,7 @@
     <owners>TehGM</owners>
     <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Commands, Utilities and Utilities.Interactive libraries.</description>
     <tags>wolf palringo wolfringo pal bot client</tags>
-    <projectUrl>https://tehgm.github.io/Wolfringo</projectUrl>
+    <projectUrl>https://wolfringo.tehgm.net</projectUrl>
     <icon>wolfringo_logo.png</icon>
     <repository type="git" url="https://github.com/TehGM/Wolfringo" />
     <license type="expression">MIT</license>
