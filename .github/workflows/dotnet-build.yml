@@ -40,8 +40,8 @@ jobs:
         with:
           args: install docfx
       - name: DocFX Build
-        working-directory: docfx
-        run: docfx doxfx.json
+        working-directory: docs
+        run: docfx docfx.json
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
