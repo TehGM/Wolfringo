@@ -77,7 +77,7 @@
       "_appTitle": "Wolfringo Documentation",
       "_appLogoPath": "wolfringo_logo.png",
       "_appFaviconPath": "wolfringo_logo.png",
-      "_enableSearch": true,
+      "_enableSearch": false,
       "_disableAffix": false,
       "_disableSideFilter": true,
       "_appFooter": "Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br/>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme."
