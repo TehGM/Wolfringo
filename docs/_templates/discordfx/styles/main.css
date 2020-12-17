@@ -122,3 +122,8 @@ h1 > .anchorjs-link, h2 > .anchorjs-link, h3 > .anchorjs-link, h4 > .anchorjs-li
 h3 > .anchorjs-link {
     left: -10px;
 }
+
+/* Hide "Search Results for" */
+#search-results {
+    display: none;
+}
