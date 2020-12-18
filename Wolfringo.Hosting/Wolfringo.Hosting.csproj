@@ -12,7 +12,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <Description>Extension for Wolfringo library, providing support for ASP.NET Core and other .NET Core Hosting scenarios.</Description>
-    <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
+    <PackageTags>wolf palringo wolfringo pal bot client aspnet host</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
