@@ -10,8 +10,9 @@ namespace TehGM.Wolfringo.Messages
     public class PrivateChatHistoryMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessagePrivateHistoryList"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.MessagePrivateHistoryList;
+        public string EventName => MessageEventNames.MessagePrivateHistoryList;
         /// <inheritdoc/>
         [JsonIgnore]
         public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
@@ -26,6 +27,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("timestampEnd", NullValueHandling = NullValueHandling.Ignore)]
         public WolfTimestamp? BeforeTime { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected PrivateChatHistoryMessage() { }
 

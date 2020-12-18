@@ -4,6 +4,7 @@
     public enum WolfGroupCapabilities
     {
         // values borrowed from https://github.com/dewwalters/Wolf.Net/blob/master/Wolf.Net/Enums/Capabilities.cs
+        /// <summary>Request wasnt a group-related request.</summary>
         NonGroupRequest = -2,
         /// <summary>Normal user without permissions.</summary>
         User = 0,

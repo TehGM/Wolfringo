@@ -16,9 +16,11 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Details on message tips.</summary>
         [JsonProperty("list")]
         public IEnumerable<WolfTip> Tips { get; private set; }
+        /// <summary>Version of the tip. (?)</summary>
         [JsonProperty("version")]
         public int Version { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected TipDetailsResponse() : base() { }
     }

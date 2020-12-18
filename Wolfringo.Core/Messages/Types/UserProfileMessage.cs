@@ -14,8 +14,9 @@ namespace TehGM.Wolfringo.Messages
     public class UserProfileMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberProfile"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberProfile;
+        public string EventName => MessageEventNames.SubscriberProfile;
         /// <inheritdoc/>
         [JsonIgnore]
         public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
@@ -33,6 +34,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserProfileMessage() { }
 

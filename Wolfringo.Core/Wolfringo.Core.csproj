@@ -3,21 +3,26 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>0.4.1</Version>
+    <Version>1.0.0</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <Description>A .NET Library for WOLF (previously Palringo)</Description>
-    <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
+    <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>0.4.1.0</AssemblyVersion>
-    <FileVersion>0.4.1.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
+    <PackageReleaseNotes>https://github.com/TehGM/Wolfringo/releases/tag/1.0.0</PackageReleaseNotes>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

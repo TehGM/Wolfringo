@@ -24,7 +24,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
 
         /// <summary>Creates message JSON and binary data bundle.</summary>
         /// <param name="payload">JSON payload.</param>
-        /// <param name="binaryMessages">Binary message.</param>
+        /// <param name="binaryData">Binary message.</param>
         public SerializedMessageData(JToken payload, byte[] binaryData)
             : this(payload, new byte[][] { binaryData }) { }
 

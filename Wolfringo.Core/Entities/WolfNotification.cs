@@ -39,13 +39,17 @@ namespace TehGM.Wolfringo
         [JsonProperty("persistent")]
         public bool IsPersistent { get; private set; }
 
+        /// <summary>Layout type of the notification.</summary>
         [JsonProperty("layoutType")]
         public int LayoutType { get; private set; }
+        /// <summary>Type of news stream.</summary>
         [JsonProperty("newsStreamType")]
         public int NewsStreamType { get; private set; }
+        /// <summary>Notification type.</summary>
         [JsonProperty("type")]
         public int Type { get; private set; }
 
+        /// <summary>Creates a new instance.</summary>
         [JsonConstructor]
         protected WolfNotification() { }
     }

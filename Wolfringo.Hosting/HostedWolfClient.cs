@@ -30,7 +30,7 @@ namespace TehGM.Wolfringo.Hosting
     /// <see cref="HostedWolfClientOptions.AutoLogin"/> is set to true. Otherwise, manual login will be required.</para></remarks>
     /// <seealso cref="WolfClient"/>
     /// <seealso cref="IWolfClient"/>
-    public class HostedWolfClient : IHostedWolfClient, IHostedService, IWolfClient, IWolfClientCacheAccessor, IDisposable
+    public class HostedWolfClient : IHostedService, IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
         // internal working vars
         private WolfClient _client;
@@ -39,13 +39,14 @@ namespace TehGM.Wolfringo.Hosting
         private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
         private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
         private string _token;                                  // keep token cached so it's reused when client is recreates
+        private bool _isStarted;                                // set to true of first hosted service start, to prevent multiple hosted services starting
 
         // services
         private readonly ILogger _log;
         private readonly ILogger _underlyingClientLog;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
-        private readonly ISerializerMap<string, IMessageSerializer> _messageSerializers;
-        private readonly ISerializerMap<Type, IResponseSerializer> _responseSerializers;
+        private readonly ISerializerProvider<string, IMessageSerializer> _messageSerializers;
+        private readonly ISerializerProvider<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly ITokenProvider _tokenProvider;
 #if NETCOREAPP3_0
@@ -82,7 +83,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="responseSerializers">Map of response serializers.</param>
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, ITokenProvider tokenProvider,
-            ISerializerMap<string, IMessageSerializer> messageSerializers, ISerializerMap<Type, IResponseSerializer> responseSerializers,
+            ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
@@ -261,18 +262,26 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         async Task IHostedService.StartAsync(CancellationToken cancellationToken)
         {
+            await _clientLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
+                if (this._isStarted)
+                    return;
+                this._isStarted = true;
                 _hostCancellationToken = cancellationToken;
                 // only connect if not already connected
                 if (!this.IsConnected)
-                    await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
+                    await this.ConnectInternalAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when trying to connect as a hosted client"))
             {
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
                 if (_options.CurrentValue.CloseOnCriticalError)
                     _hostLifetime?.StopApplication();
+            }
+            finally
+            {
+                _clientLock.Release();
             }
         }
         /// <inheritdoc/>

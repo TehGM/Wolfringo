@@ -2,24 +2,26 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>0.4.1</version>
+    <version>1.0.0</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
-    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Utilities and Utilities.Interactive libraries.</description>
+    <description>A .NET Library for WOLF (previously Palringo). This metapackage includes Core, Commands, Utilities and Utilities.Interactive libraries.</description>
     <tags>wolf palringo wolfringo pal bot client</tags>
-    <projectUrl>https://github.com/TehGM/Wolfringo</projectUrl>
+    <projectUrl>https://wolfringo.tehgm.net</projectUrl>
     <icon>wolfringo_logo.png</icon>
     <repository type="git" url="https://github.com/TehGM/Wolfringo" />
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
+    <releaseNotes>https://github.com/TehGM/Wolfringo/releases/tag/1.0.0</releaseNotes>
     <dependencies>
-        <group>
-            <dependency id="Wolfringo.Core" version="0.4.1" />
-            <dependency id="Wolfringo.Utilities" version="0.4.1" />
-            <dependency id="Wolfringo.Utilities.Interactive" version="0.2.0" />
-        </group>
+      <group>
+        <dependency id="Wolfringo.Core" version="1.0.0" />
+        <dependency id="Wolfringo.Utilities" version="1.0.0" />
+        <dependency id="Wolfringo.Utilities.Interactive" version="1.0.0" />
+        <dependency id="Wolfringo.Commands" version="1.0.0"/>
+      </group>
     </dependencies>
   </metadata>
   <files>

@@ -6,13 +6,15 @@ namespace TehGM.Wolfringo.Messages
     public class ContactAddMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberContactAdd"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberContactAdd;
+        public string EventName => MessageEventNames.SubscriberContactAdd;
 
         /// <summary>ID of user being added as contact.</summary>
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected ContactAddMessage() { }
 

@@ -14,6 +14,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         private static readonly Type _joinMessageType = typeof(GroupJoinMessage);
         private static readonly Type _leaveMessageType = typeof(GroupLeaveMessage);
 
+        /// <summary>Creates a new serializer instance.</summary>
         public GroupJoinLeaveMessageSerializer()
         {
             ThrowIfInvalidMessageType(typeof(T));

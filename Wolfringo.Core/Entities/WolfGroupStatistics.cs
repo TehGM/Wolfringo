@@ -55,8 +55,10 @@ namespace TehGM.Wolfringo
         /// <summary>Count of messages with sad emotes.</summary>
         [JsonProperty("sadCount")]
         public int SadEmoticonsCount { get; private set; }
+        /// <summary>Count of message packs.</summary>
         [JsonProperty("packCount")]
         public int PacksCount { get; private set; }
+        /// <summary>?</summary>
         [JsonProperty("spokenCount")]
         public int SpokenCount { get; private set; }
         /// <summary>Group member count.</summary>
@@ -116,6 +118,7 @@ namespace TehGM.Wolfringo
         [JsonProperty("topAction")]
         public IEnumerable<MessageStat> TopActionSenders { get; private set; }
 
+        /// <summary>Creates a new object of this type.</summary>
         [JsonConstructor]
         protected WolfGroupStatistics() { }
 
@@ -136,6 +139,7 @@ namespace TehGM.Wolfringo
             /// <inheritdoc/>
             public int LinesCount { get; private set; }
 
+            /// <summary>Creates a new object of this type.</summary>
             [JsonConstructor]
             protected HourlyTrend() { }
         }
@@ -149,6 +153,7 @@ namespace TehGM.Wolfringo
             /// <inheritdoc/>
             public int LinesCount { get; private set; }
 
+            /// <summary>Creates a new object of this type.</summary>
             [JsonConstructor]
             protected DailyTrend() { }
         }
@@ -209,9 +214,11 @@ namespace TehGM.Wolfringo
             /// <summary>Count of messages with sad emotes.</summary>
             [JsonProperty("sadCount")]
             public int SadEmoticonsCount { get; private set; }
+            /// <summary>Count of message packs.</summary>
             [JsonProperty("packCount")]
             public int PacksCount { get; private set; }
 
+            /// <summary>Creates a new object of this type.</summary>
             [JsonConstructor]
             protected MemberStats() { }
         }
@@ -229,6 +236,7 @@ namespace TehGM.Wolfringo
             // this is botched, and returns the same as text message percentage
             public double WordsPerLine { get; private set; }
 
+            /// <summary>Creates a new object of this type.</summary>
             [JsonConstructor]
             protected WordPerLineStat() { }
         }
@@ -244,6 +252,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("percentage")]
             public double Percentage { get; private set; }
 
+            /// <summary>Creates a new object of this type.</summary>
             [JsonConstructor]
             protected MessageStat() { }
         }
@@ -255,6 +264,7 @@ namespace TehGM.Wolfringo
             [JsonProperty("randomQuote")]
             public string RandomQuote { get; private set; }
 
+            /// <summary>Creates a new object of this type.</summary>
             [JsonConstructor]
             protected TextMessageStat() : base() { }
         }

@@ -33,7 +33,6 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         /// <param name="target">Object to populate.</param>
         /// <param name="childPath">Selector of the child token in the <paramref name="token"/>.</param>
         /// <param name="serializer">Serializer to use. If null, <see cref="DefaultSerializer"/> will be used.</param>
-        /// If null, <paramref name="token"/> will be used directly.</param>
         public static void PopulateObject<T>(this JToken token, T target, string childPath = null, JsonSerializer serializer = null)
         {
             JToken source = childPath != null ? token.SelectToken(childPath) : token;

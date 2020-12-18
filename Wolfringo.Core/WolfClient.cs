@@ -30,7 +30,9 @@ namespace TehGM.Wolfringo
     public class WolfClient : IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
         /// <summary>Default Wolf server URL.</summary>
-        public const string DefaultServerURL = "wss://v3-rc.palringo.com:3051";
+        public const string DefaultServerURL = "wss://v3.palringo.com:3051";
+        /// <summary>Pre-release Wolf server URL.</summary>
+        public const string BetaServerURL = "wss://v3-rc.palringo.com:3051";
         /// <summary>Default device string to pass to the server when connecting.</summary>
         public const WolfDevice DefaultDevice = WolfDevice.Bot;
 
@@ -85,12 +87,14 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
+        /// <summary>Socket client used by this WOLF client.</summary>
         protected ISocketClient SocketClient { get; }
+        /// <summary>Callbacks dispatcher used by this WOLF client.</summary>
         protected MessageCallbackDispatcher CallbackDispatcher { get; }
         /// <summary>Message serializers mapping used when serializing and deserializing messages.</summary>
-        protected ISerializerMap<string, IMessageSerializer> MessageSerializers { get; }
+        protected ISerializerProvider<string, IMessageSerializer> MessageSerializers { get; }
         /// <summary>Response serializers mapping used when deserializing responses.</summary>
-        protected ISerializerMap<Type, IResponseSerializer> ResponseSerializers { get; }
+        protected ISerializerProvider<Type, IResponseSerializer> ResponseSerializers { get; }
         /// <summary>Response type resolver used when deserializing responses.</summary>
         protected IResponseTypeResolver ResponseTypeResolver { get; }
         /// <summary>Logger for all log messages.</summary>
@@ -104,9 +108,9 @@ namespace TehGM.Wolfringo
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
@@ -118,7 +122,7 @@ namespace TehGM.Wolfringo
         /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(string url, WolfDevice device, string token, ILogger logger = null, 
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
@@ -134,9 +138,9 @@ namespace TehGM.Wolfringo
             this.Device = device;
             this.Token = token;
             this.Log = logger;
-            this.ResponseTypeResolver = responseTypeResolver ?? new DefaultResponseTypeResolver();
-            this.MessageSerializers = messageSerializers ?? new DefaultMessageSerializerMap();
-            this.ResponseSerializers = responseSerializers ?? new DefaultResponseSerializerMap();
+            this.ResponseTypeResolver = responseTypeResolver ?? new ResponseTypeResolver();
+            this.MessageSerializers = messageSerializers ?? new MessageSerializerProvider();
+            this.ResponseSerializers = responseSerializers ?? new ResponseSerializerProvider();
 
             // init dispatcher
             this.CallbackDispatcher = new MessageCallbackDispatcher();
@@ -156,10 +160,10 @@ namespace TehGM.Wolfringo
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
@@ -172,16 +176,16 @@ namespace TehGM.Wolfringo
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(string url, WolfDevice device, ILogger logger = null, 
             ITokenProvider tokenProvider = null, 
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="DefaultWolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="DefaultMessageSerializerMap"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="DefaultResponseSerializerMap"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="DefaultResponseTypeResolver"/></para>
+        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
         /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
         /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
         /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
@@ -192,17 +196,17 @@ namespace TehGM.Wolfringo
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
         public WolfClient(ILogger logger = null, 
             ITokenProvider tokenProvider = null,
-            ISerializerMap<string, IMessageSerializer> messageSerializers = null, ISerializerMap<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
 
         /// <summary>Generates a new token using token provider.</summary>
-        /// <remarks>If token provider is null, <see cref="DefaultWolfTokenProvider"/> will be used.</remarks>
+        /// <remarks>If token provider is null, <see cref="WolfTokenProvider"/> will be used.</remarks>
         /// <param name="tokenProvider">Token provider to use when generating token.</param>
         /// <returns>Generated connection token.</returns>
         private static string GetNewToken(ITokenProvider tokenProvider = null)
         {
             if (tokenProvider == null)
-                tokenProvider = new DefaultWolfTokenProvider();
+                tokenProvider = new WolfTokenProvider();
             return tokenProvider.GenerateToken(18);
         }
         #endregion
@@ -210,6 +214,7 @@ namespace TehGM.Wolfringo
         #region Connection management
         /// <inheritdoc/>
         /// <param name="device">Device to connect as.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         public Task ConnectAsync(WolfDevice device, CancellationToken cancellationToken = default)
         {
             if (this.IsConnected)
@@ -258,24 +263,24 @@ namespace TehGM.Wolfringo
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
-            if (string.IsNullOrWhiteSpace(message.Command))
+            if (string.IsNullOrWhiteSpace(message.EventName))
                 throw new ArgumentException("Message command cannot be null, empty or whitespace", nameof(message));
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
             using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
             {
-                Log?.LogTrace("Sending {Command}", message.Command);
+                Log?.LogTrace("Sending {Command}", message.EventName);
                 // select serializer
-                if (!MessageSerializers.TryFindMappedSerializer(message.Command, out IMessageSerializer serializer))
+                if (!MessageSerializers.TryFindSerializer(message.EventName, out IMessageSerializer serializer))
                 {
                     // try fallback simple serialization
-                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.Command);
+                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.EventName);
                     serializer = MessageSerializers.FallbackSerializer;
                 }
                 // serialize and send message
                 SerializedMessageData data = serializer.Serialize(message);
-                uint msgID = await SocketClient.SendAsync(message.Command, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                uint msgID = await SocketClient.SendAsync(message.EventName, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
                 IWolfResponse response = await AwaitResponseAsync<TResponse>(msgID, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
                     throw new MessageSendingException(message, response);
@@ -285,13 +290,14 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Waits for response for sent message.</summary>
-        /// <remarks><para>If client uses <see cref="DefaultResponseTypeResolver"/>, the type of response provided with 
-        /// <see cref="ResponseTypeAttribute"/> on <paramref name="message"/> will be used for deserialization, 
+        /// <remarks><para>If client uses <see cref="Messages.Responses.ResponseTypeResolver"/>, the type of response provided with 
+        /// <see cref="ResponseTypeAttribute"/> on <paramref name="sentMessage"/> will be used for deserialization, 
         /// and <typeparamref name="TResponse"/> will be used only for casting. If <see cref="ResponseTypeAttribute"/> is not set on
-        /// <paramref name="message"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
+        /// <paramref name="sentMessage"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
         /// <typeparam name="TResponse">Response type to cast response to.</typeparam>
         /// <param name="messageID">Sent message ID.</param>
         /// <param name="sentMessage">Sent message.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         /// <returns>Server's response.</returns>
         private Task<IWolfResponse> AwaitResponseAsync<TResponse>(uint messageID, IWolfMessage sentMessage, 
             CancellationToken cancellationToken = default) where TResponse : IWolfResponse
@@ -312,7 +318,7 @@ namespace TehGM.Wolfringo
                 {
                     // parse response
                     Type responseType = ResponseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
-                    if (!ResponseSerializers.TryFindMappedSerializer(responseType, out IResponseSerializer serializer))
+                    if (!ResponseSerializers.TryFindSerializer(responseType, out IResponseSerializer serializer))
                     {
                         Log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
                         serializer = ResponseSerializers.FallbackSerializer;
@@ -347,6 +353,7 @@ namespace TehGM.Wolfringo
         /// <param name="message">Sent message.</param>
         /// <param name="response">Response received.</param>
         /// <param name="rawResponse">Raw response data.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         protected virtual Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             // don't do anything if response is not successful
@@ -527,6 +534,7 @@ namespace TehGM.Wolfringo
             return result;
         }
         /// <summary>Get achievement from cache.</summary>
+        /// <param name="language">Language of the achievement data.</param>
         /// <param name="id">ID of the achievement.</param>
         /// <returns>Cached achievement if found; otherwise null.</returns>
         /// <exception cref="InvalidOperationException">Not connected.</exception>
@@ -555,7 +563,7 @@ namespace TehGM.Wolfringo
                 if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
                 {
                     // find serializer for command
-                    if (!MessageSerializers.TryFindMappedSerializer(command, out IMessageSerializer serializer))
+                    if (!MessageSerializers.TryFindSerializer(command, out IMessageSerializer serializer))
                     {
                         // don't throw exception here, as doing so will kill the socket client loop
                         Log?.LogError("Serializer for command {Command} not found", command);
@@ -592,6 +600,7 @@ namespace TehGM.Wolfringo
         /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
         /// <param name="message">Received message.</param>
         /// <param name="rawMessage">Raw received message.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         protected virtual async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             // if welcome is already logged in, we can populate userID

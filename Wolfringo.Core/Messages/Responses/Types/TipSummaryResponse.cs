@@ -12,6 +12,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonConverter(typeof(KeyAndValueDictionaryConverter<WolfTimestamp, IEnumerable<WolfTip>>), "charmList")]
         public IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>> Tips { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected TipSummaryResponse() : base() { }
     }

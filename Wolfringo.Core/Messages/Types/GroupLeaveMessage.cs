@@ -6,8 +6,9 @@ namespace TehGM.Wolfringo.Messages
     public class GroupLeaveMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberDelete"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupMemberDelete;
+        public string EventName => MessageEventNames.GroupMemberDelete;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("groupId")]
@@ -17,6 +18,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("subscriberId", NullValueHandling = NullValueHandling.Ignore)]
         public uint? UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupLeaveMessage() { }
 

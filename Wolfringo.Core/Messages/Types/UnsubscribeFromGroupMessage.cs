@@ -9,18 +9,20 @@ namespace TehGM.Wolfringo.Messages
     public class UnsubscribeFromGroupMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageGroupUnsubscribe"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.MessageGroupUnsubscribe;
+        public string EventName => MessageEventNames.MessageGroupUnsubscribe;
 
         /// <summary>IDs of the groups.</summary>
         [JsonProperty("idList")]
         public IEnumerable<uint> GroupIDs { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UnsubscribeFromGroupMessage() { }
 
         /// <summary>Creates a message instance.</summary>
-        /// <param name="groupID">ID of the group to unsubscribe from.</param>
+        /// <param name="groupIDs">IDs of the groups to unsubscribe from.</param>
         public UnsubscribeFromGroupMessage(IEnumerable<uint> groupIDs) : this()
         {
             if (groupIDs != null)

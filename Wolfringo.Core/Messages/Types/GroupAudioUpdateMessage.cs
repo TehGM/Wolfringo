@@ -7,8 +7,9 @@ namespace TehGM.Wolfringo.Messages
     public class GroupAudioUpdateMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupAudioUpdate"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupAudioUpdate;
+        public string EventName => MessageEventNames.GroupAudioUpdate;
 
         /// <summary>Is audio stage enabled?</summary>
         [JsonProperty("enabled")]
@@ -26,9 +27,11 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("sourceSubscriberId", NullValueHandling = NullValueHandling.Ignore)]
         public uint? UpdatingUserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupAudioUpdateMessage() { }
 
+        /// <summary>A builder class for <see cref="GroupAudioUpdateMessage"/>.</summary>
         public class Builder
         {
             /// <summary>ID of the group.</summary>

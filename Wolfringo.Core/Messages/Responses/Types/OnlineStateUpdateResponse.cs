@@ -11,6 +11,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonConverter(typeof(ValueOrPropertyConverter), "state")]
         public WolfOnlineState OnlineState { get; private set; }
 
+        /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
         protected OnlineStateUpdateResponse() : base() { }
     }

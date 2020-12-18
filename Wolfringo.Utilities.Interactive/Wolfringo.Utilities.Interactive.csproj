@@ -4,9 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>TehGM</Authors>
     <Company>TehGM</Company>
-    <Version>0.2.0</Version>
+    <Version>1.0.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/TehGM/Wolfringo</PackageProjectUrl>
+    <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <Description>Interactive utilities for Wolfringo library.</Description>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
@@ -15,6 +15,11 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RootNamespace>TehGM.Wolfringo.Utilities.Interactive</RootNamespace>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReleaseNotes>https://github.com/TehGM/Wolfringo/releases/tag/1.0.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

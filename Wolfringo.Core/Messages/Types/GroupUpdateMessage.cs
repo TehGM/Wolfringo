@@ -10,8 +10,9 @@ namespace TehGM.Wolfringo.Messages
     public class GroupUpdateMessage : IWolfMessage, IGroupEditMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupProfileUpdate"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupProfileUpdate;
+        public string EventName => MessageEventNames.GroupProfileUpdate;
 
         // main props
         /// <summary>ID of the group.</summary>
@@ -40,9 +41,11 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("longDescription")]
         public string LongDescription { get; protected set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupUpdateMessage() { }
 
+        /// <summary>A builder class for <see cref="GroupUpdateMessage"/>.</summary>
         public class Builder
         {
             /// <summary>ID of the group.</summary>

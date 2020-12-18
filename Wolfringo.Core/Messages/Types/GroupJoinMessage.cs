@@ -6,8 +6,9 @@ namespace TehGM.Wolfringo.Messages
     public class GroupJoinMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberAdd"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupMemberAdd;
+        public string EventName => MessageEventNames.GroupMemberAdd;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("groupId", NullValueHandling = NullValueHandling.Ignore)]
@@ -28,6 +29,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("capabilities", NullValueHandling = NullValueHandling.Ignore)]
         public WolfGroupCapabilities? Capabilities { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupJoinMessage() { }
 
@@ -42,7 +44,7 @@ namespace TehGM.Wolfringo.Messages
         }
 
         /// <summary>Creates a message instance.</summary>
-        /// <param name="groupID">ID of the group to join.</param>
+        /// <param name="groupName">Name of the group to join.</param>
         /// <param name="password">Password to use when joining the group.</param>
         public GroupJoinMessage(string groupName, string password = null) : this()
         {

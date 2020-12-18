@@ -9,7 +9,8 @@ namespace TehGM.Wolfringo.Messages
     public class GroupListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberGroupList"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberGroupList;
+        public string EventName => MessageEventNames.SubscriberGroupList;
     }
 }

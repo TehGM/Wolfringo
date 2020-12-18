@@ -13,8 +13,9 @@ namespace TehGM.Wolfringo.Messages
     public class LoginMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SecurityLogin"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SecurityLogin;
+        public string EventName => MessageEventNames.SecurityLogin;
 
         /// <inheritdoc/>
         [JsonIgnore]
@@ -41,6 +42,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonIgnore]
         public WolfLoginType LoginType { get; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected LoginMessage() { }
 
@@ -74,6 +76,9 @@ namespace TehGM.Wolfringo.Messages
                 this.Password = password;
         }
 
+        /// <summary>Converts <see cref="WolfLoginType"/> to its string representation that is recognized by WOLF protocol.</summary>
+        /// <param name="loginType">Login type to convert to string.</param>
+        /// <returns>String representation.</returns>
         public static string LoginTypeToString(WolfLoginType loginType)
         {
             switch (loginType)

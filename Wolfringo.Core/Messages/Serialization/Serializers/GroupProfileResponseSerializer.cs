@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>Serializer for <see cref="GroupProfileResponse"/>.</summary>
     public class GroupProfileResponseSerializer : DefaultResponseSerializer
     {
         private static readonly Type _groupProfileResponseType = typeof(GroupProfileResponse);

@@ -7,8 +7,9 @@ namespace TehGM.Wolfringo.Messages
     public class GroupAdminMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupAdmin"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupAdmin;
+        public string EventName => MessageEventNames.GroupAdmin;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("groupId")]
@@ -20,6 +21,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("capabilities", NullValueHandling = NullValueHandling.Ignore)]
         public WolfGroupCapabilities Capabilities { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupAdminMessage() { }
 

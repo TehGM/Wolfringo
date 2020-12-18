@@ -6,10 +6,12 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
+    /// <summary>A serializer for <see cref="ChatUpdateResponse"/>.</summary>
     public class ChatUpdateResponseSerializer : DefaultResponseSerializer, IResponseSerializer
     {
         private static readonly Type _chatUpdateResponseType = typeof(ChatUpdateResponse);
 
+        /// <inheritdoc/>
         public override IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData)
         {
             // first deserialize the json message
@@ -28,6 +30,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             return result;
         }
 
+        /// <inheritdoc/>
         protected override void ThrowIfInvalidType(Type responseType)
         {
             base.ThrowIfInvalidType(responseType);

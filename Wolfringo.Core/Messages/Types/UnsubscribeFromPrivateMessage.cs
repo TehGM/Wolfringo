@@ -6,7 +6,8 @@ namespace TehGM.Wolfringo.Messages
     public class UnsubscribeFromPrivateMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessagePrivateUnsubscribe"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.MessagePrivateUnsubscribe;
+        public string EventName => MessageEventNames.MessagePrivateUnsubscribe;
     }
 }

@@ -6,13 +6,15 @@ namespace TehGM.Wolfringo.Messages
     public class ContactDeleteMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberContactDelete"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberContactDelete;
+        public string EventName => MessageEventNames.SubscriberContactDelete;
 
         /// <summary>ID of user being removed from contacts.</summary>
         [JsonProperty("id")]
         public uint UserID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected ContactDeleteMessage() { }
 

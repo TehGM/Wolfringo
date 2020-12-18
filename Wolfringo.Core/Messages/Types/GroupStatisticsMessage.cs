@@ -9,13 +9,15 @@ namespace TehGM.Wolfringo.Messages
     public class GroupStatisticsMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupStats"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.GroupStats;
+        public string EventName => MessageEventNames.GroupStats;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("id")]
         public uint GroupID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected GroupStatisticsMessage() { }
 

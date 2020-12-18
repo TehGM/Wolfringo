@@ -26,14 +26,17 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             return result;
         }
 
+        /// <inheritdoc/>
         public override bool CanConvert(Type objectType)
         {
             return typeof(WolfTimestamp).IsAssignableFrom(objectType) || typeof(long).IsAssignableFrom(objectType) || typeof(DateTime).IsAssignableFrom(objectType);
         }
     }
 
+    /// <summary>Type converter for <see cref="WolfTimestamp"/>.</summary>
     public class WolfTimestampTypeConverter : TypeConverter
     {
+        /// <inheritdoc/>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if (value is string)

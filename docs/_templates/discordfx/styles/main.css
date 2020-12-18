@@ -1,0 +1,129 @@
+/* Kill the silly huge margins between headers, if one is after another */
+h1, h2 {
+    margin-block-start: 1.5em;
+}
+
+h3, h4, h5 {
+    margin-block-start: 2em;
+    border-bottom: none;
+}
+
+h1 + h2, h1 + h3, h2 + h2, h2 + h3 {
+    margin-block-start: 1em;
+}
+
+/* Switch headings appearance so they make more sense in order they tend to appear */
+h1 {
+    font-size: 30px;
+}
+h2 {
+    padding-left: 3px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--separator-color);
+    font-size: 26px;
+}
+h3 {
+    padding-left: 5px;
+    font-size: 23px;
+    font-weight: bold;
+    color: var(--h4-color);
+    border-left: 3px solid var(--h3-color);
+}
+h4 {
+    font-size: 20.5px;
+    color: var(--h4-color);
+}
+h5 {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--h3-color);
+}
+h6 {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--h3-color);
+}
+
+
+/* Fix numbered lists */
+li {
+    display: list-item;
+}
+article ul {
+    list-style-type: unset;
+}
+
+
+/* Add tabs list support */
+.tabGroup {
+    margin-top: 1.5rem;
+}
+
+    .tabGroup ul[role="tablist"] {
+        list-style: none;
+        margin-bottom: 0;
+    }
+
+        .tabGroup ul[role="tablist"] > li {
+            list-style: none;
+            display: inline-block;
+        }
+
+    .tabGroup a[role="tab"] {
+        padding: 5px 15px 0px;
+        text-decoration: none;
+        display: inline-block;
+        box-sizing: border-box;
+        color: white;
+        border-bottom: 2px solid white;
+    }
+        .tabGroup a[role="tab"][aria-selected="true"], .tabGroup a[role="tab"]:hover, .tabGroup a[role="tab"]:focus {
+            color: #81D4FA;
+            border-bottom: 2px solid #81D4FA;
+        }
+
+    .tabGroup section[role="tabpanel"] {
+        border: 1px solid #607D8B;
+        border-left: none;
+        border-right: none;
+        overflow: hidden;
+    }
+
+
+/* Reduce footer font size */
+.footer {
+    font-size: 12px;
+}
+
+/* Remove empty breadcrumb on index page */
+#breadcrumb:empty {
+    display: none;
+}
+
+/* pad at bottom a bit, to move bottom text a little up */
+div.hide-when-search[role="main"] {
+    padding-bottom: 25px;
+}
+
+/* Make title look like an actual title */
+.brand:hover {
+    text-decoration: underline solid white;
+}
+.brand .brand-title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Fix anchor links */
+h1 > .anchorjs-link, h2 > .anchorjs-link, h3 > .anchorjs-link, h4 > .anchorjs-link, h5 > .anchorjs-link {
+    position: relative !important;
+    left: -5px;
+}
+h3 > .anchorjs-link {
+    left: -10px;
+}
+
+/* Hide "Search Results for" */
+#search-results {
+    display: none;
+}

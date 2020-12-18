@@ -15,6 +15,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
         private static readonly Type _addMessageType = typeof(ContactAddMessage);
         private static readonly Type _deleteMessageType = typeof(ContactDeleteMessage);
 
+        /// <summary>Creates a new serializer instance.</summary>
+        /// <exception cref="InvalidOperationException"><typeparamref name="T"/> is not either <see cref="ContactAddMessage"/> or <see cref="ContactDeleteMessage"/>.</exception>
         public ContactAddDeleteMessageSerializer()
         {
             ThrowIfInvalidMessageType(typeof(T));

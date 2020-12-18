@@ -8,8 +8,9 @@ namespace TehGM.Wolfringo.Messages
     public class WelcomeEvent : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.Welcome"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.Welcome;
+        public string EventName => MessageEventNames.Welcome;
 
         /// <summary>IP address connection is established from.</summary>
         [JsonProperty("ip")]
@@ -34,6 +35,7 @@ namespace TehGM.Wolfringo.Messages
             /// <summary>Avatars endpoint.</summary>
             [JsonProperty("avatarEndpoint")]
             public string AvatarEndpoint { get; private set; }
+            /// <summary>Endpoint for MMS uploads.</summary>
             [JsonProperty("mmsUploadEndpoint")]
             public string MmsUploadEndpoint { get; private set; }
             /// <summary>Banner images endpoint.</summary>
@@ -52,6 +54,7 @@ namespace TehGM.Wolfringo.Messages
             public IDictionary<string, string> PromotionEndpoints { get; private set; }
         }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected WelcomeEvent() { }
     }

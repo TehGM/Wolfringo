@@ -6,7 +6,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
     /// <remarks><para>This interface is designed to allow invoking callback conditionally. If <see cref="TryInvoke(IWolfMessage)"/> returns false,
     /// it doesn't meant invoking failed - it means that callback determined it should not invoke for the provided message.</para>
     /// <para>This callback will only invoke if message is of type <typeparamref name="T"/>, 
-    /// and message's <see cref="IWolfMessage.Command"/> is the same as the one provided in class constructor.</para></remarks>
+    /// and message's <see cref="IWolfMessage.EventName"/> is the same as the one provided in class constructor.</para></remarks>
     public class CommandMessageCallback<T> : TypedMessageCallback<T> where T : IWolfMessage
     {
         /// <summary>Callback will be invoked for messages with command matching this value.</summary>
@@ -25,10 +25,10 @@ namespace TehGM.Wolfringo.Utilities.Internal
 
         /// <inheritdoc/>
         /// <remarks>This callback will only invoke if <paramref name="message"/> is of type <typeparamref name="T"/>, 
-        /// and <paramref name="message"/>'s <see cref="IWolfMessage.Command"/> is the same as the one provided in class constructor.</remarks>
+        /// and <paramref name="message"/>'s <see cref="IWolfMessage.EventName"/> is the same as the one provided in class constructor.</remarks>
         public override bool TryInvoke(IWolfMessage message)
         {
-            if (!string.Equals(message.Command, this.Command, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(message.EventName, this.Command, StringComparison.OrdinalIgnoreCase))
                 return false;
             return base.TryInvoke(message);
         }

@@ -10,8 +10,9 @@ namespace TehGM.Wolfringo.Messages
     public class SubscribeToGroupMessage : IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessageGroupSubscribe"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.MessageGroupSubscribe;
+        public string EventName => MessageEventNames.MessageGroupSubscribe;
         /// <inheritdoc/>
         [JsonIgnore]
         public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
@@ -24,6 +25,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public uint? GroupID { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         public SubscribeToGroupMessage() { }
 

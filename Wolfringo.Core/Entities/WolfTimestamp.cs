@@ -36,13 +36,21 @@ namespace TehGM.Wolfringo
         public DateTime ToDateTime()
             => Epoch.AddTicks(_value * 10);
 
+        /// <summary>Converts WOLF timestamp to a DateTime.</summary>
+        /// <param name="timestamp">Wolf Timestamp to convert.</param>
         public static implicit operator DateTime(WolfTimestamp timestamp)
             => timestamp.ToDateTime();
+        /// <summary>Converts DateTime to a WOLF timestamp.</summary>
+        /// <param name="timestamp">DateTime to convert.</param>
         public static implicit operator WolfTimestamp(DateTime timestamp)
             => new WolfTimestamp(timestamp);
 
+        /// <summary>Converts WOLF timestamp to am Int64 value.</summary>
+        /// <param name="timestamp">Wolf Timestamp to convert.</param>
         public static implicit operator long(WolfTimestamp timestamp)
             => timestamp._value;
+        /// <summary>Converts Int64 value to a WOLF timestamp.</summary>
+        /// <param name="timestamp">Int64 value to convert.</param>
         public static implicit operator WolfTimestamp(long timestamp)
             => new WolfTimestamp(timestamp);
 
@@ -137,9 +145,11 @@ namespace TehGM.Wolfringo
         public override int GetHashCode()
             => -1939223833 + this._value.GetHashCode();
 
+        /// <inheritdoc/>
         public static bool operator ==(WolfTimestamp left, WolfTimestamp right)
             => left.Equals(right);
 
+        /// <inheritdoc/>
         public static bool operator !=(WolfTimestamp left, WolfTimestamp right)
             => !(left == right);
         #endregion

@@ -13,8 +13,10 @@ namespace TehGM.Wolfringo.Messages
     [ResponseType(typeof(TipSummaryResponse))]
     public class TipSummaryMessage : IWolfMessage
     {
+        /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.TipSummary"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.TipSummary;
+        public string EventName => MessageEventNames.TipSummary;
 
         /// <summary>Request context type.</summary>
         [JsonProperty("contextType")]

@@ -18,12 +18,13 @@ namespace TehGM.Wolfringo
         /// <summary>Disconnects from the server.</summary>
         Task DisconnectAsync(CancellationToken cancellationToken = default);
         /// <summary>Sends message, and waits for response from the server.</summary>
-        /// <remarks><para>If client uses <see cref="DefaultResponseTypeResolver"/>, the type of response provided with 
+        /// <remarks><para>If client uses <see cref="ResponseTypeResolver"/>, the type of response provided with 
         /// <see cref="ResponseTypeAttribute"/> on <paramref name="message"/> will be used for deserialization, 
         /// and <typeparamref name="TResponse"/> will be used only for casting. If <see cref="ResponseTypeAttribute"/> is not set on
         /// <paramref name="message"/>, <typeparamref name="TResponse"/> will be used for deserialization as normal.</para></remarks>
         /// <typeparam name="TResponse">Response type to use for casting of response.</typeparam>
         /// <param name="message">Message to send.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         /// <returns>Sending response.</returns>
         /// <exception cref="MessageSendingException">Server responded with error.</exception>
         Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse;

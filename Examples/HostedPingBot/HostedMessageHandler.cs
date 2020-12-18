@@ -2,7 +2,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TehGM.Wolfringo.Hosting;
 using TehGM.Wolfringo.Messages;
 
 namespace TehGM.Wolfringo.Examples.HostedPingBot
@@ -15,10 +14,10 @@ namespace TehGM.Wolfringo.Examples.HostedPingBot
     /// For more info on hosted services, see <see href="https://docs.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/background-tasks-with-ihostedservice">Microsoft Docs</see>.</para></remarks>
     public class HostedMessageHandler : IHostedService
     {
-        private readonly IHostedWolfClient _client;
+        private readonly IWolfClient _client;
 
         // can also be IWolfClient
-        public HostedMessageHandler(IHostedWolfClient client)
+        public HostedMessageHandler(IWolfClient client)
         {
             this._client = client;
             this._client.AddMessageListener<ChatMessage>(OnChatMessage);

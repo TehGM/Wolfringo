@@ -6,7 +6,8 @@ namespace TehGM.Wolfringo.Messages
     public class LogoutMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SecurityLogout"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SecurityLogout;
+        public string EventName => MessageEventNames.SecurityLogout;
     }
 }

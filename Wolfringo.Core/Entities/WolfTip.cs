@@ -21,9 +21,11 @@ namespace TehGM.Wolfringo
         [JsonProperty("subscriber", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(ValueOrPropertyConverter), "id")]
         public uint? SenderID { get; private set; }
+        /// <summary>?</summary>
         [JsonProperty("magnitude", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public int Magnitude { get; private set; }
 
+        /// <summary>Creates a new instance of WOLF tip.</summary>
         [JsonConstructor]
         protected WolfTip() { }
 
@@ -39,7 +41,9 @@ namespace TehGM.Wolfringo
         /// <summary>Tip's context type.</summary>
         public enum ContextType
         {
+            /// <summary>Tip for a chat message.</summary>
             Message,
+            /// <summary>Tip for a stage session.</summary>
             Stage
         }
     }

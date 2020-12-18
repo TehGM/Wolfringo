@@ -9,13 +9,15 @@ namespace TehGM.Wolfringo.Messages
     public class ContactListMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberContactList"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberContactList;
+        public string EventName => MessageEventNames.SubscriberContactList;
 
         /// <summary>Subscribe to contacts' profile updates?</summary>
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected ContactListMessage() { }
 

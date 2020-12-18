@@ -16,6 +16,7 @@ namespace TehGM.Wolfringo.Messages.Responses
         [JsonProperty("subMessage", NullValueHandling = NullValueHandling.Ignore)]
         public string ErrorMessage { get; private set; }
 
+        /// <summary>Creates a new class of base WOLF protocol response.</summary>
         [JsonConstructor]
         protected WolfResponse() { }
     }

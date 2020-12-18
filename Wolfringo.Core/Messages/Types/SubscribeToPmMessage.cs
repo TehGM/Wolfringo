@@ -7,8 +7,9 @@ namespace TehGM.Wolfringo.Messages
     public class SubscribeToPmMessage : IHeadersWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.MessagePrivateSubscribe"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.MessagePrivateSubscribe;
+        public string EventName => MessageEventNames.MessagePrivateSubscribe;
         /// <inheritdoc/>
         [JsonIgnore]
         public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()

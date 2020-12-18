@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 
-namespace TehGM.Wolfringo
+namespace TehGM.Wolfringo.Messages
 {
     /// <summary>A message for updating a group.</summary>
     /// <remarks>Uses <see cref="UserUpdateResponse"/> as response type.</remarks>
@@ -13,8 +12,9 @@ namespace TehGM.Wolfringo
     public class UserUpdateMessage : IWolfMessage
     {
         /// <inheritdoc/>
+        /// <remarks>Equals to <see cref="MessageEventNames.SubscriberProfileUpdate"/>.</remarks>
         [JsonIgnore]
-        public string Command => MessageCommands.SubscriberProfileUpdate;
+        public string EventName => MessageEventNames.SubscriberProfileUpdate;
 
         // main props
         /// <summary>User's display name.</summary>
@@ -46,9 +46,11 @@ namespace TehGM.Wolfringo
         [JsonProperty("urls")]
         public IEnumerable<string> Links { get; protected set; }
 
+        /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
         protected UserUpdateMessage() { }
 
+        /// <summary>A builder class for <see cref="UserUpdateMessage"/>.</summary>
         public class Builder
         {
             // main props
