@@ -19,20 +19,20 @@ Default means to install Wolfringo is through NuGet package.
 ### [Package Manager Console](#tab/install-with-pmconsole)
 Run following command in VS Package Manager Console:  
 ```bash
-Install-Package Wolfringo -Version 1.0.0
+Install-Package Wolfringo -Version 1.1.0
 ```
 
 ### [Command Line](#tab/install-with-cli)
 Run following commands in command line:  
 ```bash
-dotnet add package Wolfringo --version 1.0.0
+dotnet add package Wolfringo --version 1.1.0
 dotnet restore
 ```
 
 ### [.csproj File](#tab/install-with-csproj)
 Add following package reference to your .csproj file:  
 ```xml
-<PackageReference Include="Wolfringo" Version="1.0.0" />
+<PackageReference Include="Wolfringo" Version="1.1.0" />
 ```
 ***
 
