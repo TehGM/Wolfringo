@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -45,6 +46,9 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>User's links.</summary>
         [JsonProperty("urls")]
         public IEnumerable<string> Links { get; protected set; }
+        /// <summary>User's date of birth.</summary>
+        [JsonProperty("dateOfBirth")]
+        public DateTime? DateOfBirth { get; protected set; }
 
         /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
@@ -73,6 +77,8 @@ namespace TehGM.Wolfringo.Messages
             public WolfLookingFor LookingFor { get; set; }
             /// <summary>User's links.</summary>
             public ICollection<string> Links { get; set; }
+            /// <summary>User's date of birth.</summary>
+            public DateTime? DateOfBirth { get; set; }
 
             /// <summary>Create a new builder for <see cref="UserUpdateMessage"/>.</summary>
             /// <remarks>Ensure that <paramref name="user"/> is always currently connected user,
@@ -88,6 +94,7 @@ namespace TehGM.Wolfringo.Messages
                 this.Language = user.Language ?? WolfLanguage.NotSpecified;
                 this.Relationship = user.Relationship ?? WolfRelationship.NotSpecified;
                 this.LookingFor = user.LookingFor ?? WolfLookingFor.NotSpecified;
+                this.DateOfBirth = user.DateOfBirth;
                 // create new collection to not modify the underlying user
                 this.Links = user.Links == null ? new List<string>() : new List<string>(user.Links);
             }
@@ -105,6 +112,7 @@ namespace TehGM.Wolfringo.Messages
                     Gender = this.Gender,
                     Language = this.Language,
                     Relationship = this.Relationship,
+                    DateOfBirth = this.DateOfBirth,
                     Links = new ReadOnlyCollection<string>(
                         (this.Links as IList<string>) 
                         ?? this.Links?.ToArray() 

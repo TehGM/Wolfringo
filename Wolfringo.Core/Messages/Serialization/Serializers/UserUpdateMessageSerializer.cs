@@ -23,6 +23,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
             SerializationHelper.MovePropertyIfExists(ref body, ref extended, "relationship");
             SerializationHelper.MovePropertyIfExists(ref body, ref extended, "language");
             SerializationHelper.MovePropertyIfExists(ref body, ref extended, "urls");
+            SerializationHelper.MovePropertyIfExists(ref body, ref extended, "dateOfBirth");
             if (extended.HasValues)
                 body.Add(new JProperty("extended", extended));
             return result;
