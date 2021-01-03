@@ -7,3 +7,5 @@
       topicUid: FAQ.OtherLibs.WolfNet
     - name: WolfLive.Api
       topicUid: FAQ.OtherLibs.WolfLiveApi
+    - name: WOLFApi-TS
+      topicUid: FAQ.OtherLibs.WolfApiTs

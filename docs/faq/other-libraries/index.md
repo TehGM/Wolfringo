@@ -9,3 +9,4 @@ Hopefully seeing the answers should make it easier to use Wolfringo if you have 
 
 - [WOLF.Net](xref:FAQ.OtherLibs.WolfNet)
 - [WolfLive.Api](xref:FAQ.OtherLibs.WolfLiveApi)
+- [WOLFApi-TS](xref:FAQ.OtherLibs.WolfApiTs)

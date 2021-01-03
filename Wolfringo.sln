@@ -90,6 +90,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "other-libraries", "other-libraries", "{E548ABF9-E1CA-41DD-BDF5-13DF7526CCC9}"
 	ProjectSection(SolutionItems) = preProject
 		docs\faq\other-libraries\index.md = docs\faq\other-libraries\index.md
+		docs\faq\other-libraries\wolfapi-ts.md = docs\faq\other-libraries\wolfapi-ts.md
 		docs\faq\other-libraries\wolfliveapi.md = docs\faq\other-libraries\wolfliveapi.md
 		docs\faq\other-libraries\wolfnet.md = docs\faq\other-libraries\wolfnet.md
 	EndProjectSection
