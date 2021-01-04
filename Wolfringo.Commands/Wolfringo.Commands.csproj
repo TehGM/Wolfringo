@@ -17,7 +17,8 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
-    <PackageReleaseNotes>- Added missing documentation comments.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added missing documentation comments.
+- Made some methods of SimpleServiceProvider an implicit implementations.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>

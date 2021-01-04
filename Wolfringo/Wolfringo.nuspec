@@ -18,6 +18,7 @@
 - Added WolfUser's Date of Birth support.
 - Added Avatar utilities.
 - Added missing documentation comments.
+- Made some methods of SimpleServiceProvider an implicit implementations.
     </releaseNotes>
     <dependencies>
       <group>

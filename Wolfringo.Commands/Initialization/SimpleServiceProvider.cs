@@ -37,9 +37,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
         }
 
         /// <inheritdoc/>
-        public IServiceScope CreateScope() => this;
+        IServiceScope IServiceScopeFactory.CreateScope() => this;
 
         /// <inheritdoc/>
-        public void Dispose() { }
+        void IDisposable.Dispose() { }
     }
 }
