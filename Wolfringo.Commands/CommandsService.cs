@@ -37,7 +37,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly IParameterBuilder _parameterBuilder;
         private readonly IArgumentConverterProvider _argumentConverterProvider;
         private readonly ILogger _log;
-        private CancellationTokenSource _cts;
+        private readonly CancellationTokenSource _cts;
 
         private readonly ICollection<IDisposable> _disposableServices;
         private bool _started;
