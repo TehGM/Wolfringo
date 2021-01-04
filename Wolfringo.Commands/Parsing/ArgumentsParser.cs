@@ -50,6 +50,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
             return results.Where(s => !string.IsNullOrWhiteSpace(s));
         }
 
+        /// <summary>Parses a block.</summary>
+        /// <param name="input">Entire command input.</param>
+        /// <param name="cursor">Current parser position.</param>
+        /// <param name="terminator">The character to end the block with.</param>
+        /// <param name="results">Parsed arguments.</param>
         protected virtual void ParseBlock(string input, ref int cursor, char? terminator, ref ICollection<string> results)
         {
             List<char> block = new List<char>(this.InitialBlockSizeAllocation);

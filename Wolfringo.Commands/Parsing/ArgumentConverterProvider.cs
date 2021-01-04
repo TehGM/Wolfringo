@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
 {
     /// <inheritdoc/>
     /// <remarks><para>This default command argument converter provider is designed to match a type to a converter, and automatically handle enums.</para>
-    /// <para>Besides enums, all converters simply match the type. If your custom converter uses complex logic in its <see cref="IArgumentConverter.CanConvert(Type)"/> method, please create own provider class, or inherit from this class.</para></remarks>
+    /// <para>Besides enums, all converters simply match the type. If your custom converter uses complex logic in its <see cref="IArgumentConverter.CanConvert(ParameterInfo)"/> method, please create own provider class, or inherit from this class.</para></remarks>
     public class ArgumentConverterProvider : IArgumentConverterProvider, IDisposable
     {
         /// <summary>Options used by this provider.</summary>

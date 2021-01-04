@@ -16,6 +16,7 @@ namespace TehGM.Wolfringo.Commands.Results
         /// <summary>Creates a new result instance.</summary>
         /// <param name="isSuccess">Whether check was successful.</param>
         /// <param name="regexMatch">Result of regex match.</param>
+        /// <param name="exception">Exception that occured.</param>
         public RegexCommandMatchResult(bool isSuccess, Match regexMatch, Exception exception)
         {
             this.IsSuccess = isSuccess;

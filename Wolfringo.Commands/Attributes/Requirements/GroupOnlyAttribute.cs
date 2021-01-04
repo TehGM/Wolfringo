@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Commands
     /// <seealso cref="PrivateOnlyAttribute"/>
     public class GroupOnlyAttribute : CommandRequirementAttribute
     {
+        /// <summary>Creates a new GroupOnly attribute instance.</summary>
         public GroupOnlyAttribute() : base() 
             => ErrorMessage = "(n) This command can be used in groups only.";
 

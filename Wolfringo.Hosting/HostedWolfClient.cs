@@ -21,12 +21,12 @@ namespace TehGM.Wolfringo.Hosting
     /// <para>This class supports configuration changes by using <see cref="IOptionsMonitor{TOptions}"/>.
     /// Whenever settings are changed, existing client is disconnected and disposed, and a new one is constructed.<br/>
     /// All listeners and event registrations will be re-assigned to the new client. All caches will be empty when client is rebuilt.</para>
-    /// <para>This class automatically handles reconnection, unless <see cref="HostedWolfClientOptions.AutoReconnect"/> is set to false.
+    /// <para>This class automatically handles reconnection, unless <see cref="HostedWolfClientOptions.AutoReconnectAttempts"/> is set to 0.
     /// If the client is disconnected manually by calling <see cref="DisconnectAsync(CancellationToken)"/>, automatic reconnection will not happen.</para>
     /// <para>The connection will automatically start when Host starts the service. This means that in Hosted scenarios (ASP.NET Core/Generic Host),
     /// starting the connection manually is not necessary.</para>
     /// <para>The client will login automatically whenever a connection is established, provided 
-    /// <see cref="HostedWolfClientOptions.LoginEmail"/> and <see cref="HostedWolfClientOptions.LoginPassword"/> are populated and 
+    /// <see cref="HostedWolfClientOptions.LoginUsername"/> and <see cref="HostedWolfClientOptions.LoginPassword"/> are populated and 
     /// <see cref="HostedWolfClientOptions.AutoLogin"/> is set to true. Otherwise, manual login will be required.</para></remarks>
     /// <seealso cref="WolfClient"/>
     /// <seealso cref="IWolfClient"/>
@@ -78,10 +78,12 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>Creates a new hosted client.</summary>
         /// <param name="options">Client configuration.</param>
         /// <param name="logger">Logger to log all log events.</param>
+        /// <param name="underlyingClientLogger">Logger that will be used by the underlying client.</param>
         /// <param name="tokenProvider">Wolf token generator.</param>
         /// <param name="messageSerializers">Map of message serializers.</param>
         /// <param name="responseSerializers">Map of response serializers.</param>
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
+        /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, ITokenProvider tokenProvider,
             ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver,

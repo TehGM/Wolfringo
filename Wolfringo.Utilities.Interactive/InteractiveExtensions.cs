@@ -13,6 +13,7 @@ namespace TehGM.Wolfringo
         /// <summary>Awaits next message of given type that matches specified conditions.</summary>
         /// <param name="client">Client to await message from.</param>
         /// <param name="conditions">Conditions that received message needs to match.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -27,6 +28,7 @@ namespace TehGM.Wolfringo
         /// <summary>Awaits next chat message in PM from specified user.</summary>
         /// <param name="client">Client to await message from.</param>
         /// <param name="userID">User ID to await the message from.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -42,6 +44,7 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="userID">User ID to await the message from.</param>
         /// <param name="groupID">Group ID to await the message from.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, CancellationToken)"/>
@@ -56,6 +59,7 @@ namespace TehGM.Wolfringo
         /// <summary>Awaits next chat message in specified group.</summary>
         /// <param name="client">Client to await message from.</param>
         /// <param name="groupID">Group ID to await the message from.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextPrivateByUserAsync(IWolfClient, uint, CancellationToken)"/>
         /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, CancellationToken)"/>
@@ -77,6 +81,7 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="conditions">Conditions that received message needs to match.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, TimeSpan, CancellationToken)"/>
         /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
@@ -107,6 +112,7 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="userID">User ID to await the message from.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan, CancellationToken)"/>
         /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, TimeSpan, CancellationToken)"/>
@@ -127,6 +133,7 @@ namespace TehGM.Wolfringo
         /// <param name="userID">User ID to await the message from.</param>
         /// <param name="groupID">Group ID to await the message from.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan, CancellationToken)"/>
         /// <seealso cref="AwaitNextInGroupAsync(IWolfClient, uint, TimeSpan, CancellationToken)"/>
@@ -146,6 +153,7 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to await message from.</param>
         /// <param name="groupID">Group ID to await the message from.</param>
         /// <param name="timeout">Timeout after which waiting will be aborted.</param>
+        /// <param name="cancellationToken">Token that can cancel the awaiting.</param>
         /// <returns>Next message.</returns>
         /// <seealso cref="AwaitNextAsync{T}(IWolfClient, Func{T, bool}, TimeSpan, CancellationToken)"/>
         /// <seealso cref="AwaitNextGroupByUserAsync(IWolfClient, uint, uint, TimeSpan, CancellationToken)"/>

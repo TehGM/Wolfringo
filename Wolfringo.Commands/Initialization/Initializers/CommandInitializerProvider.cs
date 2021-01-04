@@ -43,6 +43,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
             }
         }
 
+        /// <summary>Throws an exception if given command attribute is of incorrect type.</summary>
+        /// <param name="commandAttributeType">Type of command attribute.</param>
+        /// <exception cref="ArgumentException"><paramref name="commandAttributeType"/> does not inherit from <see cref="CommandAttributeBase"/>.</exception>
         protected void ThrowIfInvalidCommandType(Type commandAttributeType)
         {
             if (!typeof(CommandAttributeBase).IsAssignableFrom(commandAttributeType))

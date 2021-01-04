@@ -15,6 +15,7 @@ namespace TehGM.Wolfringo.Commands.Results
         /// <summary>Creates a new result instance.</summary>
         /// <param name="isSuccess">Whether check was successful.</param>
         /// <param name="arguments">Found arguments.</param>
+        /// <param name="exception">Exception that occured.</param>
         public StandardCommandMatchResult(bool isSuccess, string[] arguments, Exception exception)
         {
             this.IsSuccess = isSuccess;
