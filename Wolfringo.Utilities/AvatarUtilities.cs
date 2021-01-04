@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace TehGM.Wolfringo
+namespace TehGM.Wolfringo.Utilities
 {
     /// <summary>Utilities for getting avatar.</summary>
     public static class AvatarUtilities
