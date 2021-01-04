@@ -17,13 +17,14 @@
     <releaseNotes>
 - Added WolfUser's Date of Birth support.
 - Added Avatar utilities.
+- Added missing documentation comments.
     </releaseNotes>
     <dependencies>
       <group>
         <dependency id="Wolfringo.Core" version="1.1.0" />
         <dependency id="Wolfringo.Utilities" version="1.1.0" />
-        <dependency id="Wolfringo.Utilities.Interactive" version="1.0.0" />
-        <dependency id="Wolfringo.Commands" version="1.0.0"/>
+        <dependency id="Wolfringo.Utilities.Interactive" version="1.1.0" />
+        <dependency id="Wolfringo.Commands" version="1.1.0"/>
       </group>
     </dependencies>
   </metadata>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -15,9 +15,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>wolf palringo wolfringo pal bot client commands</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <PackageReleaseNotes>https://github.com/TehGM/Wolfringo/releases/tag/1.0.0</PackageReleaseNotes>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <PackageReleaseNotes>- Added missing documentation comments.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>

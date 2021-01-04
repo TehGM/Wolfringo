@@ -18,7 +18,8 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
-    <PackageReleaseNotes>Added WolfUser's Date of Birth support.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added WolfUser's Date of Birth support.
+- Added missing documentation comments.</PackageReleaseNotes>
   </PropertyGroup>
   
   <PropertyGroup>

@@ -20,7 +20,8 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>Added Avatar utilties.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added Avatar utilties.
+- Added missing documentation comments.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
