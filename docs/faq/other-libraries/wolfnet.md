@@ -18,7 +18,7 @@ Yes!
 ## Does Wolfringo have Forms?
 [WOLF.Net](https://github.com/dawalters1/Wolf.Net) features Forms - a way to have a set of ordered prompts to the user in a group. This is useful when for example creating an item that requires a set of values that can be varied, and therefore tough to determine using command arguments.
 
-***Wolfringo*** allows doing somqthing similar with a feature called [Interactive](xref:Guides.Features.Interactive). It takes a slightly different approach - instead od declaring a Form as a class that declares stages as methods, it awaits next message inline, making it more similar to functional programming.  
+***Wolfringo*** allows doing something similar with a feature called [Interactive](xref:Guides.Features.Interactive). It takes a slightly different approach - instead od declaring a Form as a class that declares stages as methods, it awaits next message inline, making it more similar to functional programming.  
 This means that with Wolfringo, any kind of command or event can start a "form", do it conditionally, and mix normal commands with "Form" commands.  
 Wolfringo also allows setting fully [custom waiting conditions](xref:Guides.Features.Interactive#custom-criteria).
 
