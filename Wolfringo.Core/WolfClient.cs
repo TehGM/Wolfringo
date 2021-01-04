@@ -378,7 +378,12 @@ namespace TehGM.Wolfringo
                 if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
                 {
                     foreach (WolfUser user in userProfileResponse.UserProfiles)
+                    {
+                        if (user == null)
+                            continue;
+
                         this.Caches?.UsersCache?.AddOrReplaceIfChanged(user);
+                    }
                 }
             }
 
@@ -389,6 +394,9 @@ namespace TehGM.Wolfringo
                 {
                     foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
                     {
+                        if (group == null)
+                            continue;
+
                         // repopulate group members if new group profile came without them
                         WolfGroup existingGroup = this.Caches?.GroupsCache?.Get(group.ID);
                         if (existingGroup != null && existingGroup.Members?.Any() == true && group.Members?.Any() != true)
