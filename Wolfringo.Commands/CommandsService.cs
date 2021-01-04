@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands
     /// This hierarchy is used through entire command execution, so custom provider does not need to specify services required by Commands Service.<br/>
     /// Fallback provider will create services only if they are not provided via custom provider.<br/>
     /// Services injected via custom provider will NOT be disposed when <see cref="Dispose"/> is invoked. Please dispose them manually.</para>
-    /// <</remarks>
+    /// </remarks>
     public class CommandsService : ICommandsService, IDisposable
     {
         private readonly IWolfClient _client;
@@ -37,7 +37,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly IParameterBuilder _parameterBuilder;
         private readonly IArgumentConverterProvider _argumentConverterProvider;
         private readonly ILogger _log;
-        private CancellationTokenSource _cts;
+        private readonly CancellationTokenSource _cts;
 
         private readonly ICollection<IDisposable> _disposableServices;
         private bool _started;

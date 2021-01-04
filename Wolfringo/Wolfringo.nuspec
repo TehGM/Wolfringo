@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -14,13 +14,18 @@
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
-    <releaseNotes>https://github.com/TehGM/Wolfringo/releases/tag/1.0.0</releaseNotes>
+    <releaseNotes>
+- Added WolfUser's Date of Birth support.
+- Added Avatar utilities.
+- Added missing documentation comments.
+- Made some methods of SimpleServiceProvider an implicit implementations.
+    </releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="1.0.0" />
-        <dependency id="Wolfringo.Utilities" version="1.0.0" />
-        <dependency id="Wolfringo.Utilities.Interactive" version="1.0.0" />
-        <dependency id="Wolfringo.Commands" version="1.0.0"/>
+        <dependency id="Wolfringo.Core" version="1.1.0" />
+        <dependency id="Wolfringo.Utilities" version="1.1.0" />
+        <dependency id="Wolfringo.Utilities.Interactive" version="1.1.0" />
+        <dependency id="Wolfringo.Commands" version="1.1.0"/>
       </group>
     </dependencies>
   </metadata>

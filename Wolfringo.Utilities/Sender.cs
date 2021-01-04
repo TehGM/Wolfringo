@@ -327,6 +327,7 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to get message history with.</param>
         /// <param name="oldestFirst">Whether to order retrieved messages from oldest to newest.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved messages.</returns>
         /// <seealso cref="GetGroupMessageHistoryAsync(IWolfClient, uint, WolfTimestamp?, bool, CancellationToken)"/>
         public static Task<IEnumerable<IChatMessage>> GetPrivateMessageHistoryAsync(this IWolfClient client, uint userID, bool oldestFirst, CancellationToken cancellationToken = default)

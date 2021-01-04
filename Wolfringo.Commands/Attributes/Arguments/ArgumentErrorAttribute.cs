@@ -65,7 +65,9 @@ namespace TehGM.Wolfringo.Commands.Attributes
 
         /// <summary>Builds error response for the sent message and arg.</summary>
         /// <param name="arg">Value of argument that failed converting.</param>
+        /// <param name="parameter">Parameter the error is for.</param>
         /// <param name="context">Message context that contains the argument.</param>
+        /// <param name="cancellationToken">Token to cancel any required server requests with.</param>
         public virtual async Task<string> ToStringAsync(ICommandContext context, string arg, ParameterInfo parameter, CancellationToken cancellationToken = default)
         {
             string result = this.TextTemplate;

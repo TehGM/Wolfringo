@@ -50,34 +50,38 @@ namespace TehGM.Wolfringo
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string ProfileName { get; private set; }
         /// <summary>User's "About Me" description.</summary>
-        /// <remarks>If this value is null, group request with extended data might be required.</remarks>
+        /// <remarks>If this value is null, user request with extended data might be required.</remarks>
         [JsonProperty("about", NullValueHandling = NullValueHandling.Ignore)]
         public string About { get; private set; }
         /// <summary>User's language.</summary>
-        /// <remarks>If this value is null, group request with extended data is required.</remarks>
+        /// <remarks>If this value is null, user request with extended data is required.</remarks>
         [JsonProperty("language", NullValueHandling = NullValueHandling.Ignore)]
         public WolfLanguage? Language { get; private set; }
         /// <summary>User's gender.</summary>
-        /// <remarks>If this value is null, group request with extended data is required.</remarks>
+        /// <remarks>If this value is null, user request with extended data is required.</remarks>
         [JsonProperty("gender", NullValueHandling = NullValueHandling.Ignore)]
         public WolfGender? Gender { get; private set; }
         /// <summary>User's looking for.</summary>
-        /// <remarks>If this value is null, group request with extended data is required.</remarks>
+        /// <remarks>If this value is null, user request with extended data is required.</remarks>
         [JsonProperty("lookingFor", NullValueHandling = NullValueHandling.Ignore)]
         public WolfLookingFor? LookingFor { get; private set; }
         /// <summary>User's relationship status.</summary>
-        /// <remarks>If this value is null, group request with extended data is required.</remarks>
+        /// <remarks>If this value is null, user request with extended data is required.</remarks>
         [JsonProperty("relationship", NullValueHandling = NullValueHandling.Ignore)]
         public WolfRelationship? Relationship { get; private set; }
         /// <summary>User's links.</summary>
-        /// <remarks>If this value is null, group request with extended data might be required.</remarks>
+        /// <remarks>If this value is null, user request with extended data might be required.</remarks>
         [JsonProperty("urls", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<string> Links { get; private set; }
         /// <summary>User's timezone offset.</summary>
-        /// <remarks>If this value is null, group request with extended data is required.</remarks>
+        /// <remarks>If this value is null, user request with extended data is required.</remarks>
         [JsonProperty("utcOffset", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(MinutesTimespanConverter))]
         public TimeSpan? UtcOffset { get; private set; }
+        /// <summary>User's date of birth.</summary>
+        /// <remarks>If this value is null, user request with extended data is required.</remarks>
+        [JsonProperty("dateOfBirth", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? DateOfBirth { get; private set; }
 
         /// <summary>Creates a new instance of WOLF user.</summary>
         [JsonConstructor]

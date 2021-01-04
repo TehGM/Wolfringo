@@ -11,12 +11,14 @@ using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>Dependency Injection extensions for <see cref="HostedWolfClient"/>.</summary>
     public static class WolfClientServiceCollectionExtensions
     {
         /// <summary>Adds Hosted Wolf Client to services as a hosted service, and all related services.</summary>
         /// <remarks><para>This method will also add <see cref="ITokenProvider"/>, <see cref="IResponseTypeResolver"/>,
         /// and <see cref="ISerializerProvider{TKey, TSerializer}"/> for messages and responses, unless already added.</para>
-        /// <para>Added client will be injectable as both <see cref="IHostedWolfClient"/> and <see cref="IWolfClient"/>.</para></remarks>
+        /// <para>Added client will be injectable as both <see cref="HostedWolfClient"/> and <see cref="IWolfClient"/>.</para></remarks>
+        /// <param name="services">Service collection to add new services to.</param>
         /// <param name="configureOptions">Configuration of client options.</param>
         public static IHostedWolfClientServiceBuilder AddWolfClient(this IServiceCollection services, Action<HostedWolfClientOptions> configureOptions = null)
         {

@@ -29,6 +29,11 @@ Most recent versions of this package are downloadable via [nuget.org](https://ww
 #### Older versions
 Older versions are available through GitHub Packages. See [Installation guide in Documentation](https://wolfringo.tehgm.net/guides/getting-started/installation#older-versions) for steps to install version before v0.4.0.
 
+### Requirements
+The library targets [.NET Standard 2.0](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard), and therefore works with .NET Core 2.0+, .NET Framework 4.6.1+ and .NET 5+.
+
+See [Introduction](https://wolfringo.tehgm.net/guides/index.html#requirements) in documentation for more details.
+
 
 ## Extending the client
 #### Serializer providers

@@ -6,7 +6,7 @@ using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {
-    /// <inheritdoc>/>
+    /// <inheritdoc/>
     /// <remarks><para>This provider will keep persistent handlers in its own cache, and reuse them when applicable.</para>
     /// <para>The persistent handler instances that implement <see cref="IDisposable"/> will be automatically disposed when <see cref="Dispose"/> method is called.</para></remarks>
     public class CommandsHandlerProvider : ICommandsHandlerProvider, IDisposable
@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this._lock = new object();
         }
 
-        /// <inheritdoc>/>
+        /// <inheritdoc/>
         public ICommandsHandlerProviderResult GetCommandHandler(ICommandInstanceDescriptor descriptor, IServiceProvider services)
         {
             Type handlerType = descriptor.GetHandlerType();

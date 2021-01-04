@@ -2,6 +2,7 @@
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
+    /// <summary>Extensions for command argument reflection.</summary>
     public static class CommandArgumentExtensions
     {
         /// <summary>Loads [ConvertingError] attribute specified for a param, or default if not present.</summary>

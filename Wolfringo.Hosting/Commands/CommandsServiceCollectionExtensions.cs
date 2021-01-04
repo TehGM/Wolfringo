@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>Dependency Injection extensions for <see cref="HostedCommandsService"/>.</summary>
     public static class CommandsServiceCollectionExtensions
     {
         /// <summary>Adds Wolfringo Commands System.</summary>

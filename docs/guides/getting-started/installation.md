@@ -16,10 +16,23 @@ Default means to install Wolfringo is through NuGet package.
 4. Press install in the window on the right.  
 ![](/_images/guides/install-vs-3.png)
 
-### [CLI](#tab/install-with-cli)
-Run following command in VS Developer Command Prompt:
-```cli
-Install-Package Wolfringo
+### [Package Manager Console](#tab/install-with-pmconsole)
+Run following command in VS Package Manager Console:  
+```bash
+Install-Package Wolfringo -Version 1.1.0
+```
+
+### [Command Line](#tab/install-with-cli)
+Run following commands in command line:  
+```bash
+dotnet add package Wolfringo --version 1.1.0
+dotnet restore
+```
+
+### [.csproj File](#tab/install-with-csproj)
+Add following package reference to your .csproj file:  
+```xml
+<PackageReference Include="Wolfringo" Version="1.1.0" />
 ```
 ***
 
@@ -35,11 +48,26 @@ Wolfringo includes support for [.NET Generic Host](https://docs.microsoft.com/en
 2. Additionally install Wolfringo.Hosting package.  
 ![](/_images/guides/install-vs-4.png)
 
-### [CLI](#tab/install-with-cli)
+### [Package Manager Console](#tab/install-with-pmconsole)
 1. Follow steps to [Install Wolfringo](#installation-guide).
-2. Run following command in VS Developer Command Prompt:  
-    ```cli
-    Install-Package Wolfringo.Hosting
+2. Run following command in VS Package Manager Console:  
+    ```bash
+    Install-Package Wolfringo.Hosting -Version 1.0.0
+    ```
+
+### [Command Line](#tab/install-with-cli)
+1. Follow steps to [Install Wolfringo](#installation-guide).
+2. Run following commands in command line:  
+    ```bash
+    dotnet add package Wolfringo.Hosting --version 1.0.0
+    dotnet restore
+    ```
+
+### [.csproj File](#tab/install-with-csproj)
+1. Follow steps to [Install Wolfringo](#installation-guide).
+2. Add following package reference to your .csproj file:  
+    ```xml
+    <PackageReference Include="Wolfringo.Hosting" Version="1.0.0" />
     ```
 ***
 
@@ -70,19 +98,58 @@ If you need to install older version ([0.1.0](https://github.com/TehGM/Wolfringo
 ![](/_images/guides/install-vs-9.png)
 
 
-### [CLI](#tab/install-with-cli)
+### [Package Manager Console](#tab/install-with-pmconsole)
 1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
-2. Run following commands to authenticate with GitHub Packages, replacing <GithubUsername> and <GithubToken> with your github username and generated PAT, respectively:
-    ```cli
+2. Run following commands to authenticate with GitHub Packages, replacing <GithubUsername> and <GithubToken> with your github username and generated PAT, respectively:  
+    ```bash
     dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
     ```
-3. Install package in your project
-    ```cli
+3. Install Wolfringo package in your project:  
+    ```bash
     Install-Package Wolfringo -Source "TehGM's GitHub"
     ```
-4. *(.NET Generic Host/ASP.NET Core only)* Install Wolfringo.Hosting package
-    ```cli
+4. *(.NET Generic Host/ASP.NET Core only)* Install Wolfringo.Hosting package:  
+    ```bash
     Install-Package Wolfringo.Hosting -Source "TehGM's GitHub"
+    ```
+
+    
+### [Command Line](#tab/install-with-cli)
+1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
+2. Run following commands to authenticate with GitHub Packages, replacing <GithubUsername> and <GithubToken> with your github username and generated PAT, respectively:  
+    ```bash
+    dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
+    ```
+3. Install package in your project:  
+    ```bash
+    dotnet add package Wolfringo --source "TehGM's GitHub"
+    ```
+4. *(.NET Generic Host/ASP.NET Core only)* Install Wolfringo.Hosting package:  
+    ```bash
+    dotnet add package Wolfringo.Hosting --source "TehGM's GitHub"
+    ```
+5. Restore packages:  
+    ```bash
+    dotnet restore
+    ```
+
+### [.csproj File](#tab/install-with-csproj)
+1. Create a GitHub personal access token (PAT): https://github.com/settings/tokens/new. Make sure you check `read:packages` scope.
+2. Run following commands to authenticate with GitHub Packages, replacing <GithubUsername> and <GithubToken> with your github username and generated PAT, respectively:
+    ```bash
+    dotnet nuget add source https://nuget.pkg.github.com/TehGM/index.json -n "TehGM's GitHub" -u <GithubUsername> -p <GithubToken>
+    ```
+3. Add Wolfringo package reference to your .csproj file:
+    ```xml
+    <PackageReference Include="Wolfringo" Version="0.3.4" />
+    ```
+4. *(.NET Generic Host/ASP.NET Core only)* Add Wolfringo.Hosting package reference to your .csproj file:
+    ```xml
+    <PackageReference Include="Wolfringo" Version="0.3.4" />
+    ```
+5. Restore packages with command line:
+    ```bash
+    dotnet restore
     ```
 ***
 

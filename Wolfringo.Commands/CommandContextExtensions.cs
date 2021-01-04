@@ -82,18 +82,21 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Sends a text message response message to group or user.</summary>
         /// <param name="context">Command context.</param>
         /// <param name="text">Content of the message.</param>
+        /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, CancellationToken cancellationToken = default)
         => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
         /// <summary>Sends an image response message to group or user.</summary>
         /// <param name="context">Command context.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>
+        /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyImageAsync(this ICommandContext context, IEnumerable<byte> imageBytes, CancellationToken cancellationToken = default)
             => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Image, imageBytes), cancellationToken);
         /// <summary>Sends a voice response message to group or user.</summary>
         /// <param name="context">Command context.</param>
         /// <param name="voiceBytes">Bytes of the voice to send.</param>
+        /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyVoiceAsync(this ICommandContext context, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Voice, voiceBytes), cancellationToken);

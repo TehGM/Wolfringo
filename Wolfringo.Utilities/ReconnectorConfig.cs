@@ -18,6 +18,11 @@ namespace TehGM.Wolfringo.Utilities
         /// <summary>Logger to log messages to.</summary>
         public ILogger Log { get; set; }
 
+        /// <summary>Creates a new reconnector configuration.</summary>
+        /// <param name="attempts">Max reconnection attempts. 0 will disable reconnection; negative number means infinite.</param>
+        /// <param name="delay">Delay between reconnection attempts.</param>
+        /// <param name="logger">Logger to log messages to.</param>
+        /// <param name="cancellationToken">Cancellation token for cancelling reconnection.</param>
         public ReconnectorConfig(int attempts, TimeSpan delay, ILogger logger = null, CancellationToken cancellationToken = default)
         {
             if (attempts == 0)
