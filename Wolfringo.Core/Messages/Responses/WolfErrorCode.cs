@@ -7,9 +7,9 @@ namespace TehGM.Wolfringo.Messages.Responses
     {
         /// <summary>User does not exist.</summary>
         NoSuchUser = 0,
-        /// <summary>Login was incorrect, or cannot send message to the group.</summary>
+        /// <summary>Login was incorrect, or cannot send message.</summary>
         // why tf use same event code for 2 different things is beyond me...
-        LoginIncorrectOrCannotSendToGroup = 1,
+        LoginIncorrectOrCannotSendMessage = 1,
         /// <summary>Terms of Service violations.</summary>
         TosViolations = 2,
         /// <summary>Higher reputation level is required.</summary>
@@ -57,11 +57,11 @@ namespace TehGM.Wolfringo.Messages.Responses
             {
                 case WolfErrorCode.NoSuchUser:
                     return "User does not exist";
-                case WolfErrorCode.LoginIncorrectOrCannotSendToGroup:
+                case WolfErrorCode.LoginIncorrectOrCannotSendMessage:
                     {
                         if (sentCommand != null && string.Equals(sentCommand, MessageEventNames.SecurityLogin, StringComparison.OrdinalIgnoreCase))
                             return "Incorrect login credentials";
-                        return "Silenced, banned, or not in group";
+                        return "Blocked, silenced, banned, or not in group";
                     }
                 case WolfErrorCode.TosViolations:
                     return "Terms of Service violations";
