@@ -13,6 +13,7 @@ using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands.Parsing;
 using Microsoft.Extensions.DependencyInjection;
+using TehGM.Wolfringo.Messages.Responses;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -263,11 +264,22 @@ namespace TehGM.Wolfringo.Commands
                                 }
                                 return executeResult;
                             }
+                            // special error case: operation canceled
+                            // operation canceled is normal, so it shouldn't be logged as error
                             catch (OperationCanceledException ex)
                             {
                                 this._log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
                                 return CommandExecutionResult.FromException(ex);
                             }
+                            // special error case: responding when silenced
+                            // bots almost always respond to a command - but if they're silenced, an exception will be thrown
+                            // this is normal - so it shouldn't be logged as error. Warning max
+                            catch (MessageSendingException ex) when 
+                            (this.LogSilencedException(ex, context, "Unhandled Exception when executing command {Name} from handler {Handler} - likely due to being silenced or spam filtered", command.Method.Name, command.GetHandlerType().Name))
+                            {
+                                return CommandExecutionResult.FromException(ex);
+                            }
+                            // normal error case
                             catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
                             {
                                 return CommandExecutionResult.FromException(ex);
@@ -283,6 +295,41 @@ namespace TehGM.Wolfringo.Commands
                 }
                 return CommandExecutionResult.Failure;
             }
+        }
+
+        private bool LogSilencedException(MessageSendingException ex, ICommandContext context, string message, params object[] args)
+        {
+            // ensure this is status code 403 with internal code 1
+            if (ex.StatusCode != System.Net.HttpStatusCode.Forbidden)
+                return false;
+            if (!(ex.Response is WolfResponse wolfResponse))
+                return false;
+            if (wolfResponse.ErrorCode != WolfErrorCode.AlreadyContactOrGroupNameForbidden)
+                return false;
+
+            // only handle for sent chat messages
+            if (!(ex.SentMessage is IChatMessage sentMessage))
+                return false;
+
+            // only handle if the recipient is the same as the command sender
+            if (context.Message.IsGroupMessage)
+            {
+                if (!sentMessage.IsGroupMessage)
+                    return false;
+                if (sentMessage.RecipientID != context.Message.RecipientID)
+                    return false;
+            }
+            else
+            {
+                if (sentMessage.IsGroupMessage)
+                    return false;
+                if (sentMessage.RecipientID != context.Message.SenderID.Value)
+                    return false;
+            }
+
+            // log as warning
+            this._log?.LogWarning(ex, message, args);
+            return true;
         }
 
         /// <summary>Disposes the Command Service.</summary>
