@@ -11,7 +11,7 @@ In this FAQ article, I explain some differences between **WOLF.Net** and **Wolfr
 ###### Short answer
 Yes!
 ###### Long answer
-[WOLF.Net](https://github.com/dawalters1/Wolf.Net) is targetting [.NET Standard 2.1](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard), which means it requires [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) or above (including support for [.NET 5](https://dotnet.microsoft.com/download/dotnet/5.0)), or newer versions of Mono or Xamarin. It will not work with .NET Framework.
+[WOLF.Net](https://github.com/dawalters1/Wolf.Net) is targetting [.NET Standard 2.1](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard), which means it requires [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) or above (including support for [.NET 5](https://dotnet.microsoft.com/download/dotnet/5.0)), or newer versions of Mono or Xamarin.
 
 ***Wolfringo*** is targetting [.NET Standard 2.0](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard) instead. That means that it not only supports the same versions as **WOLF.Net** - it also supports .NET Framework 4.6.1 and [.NET Core 2.0](https://dotnet.microsoft.com/download/dotnet-core/2.0).
 
