@@ -38,7 +38,7 @@ Interactive extension methods take @System.TimeSpan as one of the parameters. If
 private async void OnChatMessage(ChatMessage message)
 {
     // ...
-    ChatMessage response = await _client.AwaitNextPrivateByUserAsync(message.SenderID.Value);
+    ChatMessage response = await _client.AwaitNextPrivateByUserAsync(message.SenderID.Value, TimeSpan.FromSeconds(30));
 
     if (response == null) // if response message is null, it timed out
         await _client.ReplyTextAsync(message, "Aww, too slow. :(");
