@@ -98,7 +98,7 @@ namespace TehGM.Wolfringo
                     return await task.ConfigureAwait(false);
                 }
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 return default;
             }
