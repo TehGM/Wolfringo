@@ -33,7 +33,16 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             foreach (JToken item in jsonObject)
             {
                 if (item == null || item.First == null)
+                {
                     results.Add(default);
+                    continue;
+                }
+                string codeValue = item.First["code"]?.Value<string>();
+                if (int.TryParse(codeValue, out int code) && !(code >= 200 && code < 300))
+                {
+                    results.Add(default);
+                    continue;
+                }
                 T result = item.First.ToObject<T>(serializer);
                 item.First.FlattenCommonProperties(result, serializer);
                 results.Add(result);

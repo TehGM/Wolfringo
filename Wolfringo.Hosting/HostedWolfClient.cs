@@ -199,12 +199,12 @@ namespace TehGM.Wolfringo.Hosting
             // disconnect and dispose it
             try
             {
-                disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome);
-                disposingClient.Disconnected -= OnClientDisconnected;
-                disposingClient.Connected -= OnClientConnected;
-                disposingClient.ErrorRaised -= OnClientErrorRaised;
-                disposingClient.MessageReceived -= OnClientMessageReceived;
-                disposingClient.MessageSent -= OnClientMessageSent;
+                try { disposingClient?.RemoveMessageListener<WelcomeEvent>(OnWelcome); } catch { }
+                try { disposingClient.Disconnected -= OnClientDisconnected; } catch { }
+                try { disposingClient.Connected -= OnClientConnected; } catch { }
+                try { disposingClient.ErrorRaised -= OnClientErrorRaised; } catch { }
+                try { disposingClient.MessageReceived -= OnClientMessageReceived; } catch { }
+                try { disposingClient.MessageSent -= OnClientMessageSent; } catch { }
                 if (disposingClient?.IsConnected == true)
                     await disposingClient.DisconnectAsync(cancellationToken).ConfigureAwait(false);
             }

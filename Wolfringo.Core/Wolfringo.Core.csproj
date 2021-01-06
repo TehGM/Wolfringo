@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -11,15 +11,16 @@
     <Description>A .NET Library for WOLF (previously Palringo)</Description>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
-    <PackageReleaseNotes>- Added WolfUser's Date of Birth support.
-- Added missing documentation comments.</PackageReleaseNotes>
+    <PackageReleaseNotes>- WolfErrorCode.LoginIncorrectOrCannotSendToGroup renamed to WolfErrorCode.LoginIncorrectOrCannotSendMessage.
+- WolfErrorCode.LoginIncorrectOrCannotSendMessage error description changed to "Blocked, silenced, banned, or not in group".
+- Requesting users/groups that don't exist will now return null instead of default.</PackageReleaseNotes>
   </PropertyGroup>
   
   <PropertyGroup>

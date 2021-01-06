@@ -1,0 +1,86 @@
+name: NuGet Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      publishCore:
+        description: 'Publish Wolfringo.Core (Y/N)?'
+        required: true
+      publishCommands:
+        description: 'Publish Wolfringo.Commands (Y/N)?'
+        required: true
+      publishUtilities:
+        description: 'Publish Wolfringo.Utilities (Y/N)?'
+        required: true
+      publishUtilitiesInteractive:
+        description: 'Publish Wolfringo.Utilities.Interactive (Y/N)?'
+        required: true
+      publishHosting:
+        description: 'Publish Wolfringo.Hosting (Y/N)?'
+        required: true
+      publishMetapackage:
+        description: 'Publish Wolfringo metapackage (Y/N)?'
+        required: true
+
+jobs:
+  nuget-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Prepare environment
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+      - name: Exclude example projects
+        run: dotnet sln remove Examples/**
+      - name: Install dependencies
+        run: dotnet restore
+      
+      # Publish each package
+      - name: Publish Wolfringo.Core
+        if: github.event.inputs.publishCore == 'Y'
+        run: |
+          mkdir __out
+          dotnet pack Wolfringo.Core -c Release -o __out --no-restore
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate
+          rm -r __out
+      - name: Publish Wolfringo.Commands
+        if: github.event.inputs.publishCommands == 'Y'
+        run: |
+          mkdir __out
+          dotnet pack Wolfringo.Commands -c Release -o __out --no-restore
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate
+          rm -r __out
+      - name: Publish Wolfringo.Utilities
+        if: github.event.inputs.publishUtilities == 'Y'
+        run: |
+          mkdir __out
+          dotnet pack Wolfringo.Utilities -c Release -o __out --no-restore
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate
+          rm -r __out
+      - name: Publish Wolfringo.Utilities.Interactive
+        if: github.event.inputs.publishUtilitiesInteractive == 'Y'
+        run: |
+          mkdir __out
+          dotnet pack Wolfringo.Utilities.Interactive -c Release -o __out --no-restore
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate
+          rm -r __out
+      - name: Publish Wolfringo.Hosting
+        if: github.event.inputs.publishHosting == 'Y'
+        run: |
+          mkdir __out
+          dotnet pack Wolfringo.Hosting -c Release -o __out --no-restore
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate
+          rm -r __out
+      - name: Publish Wolfringo metapackage
+        if: github.event.inputs.publishMetapackage == 'Y'
+        run: |
+          mkdir __out
+          nuget pack "Wolfringo/Wolfringo.nuspec" -Exclude "*.*" -BasePath "Wolfringo" -NonInteractive -OutputDirectory __out
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate
+          rm -r __out

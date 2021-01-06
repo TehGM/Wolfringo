@@ -25,8 +25,6 @@ namespace TehGM.Wolfringo.Utilities
         /// <param name="cancellationToken">Cancellation token for cancelling reconnection.</param>
         public ReconnectorConfig(int attempts, TimeSpan delay, ILogger logger = null, CancellationToken cancellationToken = default)
         {
-            if (attempts == 0)
-                throw new ArgumentException("Reconnection attempts cannot equal 0", nameof(attempts));
             this.CancellationToken = cancellationToken;
             this.Log = logger;
             this.ReconnectAttempts = attempts;

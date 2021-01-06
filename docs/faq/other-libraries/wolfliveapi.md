@@ -21,11 +21,10 @@ Feel free to check [Dependency Injection guide](xref:Guides.Commands.DependencyI
 
 ***Wolfringo*** doesn't require you to register them manually if they are marked with [\[CommandsHandler\] attribute](xref:TehGM.Wolfringo.Commands.CommandsHandlerAttribute). Manual registration is needed only if you don't add the attribute, or remove starting assembly from automatic loading. See [Enabling Commands guide](xref:Guides.Commands.Intro) for more information.
 
-## Does Wolfringo Commands Handler need to inherit from any class?
-[WolfLive.Api](https://github.com/calico-crusade/WolfLive.Api) requires [command classes](https://github.com/calico-crusade/WolfLive.Api/wiki/Commands#wolfliveapi-commands) to inherit from `WolfContext`. This is not an uncommon design - I saw that in various Discord libraries as well.
+## Does Wolfringo Commands Handler have a class to inherit from?
+[WolfLive.Api](https://github.com/calico-crusade/WolfLive.Api) has an option for [command classes](https://github.com/calico-crusade/WolfLive.Api/wiki/Commands#wolfliveapi-commands) to inherit from `WolfContext`. This is a short-hand to access command context - such as Message, Client etc.
 
-I found that a bit limiting, since C# only allows inheriting from one class. Instead, I chose to mark Wolfringo [Commands Handlers](xref:Guides.Commands.Handlers#handlers) with an attribute.  
-Because of this, your class won't have any command-related properties out of the box. But don't worry - you can access a @TehGM.Wolfringo.Commands.CommandContext easily by using [Command Parameters](xref:Guides.Commands.Handlers#commandcontext).
+***Wolfringo*** does not have such class to inherit from. Because of this, your class won't have any command-related properties out of the box. But don't worry - you can access a @TehGM.Wolfringo.Commands.CommandContext easily by using [Command Parameters](xref:Guides.Commands.Handlers#commandcontext).
 
 ## Do Wolfringo Commands allow requiring permission, or work in group only?
 [WolfLive.Api](https://github.com/calico-crusade/WolfLive.Api) allows restricting commands execution using attributes (called [Filters](https://github.com/calico-crusade/WolfLive.Api/wiki/Commands#filters)). **WolfLive.Api** also allows you to create your own filters.

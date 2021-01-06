@@ -57,11 +57,8 @@ namespace TehGM.Wolfringo.Utilities
         /// <returns>Bytes of user avatar. Null if user of avatar not found.</returns>
         public static async Task<byte[]> DownloadAvatarAsync(this WolfUser user, uint size = 500, CancellationToken cancellationToken = default)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("User-Agent", GetDefaultUserAgent());
+            using (HttpClient client = GetDefaultClient())
                 return await DownloadAvatarAsync(user, client, size, cancellationToken).ConfigureAwait(false);
-            }
         }
         /// <summary>Downloads bytes of user avatar.</summary>
         /// <param name="user">User to download avatar of.</param>
@@ -80,11 +77,8 @@ namespace TehGM.Wolfringo.Utilities
         /// <returns>Bytes of group avatar. Null if group of avatar not found.</returns>
         public static async Task<byte[]> DownloadAvatarAsync(this WolfGroup group, uint size = 500, CancellationToken cancellationToken = default)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("User-Agent", GetDefaultUserAgent());
+            using (HttpClient client = GetDefaultClient())
                 return await DownloadAvatarAsync(group, client, size, cancellationToken).ConfigureAwait(false);
-            }
         }
         /// <summary>Downloads bytes of group avatar.</summary>
         /// <param name="group">Group to download avatar of.</param>
@@ -95,10 +89,13 @@ namespace TehGM.Wolfringo.Utilities
         public static Task<byte[]> DownloadAvatarAsync(this WolfGroup group, HttpClient client, uint size = 500, CancellationToken cancellationToken = default)
             => DownloadAvatarAsync(GetAvatarURL(group, size), client, cancellationToken);
 
-        private static string GetDefaultUserAgent()
+        private static HttpClient GetDefaultClient()
         {
+            HttpClient client = new HttpClient();
             AssemblyName asmName = Assembly.GetEntryAssembly().GetName();
-            return $"{asmName.Name} {asmName.Version} (Powered by Wolfringo - https://wolfringo.tehgm.net)";
+            client.DefaultRequestHeaders.Add("User-Agent", 
+                $"{asmName.Name} {asmName.Version} (Powered by Wolfringo - https://wolfringo.tehgm.net)");
+            return client;
         }
 
         /// <summary>Downloads avatar bytes.</summary>

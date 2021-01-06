@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -15,10 +15,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>wolf palringo wolfringo pal bot client commands</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-    <PackageReleaseNotes>- Added missing documentation comments.
-- Made some methods of SimpleServiceProvider an implicit implementations.</PackageReleaseNotes>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
+    <PackageReleaseNotes>- Commands Service will now log warning instead of error when command failed to reply.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
