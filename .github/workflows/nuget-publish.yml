@@ -2,25 +2,32 @@ name: NuGet Publish
 
 on:
   workflow_dispatch:
+  # all inputs default to push all - if package exists already, it'll be skipped anyway
     inputs:
       publishCore:
         description: 'Publish Wolfringo.Core (Y/N)?'
         required: true
+        default: 'Y'
       publishCommands:
         description: 'Publish Wolfringo.Commands (Y/N)?'
         required: true
+        default: 'Y'
       publishUtilities:
         description: 'Publish Wolfringo.Utilities (Y/N)?'
         required: true
+        default: 'Y'
       publishUtilitiesInteractive:
         description: 'Publish Wolfringo.Utilities.Interactive (Y/N)?'
         required: true
+        default: 'Y'
       publishHosting:
         description: 'Publish Wolfringo.Hosting (Y/N)?'
         required: true
+        default: 'Y'
       publishMetapackage:
         description: 'Publish Wolfringo metapackage (Y/N)?'
         required: true
+        default: 'Y'
 
 jobs:
   nuget-publish:
