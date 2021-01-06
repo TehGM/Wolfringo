@@ -145,7 +145,7 @@ If you need to install older version ([0.1.0](https://github.com/TehGM/Wolfringo
     ```
 4. *(.NET Generic Host/ASP.NET Core only)* Add Wolfringo.Hosting package reference to your .csproj file:
     ```xml
-    <PackageReference Include="Wolfringo" Version="0.3.4" />
+    <PackageReference Include="Wolfringo.Hosting" Version="0.3.3" />
     ```
 5. Restore packages with command line:
     ```bash
