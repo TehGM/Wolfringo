@@ -40,6 +40,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
+          source-url: https://api.nuget.org/v3/index.json
           dotnet-version: 3.1.101
       - name: Exclude example projects
         run: dotnet sln remove Examples/**
