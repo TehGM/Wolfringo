@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{5457BCD4-C
 		docs\filter.yml = docs\filter.yml
 		docs\index.md = docs\index.md
 		docs\_templates\discordfx\styles\main.css = docs\_templates\discordfx\styles\main.css
+		docs\robots.txt = docs\robots.txt
 		docs\toc.yml = docs\toc.yml
 	EndProjectSection
 EndProject

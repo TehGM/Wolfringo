@@ -50,7 +50,8 @@
     "resource": [
       {
         "files": [
-          "_images/**"
+          "_images/**",
+          "robots.txt"
         ]
       },
       {
