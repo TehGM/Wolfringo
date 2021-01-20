@@ -102,7 +102,7 @@
     "sitemap": {
       "baseUrl": "https://wolfringo.tehgm.net",
       "changefreq": "monthly",
-      "lastmod": "2021-01-09",
+      "lastmod": "2021-01-09T19:10:00+01:00",
       "fileOptions": {
         "**/guides/**": {
           "baseUrl": "https://wolfringo.tehgm.net/guides/",
