@@ -97,6 +97,25 @@
     "disableGitFeatures": false,
     "xrefService": [
       "https://xref.docs.microsoft.com/query?uid={uid}"
-    ]
+    ],
+    "sitemap": {
+      "baseUrl": "https://wolfringo.tehgm.net",
+      "changefreq": "monthly",
+      "lastmod": "2021-01-09",
+      "fileOptions": {
+        "**/guides/**": {
+          "baseUrl": "https://wolfringo.tehgm.net/guides/",
+          "priority": 0.9
+        },
+        "**/faq/**": {
+          "baseUrl": "https://wolfringo.tehgm.net/faq/",
+          "priority": 0.6
+        },
+        "**/api/**": {
+          "baseUrl": "https://wolfringo.tehgm.net/api/",
+          "priority": 0.3
+        }
+      }
+    }
   }
 }
