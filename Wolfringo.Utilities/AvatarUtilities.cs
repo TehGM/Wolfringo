@@ -17,8 +17,13 @@ namespace TehGM.Wolfringo.Utilities
         /// <para><paramref name="size"/> is only a requested size of the avatar. It is not guaranteed that URL will contain avatar with this size.</para>
         /// <para>Currently, changing <paramref name="iconID"/> to an invalid value seems to not cause error when the URL is used. However it is not guaranteed to always be the case, so a valid <see cref="WolfUser.Icon">WolfUser.Icon</see> value is recommended.</para></remarks>
         /// <returns>URL to user's avatar.</returns>
-        public static string GetUserAvatarURL(uint userID, int iconID, uint size = 500)
-            => $"https://clientavatars.palapi.net/FileServerSpring/subscriber/avatar/{userID}?size={size}&iconId={iconID}";
+        public static string GetUserAvatarURL(uint userID, int? iconID = null, uint size = 500)
+        {
+            string result = $"https://clientavatars.palapi.net/FileServerSpring/subscriber/avatar/{userID}?size={size}";
+            if (iconID != null)
+                result += $"&iconId={iconID}";
+            return result;
+        }
 
         /// <summary>Gets URL for retrieving user avatar.</summary>
         /// <param name="user">User to get avatar URL for.</param>
@@ -37,8 +42,13 @@ namespace TehGM.Wolfringo.Utilities
         /// <para><paramref name="size"/> is only a requested size of the avatar. It is not guaranteed that URL will contain avatar with this size.</para>
         /// <para>Currently, changing <paramref name="iconID"/> to an invalid value seems to not cause error when the URL is used. However it is not guaranteed to always be the case, so a valid <see cref="WolfGroup.Icon">WolfGroup.Icon</see> value is recommended.</para></remarks>
         /// <returns>URL to group's avatar.</returns>
-        public static string GetGroupAvatarURL(uint groupID, int iconID, uint size = 500)
-            => $"https://clientavatars.palapi.net/FileServerSpring/group/avatar/{groupID}?size={size}&iconId={iconID}";
+        public static string GetGroupAvatarURL(uint groupID, int? iconID = null, uint size = 500)
+        {
+            string result = $"https://clientavatars.palapi.net/FileServerSpring/group/avatar/{groupID}?size={size}";
+            if (iconID != null)
+                result += $"&iconId={iconID}";
+            return result;
+        }
 
         /// <summary>Gets URL for retrieving group avatar.</summary>
         /// <param name="group">Group to get avatar URL for.</param>

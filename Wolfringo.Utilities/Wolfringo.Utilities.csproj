@@ -20,7 +20,7 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>- ReconnectorConfig will no longer throw when attempts count is 0.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Handle user and group icon being null.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

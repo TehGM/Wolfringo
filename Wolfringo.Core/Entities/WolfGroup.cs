@@ -40,7 +40,7 @@ namespace TehGM.Wolfringo
         public bool IsPremium { get; private set; }
         /// <summary>Group icon ID.</summary>
         [JsonProperty("icon")]
-        public int Icon { get; private set; }
+        public int? Icon { get; private set; }
 
         /// <summary>Group's audio configuration.</summary>
         [JsonProperty("audioConfig")]

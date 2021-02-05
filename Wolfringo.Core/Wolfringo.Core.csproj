@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -18,9 +18,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
-    <PackageReleaseNotes>- WolfErrorCode.LoginIncorrectOrCannotSendToGroup renamed to WolfErrorCode.LoginIncorrectOrCannotSendMessage.
-- WolfErrorCode.LoginIncorrectOrCannotSendMessage error description changed to "Blocked, silenced, banned, or not in group".
-- Requesting users/groups that don't exist will now return null instead of default.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Handle user and group icon being null.</PackageReleaseNotes>
   </PropertyGroup>
   
   <PropertyGroup>
