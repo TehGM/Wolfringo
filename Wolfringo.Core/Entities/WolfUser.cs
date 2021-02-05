@@ -30,7 +30,7 @@ namespace TehGM.Wolfringo
         public WolfDevice Device { get; private set; }
         /// <summary>User icon ID.</summary>
         [JsonProperty("icon")]
-        public int Icon { get; private set; }
+        public int? Icon { get; private set; }
         /// <summary>User's online state.</summary>
         [JsonProperty("onlineState")]
         public WolfOnlineState OnlineState { get; private set; }
