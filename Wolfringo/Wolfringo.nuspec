@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -15,20 +15,14 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <releaseNotes>
-- WolfErrorCode.LoginIncorrectOrCannotSendToGroup renamed to WolfErrorCode.LoginIncorrectOrCannotSendMessage.
-- WolfErrorCode.LoginIncorrectOrCannotSendMessage error description changed to "Blocked, silenced, banned, or not in group".
-- Commands Service will now log warning instead of error when command failed to reply.
-- Requesting users/groups that don't exist will now return null instead of default.
-- Improve internal de-registering of events in HostedWolfClient.
-- ReconnectorConfig will no longer throw when attempts count is 0.
-- Interactive utilities now handle all `OperationCanceledException` instead of only `TaskCanceledException`.
+- Handle user and group icon being null.
     </releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="1.1.1" />
-        <dependency id="Wolfringo.Utilities" version="1.1.1" />
-        <dependency id="Wolfringo.Utilities.Interactive" version="1.1.1" />
-        <dependency id="Wolfringo.Commands" version="1.1.1"/>
+        <dependency id="Wolfringo.Core" version="1.1.2" />
+        <dependency id="Wolfringo.Utilities" version="1.1.2" />
+        <dependency id="Wolfringo.Utilities.Interactive" version="1.1.2" />
+        <dependency id="Wolfringo.Commands" version="1.1.2"/>
       </group>
     </dependencies>
   </metadata>
