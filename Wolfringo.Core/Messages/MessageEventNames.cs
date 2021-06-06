@@ -101,5 +101,7 @@
         public const string TipDetail = "tip detail";
         /// <summary>WOLF Protocol Event name for <see cref="TipAddMessage"/>.</summary>
         public const string TipAdd = "tip add";
+        /// <summary>WOLF Protocol Event name for <see cref="UrlMetadataMessage"/>.</summary>
+        public const string MetadataUrl = "metadata url";
     }
 }

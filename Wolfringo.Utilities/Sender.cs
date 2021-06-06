@@ -1082,6 +1082,18 @@ namespace TehGM.Wolfringo
         /// <returns>Message updating result.</returns>
         public static Task<ChatUpdateResponse> RestoreChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = false }.Build(), cancellationToken);
+
+
+        // URL metadata
+        /// <summary>Requests metadata of the link, as seen by WOLF servers.</summary>
+        /// <param name="client">Client to send the message with.</param>
+        /// <param name="url">URL to get metadata of.</param>
+        /// <param name="cancellationToken">>Cancellation token that can cancel the task.</param>
+        /// <returns>Link metadata.</returns>
+        /// <exception cref="ArgumentNullException">URL is null.</exception>
+        /// <exception cref="ArgumentException">URL is empty, whitespace, or otherwise invalid.</exception>
+        public static Task<UrlMetadataResponse> GetLinkMetadataAsync(this IWolfClient client, string url, CancellationToken cancellationToken = default)
+            => client.SendAsync<UrlMetadataResponse>(new UrlMetadataMessage(url), cancellationToken);
         #endregion
 
 
