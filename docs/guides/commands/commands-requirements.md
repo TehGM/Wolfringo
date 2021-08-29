@@ -8,9 +8,9 @@ Very often a bot's command is designed to work only in groups, require that user
 Wolfringo Commands System aims to reduce the amount of boilerplate code, and that includes code required for such checks. For that reason, [Wolfringo.Commands](https://www.nuget.org/packages/Wolfringo.Commands) includes some of the most common checks in form of easy to use attributes. Wolfringo Commands System also allows easy implementation of own attributes for checks - see [Custom Requirements](xref:Guides.Commands.Requirements#custom-requirements) to see how to create one.
 
 ## How Command Requirements work
-After selecting a @TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase, such as [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) or [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute), it'll run [CheckAsync](xref:TehGM.Wolfringo.Commands.ICommandRequirement.CheckAsync(TehGM.Wolfringo.Commands.ICommandContext,System.IServiceProvider,System.Threading.CancellationToken)) method on each of the requirements. If any of the requirements return false, execution of a command will be aborted.
+After selecting a @TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase, such as [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) or [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute), it'll run [CheckAsync](xref:TehGM.Wolfringo.Commands.ICommandRequirement.CheckAsync(TehGM.Wolfringo.Commands.ICommandContext,System.IServiceProvider,System.Threading.CancellationToken)) method on each of the requirements, which will return an @TehGM.Wolfringo.Commands.ICommandResult. If any of the requirements return @TehGM.Wolfringo.Commands.Results.CommandResultStatus.Failure, execution of a command will be aborted. If any returns @TehGM.Wolfringo.Commands.Results.CommandResultStatus.Failure, execution of command will be skipped.
 
-Because requirements are checked after a command is selected, and Wolfringo Commands System never executes more than one command per message, if any of the requirements fail, no other command will be executed for that message.
+If command execution is aborted, Commands System will stop processing the current message. If it's skipped, it'll attempt to run an another command.
 
 #### Error Messages
 Requirements support error messages - if any is specified, in case of command execution being aborted, the message will be sent back to the user that invoked the command.  
@@ -19,6 +19,16 @@ You can also set ErrorMessage to `null` or empty string - in such case, no error
 ```csharp
 [Command("example")]
 [GroupOnly(ErrorMessage = "(n) Please try in a group instead!")]
+private async Task ExampleAsync() { }
+```
+
+#### Skipping
+By default, all built-in requirements return @TehGM.Wolfringo.Commands.Results.CommandResultStatus.Failure if check fails. If for some reason you want fail to cause skipping, you can set [AbortOnFail](xref:TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.AbortOnFail) property to `false`.
+
+By default, [ErrorMessage](xref:TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.ErrorMessage) will be NOT sent when skipping. You can change that as well, by setting [SendMessageWhenSkipping](xref:TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.SendMessageWhenSkipping) property to `true`.
+```csharp
+[Command("example")]
+[GroupOnly(ErrorMessage = "(n) Please try in a group instead!", AbortOnFail = false, SendMessageWhenSkipping = true)]
 private async Task ExampleAsync() { }
 ```
 
@@ -79,12 +89,12 @@ public class RequireBotAdminAttribute : CommandRequirementAttribute
         ErrorMessage = "(n) You are not permitted to do this!";
     }
 
-    public override async Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+    public override async Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         IUserDataStore userDataStore = services.GetRequiredService<IUserDataStore>();
         // check if user is bot admin
         UserData userData = await userDataStore.GetUserDataAsync(context.Message.SenderID.Value, cancellationToken).ConfigureAwait(false);
-        return userData.IsBotAdmin;
+        return base.ResultFromBoolean(userData.IsBotAdmin);
     }
 }
 ```

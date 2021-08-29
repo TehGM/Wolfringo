@@ -78,6 +78,7 @@ Commands System will attempt to use constructors with higher priority before con
 Commands methods are the methods that are executed when command is invoked. Commands methods:
 - **Cannot** be static
 - Should **not** be "async void". If you need "async" in your command, return a @System.Threading.Tasks.Task or a @System.Threading.Tasks.Task`1 instead.
+- If needed, can return @TehGM.Wolfringo.Commands.ICommandResult or [Task\<ICommandResult\>](xref:System.Threading.Tasks.Task`1)
 - Need to be marked as a command.
 
 ### Marking method as a command
@@ -262,7 +263,7 @@ Any services registered with [Dependency Injection](xref:Guides.Commands.Depende
 Internally, all [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) and [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) are converted into command instance objects. For most scenarios this just a fun-fact, but sometimes (for example, when using [Aliases](xref:Guides.Commands.Handlers#aliases)) you may want to get access to the instance of the class. To do so, simply add a parameter of type @TehGM.Wolfringo.Commands.Initialization.ICommandInstance.
 
 ### Commands Priorities
-Commands System will always execute maximum of **one** command method, even if multiple commands could be triggered by user's text. For example: `[Command("test")]` and `[Command("test2")]`.  
+Unless you use [ICommandResult](xref:Guides.Commands.Handlers#returning-icommandresult), Commands System will execute maximum of **one** command method, even if multiple commands could be triggered by user's text. For example: `[Command("test")]` and `[Command("test2")]`.  
 If you want to control which command gets attempted first, use [\[Priority(value)\] attribute](xref:TehGM.Wolfringo.Commands.PriorityAttribute). Commands with highest priority value will be checked first.
 
 ```csharp
@@ -321,6 +322,33 @@ public Task ExampleAsync()
     // command code
 }
 ```
+
+### Returning ICommandResult
+By default, Wolfringo's @TehGM.Wolfringo.Commands.CommandsService will consider command successful if it ran fully, or failed if any exception was thrown. In either of these cases, the Commands System will stop processing the received message, so no further [\[Command\] attribute](xref:TehGM.Wolfringo.Commands.CommandAttribute) or [\[RegexCommand\] attribute](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) will be attempted.
+
+However if you wish, you can mark the command as skipped instead - in such case, Wolfringo will attempt to execute other commands if they match. To do so, you can return @TehGM.Wolfringo.Commands.ICommandResult or [Task\<ICommandResult\>](xref:System.Threading.Tasks.Task`1) and set the @TehGM.Wolfringo.Commands.ICommandResult.Status property to @TehGM.Wolfringo.Commands.Results.CommandResultStatus.Skip. You can return any type of @TehGM.Wolfringo.Commands.ICommandResult, but the built-in @TehGM.Wolfringo.Commands.Results.CommandExecutionResult is sufficient for most use cases.
+
+```csharp
+using TehGM.Wolfringo.Commands.Results;
+
+[Command("example")]
+[Priority(5)]
+public async Task<ICommandResult> Example1()
+{
+    // command code here
+    return CommandExecutionResult.Skip;
+}
+[Command("example")]
+[Priority(15)]
+public async Task Example2()
+{
+    // because Example1 returned result CommandResultStatus.Skip, it'll run as well!
+    // command code here
+}
+```
+
+> [!TIP]
+> For internal purposes, @TehGM.Wolfringo.Commands.Results.CommandExecutionResult can have Exception property. However it is recommended to not use it for that purpose - simply throw the exception instead!
 
 ## What's next?
 ### Examples
