@@ -42,7 +42,7 @@ If reconnector makes [ReconnectorConfig.ReconnectAttempts](xref:TehGM.Wolfringo.
 > If @TehGM.Wolfringo.Utilities.ReconnectorConfig.ReconnectAttempts are set to infinite (negative value), no error event will be raised!
 
 ### Disabling auto-reconnection
-@TehGM.Wolfringo.Utilities.WolfClientReconnector will attempt to reconnect no matter what was the cause of disconnection. If you want to disable this behaviour, simply call @TehGM.Wolfringo.Utilities.WolfClientReconnector.Dispose(). Once disposed, reconnector will be disabled permanently - to re-enable, create a new @TehGM.Wolfringo.Utilities.WolfClientReconnector instance.
+@TehGM.Wolfringo.Utilities.WolfClientReconnector will attempt to reconnect no matter what was the cause of disconnection. If you want to disable this behaviour, simply call @TehGM.Wolfringo.Utilities.WolfClientReconnector.Dispose. Once disposed, reconnector will be disabled permanently - to re-enable, create a new @TehGM.Wolfringo.Utilities.WolfClientReconnector instance.
 
 > [!TIP]
 > If @TehGM.Wolfringo.Utilities.WolfClientReconnector is not good enough for your needs, you can create your own reconnection with your own logic. See [WolfClientReconnector source code](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Utilities/WolfClientReconnector.cs) if you need guidance or ideas.

@@ -68,7 +68,7 @@ options.Assemblies.Clear();
 ```
 
 ### Logging
-One of purposes of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Commands.CommandsSystem fully supports logging, however you still need to provide an ILogger instance to its constructor:
+One of purposes of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Commands.CommandsService fully supports logging, however you still need to provide an ILogger instance to its constructor:
 ```csharp
 ILogger log = // ... create logger according to your logging library isntructions
 CommandsService commands = new CommandsService(_client, options, log);
