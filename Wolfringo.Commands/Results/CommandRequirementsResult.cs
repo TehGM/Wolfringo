@@ -45,5 +45,16 @@ namespace TehGM.Wolfringo.Commands.Results
         /// <returns>A new result instance.</returns>
         public static CommandRequirementsResult Failure(params string[] messages)
             => Failure(messages as IEnumerable<string>);
+
+        /// <summary>Creates a skip result.</summary>
+        /// <param name="messages">Optional set of messages to reply with.</param>
+        /// <returns>A new result instance.</returns>
+        public static CommandRequirementsResult Skip(IEnumerable<string> messages)
+            => new CommandRequirementsResult(CommandResultStatus.Skip, messages);
+        /// <summary>Creates a skip result.</summary>
+        /// <param name="messages">Optional set of messages to reply with.</param>
+        /// <returns>A new result instance.</returns>
+        public static CommandRequirementsResult Skip(params string[] messages)
+            => Skip(messages as IEnumerable<string>);
     }
 }
