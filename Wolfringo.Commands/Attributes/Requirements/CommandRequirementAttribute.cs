@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Results;
@@ -21,11 +20,10 @@ namespace TehGM.Wolfringo.Commands.Attributes
         public abstract Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default);
 
         /// <summary>Standard success result.</summary>
-        protected ICommandResult SuccessResult { get; } = CommandExecutionResult.Success;
+        protected ICommandResult SuccessResult { get; } = CommandRequirementsResult.Success();
         /// <summary>Standard failure result.</summary>
         /// <remarks>This result will automatically use <see cref="ErrorMessage"/> if it's set.</remarks>
-        protected ICommandResult FailureResult => new CommandExecutionResult(CommandResultStatus.Failure, 
-            string.IsNullOrWhiteSpace(this.ErrorMessage) ? Enumerable.Empty<string>() : new string[] { this.ErrorMessage }, null);
+        protected ICommandResult FailureResult => CommandRequirementsResult.Failure(this.ErrorMessage);
 
         /// <summary>Converts a simple boolean to a proper command result.</summary>
         /// <param name="isSuccess">Whether success or failure result should be returned.</param>

@@ -252,13 +252,13 @@ namespace TehGM.Wolfringo.Commands
 
                                 // execute the command
                                 ICommandResult executeResult = await instance.ExecuteAsync(context, services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
-                                if (executeResult.Status == CommandResultStatus.Skip)
-                                    continue;
                                 if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
                                 {
                                     this._log?.LogTrace("Sending command results messages as a command response");
                                     await context.ReplyTextAsync(string.Join("\n", messagesResult.Messages), cts.Token).ConfigureAwait(false);
                                 }
+                                if (executeResult.Status == CommandResultStatus.Skip)
+                                    continue;
                                 return executeResult;
                             }
                             // special error case: operation canceled
