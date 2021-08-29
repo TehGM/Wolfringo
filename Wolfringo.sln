@@ -112,6 +112,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{C7
 	ProjectSection(SolutionItems) = preProject
 		docs\guides\customizing\commands\argument-converters.md = docs\guides\customizing\commands\argument-converters.md
 		docs\guides\customizing\commands\arguments-parser.md = docs\guides\customizing\commands\arguments-parser.md
+		docs\guides\customizing\commands\parameter-builder.md = docs\guides\customizing\commands\parameter-builder.md
 	EndProjectSection
 EndProject
 Global

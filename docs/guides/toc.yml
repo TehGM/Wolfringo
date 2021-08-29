@@ -56,3 +56,5 @@
           topicUid: Guides.Customizing.Commands.ArgumentsParser
         - name: Argument Converters
           topicUid: Guides.Customizing.Commands.ArgumentConverters
+        - name: Parameter Builder
+          topicUid: Guides.Customizing.Commands.ParameterBuilder
