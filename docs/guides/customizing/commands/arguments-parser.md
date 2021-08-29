@@ -26,9 +26,9 @@ Note: instructions skip logger setup. See [Logging guide](xref:Guides.Features.L
 ```csharp
 ArgumentsParserOptions argsParserOptions = new ArgumentsParserOptions();
 argsParserOptions.BaseMarker = '-';
-ArgumentsParser customArgsParser = new ArgumentsParser(argsParserOptions);
+ArgumentsParser argsParser = new ArgumentsParser(argsParserOptions);
 IServiceCollection services = new ServiceCollection()
-    .AddSingleton<IArgumentsParser(customArgsParser);
+    .AddSingleton<IArgumentsParser>(argsParser);
 // add any other services as needed
 
 _client = new WolfClient(logger);                                           // create wolf client
