@@ -10,8 +10,6 @@ namespace TehGM.Wolfringo.Commands
         /// <remarks>This property has been obsoleted in favour of <see cref="Status"/> and will be removed in future updates.</remarks>
         [Obsolete("Use Status property instead.")]
         bool IsSuccess { get; }
-        /// <summary>An exception that has occured (if any).</summary>
-        Exception Exception { get; }
         /// <summary>Status telling commands service how to progress with the execution.</summary>
         CommandResultStatus Status { get; }
     }

@@ -189,8 +189,8 @@ namespace TehGM.Wolfringo.Commands
         public async Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
         {
             ICommandResult result = await ExecuteAsyncInternal(context, cancellationToken).ConfigureAwait(false);
-            if (result.Exception != null)
-                ExceptionDispatchInfo.Capture(result.Exception).Throw();
+            if (result is CommandExecutionResult execResult && execResult.Exception != null)
+                ExceptionDispatchInfo.Capture(execResult.Exception).Throw();
             return result;
         }
 
@@ -252,11 +252,6 @@ namespace TehGM.Wolfringo.Commands
 
                                 // execute the command
                                 ICommandResult executeResult = await instance.ExecuteAsync(context, services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
-                                if (executeResult.Exception != null)
-                                {
-                                    this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                                    return executeResult;
-                                }
                                 if (executeResult.Status == CommandResultStatus.Skip)
                                     continue;
                                 if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
