@@ -49,3 +49,8 @@
           topicUid: Guides.Customizing.Client.Messages
         - name: Custom Responses
           topicUid: Guides.Customizing.Client.Responses
+    - name: Commands System
+      topicUid: Guides.Customizing.Commands.ArgumentsParser
+      items:
+        - name: Arguments Parser
+          topicUid: Guides.Customizing.Commands.ArgumentsParser
