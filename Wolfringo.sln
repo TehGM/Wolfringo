@@ -105,6 +105,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{712A3DDE-4912-4C3F-8083-B75B572060A5}"
 	ProjectSection(SolutionItems) = preProject
 		docs\guides\customizing\client\messages.md = docs\guides\customizing\client\messages.md
+		docs\guides\customizing\client\responses.md = docs\guides\customizing\client\responses.md
 	EndProjectSection
 EndProject
 Global

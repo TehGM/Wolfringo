@@ -47,3 +47,5 @@
       items:
         - name: Custom Messages
           topicUid: Guides.Customizing.Client.Messages
+        - name: Custom Responses
+          topicUid: Guides.Customizing.Client.Responses
