@@ -42,3 +42,8 @@
   items:
     - name: Introduction
       topicUid: Guides.Customizing.Intro
+    - name: Client
+      topicUid: Guides.Customizing.Client.Messages
+      items:
+        - name: Custom Messages
+          topicUid: Guides.Customizing.Client.Messages

@@ -102,6 +102,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "customizing", "customizing"
 		docs\guides\customizing\introduction.md = docs\guides\customizing\introduction.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{712A3DDE-4912-4C3F-8083-B75B572060A5}"
+	ProjectSection(SolutionItems) = preProject
+		docs\guides\customizing\client\messages.md = docs\guides\customizing\client\messages.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +167,7 @@ Global
 		{2FA0619A-FB72-49AB-AC08-0B2F4904ECF5} = {50454062-77EE-49E0-A7FC-3CBE1ECCBF39}
 		{E548ABF9-E1CA-41DD-BDF5-13DF7526CCC9} = {99F60E57-3A0B-4BA5-85F7-4FE184EA596C}
 		{89EE417A-E001-4E15-B14D-0BC8F55F1ADA} = {50454062-77EE-49E0-A7FC-3CBE1ECCBF39}
+		{712A3DDE-4912-4C3F-8083-B75B572060A5} = {89EE417A-E001-4E15-B14D-0BC8F55F1ADA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}
