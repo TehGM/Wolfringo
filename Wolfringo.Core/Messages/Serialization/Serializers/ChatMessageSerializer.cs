@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
     public class ChatMessageSerializer : IMessageSerializer
     {
         /// <inheritdoc/>
-        public IWolfMessage Deserialize(string command, SerializedMessageData messageData)
+        public IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)
         {
             // deserialize message
             Type msgType = GetMessageType(messageData.Payload["body"]);

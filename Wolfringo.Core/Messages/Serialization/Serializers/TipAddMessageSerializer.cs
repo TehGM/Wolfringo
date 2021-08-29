@@ -8,10 +8,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
     public class TipAddMessageSerializer : DefaultMessageSerializer<TipAddMessage>
     {
         /// <inheritdoc/>
-        public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
+        public override IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)
         {
             // deserialize message
-            TipAddMessage result = (TipAddMessage)base.Deserialize(command, messageData);
+            TipAddMessage result = (TipAddMessage)base.Deserialize(eventName, messageData);
             messageData.Payload.PopulateObject(result, "context", SerializationHelper.DefaultSerializer);
             messageData.Payload.PopulateObject(result, "body.context", SerializationHelper.DefaultSerializer);
 
