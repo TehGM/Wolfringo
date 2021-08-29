@@ -3,7 +3,7 @@
 namespace TehGM.Wolfringo.Commands.Results
 {
     /// <summary>Represents results of a check whether a Standard Command should run.</summary>
-    public struct StandardCommandMatchResult : ICommandResult
+    public class StandardCommandMatchResult : ICommandResult
     {
         /// <inheritdoc/>
         [Obsolete("Use Status property instead.")]

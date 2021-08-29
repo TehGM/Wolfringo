@@ -5,7 +5,7 @@ using System.Linq;
 namespace TehGM.Wolfringo.Commands.Results
 {
     /// <summary>Represents a a result of parameters building.</summary>
-    public struct ParameterBuildingResult : ICommandResult, IMessagesCommandResult
+    public class ParameterBuildingResult : ICommandResult, IMessagesCommandResult
     {
         /// <inheritdoc/>
         [Obsolete("Use Status property instead.")]

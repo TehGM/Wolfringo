@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace TehGM.Wolfringo.Commands.Results
 {
     /// <summary>Represents results of a check whether a Regex Command should run.</summary>
-    public struct RegexCommandMatchResult : ICommandResult
+    public class RegexCommandMatchResult : ICommandResult
     {
         /// <inheritdoc/>
         [Obsolete("Use Status property instead.")]

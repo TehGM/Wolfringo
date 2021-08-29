@@ -5,7 +5,7 @@ using System.Linq;
 namespace TehGM.Wolfringo.Commands.Results
 {
     /// <summary>Represents a generic command execution result.</summary>
-    public struct CommandExecutionResult : ICommandResult, IMessagesCommandResult
+    public class CommandExecutionResult : ICommandResult, IMessagesCommandResult
     {
         /// <inheritdoc/>
         [Obsolete("Use Status property instead.")]
