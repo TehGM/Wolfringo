@@ -1,6 +1,6 @@
 ---
 uid: Guides.Customizing.Intro
-title: Introduction
+title: Customizing Wolfringo - Intro
 ---
 
 # Customizing Wolfringo
