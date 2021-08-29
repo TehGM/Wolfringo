@@ -110,6 +110,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{712A3D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{C7D6EBF4-BEAF-4562-8149-6C5C4515E866}"
 	ProjectSection(SolutionItems) = preProject
+		docs\guides\customizing\commands\argument-converters.md = docs\guides\customizing\commands\argument-converters.md
 		docs\guides\customizing\commands\arguments-parser.md = docs\guides\customizing\commands\arguments-parser.md
 	EndProjectSection
 EndProject
