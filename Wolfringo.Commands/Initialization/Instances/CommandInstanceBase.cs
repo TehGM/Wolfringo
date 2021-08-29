@@ -92,9 +92,16 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 return paramsResult;
 
             // execute - if it's a task, await it
+            // also check if it's ICommandResult - if so, return it
             cancellationToken.ThrowIfCancellationRequested();
-            if (this.Method.Invoke(handler, paramsResult.Values) is Task returnTask)
+            object invokedMethod = this.Method.Invoke(handler, paramsResult.Values);
+            if (invokedMethod is Task<ICommandResult> returnTaskWithResult)
+                return await returnTaskWithResult.ConfigureAwait(false);
+            else if (invokedMethod is ICommandResult returnResult)
+                return returnResult;
+            else if (invokedMethod is Task returnTask)
                 await returnTask.ConfigureAwait(false);
+
             return CommandExecutionResult.Success;
         }
     }
