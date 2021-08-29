@@ -69,8 +69,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
             // run all custom attributes
             foreach (ICommandRequirement check in this.Requirements)
             {
-                if (!await check.CheckAsync(context, services, cancellationToken).ConfigureAwait(false))
-                    return new CommandExecutionResult(CommandResultStatus.Failure, new string[] { check.ErrorMessage }, null);
+                ICommandResult result = await check.CheckAsync(context, services, cancellationToken).ConfigureAwait(false);
+                if (result.Status != CommandResultStatus.Success)
+                    return result;
             }
 
             // build params

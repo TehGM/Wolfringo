@@ -36,12 +36,13 @@ namespace TehGM.Wolfringo.Commands.Attributes
         }
 
         /// <inheritdoc/>
-        public override Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+        public override async Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             if (!context.Message.IsGroupMessage)
-                return Task.FromResult(IgnoreInPrivate);
+                return base.ResultFromBoolean(this.IgnoreInPrivate);
 
-            return CheckPrivilegeAsync(context, context.Message.SenderID.Value, this.Privileges, cancellationToken);
+            bool hasPrivileges = await CheckPrivilegeAsync(context, context.Message.SenderID.Value, this.Privileges, cancellationToken).ConfigureAwait(false);
+            return base.ResultFromBoolean(hasPrivileges);
         }
 
         /// <summary>Checks if user has a specified privilege.</summary>

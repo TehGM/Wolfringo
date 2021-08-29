@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Attributes;
+using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -15,7 +16,7 @@ namespace TehGM.Wolfringo.Commands
             => ErrorMessage = "(n) This command can be used in PM only.";
 
         /// <inheritdoc/>
-        public override Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
-            => Task.FromResult<bool>(!context.Message.IsGroupMessage);
+        public override Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+            => Task.FromResult(base.ResultFromBoolean(context.Message.IsGroupMessage));
     }
 }

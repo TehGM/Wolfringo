@@ -23,7 +23,10 @@ namespace TehGM.Wolfringo.Commands.Attributes
         }
 
         /// <inheritdoc/>
-        public override Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
-            => RequireUserPrivilegeAttribute.CheckPrivilegeAsync(context, context.Client.CurrentUserID.Value, this.Privileges, cancellationToken);
+        public override async Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+        {
+            bool hasPrivileges = await RequireUserPrivilegeAttribute.CheckPrivilegeAsync(context, context.Client.CurrentUserID.Value, this.Privileges, cancellationToken).ConfigureAwait(false);
+            return base.ResultFromBoolean(hasPrivileges);
+        }
     }
 }
