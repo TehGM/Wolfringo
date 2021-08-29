@@ -45,7 +45,7 @@ If message is being sent, you don't need to "nest" `body` property - by default,
 
 Registration of the @TehGM.Wolfringo.Messages.Serialization.IMessageSerializer is done by passing [ISerializerProvider<string, IMessageSerializer>](xref:TehGM.Wolfringo.Messages.Serialization.ISerializerProvider`2) to @TehGM.Wolfringo.WolfClient constructor. The default @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider uses a dictionary map, so for most use cases, you don't even need to create a custom one. 
 
-### [Without Wolfringo.Hosting (Normal Bot)](#tab/connecting-normal-bot)
+### [Without Wolfringo.Hosting (Normal Bot)](#tab/configuring-normal-bot)
 1. Manually create an instance of @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.
 2. Add your serializer to @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.Serializers dictionary.
 3. Create a new instance of @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider, passing your options instance via constructor
@@ -57,7 +57,7 @@ MessageSerializerProvider messageSerializerProvider = new MessageSerializerProvi
 _client = new WolfClient(log, messageSerializers: messageSerializerProvider);
 ```
 
-### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
+### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)
 1. Configure @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.
 2. Add your serializer to @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.Serializers dictionary.
 ```csharp

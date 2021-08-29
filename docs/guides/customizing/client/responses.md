@@ -52,7 +52,7 @@ Once you have programmed your custom @TehGM.Wolfringo.Messages.Responses.IRespon
 
 Registration of the @TehGM.Wolfringo.Messages.Serialization.IResponseSerializer is done by passing [ISerializerProvider<Type, IResponseSerializer>](xref:TehGM.Wolfringo.Messages.Serialization.ISerializerProvider`2) to @TehGM.Wolfringo.WolfClient constructor. The default @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider uses a dictionary map, so for most use cases, you don't even need to create a custom one. 
 
-### [Without Wolfringo.Hosting (Normal Bot)](#tab/connecting-normal-bot)
+### [Without Wolfringo.Hosting (Normal Bot)](#tab/configuring-normal-bot)
 1. Manually create an instance of @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.
 2. Add your serializer to @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.Serializers dictionary.
 3. Create a new instance of @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider, passing your options instance via constructor
@@ -64,7 +64,7 @@ ResponseSerializerProvider responseSerializerProvider = new ResponseSerializerPr
 _client = new WolfClient(log, responseSerializers: responseSerializerProvider);
 ```
 
-### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
+### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)
 1. Configure @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.
 2. Add your serializer to @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.Serializers dictionary.
 ```csharp

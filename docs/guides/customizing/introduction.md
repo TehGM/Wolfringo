@@ -8,7 +8,7 @@ Wolfringo is designed with customizability from ground up. It achieves it mainly
 
 Check navigation menu for guides how to customize specific parts of Wolfringo.
 
-### [Without Wolfringo.Hosting (Normal Bot)](#tab/connecting-normal-bot)
+### [Without Wolfringo.Hosting (Normal Bot)](#tab/configuring-normal-bot)
 #### Replacing WolfClient dependencies
 To replace any of @TehGM.Wolfringo.WolfClient dependency, pass it in the constructor. 
 ```csharp
@@ -41,7 +41,7 @@ private static async Task MainAsync(string[] args)
 }
 ```
 
-### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
+### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)
 To replace any interface of Wolfringo, simply register it as you would register any other service. Wolfringo should automatically pick it up.
 
 Refer to [Dependency injection in .NET](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection) and [Dependency injection in ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.0) for more information about Dependency Injection in [.NET Generic Host](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0)/[ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.0).
