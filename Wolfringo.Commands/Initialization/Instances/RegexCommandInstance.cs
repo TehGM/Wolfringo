@@ -43,16 +43,16 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             // perform base checks
             if (!base.CheckMatch(context, out int startIndex, out bool caseSensitive))
-                return FailureResult();
+                return SkipResult();
 
             // perform regex match
             Regex regex = caseSensitive ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
             Match match = regex.Match(((ChatMessage)context.Message).Text, startIndex);
             if (match?.Success != true)
-                return FailureResult();
+                return SkipResult();
             return Task.FromResult<ICommandResult>(RegexCommandMatchResult.Success(match));
 
-            Task<ICommandResult> FailureResult() => Task.FromResult<ICommandResult>(RegexCommandMatchResult.Failure);
+            Task<ICommandResult> SkipResult() => Task.FromResult<ICommandResult>(RegexCommandMatchResult.Skip);
         }
 
         /// <inheritdoc/>
@@ -61,8 +61,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
             // ensure provided check result is valid
             if (matchResult == null)
                 throw new ArgumentNullException(nameof(matchResult));
-            if (!matchResult.IsSuccess)
-                return CommandExecutionResult.Failure;
+            if (matchResult.Status != CommandResultStatus.Success)
+                throw new InvalidOperationException("Cannot run command - command match has failed.");
             if (!(matchResult is RegexCommandMatchResult regexMatchResult))
                 throw new ArgumentException($"{nameof(matchResult)} must be of type {typeof(RegexCommandMatchResult).FullName}", nameof(matchResult));
 
@@ -70,7 +70,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             foreach (ICommandRequirement check in this.Requirements)
             {
                 if (!await check.CheckAsync(context, services, cancellationToken).ConfigureAwait(false))
-                    return new CommandExecutionResult(false, new string[] { check.ErrorMessage }, null);
+                    return new CommandExecutionResult(CommandResultStatus.Failure, new string[] { check.ErrorMessage }, null);
             }
 
             // build params

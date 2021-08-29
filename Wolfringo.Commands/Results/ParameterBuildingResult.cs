@@ -8,11 +8,14 @@ namespace TehGM.Wolfringo.Commands.Results
     public struct ParameterBuildingResult : ICommandResult, IMessagesCommandResult
     {
         /// <inheritdoc/>
-        public bool IsSuccess { get; }
+        [Obsolete("Use Status property instead.")]
+        public bool IsSuccess => this.Status == CommandResultStatus.Success;
         /// <inheritdoc/>
         public Exception Exception { get; }
         /// <summary>Values for parameters that were built.</summary>
         public object[] Values { get; }
+        /// <inheritdoc/>
+        public CommandResultStatus Status { get; }
         /// <inheritdoc/>
         public IEnumerable<string> Messages { get; }
 
@@ -23,7 +26,7 @@ namespace TehGM.Wolfringo.Commands.Results
         /// <param name="exception">An exception that has occured (if any).</param>
         public ParameterBuildingResult(bool isSuccess, object[] values, IEnumerable<string> messages, Exception exception)
         {
-            this.IsSuccess = isSuccess;
+            this.Status = isSuccess ? CommandResultStatus.Success : CommandResultStatus.Failure;
             this.Values = values ?? Array.Empty<object>();
             this.Exception = exception;
             this.Messages = messages?.Where(text => !string.IsNullOrWhiteSpace(text)) ?? Enumerable.Empty<string>();

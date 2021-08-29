@@ -1,4 +1,5 @@
 ﻿using System;
+using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -6,8 +7,12 @@ namespace TehGM.Wolfringo.Commands
     public interface ICommandResult
     {
         /// <summary>Whether execution or check was successful.</summary>
+        /// <remarks>This property has been obsoleted in favour of <see cref="Status"/> and will be removed in future updates.</remarks>
+        [Obsolete("Use Status property instead.")]
         bool IsSuccess { get; }
         /// <summary>An exception that has occured (if any).</summary>
         Exception Exception { get; }
+        /// <summary>Status telling commands service how to progress with the execution.</summary>
+        CommandResultStatus Status { get; }
     }
 }

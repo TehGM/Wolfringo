@@ -88,7 +88,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         {
             IParameterBuilder paramBuilder = services.GetRequiredService<IParameterBuilder>();
             ParameterBuildingResult paramsResult = await paramBuilder.BuildParamsAsync(this.Parameters, parameterBuilderValues, cancellationToken).ConfigureAwait(false);
-            if (!paramsResult.IsSuccess)
+            if (paramsResult.Status != CommandResultStatus.Success)
                 return paramsResult;
 
             // execute - if it's a task, await it

@@ -236,7 +236,7 @@ namespace TehGM.Wolfringo.Commands
 
                                 // check if the command should run at all - if not, skip
                                 ICommandResult matchResult = await instance.CheckMatchAsync(context, services, cts.Token).ConfigureAwait(false);
-                                if (!matchResult.IsSuccess)
+                                if (matchResult.Status != CommandResultStatus.Success)
                                     continue;
 
                                 // initialize handler
@@ -257,6 +257,8 @@ namespace TehGM.Wolfringo.Commands
                                     this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
                                     return executeResult;
                                 }
+                                if (executeResult.Status == CommandResultStatus.Skip)
+                                    continue;
                                 if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
                                 {
                                     this._log?.LogTrace("Sending command results messages as a command response");
