@@ -140,9 +140,17 @@ namespace TehGM.Wolfringo.Commands
                     IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
                     descriptors = descriptors.Union(await _commandsLoader.LoadFromTypesAsync(_options.Classes.Select(t => t.GetTypeInfo()) ?? Enumerable.Empty<TypeInfo>(), cts.Token).ConfigureAwait(false));
 
+                    // add default help command if enabled
+                    if (this._options.EnableDefaultHelpCommand)
+                    {
+                        this._log?.LogTrace("Default help command is enabled, loading");
+                        descriptors = descriptors.Union(await _commandsLoader.LoadFromMethodAsync(
+                            typeof(Help.DefaultHelpCommandHandler).GetMethod(nameof(Help.DefaultHelpCommandHandler.CmdHelpAsync), BindingFlags.Instance | BindingFlags.Public), cts.Token).ConfigureAwait(false));
+                    }
+
                     // make sure there's no duplicates
                     descriptors = descriptors.Distinct();
-
+                    
                     // for each loaded command, handle pre-initialization and caching
                     foreach (ICommandInstanceDescriptor descriptor in descriptors)
                     {

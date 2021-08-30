@@ -21,6 +21,10 @@ namespace TehGM.Wolfringo.Commands
         /// <remarks><para>Prefix value can be set using <see cref="Prefix"/></para></remarks>
         /// <seealso cref="Prefix"/>
         public PrefixRequirement RequirePrefix { get; set; } = PrefixRequirement.Always;
+        /// <summary>Whether the built-in default help command should be enabled.</summary>
+        /// <remarks><para>This command will be added independently on <see cref="Classes"/> and <see cref="Assemblies"/>.</para>
+        /// <para>Defaults to false.</para></remarks>
+        public bool EnableDefaultHelpCommand { get; set; } = false;
 
         // for loading
         /// <summary>Collection of Types to load as Command Handlers.</summary>
