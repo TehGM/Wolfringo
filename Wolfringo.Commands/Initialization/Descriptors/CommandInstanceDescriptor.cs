@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TehGM.Wolfringo.Commands.Attributes;
 
@@ -18,6 +20,10 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <seealso cref="PriorityAttribute"/>
         public int Priority { get; }
 
+        /// <summary>All custom attributes specified on the handler.</summary>
+        public IEnumerable<Attribute> AllAttributes => this._allAttributes.Value;
+        private readonly Lazy<IEnumerable<Attribute>> _allAttributes;
+
         /// <summary>Creates a command descriptor.</summary>
         /// <param name="attribute">Command attribute that specifies this command.</param>
         /// <param name="method">Method that will be run when the command executes.</param>
@@ -29,6 +35,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             // from extensions
             this.HandlerAttribute = this.GetHandlerAttribute();
             this.Priority = this.GetPriority();
+            this._allAttributes = new Lazy<IEnumerable<Attribute>>(() => this.Method.DeclaringType.GetCustomAttributes<Attribute>(true), true);
         }
 
         /// <inheritdoc/>
