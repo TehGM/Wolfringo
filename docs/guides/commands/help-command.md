@@ -114,7 +114,7 @@ This wasn't so scary, right? As you can see on the screenshot below, the help co
 Of course you can do much more than this - this help command is now like any other command, so you can do anything that you can do in "normal" commands!
 
 ## Without CommandsListBuilder
-If you need even more customizability, you don't need to use @TehGM.Wolfringo.Commands.Help.CommandsListBuilder at all. Instead you can use [CommandsService.Commands](xref:TehGM.Wolfringo.Commands.CommandsService.Commands) enumerable to get all loaded @TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor, and then use extension methods in `TehGM.Wolfringo.Commands.Help` namespace to get values from the attributes by yourself. This allows you to effectively build your own "CommandsListBuilder".
+If you need even more customizability, you don't need to use @TehGM.Wolfringo.Commands.Help.CommandsListBuilder at all. Instead you can use [CommandsService.Commands](xref:TehGM.Wolfringo.Commands.CommandsService.Commands) enumerable to get all loaded @TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor, and then use extension methods in `TehGM.Wolfringo.Commands` namespace to get values from the attributes by yourself. This allows you to effectively build your own "CommandsListBuilder".
 
 An example (and very simple) help command could look like this:
 ```csharp
@@ -143,7 +143,7 @@ private async Task CmdHelpAsync(CommandContext context)
 
 Of course the implementation above is very primitive, but it shows how you can easily get any help command you want.
 
-You can even create your custom attributes - there's a special [GetAttribute\<T\>](xref:TehGM.Wolfringo.Commands.Help.DescriptorHelpExtensions.GetAttribute``1(TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor,System.Boolean)) extension method that will allow you to get any other attribute on your command. You can also set `includeHandlerAttributes` parameter to true - if you do this, the method will check attributes on the handler as well (this is how for example how [\[Hidden\] attribute](xref:TehGM.Wolfringo.Commands.HiddenAttribute) works when it's set on either method or the class)!  
+You can even create your custom attributes - there's a special [GetAttribute\<T\>](xref:TehGM.Wolfringo.Commands.CommandInstanceDescriptorExtensions.GetAttribute``1(TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor,System.Boolean)) extension method that will allow you to get any other attribute on your command. You can also set `includeHandlerAttributes` parameter to true - if you do this, the method will check attributes on the handler as well (this is how for example how [\[Hidden\] attribute](xref:TehGM.Wolfringo.Commands.HiddenAttribute) works when it's set on either method or the class)!  
 If the attribute is not found, the method will return `null`.
 ```csharp
 MyCustomAttribute customValue;
@@ -153,6 +153,6 @@ if (customValue != null)    // if attribute was not found, null will be returned
     DoSomething();
 ```
 
-All attributes retrieved when using @TehGM.Wolfringo.Commands.Help.DescriptorHelpExtensions are lazy loaded, and are cached internally. This means that they'll be really fast after first use, but will not use memory if never used!
+All attributes retrieved when using @TehGM.Wolfringo.Commands.CommandInstanceDescriptorExtensions are lazy loaded, and are cached internally. This means that they'll be really fast after first use, but will not use memory if never used!
 
 @TehGM.Wolfringo.Commands.Help.CommandsListBuilder of course uses a fairly more complex logic, so if you want to use it as reference, check [CommandsListBuilder.cs](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Help/CommandsListBuilder.cs) on GitHub.
