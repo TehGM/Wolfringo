@@ -77,6 +77,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHostedCommandsServiceBuilder SetPrefixRequirement(this IHostedCommandsServiceBuilder builder, PrefixRequirement requirement)
             => builder.Configure(options => options.RequirePrefix = requirement);
 
+        /// <summary>Enables default help command.</summary>
+        /// <param name="builder">Hosted Commands Service builder.</param>
+        public static IHostedCommandsServiceBuilder EnableDefaultHelpCommand(this IHostedCommandsServiceBuilder builder)
+            => builder.Configure(options => options.EnableDefaultHelpCommand = true);
+
 
 
         // for commands loader

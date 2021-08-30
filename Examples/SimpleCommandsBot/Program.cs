@@ -33,7 +33,8 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
             {
                 Prefix = "!",                               // set prefix
                 RequirePrefix = PrefixRequirement.Always,   // make prefix always required - can also for example require it in group only
-                CaseSensitivity = false                     // make commands case insensitive
+                CaseSensitivity = false,                    // make commands case insensitive
+                EnableDefaultHelpCommand = true             // enable the default, built-in help command
             };
             CommandsService commands = new CommandsService(_client, options, logFactory.CreateLogger<CommandsService>(), services.BuildServiceProvider());
             await commands.StartAsync();                    // calling StartAsync causes reload of all commands

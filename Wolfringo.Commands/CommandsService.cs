@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -44,6 +43,9 @@ namespace TehGM.Wolfringo.Commands
         private bool _started;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
+
+        /// <summary>Descriptors of all commands loaded to this commands service.</summary>
+        public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Keys;
 
         /// <summary>Initializes a command service.</summary>
         /// <param name="client">WOLF client. Required.</param>
@@ -100,6 +102,8 @@ namespace TehGM.Wolfringo.Commands
         {
             IDictionary<Type, object> servicesMap = new Dictionary<Type, object>
             {
+                { typeof(ICommandsService), this },
+                { this.GetType(), this },
                 { typeof(IWolfClient), this._client },
                 { this._client.GetType(), this._client },
                 { typeof(CommandsOptions), this._options },
@@ -136,9 +140,17 @@ namespace TehGM.Wolfringo.Commands
                     IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
                     descriptors = descriptors.Union(await _commandsLoader.LoadFromTypesAsync(_options.Classes.Select(t => t.GetTypeInfo()) ?? Enumerable.Empty<TypeInfo>(), cts.Token).ConfigureAwait(false));
 
+                    // add default help command if enabled
+                    if (this._options.EnableDefaultHelpCommand)
+                    {
+                        this._log?.LogTrace("Default help command is enabled, loading");
+                        descriptors = descriptors.Union(await _commandsLoader.LoadFromMethodAsync(
+                            typeof(Help.DefaultHelpCommandHandler).GetMethod(nameof(Help.DefaultHelpCommandHandler.CmdHelpAsync), BindingFlags.Instance | BindingFlags.Public), cts.Token).ConfigureAwait(false));
+                    }
+
                     // make sure there's no duplicates
                     descriptors = descriptors.Distinct();
-
+                    
                     // for each loaded command, handle pre-initialization and caching
                     foreach (ICommandInstanceDescriptor descriptor in descriptors)
                     {
@@ -207,8 +219,7 @@ namespace TehGM.Wolfringo.Commands
                 try
                 {
                     // order commands by priority
-                    // try to get from concrete Descriptor if possible, as it should be precached and avoid additional reflection and thus faster
-                    commandsCopy = this._commands.OrderByDescending(kvp => (kvp.Key is CommandInstanceDescriptor cid) ? cid.Priority : kvp.Key.GetPriority());
+                    commandsCopy = this._commands.OrderByDescending(kvp => kvp.Key.GetPriority());
                 }
                 finally
                 {

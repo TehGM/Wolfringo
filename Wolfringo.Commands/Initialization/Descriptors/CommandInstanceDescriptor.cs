@@ -13,10 +13,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public MethodInfo Method { get; }
         /// <summary>Command Handler Attribute present on the handler. Might be null if handler isn't tagged with that attribute.</summary>
         public CommandsHandlerAttribute HandlerAttribute { get; }
-        /// <summary>Command priority.</summary>
-        /// <remarks>See <see cref="PriorityAttribute"/> for more information about command priorities.</remarks>
-        /// <seealso cref="PriorityAttribute"/>
-        public int Priority { get; }
 
         /// <summary>Creates a command descriptor.</summary>
         /// <param name="attribute">Command attribute that specifies this command.</param>
@@ -28,7 +24,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
             // from extensions
             this.HandlerAttribute = this.GetHandlerAttribute();
-            this.Priority = this.GetPriority();
         }
 
         /// <inheritdoc/>
