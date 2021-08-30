@@ -75,6 +75,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{7B
 		docs\guides\commands\creating-commands.md = docs\guides\commands\creating-commands.md
 		docs\guides\commands\dependency-injection.md = docs\guides\commands\dependency-injection.md
 		docs\guides\commands\enabling-commands.md = docs\guides\commands\enabling-commands.md
+		docs\guides\commands\help-command.md = docs\guides\commands\help-command.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{2FA0619A-FB72-49AB-AC08-0B2F4904ECF5}"

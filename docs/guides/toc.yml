@@ -35,6 +35,8 @@
       topicUid: Guides.Commands.Handlers
     - name: Commands Requirements
       topicUid: Guides.Commands.Requirements
+    - name: Help Command
+      topicUid: Guides.Commands.HelpCommand
     - name: Dependency Injection
       topicUid: Guides.Commands.DependencyInjection
 - name: Customizing
