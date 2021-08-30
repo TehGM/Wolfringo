@@ -24,8 +24,10 @@ For more details on how to use Wolfringo, check [Working with Wolfringo](xref:Gu
 
 To learn how to use Commands System for your bots' commands, check [Commands System](xref:Guides.Commands.Intro) section.
 
-##### Customizing Wolfringo
-Wolfringo utilizes Dependency Injection to allow customization of the library behaviour. For now that part of Wolfringo is not documented - I recommend checking [source code on GitHub](https://github.com/TehGM/Wolfringo) if you want to customize Wolfringo before the documentation for that is ready.
+## Customizing Wolfringo
+Wolfringo utilizes Dependency Injection to allow customization of the library behaviour - many parts of both client and commands system can be configured or even replaced without the need to rewrite everything.
+
+Check [Customizing guides](xref:Guides.Customizing.Intro) for more info!
 
 ## Questions?
 To ask questions or share ideas, feel free to start a new [GitHub Discussion](https://github.com/TehGM/Wolfringo/discussions).
