@@ -24,6 +24,8 @@ namespace TehGM.Wolfringo.Commands.Help
 
             CommandsListBuilder builder = new CommandsListBuilder(this._service);
             builder.PrependedPrefix = this._options.Prefix;
+            builder.SpaceCategories = true;
+
             string result = builder.GetCommandsList();
             if (string.IsNullOrWhiteSpace(result))
                 return new CommandExecutionResult(CommandResultStatus.Failure, new string[] { "No unhidden commands found!" }, null);

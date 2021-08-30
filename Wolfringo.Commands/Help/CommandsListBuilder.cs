@@ -40,6 +40,21 @@ namespace TehGM.Wolfringo.Commands.Help
             }
         }
         private string _summarySeparator = "    - ";
+        /// <summary>Whether categories should have extra space between themselves.</summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool SpaceCategories
+        {
+            get => this._spaceCategories;
+            set
+            {
+                lock (this._commands)
+                {
+                    this._spaceCategories = value;
+                    this._builtCommandsList = null;
+                }
+            }
+        }
+        private bool _spaceCategories = true;
 
         /// <summary>Creates a new Builder.</summary>
         /// <param name="commands">List of command descriptors.</param>
@@ -71,8 +86,13 @@ namespace TehGM.Wolfringo.Commands.Help
 
                 StringBuilder builder = new StringBuilder();
                 bool addPrefix = !string.IsNullOrWhiteSpace(this.PrependedPrefix);
+                bool firstGroup = true;
                 foreach (IGrouping<string, ICommandInstanceDescriptor> group in commands)
                 {
+                    if (!firstGroup)
+                        builder.Append('\n');
+                    else firstGroup = false;
+
                     if (!string.IsNullOrWhiteSpace(group.Key))
                         builder.Append(group.Key + ":\n");
 
