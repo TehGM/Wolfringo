@@ -60,3 +60,5 @@
           topicUid: Guides.Customizing.Commands.ParameterBuilder
         - name: Command Type
           topicUid: Guides.Customizing.Commands.CommandType
+        - name: Command Handler Provider
+          topicUid: Guides.Customizing.Commands.CommandHandlerProvider
