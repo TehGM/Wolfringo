@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Attributes;
-using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -17,6 +16,6 @@ namespace TehGM.Wolfringo.Commands
 
         /// <inheritdoc/>
         public override Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
-            => Task.FromResult(base.ResultFromBoolean(context.Message.IsGroupMessage));
+            => Task.FromResult(base.ResultFromBoolean(!context.Message.IsGroupMessage));
     }
 }
