@@ -21,7 +21,7 @@ namespace TehGM.Wolfringo.Commands
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name), "Category name cannot be null, blank or whitespace");
 
-            this.Name = name;
+            this.Name = name.Trim();
             this.Priority = priority;
             this._hashcode = new Lazy<int>(() => this.Name.ToLowerInvariant().GetHashCode());
         }
