@@ -98,9 +98,9 @@ namespace TehGM.Wolfringo.Commands.Help
                 bool firstGroup = true;
                 foreach (IGrouping<string, ICommandInstanceDescriptor> group in commands)
                 {
-                    if (!firstGroup)
+                    if (!firstGroup && this.SpaceCategories)
                         builder.Append('\n');
-                    else firstGroup = false;
+                    firstGroup = false;
 
                     if (!string.IsNullOrWhiteSpace(group.Key))
                         builder.Append(group.Key + ":\n");
