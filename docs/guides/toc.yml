@@ -50,7 +50,7 @@
         - name: Custom Responses
           topicUid: Guides.Customizing.Client.Responses
     - name: Commands System
-      topicUid: Guides.Customizing.Commands.ArgumentsParser
+      topicUid: Guides.Customizing.Commands.CommandType
       items:
         - name: Command Type
           topicUid: Guides.Customizing.Commands.CommandType
