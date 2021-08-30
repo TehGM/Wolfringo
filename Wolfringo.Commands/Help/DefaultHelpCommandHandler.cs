@@ -17,6 +17,7 @@ namespace TehGM.Wolfringo.Commands.Help
 
         [Command("help")]
         [Hidden]
+        [Priority(int.MinValue)]
         public async Task<ICommandResult> CmdHelpAsync(ICommandContext context, CancellationToken cancellationToken = default)
         {
             if (!this._options.EnableDefaultHelpCommand)
