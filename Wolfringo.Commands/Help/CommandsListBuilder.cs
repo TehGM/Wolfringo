@@ -130,7 +130,15 @@ namespace TehGM.Wolfringo.Commands.Help
                             continue;
 
                         if (addPrefix)
-                            builder.Append(this.PrependedPrefix);
+                        {
+                            // check prefix override first
+                            string prefixOverride = descriptor.GetPrefixOverride();
+                            if (!string.IsNullOrWhiteSpace(prefixOverride))
+                                builder.Append(prefixOverride);
+                            // if no override, use standard prefix
+                            else
+                                builder.Append(this.PrependedPrefix);
+                        }
                         builder.Append(descriptor.GetDisplayName());
                         if (!string.IsNullOrWhiteSpace(summary))
                         {
