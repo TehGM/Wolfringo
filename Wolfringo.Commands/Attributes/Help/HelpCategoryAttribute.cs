@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TehGM.Wolfringo.Commands.Attributes
+namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Assigns command or all commands in the handler to a specific category in help list.</summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
