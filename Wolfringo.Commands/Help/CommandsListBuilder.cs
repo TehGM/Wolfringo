@@ -19,6 +19,9 @@ namespace TehGM.Wolfringo.Commands.Help
             {
                 lock (this._commands)
                 {
+                    if (this._prependPrefix == value)
+                        return;
+
                     this._prependPrefix = value;
                     this._builtCommandsList = null;
                 }
@@ -34,6 +37,9 @@ namespace TehGM.Wolfringo.Commands.Help
             {
                 lock (this._commands)
                 {
+                    if (this._summarySeparator == value)
+                        return;
+
                     this._summarySeparator = value;
                     this._builtCommandsList = null;
                 }
@@ -49,6 +55,9 @@ namespace TehGM.Wolfringo.Commands.Help
             {
                 lock (this._commands)
                 {
+                    if (this._spaceCategories)
+                        return;
+
                     this._spaceCategories = value;
                     this._builtCommandsList = null;
                 }
