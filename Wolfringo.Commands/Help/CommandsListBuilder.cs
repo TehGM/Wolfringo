@@ -125,10 +125,13 @@ namespace TehGM.Wolfringo.Commands.Help
 
                     foreach (ICommandInstanceDescriptor descriptor in group)
                     {
+                        string summary = descriptor.GetSummary();
+                        if (!this.ListCommandsWithoutSummaries && string.IsNullOrWhiteSpace(summary))
+                            continue;
+
                         if (addPrefix)
                             builder.Append(this.PrependedPrefix);
                         builder.Append(descriptor.GetDisplayName());
-                        string summary = descriptor.GetSummary();
                         if (!string.IsNullOrWhiteSpace(summary))
                         {
                             builder.Append(this.SummarySeparator);
