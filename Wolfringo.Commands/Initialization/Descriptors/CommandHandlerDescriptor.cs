@@ -17,10 +17,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <inheritdoc/>
         public Type Type => this.Constructor.DeclaringType;
 
-        /// <summary>All custom attributes specified on the handler.</summary>
-        public IEnumerable<Attribute> AllAttributes => this._allAttributes.Value;
-        private readonly Lazy<IEnumerable<Attribute>> _allAttributes;
-
         /// <summary>creates a command handler descriptor.</summary>
         /// <param name="ctor">Constructor picked for creating the handler instance.</param>
         /// <param name="parameters">Dependencies resolved for constructor injection.</param>
@@ -31,7 +27,6 @@ namespace TehGM.Wolfringo.Commands.Initialization
 
             // check [CommandHandler] attribute
             this.Attribute = this.Constructor.DeclaringType.GetCustomAttribute<CommandsHandlerAttribute>();
-            this._allAttributes = new Lazy<IEnumerable<Attribute>>(() => this.Type.GetCustomAttributes<Attribute>(true), true);
         }
 
         /// <summary>Creates a new instance of a handler.</summary>
