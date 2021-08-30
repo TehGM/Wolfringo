@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -44,6 +43,9 @@ namespace TehGM.Wolfringo.Commands
         private bool _started;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
+
+        /// <summary>Descriptors of all commands loaded to this commands service.</summary>
+        public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Keys;
 
         /// <summary>Initializes a command service.</summary>
         /// <param name="client">WOLF client. Required.</param>
@@ -100,6 +102,8 @@ namespace TehGM.Wolfringo.Commands
         {
             IDictionary<Type, object> servicesMap = new Dictionary<Type, object>
             {
+                { typeof(ICommandsService), this },
+                { this.GetType(), this },
                 { typeof(IWolfClient), this._client },
                 { this._client.GetType(), this._client },
                 { typeof(CommandsOptions), this._options },
