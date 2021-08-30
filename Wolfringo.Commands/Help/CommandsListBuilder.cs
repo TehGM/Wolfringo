@@ -70,9 +70,7 @@ namespace TehGM.Wolfringo.Commands.Help
                 }
 
                 StringBuilder builder = new StringBuilder();
-                string prefix = string.Copy(this.PrependedPrefix);
-                bool addPrefix = !string.IsNullOrWhiteSpace(prefix);
-                string separator = string.Copy(this.SummarySeparator);
+                bool addPrefix = !string.IsNullOrWhiteSpace(this.PrependedPrefix);
                 foreach (IGrouping<string, ICommandInstanceDescriptor> group in commands)
                 {
                     if (!string.IsNullOrWhiteSpace(group.Key))
@@ -81,12 +79,12 @@ namespace TehGM.Wolfringo.Commands.Help
                     foreach (ICommandInstanceDescriptor descriptor in group)
                     {
                         if (addPrefix)
-                            builder.Append(prefix);
+                            builder.Append(this.PrependedPrefix);
                         builder.Append(descriptor.GetDisplayName());
                         string summary = descriptor.GetSummary();
                         if (!string.IsNullOrWhiteSpace(summary))
                         {
-                            builder.Append(separator);
+                            builder.Append(this.SummarySeparator);
                             builder.Append(summary);
                         }
                         builder.Append('\n');
