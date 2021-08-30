@@ -122,5 +122,10 @@ namespace TehGM.Wolfringo.Commands.Help
 
             return orderedGroups;
         }
+
+        /// <summary>Builds a commands list.</summary>
+        /// <returns>String with commands list. Empty string if there's no commands.</returns>
+        public override string ToString()
+            => this.GetCommandsList();
     }
 }
