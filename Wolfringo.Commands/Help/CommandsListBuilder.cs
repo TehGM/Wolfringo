@@ -64,6 +64,24 @@ namespace TehGM.Wolfringo.Commands.Help
             }
         }
         private bool _spaceCategories = true;
+        /// <summary>Whether commands without summaries will be listed.</summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool ListCommandsWithoutSummaries
+        {
+            get => this._withoutSummaries;
+            set
+            {
+                lock (this._commands)
+                {
+                    if (this._withoutSummaries == value)
+                        return;
+
+                    this._withoutSummaries = value;
+                    this._builtCommandsList = null;
+                }
+            }
+        }
+        private bool _withoutSummaries = true;
 
         /// <summary>Creates a new Builder.</summary>
         /// <param name="commands">List of command descriptors.</param>
@@ -132,6 +150,10 @@ namespace TehGM.Wolfringo.Commands.Help
                 !cmd.IsHidden() &&
                 !string.IsNullOrWhiteSpace(cmd.GetDisplayName())
             );
+
+            // exclude commands without summaries
+            if (!this.ListCommandsWithoutSummaries)
+                descriptors = descriptors.Where(cmd => !string.IsNullOrWhiteSpace(cmd.GetSummary()));
 
             // order commands based on priority and name
             IOrderedEnumerable<ICommandInstanceDescriptor> orderedDescriptors = descriptors

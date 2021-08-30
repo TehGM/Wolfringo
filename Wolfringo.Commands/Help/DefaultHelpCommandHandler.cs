@@ -26,6 +26,7 @@ namespace TehGM.Wolfringo.Commands.Help
             CommandsListBuilder builder = new CommandsListBuilder(this._service);
             builder.PrependedPrefix = this._options.Prefix;
             builder.SpaceCategories = true;
+            builder.ListCommandsWithoutSummaries = true;
 
             string result = builder.GetCommandsList();
             if (string.IsNullOrWhiteSpace(result))

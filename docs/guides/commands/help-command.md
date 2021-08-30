@@ -21,6 +21,7 @@ Wolfringo Commands package comes with a default help command. This command:
 - is transient;
 - is hidden;
 - has priority of [int.MinValue](xref:System.Int32.MinValue);
+- will list commands without summaries set;
 - will respond with "No unhidden commands found!" if it finds no commands to list.
 
 This command is disabled by default, but don't worry - enabling it is just a single line change in Commands Options!
@@ -88,6 +89,7 @@ public class MyHelpCommandHandler
         builder.PrependedPrefix = this._options.Prefix;     // set your prefix - here using the value from CommandsOptions
         builder.SpaceCategories = true;                     // set whether there should be additional spaces between categories
         builder.SummarySeparator = " == ";                  // string that separates command name and summary. Default is "    - " (4 spaces, dash, and one more space).
+        builder.ListCommandsWithoutSummaries = true;        // if set to false, commands without [Summary] set will not be listed
 
         string result = builder.GetCommandsList();          // build the list
         if (string.IsNullOrWhiteSpace(result))              // if no commands found, the result will be empty
