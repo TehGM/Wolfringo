@@ -55,7 +55,7 @@ namespace TehGM.Wolfringo.Commands.Help
             {
                 lock (this._commands)
                 {
-                    if (this._spaceCategories)
+                    if (this._spaceCategories == value)
                         return;
 
                     this._spaceCategories = value;
