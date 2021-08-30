@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TehGM.Wolfringo.Commands.Initialization;
 
 namespace TehGM.Wolfringo.Commands.Help
@@ -37,6 +38,22 @@ namespace TehGM.Wolfringo.Commands.Help
         /// <returns>Help Category attribute if found on command or its handler; otherwise null.</returns>
         public static HelpCategoryAttribute GetHelpCategory(this ICommandInstanceDescriptor descriptor)
             => GetCache(descriptor).HelpCategory;
+
+        /// <summary>Gets all custom attributes of specified type.</summary>
+        /// <typeparam name="T">Type of attributes.</typeparam>
+        /// <param name="descriptor">Command instance descriptor to get the value for.</param>
+        /// <param name="includeHandlerAttributes">Whether handler attributes should also be checked.</param>
+        /// <returns>Enumerable of found attributes.</returns>
+        public static IEnumerable<T> GetAllAttributes<T>(this ICommandInstanceDescriptor descriptor, bool includeHandlerAttributes = false) where T : Attribute
+            => GetCache(descriptor).GetAllAttributes<T>(includeHandlerAttributes);
+
+        /// <summary>Gets single custom attribute of specified type.</summary>
+        /// <typeparam name="T">Type of attribute.</typeparam>
+        /// <param name="descriptor">Command instance descriptor to get the value for.</param>
+        /// <param name="includeHandlerAttributes">Whether handler attributes should also be checked.</param>
+        /// <returns>Found attribute; null if not found.</returns>
+        public static T GetAttribute<T>(this ICommandInstanceDescriptor descriptor, bool includeHandlerAttributes = false) where T : Attribute
+            => GetCache(descriptor).GetAttribute<T>(includeHandlerAttributes);
 
         private static DescriptorHelpCache GetCache(ICommandInstanceDescriptor descriptor)
         {

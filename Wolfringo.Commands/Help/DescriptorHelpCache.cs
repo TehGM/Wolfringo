@@ -67,7 +67,7 @@ namespace TehGM.Wolfringo.Commands.Help
         /// <typeparam name="T">Type of attributes.</typeparam>
         /// <param name="includeHandlerAttributes">Whether handler attributes should also be checked.</param>
         /// <returns>Enumerable of found attributes.</returns>
-        private IEnumerable<T> GetAllAttributes<T>(bool includeHandlerAttributes = false) where T : Attribute
+        public IEnumerable<T> GetAllAttributes<T>(bool includeHandlerAttributes = false) where T : Attribute
         {
             IEnumerable<T> FilterAttributes(IEnumerable<Attribute> allAttributes)
                 => allAttributes?.Where(attr => attr is T).Cast<T>() ?? Enumerable.Empty<T>();
@@ -86,7 +86,7 @@ namespace TehGM.Wolfringo.Commands.Help
         /// <typeparam name="T">Type of attribute.</typeparam>
         /// <param name="includeHandlerAttributes">Whether handler attributes should also be checked.</param>
         /// <returns>Found attribute; null if not found.</returns>
-        private T GetAttribute<T>(bool includeHandlerAttributes = false) where T : Attribute
+        public T GetAttribute<T>(bool includeHandlerAttributes = false) where T : Attribute
             => GetAllAttributes<T>(includeHandlerAttributes).LastOrDefault();
     }
 }
