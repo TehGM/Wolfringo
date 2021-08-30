@@ -34,9 +34,12 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Arguments in this example have customized error messages using special attributes.
          * This example uses a ICommandContext interface as abstraction.
          * 
+         * This example also shows a perfect use case for [DisplayName] attribute.
+         * 
          * Note: custom error messages are optional. If they're missing, default ones will be used.
          ***/
         [Command("delayed ping")]
+        [DisplayName("delayed ping <seconds>")]
         public async Task CmdDelayedPingAsync(ICommandContext context,
             [ConvertingError("(n) '{{Arg}}' is not a valid number!")]
             [MissingError("(n) You need to provide delay value!")] int delaySeconds)
@@ -65,6 +68,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Note: group markers - (), [], "" - will not be included in any of arguments. If you want to include them, please use [RegexCommand] with one group.
          ***/
         [Command("say")]
+        [DisplayName("say <word>")]
         public async Task CmdSayAsync(CommandContext context, string say, string[] catchAll)
         {
             await context.ReplyTextAsync($"You asked me to say {say}");
@@ -77,8 +81,12 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Arguments that have defaults set in the method signature will use these defaults if user does not provide a value.
          * This works for services as well - using default value (like null) means they'll be injected if available, and skipped if not available.
          * This example also shows that commands don't need to be public. They cannot be static, but they can be private!
+         * 
+         * This and next examples also show usage of [HelpCategory] - they'll be grouped together.
          ***/
         [Command("optionals")]
+        [DisplayName("optionals <first> {second}")]
+        [HelpCategory("Category Example")]
         private async Task CmdOptionalsAsync(CommandContext context, bool first, bool second = false)
         {
             await context.ReplyTextAsync($"First: {first}, Second: {second}");
@@ -88,9 +96,16 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * This example shows a regex command, using Regex Match.
          * In addition to regex match, 1st regex group is parsed as a normal argument.
          * As an addition, this command is set to not require prefix in private messages.
+         * 
+         * This command also shows another example where [DisplayName] could be required:
+         * Regex commands will show as confusing on help list, unless changed with [DisplayName].
+         * 
+         * This and previous examples also show usage of [HelpCategory] - they'll be grouped together.
          ***/
         [RegexCommand("^hello (.+?)(?:\\s(.*))?$")]
+        [DisplayName("hello <name>")]
         [Prefix(PrefixRequirement.Group)]
+        [HelpCategory("Category Example")]
         public async Task CmdHelloAsync(CommandContext context, Match match, string arg1)
         {
             await context.ReplyTextAsync($"Hello, but {arg1} is not my name!");
@@ -104,6 +119,10 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Command 1 has lower priority than command 2, but use same command text.
          * Priority attribute ensures only the command with highest priority is executed.
          * This can be especially useful with help commands - or regex commands with multiple overloads.
+         * 
+         * This example also shows [Hidden] attribute:
+         * Because 2nd command is marked as hidden, it'll not be shown on the help list!
+         * This command will also appear on the top of the list, as it has the highest priority.
          ***/
         [Command("priority")]
         [Priority(5)]
@@ -111,6 +130,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
             => context.ReplyTextAsync("Priority 5");
         [Command("priority")]
         [Priority(15)]
+        [Hidden]
         public Task CmdPriority15Async(CommandContext context)
             => context.ReplyTextAsync("Priority 15");
 
@@ -138,6 +158,8 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * There are other similar attributes: [RequireGroupOwner] and [RequireGroupMod].
          * There also are commands that check if the bot has privileges in group. These are [RequireBotGroupOwner], [RequireBotGroupAdmin] and [RequireBotGroupMod].
          * 
+         * This example also shows usage of [Summary] - a short description of the command will be shown on help list!
+         * 
          * Note: [GroupOnly] is optional with [RequireGroupAdmin] etc - group privileges requirements make commands group-only by default.
          * Note: If privilege requirement has IgnoreInPrivate set to false, command will skip check and work in private. Example: [RequireGroupAdmin(IgnoreInPrivate = true)]
          * Note: To make command PM only, use [PrivateOnly] attribute.
@@ -145,6 +167,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         [Command("admin only")]
         [GroupOnly]
         [RequireGroupAdmin]
+        [Summary("This command will only work if you're admin!")]
         public async Task CmdAdminOnlyAsync(CommandContext context)
         {
             await context.ReplyTextAsync("You can execute this command!");
@@ -163,6 +186,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         [Command("private only")]
         [PrivateOnly(ErrorMessage = null)]
         [Prefix(PrefixRequirement.Never)]
+        [Summary("This command will only work in PMs!")]
         public Task CmdPrivateOnlyAsync(CommandContext context)
             => context.ReplyTextAsync("Welcome to my PM!");
 
@@ -172,11 +196,14 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * Instead, you can add multiple [Command] and [RegexCommand] attributes to a single method.
          * Internally they'll be treated as separate commands, but on surface, they'll work like aliases.
          * 
+         * This example also shows usage of [HelpCategory] with priority - this category will be last on the list, as it has the lowest priority.
+         * 
          * Note: [Command] and [RegexCommand] can be freely mixed.
          * Note: Only one "alias" (and command in general) will ever be executed per command invokation.
          ***/
         [Command("alias 1")]
         [Command("alias 2")]
+        [HelpCategory("Aliases", -99999)]
         public Task CmdAliasesAsync(CommandContext context, ICommandInstance instance)
         {
             if (instance is StandardCommandInstance standardInstance)

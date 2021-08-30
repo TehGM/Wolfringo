@@ -48,6 +48,8 @@ namespace TehGM.Wolfringo.Examples.HostedCommandsBot
                         //.SetPrefix("!")           
                         //.SetCaseSensitive(false)
                         //.SetPrefixRequirement(PrefixRequirement.Group)
+                        //.EnableDefaultHelpCommand()                   -- enables default help command
+
                         /** by default, all handlers from the same assembly as the bot will be loaded - commented example below shows how to override. **/
                         //.RemoveDefaultHandlers()                      -- this will stop commands from loading current assembly by default 
                         //.AddHandler<HostedCommandsHandler>()          -- this will add a specific commands handler
