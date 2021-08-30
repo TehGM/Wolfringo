@@ -219,8 +219,7 @@ namespace TehGM.Wolfringo.Commands
                 try
                 {
                     // order commands by priority
-                    // try to get from concrete Descriptor if possible, as it should be precached and avoid additional reflection and thus faster
-                    commandsCopy = this._commands.OrderByDescending(kvp => (kvp.Key is CommandInstanceDescriptor cid) ? cid.Priority : kvp.Key.GetPriority());
+                    commandsCopy = this._commands.OrderByDescending(kvp => kvp.Key.GetPriority());
                 }
                 finally
                 {
