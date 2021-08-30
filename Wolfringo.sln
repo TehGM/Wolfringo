@@ -114,6 +114,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{C7
 		docs\guides\customizing\commands\arguments-parser.md = docs\guides\customizing\commands\arguments-parser.md
 		docs\guides\customizing\commands\command-handler-provider.md = docs\guides\customizing\commands\command-handler-provider.md
 		docs\guides\customizing\commands\command-type.md = docs\guides\customizing\commands\command-type.md
+		docs\guides\customizing\commands\commands-loader.md = docs\guides\customizing\commands\commands-loader.md
 		docs\guides\customizing\commands\parameter-builder.md = docs\guides\customizing\commands\parameter-builder.md
 	EndProjectSection
 EndProject
