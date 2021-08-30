@@ -83,8 +83,12 @@ namespace TehGM.Wolfringo.Commands.Help
                         if (addPrefix)
                             builder.Append(prefix);
                         builder.Append(descriptor.GetDisplayName());
-                        builder.Append(separator);
-                        builder.Append(descriptor.GetSummary());
+                        string summary = descriptor.GetSummary();
+                        if (!string.IsNullOrWhiteSpace(summary))
+                        {
+                            builder.Append(separator);
+                            builder.Append(summary);
+                        }
                         builder.Append('\n');
                     }
                 }
