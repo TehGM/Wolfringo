@@ -52,15 +52,15 @@
     - name: Commands System
       topicUid: Guides.Customizing.Commands.ArgumentsParser
       items:
+        - name: Command Type
+          topicUid: Guides.Customizing.Commands.CommandType
+        - name: Commands Loader
+          topicUid: Guides.Customizing.Commands.CommandsLoader
+        - name: Command Handler Provider
+          topicUid: Guides.Customizing.Commands.CommandHandlerProvider
         - name: Arguments Parser
           topicUid: Guides.Customizing.Commands.ArgumentsParser
         - name: Argument Converters
           topicUid: Guides.Customizing.Commands.ArgumentConverters
         - name: Parameter Builder
           topicUid: Guides.Customizing.Commands.ParameterBuilder
-        - name: Command Type
-          topicUid: Guides.Customizing.Commands.CommandType
-        - name: Command Handler Provider
-          topicUid: Guides.Customizing.Commands.CommandHandlerProvider
-        - name: Commands Loader
-          topicUid: Guides.Customizing.Commands.CommandsLoader
