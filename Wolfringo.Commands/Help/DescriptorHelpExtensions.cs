@@ -12,10 +12,10 @@ namespace TehGM.Wolfringo.Commands.Help
         /// <summary>Gets display name for given command instance descriptor.</summary>
         /// <param name="descriptor">Command instance descriptor to get the value for.</param>
         /// <remarks>Display name is determined in the following order:<br/>
-        /// 1. Value of <see cref="DisplayNameAttribute"/> if present;
-        /// 2. Command text if the command is a standard command (<see cref="CommandAttribute"/>);
-        /// 3. Regex pattern if the command is a regex command (<see cref="RegexCommandAttribute"/>);
-        /// 4. Fallback to Method name for custom command types.</remarks>
+        /// 1. Value of <see cref="DisplayNameAttribute"/> if present;<br/>
+        /// 2. Command text if the command is a standard command (<see cref="CommandAttribute"/>);<br/>
+        /// 3. Regex pattern if the command is a regex command (<see cref="RegexCommandAttribute"/>);<br/>
+        /// If the name couldn't be determined, null will be returned.</remarks>
         /// <returns>String with determined display name.</returns>
         public static string GetDisplayName(this ICommandInstanceDescriptor descriptor)
             => GetCache(descriptor).DisplayName;

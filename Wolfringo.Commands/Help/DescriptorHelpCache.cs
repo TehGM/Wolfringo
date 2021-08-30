@@ -60,7 +60,7 @@ namespace TehGM.Wolfringo.Commands.Help
                 return command.Text;
             if (this.Descriptor.Attribute is RegexCommandAttribute regex)
                 return regex.Pattern;
-            return this.Descriptor.Method.Name;
+            return null;
         }
 
         /// <summary>Gets all custom attributes of specified type.</summary>

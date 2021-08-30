@@ -96,8 +96,11 @@ namespace TehGM.Wolfringo.Commands.Help
 
         private IOrderedEnumerable<IGrouping<string, ICommandInstanceDescriptor>> OrderCommandDescriptors()
         {
-            // exclude hidden commands
-            IEnumerable<ICommandInstanceDescriptor> descriptors = this._commands.Where(cmd => !cmd.IsHidden());
+            // exclude hidden commands, and ones with no display name
+            IEnumerable<ICommandInstanceDescriptor> descriptors = this._commands.Where(cmd => 
+                !cmd.IsHidden() &&
+                !string.IsNullOrWhiteSpace(cmd.GetDisplayName())
+            );
 
             // order commands based on priority and name
             IOrderedEnumerable<ICommandInstanceDescriptor> orderedDescriptors = descriptors
