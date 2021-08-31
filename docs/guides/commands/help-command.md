@@ -4,7 +4,7 @@ title: Help Command
 ---
 
 # Help Command
-Since version 3.0.0, Wolfringo Commands System has new features that allow building a help command really easily. These features include special attributes for commands, as well as helper utility to create commands list, and even a default `help` command that can be enabled with a single line of code!
+Since version 2.0.0, Wolfringo Commands System has new features that allow building a help command really easily. These features include special attributes for commands, as well as helper utility to create commands list, and even a default `help` command that can be enabled with a single line of code!
 
 ### Attributes
 Wolfringo has a few built-in attributes that are automatically supported by both default help command and @TehGM.Wolfringo.Commands.Help.CommandsListBuilder. They should cover most common use cases.
