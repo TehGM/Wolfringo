@@ -30,14 +30,14 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 // check additionals first, in case they override something
                 if (TryFindAdditional(param.ParameterType, values.AdditionalObjects, out object value)) { }
                 // from context
-                else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.GetType()))
+                else if (IsParamAssignable(param, values.Context))
                     value = values.Context;
-                else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.Message.GetType()))
+                else if (IsParamAssignable(param, values.Context?.Message))
                     value = values.Context.Message;
-                else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.Client.GetType()))
+                else if (IsParamAssignable(param, values.Context?.Client))
                     value = values.Context.Client;
                 // command instance
-                else if (values.CommandInstance != null && param.ParameterType.IsAssignableFrom(values.CommandInstance.GetType()))
+                else if (IsParamAssignable(param, values.CommandInstance))
                     value = values.CommandInstance;
                 // cancellation token
                 else if (param.ParameterType.IsAssignableFrom(typeof(CancellationToken)))
@@ -54,19 +54,25 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     {
                         argIndex++;
                     }
-                    // if there's an error, let's return result with message - but without exception, as we don't want input errors to be logged
+                    // if there's an error, let's return result with message
                     else if (convertingError != null)
                         return ParameterBuildingResult.Failure(new string[] {
                             await param.GetConvertingErrorAttribute().ToStringAsync(values.Context, values.Args[argIndex], param, cancellationToken).ConfigureAwait(false) });
                     // if it's optional, just let it pass
                     else if (param.IsOptional)
                         value = param.HasDefaultValue ? param.DefaultValue : null;
-                    // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message - do not provide exception, as we don't want it logged
+                    // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message
                     else if (argIndex <= values.Args.Length)
-                        return ParameterBuildingResult.Failure(new string[] {
-                            await param.GetMissingErrorAttribute().ToStringAsync(values.Context,
-                            values.Args.Length > argIndex ? values.Args[argIndex] : string.Empty,
-                            param, cancellationToken).ConfigureAwait(false) });
+                    {
+                        if (values.Context != null)
+                        {
+                            string arg = values.Args.Length > argIndex ? values.Args[argIndex] : string.Empty;
+                            string msg = await param.GetMissingErrorAttribute().ToStringAsync(values.Context, arg, param, cancellationToken).ConfigureAwait(false);
+                            return ParameterBuildingResult.Failure(new string[] { msg });
+                        }
+                        else
+                            return ParameterBuildingResult.Failure();
+                    }
                     // none found, throw
                     else
                         throw new InvalidOperationException($"Unsupported param type: {param.ParameterType.FullName}");
@@ -76,6 +82,28 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
             return ParameterBuildingResult.Success(paramsValues);
         }
+
+        /// <summary>Checks if parameter can be assigned from given object.</summary>
+        /// <remarks><para>This check does null check in addition to reflection type check.</para>
+        /// <para>This method is intended to be internal helper reducing code repetition.</para></remarks>
+        /// <param name="type">Type of the parameter.</param>
+        /// <param name="value">The object to check.</param>
+        /// <returns>True if object can be assigned to given param; otherwise false.</returns>
+        protected static bool IsParamAssignable(Type type, object value)
+        {
+            if (value == null)
+                return false;
+            return type.IsAssignableFrom(value.GetType());
+        }
+
+        /// <summary>Checks if parameter can be assigned from given object.</summary>
+        /// <remarks><para>This check does null check in addition to reflection type check.</para>
+        /// <para>This method is intended to be internal helper reducing code repetition.</para></remarks>
+        /// <param name="parameter">The parameter info.</param>
+        /// <param name="value">The object to check.</param>
+        /// <returns>True if object can be assigned to given param; otherwise false.</returns>
+        protected static bool IsParamAssignable(ParameterInfo parameter, object value)
+            => IsParamAssignable(parameter.ParameterType, value);
 
         /// <summary>Attempts to find an object of specific type from enumerable of objects.</summary>
         /// <param name="type">Type of object to find.</param>
