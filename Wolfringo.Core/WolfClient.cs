@@ -33,14 +33,14 @@ namespace TehGM.Wolfringo
         public const string DefaultServerURL = "wss://v3.palringo.com:3051";
         /// <summary>Pre-release Wolf server URL.</summary>
         public const string BetaServerURL = "wss://v3-rc.palringo.com:3051";
-        /// <summary>Default device string to pass to the server when connecting.</summary>
+        /// <summary>Default device to pass to the server when connecting.</summary>
         public const WolfDevice DefaultDevice = WolfDevice.Bot;
 
         /// <summary>URL of the server.</summary>
         public string Url { get; }
         /// <summary>Token used with the connection.</summary>
         public string Token { get; }
-        /// <summary>Device string to pass to the server when connecting.</summary>
+        /// <summary>Device to pass to the server when connecting.</summary>
         public WolfDevice Device { get; }
         /// <summary>Is this client currently connected?</summary>
         public bool IsConnected => this.SocketClient?.IsConnected == true;
