@@ -23,6 +23,8 @@ private async Task ExampleAsync() { }
 ```
 
 #### Skipping
+Skipping means that when requirement fails, the commands system will attempt to find next matching command instead of aborting completely.
+
 By default, all built-in requirements return @TehGM.Wolfringo.Commands.Results.CommandResultStatus.Failure if check fails. If for some reason you want fail to cause skipping, you can set [AbortOnFail](xref:TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.AbortOnFail) property to `false`.
 
 By default, [ErrorMessage](xref:TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.ErrorMessage) will be NOT sent when skipping. You can change that as well, by setting [SendMessageWhenSkipping](xref:TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.SendMessageWhenSkipping) property to `true`.
