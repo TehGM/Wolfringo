@@ -24,6 +24,7 @@ namespace TehGM.Wolfringo.Commands.Results
         {
             this.Status = status;
             this.ArgumentsText = argumentsText;
+            this.Options = options;
         }
 
         /// <summary>Shared failure result.</summary>
