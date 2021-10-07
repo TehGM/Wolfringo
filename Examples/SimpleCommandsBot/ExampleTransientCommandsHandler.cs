@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,22 +59,49 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          * By defaults, arguments for a standard command is split using space.
          * However it is possible to capture arguments as a group.
          * Groups are defined by user - if user types something wrapped in a [], () or "", it'll be treated as a group.
-         * For example: !say "hello, I am a super bot" --- argument 1 will be: hello, I am a super bot
+         * For example: !word "hello, I am a super bot" --- argument 1 will be: hello, I am a super bot
          * 
          * You can also capture all arguments. If any of the parameters is string[], all of the arguments will be put into it.
-         * For example: !say hello [group name] --- argument 1 will be: hello; string[] will contain "hello" and "group name"
+         * For example: !word hello [group name] --- argument 1 will be: hello; string[] will contain "hello" and "group name"
          * 
          * Note: with [RegexCommand], default splitting and grouping rules do not apply. For RegexCommands, Regex Groups are used instead.
          * Note: string[] does not make say optional - it is still required. If you want to make it optional, look below
          * Note: group markers - (), [], "" - will not be included in any of arguments. If you want to include them, please use [RegexCommand] with one group.
          ***/
-        [Command("say")]
-        [DisplayName("say <word>")]
+        [Command("word")]
+        [DisplayName("word <word>")]
         public async Task CmdSayAsync(CommandContext context, string say, string[] catchAll)
         {
-            await context.ReplyTextAsync($"You asked me to say {say}");
+            await context.ReplyTextAsync($"You asked me to one word say {say}");
             if (catchAll.Length > 1)
                 await context.ReplyTextAsync($"BUT I WILL SAY {string.Join(' ', catchAll)}");
+        }
+
+        /*** Example: Command with injecting command text.
+         * You can inject raw arguments text by using [ArgumentsText] attribute on a string parameter.
+         * This text will not include prefix or command name.
+         * 
+         * Note: with regex commands, it'll include entire match value. Regex commands have no way to separate command name and arguments.
+         ***/
+        [Command("say")]
+        private async Task CmdArgumentsTextAsync(CommandContext context, [ArgumentsText] string text)
+        {
+            await context.ReplyTextAsync($"Okay, fine... {text}");
+        }
+
+        /*** Example: injection command options.
+         * You can use ICommandOptions as one of the parameters.
+         * These options will retrieve global commands options as configured when starting bot, and then apply overrides from attributes like [Prefix].
+         ***/
+        [Command("prefix info")]
+        [Prefix("#")]
+        private async Task CmdPrefixInfoAsync(CommandContext context, ICommandOptions options)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine($"Prefix: {options.Prefix}");    // will be # cause of [Prefix] attribute
+            builder.AppendLine($"Prefix required: {options.RequirePrefix}");
+            builder.AppendLine($"Case sensitive: {options.CaseSensitivity}");
+            await context.ReplyTextAsync(builder.ToString());
         }
 
         /*** Example: Private command with optional arguments.
