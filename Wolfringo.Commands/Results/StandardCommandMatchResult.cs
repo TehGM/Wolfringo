@@ -9,8 +9,8 @@ namespace TehGM.Wolfringo.Commands.Results
         /// <inheritdoc/>
         [Obsolete("Use Status property instead.")]
         public bool IsSuccess => this.Status == CommandResultStatus.Success;
-        /// <summary>Found arguments.</summary>
-        public string[] Arguments { get; }
+        /// <summary>String containing un-parsed arguments.</summary>
+        public string ArgumentsText { get; }
         /// <inheritdoc/>
         public CommandResultStatus Status { get; }
         /// <summary>Options for command context, with command's overrides applied.</summary>
@@ -18,21 +18,21 @@ namespace TehGM.Wolfringo.Commands.Results
 
         /// <summary>Creates a new result instance.</summary>
         /// <param name="status">Status telling Command Service how to proceed.</param>
-        /// <param name="arguments">Found arguments.</param>
+        /// <param name="argumentsText">Found arguments.</param>
         /// <param name="options">Options for command context, with command's overrides applied.</param>
-        public StandardCommandMatchResult(CommandResultStatus status, string[] arguments, CommandContextOptions options)
+        public StandardCommandMatchResult(CommandResultStatus status, string argumentsText, CommandContextOptions options)
         {
             this.Status = status;
-            this.Arguments = arguments;
+            this.ArgumentsText = argumentsText;
         }
 
         /// <summary>Shared failure result.</summary>
         public static readonly StandardCommandMatchResult Skip = new StandardCommandMatchResult(CommandResultStatus.Skip, null, null);
 
         /// <summary>Creates a success result.</summary>
-        /// <param name="arguments">Found arguments.</param>
+        /// <param name="argumentsText">Found arguments.</param>
         /// <param name="options">Options for command context, with command's overrides applied.</param>
-        public static StandardCommandMatchResult Success(string[] arguments, CommandContextOptions options)
-            => new StandardCommandMatchResult(CommandResultStatus.Success, arguments, options);
+        public static StandardCommandMatchResult Success(string argumentsText, CommandContextOptions options)
+            => new StandardCommandMatchResult(CommandResultStatus.Success, argumentsText, options);
     }
 }

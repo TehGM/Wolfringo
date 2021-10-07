@@ -22,6 +22,8 @@ namespace TehGM.Wolfringo.Commands.Parsing
         public IEnumerable<object> AdditionalObjects { get; set; }
         /// <summary>Instance of a command that is being executed.</summary>
         public ICommandInstance CommandInstance { get; set; }
+        /// <summary>The message text, not including prefix and command trigger.</summary>
+        public string ArgsText { get; set; }
         /// <summary>Options for command context, with command's overrides applied.</summary>
         public ICommandOptions Options { get; set; }
     }

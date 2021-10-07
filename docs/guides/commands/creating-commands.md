@@ -240,7 +240,28 @@ Optional arguments will not cause an error if they're missing - command will sti
 ##### Catch-all
 If you use an array of [strings](xref:System.String) (`string[]`) as a parameter type, all arguments will be inserted into it.  
 > [!WARNING]
-> [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab full text of the message, use `Text` property of [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message).
+> [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab raw text of the arguments, use see [Arguments Text](#arguments-text) below.
+
+#### Arguments Text
+If you want to see all arguments as single string before they're [split up](#command-arguments), you can add a new string parameter and mark it with [\[ArgumentsText\] attribute](xref:TehGM.Wolfringo.Commands.ArgumentsText).
+
+Assume that in following example, the user sends `!say Hello, this is some text (with parentheses!)`:
+
+```csharp
+[Prefix("!")]
+[Command("say")]
+private async Task ExampleAsync([ArgumentsText] string text)
+{
+    Console.WriteLine(text);	// will print "Hello, this is some text (with parentheses!)"
+}
+```
+
+> [!WARNING]
+> When used with Regex command, this will return entire regex match text. This is because with Regex commands, Wolfringo has no way to separate command name from the arguments.
+> You can instead use [groups](https://docs.microsoft.com/en-gb/dotnet/standard/base-types/grouping-constructs-in-regular-expressions) in your regex, and inject Regex @System.Text.RegularExpressions.Match into your command.
+
+#### ICommandOptions
+By using @TehGM.Wolfringo.Commands.ICommandOptions you can get the values of prefix, prefix requirement and case sensitivity for this command. These options will automatically use overrides from command's arguments (such as [\[Prefix\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute)) if there are any.
 
 #### CancellationToken
 You can pass @System.Threading.CancellationToken as paremeter. You can then use this cancellation token in your other asynchronous calls. This cancellation token will be set to cancelled when @TehGM.Wolfringo.Commands.CommandsService is being disposed - for example when the application is exiting.
@@ -253,8 +274,6 @@ private async Task ExampleAsync(CommandContext context, CancellationToken cancel
 }
 ```
 
-#### ICommandOptions
-By using @TehGM.Wolfringo.Commands.ICommandOptions you can get the values of prefix, prefix requirement and case sensitivity for this command. These options will automatically use overrides from command's arguments (such as [\[Prefix\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute)) if there are any.
 
 #### ILogger
 If you enabled logging when you were creating @TehGM.Wolfringo.Commands.CommandsService (by passing a logger into constructor, or using .NET Generic Host/ASP.NET Core), you can pass in an instance of @Microsoft.Extensions.Logging.ILogger. You can then use that in your command code to log anything you want.

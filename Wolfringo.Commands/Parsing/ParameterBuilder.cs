@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands.Results;
+using TehGM.Wolfringo.Messages;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
@@ -49,6 +51,9 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 else if (TryGetService(param.ParameterType, values.Services, out value)) { }
                 // logger from factory
                 else if (TryGetGenericLogger(param.ParameterType, values.Services, out value)) { }
+                // args text
+                else if (param.ParameterType == typeof(string) && TryGetAttribute(param, out ArgumentsTextAttribute messageTextAttribute))
+                    value = values.ArgsText;
                 // from args
                 else
                 {
@@ -129,6 +134,17 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
             result = null;
             return false;
+        }
+
+        /// <summary>Attempts to get an attribute present on the parameter.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parameter"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected static bool TryGetAttribute<T>(ParameterInfo parameter, out T result) where T : Attribute
+        {
+            result = parameter.GetCustomAttribute<T>();
+            return result != null;
         }
 
         /// <summary>Attempts to find a service of type from service provider.</summary>

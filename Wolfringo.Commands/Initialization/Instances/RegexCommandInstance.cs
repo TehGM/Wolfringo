@@ -80,6 +80,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             {
                 Args = regexMatchResult.RegexMatch.Groups.Cast<Group>().Skip(1)
                     .Select(s => s.Value ?? string.Empty).ToArray(),
+                ArgsText = regexMatchResult.RegexMatch.Value,
                 ArgumentConverterProvider = services.GetService<IArgumentConverterProvider>(),
                 CancellationToken = cancellationToken,
                 Context = context,

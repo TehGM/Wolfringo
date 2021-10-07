@@ -51,10 +51,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (match?.Success != true)
                 return SkipResult();
 
-            // parse arguments
-            IArgumentsParser parser = services.GetRequiredService<IArgumentsParser>();
-            string[] args = match.Groups.Count > 1 ? parser.ParseArguments(match.Groups[1].Value, 0).ToArray() : Array.Empty<string>();
-            return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args, options));
+            string argumentsText = match.Groups.Count > 1 ? match.Groups[1].Value : string.Empty;
+            return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(argumentsText, options));
 
             Task<ICommandResult> SkipResult() => Task.FromResult<ICommandResult>(StandardCommandMatchResult.Skip);
         }
@@ -78,11 +76,16 @@ namespace TehGM.Wolfringo.Commands.Initialization
                     return result;
             }
 
+            // parse arguments
+            IArgumentsParser parser = services.GetRequiredService<IArgumentsParser>();
+            string[] args = !string.IsNullOrWhiteSpace(standardMatchResult.ArgumentsText) ? parser.ParseArguments(standardMatchResult.ArgumentsText, 0).ToArray() : Array.Empty<string>();
+
             // build params
             cancellationToken.ThrowIfCancellationRequested();
             ParameterBuilderValues paramBuilderValues = new ParameterBuilderValues
             {
-                Args = standardMatchResult.Arguments,
+                Args = args,
+                ArgsText = standardMatchResult.ArgumentsText,
                 ArgumentConverterProvider = services.GetService<IArgumentConverterProvider>(),
                 CancellationToken = cancellationToken,
                 Context = context,
