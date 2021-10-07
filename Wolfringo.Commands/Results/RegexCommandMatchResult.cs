@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Results
 {
@@ -13,29 +14,27 @@ namespace TehGM.Wolfringo.Commands.Results
         public Match RegexMatch { get; }
         /// <inheritdoc/>
         public CommandResultStatus Status { get; }
-
-        /// <summary>Creates a new result instance.</summary>
-        /// <param name="isSuccess">Whether check was successful.</param>
-        /// <param name="regexMatch">Result of regex match.</param>
-        [Obsolete("Use constructor with status arg instead.")]
-        public RegexCommandMatchResult(bool isSuccess, Match regexMatch)
-            : this(isSuccess ? CommandResultStatus.Success : CommandResultStatus.Skip, regexMatch) { }
+        /// <summary>Options for command context, with command's overrides applied.</summary>
+        public CommandContextOptions Options { get; }
 
         /// <summary>Creates a new result instance.</summary>
         /// <param name="status">Status telling Command Service how to proceed.</param>
         /// <param name="regexMatch">Result of regex match.</param>
-        public RegexCommandMatchResult(CommandResultStatus status, Match regexMatch)
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
+        public RegexCommandMatchResult(CommandResultStatus status, Match regexMatch, CommandContextOptions options)
         {
             this.Status = status;
             this.RegexMatch = regexMatch;
+            this.Options = options;
         }
 
         /// <summary>Shared failure result.</summary>
-        public static readonly RegexCommandMatchResult Skip = new RegexCommandMatchResult(CommandResultStatus.Skip, null);
+        public static readonly RegexCommandMatchResult Skip = new RegexCommandMatchResult(CommandResultStatus.Skip, null, null);
 
         /// <summary>Creates a success result.</summary>
         /// <param name="regexMatch">Result of regex match.</param>
-        public static RegexCommandMatchResult Success(Match regexMatch)
-            => new RegexCommandMatchResult(CommandResultStatus.Success, regexMatch);
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
+        public static RegexCommandMatchResult Success(Match regexMatch, CommandContextOptions options)
+            => new RegexCommandMatchResult(CommandResultStatus.Success, regexMatch, options);
     }
 }

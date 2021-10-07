@@ -35,7 +35,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="options">Commands options to perform the check with.</param>
         /// <param name="startIndex">Index of start of actual command message, without prefix.</param>
         /// <returns>True if the message matches prefix requirement; otherwise false.</returns>
-        public static bool MatchesPrefixRequirement(this ChatMessage message, CommandsOptions options, out int startIndex)
+        public static bool MatchesPrefixRequirement(this ChatMessage message, ICommandOptions options, out int startIndex)
             => MatchesPrefixRequirement(message, options.Prefix, options.RequirePrefix, options.CaseSensitivity, out startIndex);
 
         /// <summary>Gets message text without prefix.</summary>
@@ -56,7 +56,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="message">The received message.</param>
         /// <param name="options">Commands options.</param>
         /// <returns>The message with prefix stripped off.</returns>
-        public static string GetMessageWithoutPrefix(this ChatMessage message, CommandsOptions options)
+        public static string GetMessageWithoutPrefix(this ChatMessage message, ICommandOptions options)
             => GetMessageWithoutPrefix(message, options.Prefix, options.CaseSensitivity);
 
         private static int GetPrefixStartIndex(ChatMessage message, string prefix, bool caseSensitive)

@@ -253,6 +253,9 @@ private async Task ExampleAsync(CommandContext context, CancellationToken cancel
 }
 ```
 
+#### ICommandOptions
+By using @TehGM.Wolfringo.Commands.ICommandOptions you can get the values of prefix, prefix requirement and case sensitivity for this command. These options will automatically use overrides from command's arguments (such as [\[Prefix\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute)) if there are any.
+
 #### ILogger
 If you enabled logging when you were creating @TehGM.Wolfringo.Commands.CommandsService (by passing a logger into constructor, or using .NET Generic Host/ASP.NET Core), you can pass in an instance of @Microsoft.Extensions.Logging.ILogger. You can then use that in your command code to log anything you want.
 

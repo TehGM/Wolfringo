@@ -42,11 +42,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public Task<ICommandResult> CheckMatchAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             // perform base checks
-            if (!base.CheckMatch(context, out int startIndex, out bool caseSensitive))
+            if (!base.CheckMatch(context, out int startIndex, out CommandContextOptions options))
                 return SkipResult();
 
             // check command text - ironically, I'll use regex here cause it makes things much simpler
-            Regex regex = caseSensitive ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
+            Regex regex = options.CaseSensitivity ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
             Match match = regex.Match(((ChatMessage)context.Message).Text, startIndex);
             if (match?.Success != true)
                 return SkipResult();
@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             // parse arguments
             IArgumentsParser parser = services.GetRequiredService<IArgumentsParser>();
             string[] args = match.Groups.Count > 1 ? parser.ParseArguments(match.Groups[1].Value, 0).ToArray() : Array.Empty<string>();
-            return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args));
+            return Task.FromResult<ICommandResult>(StandardCommandMatchResult.Success(args, options));
 
             Task<ICommandResult> SkipResult() => Task.FromResult<ICommandResult>(StandardCommandMatchResult.Skip);
         }
@@ -87,6 +87,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 CancellationToken = cancellationToken,
                 Context = context,
                 Services = services,
+                Options = standardMatchResult.Options,
                 CommandInstance = this
             };
 

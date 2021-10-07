@@ -42,15 +42,15 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public Task<ICommandResult> CheckMatchAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             // perform base checks
-            if (!base.CheckMatch(context, out int startIndex, out bool caseSensitive))
+            if (!base.CheckMatch(context, out int startIndex, out CommandContextOptions options))
                 return SkipResult();
 
             // perform regex match
-            Regex regex = caseSensitive ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
+            Regex regex = options.CaseSensitivity ? _caseSensitiveRegex.Value : _caseInsensitiveRegex.Value;
             Match match = regex.Match(((ChatMessage)context.Message).Text, startIndex);
             if (match?.Success != true)
                 return SkipResult();
-            return Task.FromResult<ICommandResult>(RegexCommandMatchResult.Success(match));
+            return Task.FromResult<ICommandResult>(RegexCommandMatchResult.Success(match, options));
 
             Task<ICommandResult> SkipResult() => Task.FromResult<ICommandResult>(RegexCommandMatchResult.Skip);
         }
@@ -85,6 +85,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 Context = context,
                 Services = services,
                 CommandInstance = this,
+                Options = regexMatchResult.Options,
                 AdditionalObjects = new object[] { regexMatchResult.RegexMatch }
             };
 

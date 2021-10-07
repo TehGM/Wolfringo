@@ -1,4 +1,5 @@
 ﻿using System;
+using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Results
 {
@@ -12,29 +13,26 @@ namespace TehGM.Wolfringo.Commands.Results
         public string[] Arguments { get; }
         /// <inheritdoc/>
         public CommandResultStatus Status { get; }
-
-        /// <summary>Creates a new result instance.</summary>
-        /// <param name="isSuccess">Whether check was successful.</param>
-        /// <param name="arguments">Found arguments.</param>
-        [Obsolete("Use constructor with status arg instead.")]
-        public StandardCommandMatchResult(bool isSuccess, string[] arguments)
-            : this(isSuccess ? CommandResultStatus.Success : CommandResultStatus.Skip, arguments) { }
+        /// <summary>Options for command context, with command's overrides applied.</summary>
+        public CommandContextOptions Options { get; }
 
         /// <summary>Creates a new result instance.</summary>
         /// <param name="status">Status telling Command Service how to proceed.</param>
         /// <param name="arguments">Found arguments.</param>
-        public StandardCommandMatchResult(CommandResultStatus status, string[] arguments)
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
+        public StandardCommandMatchResult(CommandResultStatus status, string[] arguments, CommandContextOptions options)
         {
             this.Status = status;
             this.Arguments = arguments;
         }
 
         /// <summary>Shared failure result.</summary>
-        public static readonly StandardCommandMatchResult Skip = new StandardCommandMatchResult(CommandResultStatus.Skip, null);
+        public static readonly StandardCommandMatchResult Skip = new StandardCommandMatchResult(CommandResultStatus.Skip, null, null);
 
         /// <summary>Creates a success result.</summary>
         /// <param name="arguments">Found arguments.</param>
-        public static StandardCommandMatchResult Success(string[] arguments)
-            => new StandardCommandMatchResult(CommandResultStatus.Success, arguments);
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
+        public static StandardCommandMatchResult Success(string[] arguments, CommandContextOptions options)
+            => new StandardCommandMatchResult(CommandResultStatus.Success, arguments, options);
     }
 }

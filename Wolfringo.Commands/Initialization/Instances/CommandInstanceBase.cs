@@ -47,14 +47,25 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this.Parameters = method.GetParameters();
         }
 
+        /// <summary>Returns options for command context, with command's overrides applied.</summary>
+        /// <param name="context">Command context in execution.</param>
+        /// <returns>Options for command context, with command's overrides applied.</returns>
+        protected CommandContextOptions GetOptionsForContext(ICommandContext context)
+        {
+            return new CommandContextOptions(
+                prefix: this.PrefixOverride ?? context.Options.Prefix,
+                caseSensitivity: this.CaseSensitivityOverride ?? context.Options.CaseSensitivity,
+                requirePrefix: this.PrefixRequirementOverride ?? context.Options.RequirePrefix);
+        }
+
         /// <summary>Performs shared match checks.</summary>
         /// <param name="context">Command context to check.</param>
         /// <param name="startIndex">The index of command start (after prefix).</param>
-        /// <param name="caseSensitive">Whether checks should be done in a case sensitive manner.</param>
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
         /// <returns>True if all checks passed; otherwise false.</returns>
-        protected bool CheckMatch(ICommandContext context, out int startIndex, out bool caseSensitive)
+        protected bool CheckMatch(ICommandContext context, out int startIndex, out CommandContextOptions options)
         {
-            caseSensitive = this.CaseSensitivityOverride ?? context.Options.CaseSensitivity;
+            options = this.GetOptionsForContext(context);
             startIndex = default;
 
             // ignore non-text messages
@@ -69,10 +80,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             if (message.SenderID == context.Client.CurrentUserID)
                 return false;
             // check prefix
-            if (!message.MatchesPrefixRequirement(
-                this.PrefixOverride ?? context.Options.Prefix,
-                this.PrefixRequirementOverride ?? context.Options.RequirePrefix,
-                caseSensitive, out startIndex))
+            if (!message.MatchesPrefixRequirement(options, out startIndex))
                 return false;
 
             return true;

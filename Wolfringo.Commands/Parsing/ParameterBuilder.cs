@@ -36,6 +36,9 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     value = values.Context.Message;
                 else if (IsParamAssignable(param, values.Context?.Client))
                     value = values.Context.Client;
+                // context options
+                else if (IsParamAssignable(param, values.Options))
+                    value = values.Options;
                 // command instance
                 else if (IsParamAssignable(param, values.CommandInstance))
                     value = values.CommandInstance;
