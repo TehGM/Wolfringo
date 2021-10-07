@@ -342,7 +342,7 @@ public async Task<ICommandResult> Example1()
 [Priority(15)]
 public async Task Example2()
 {
-    // because Example1 returned result CommandResultStatus.Skip, it'll run as well!
+    // because Example1 returned result CommandResultStatus.Skip, this method will run as well!
     // command code here
 }
 ```
