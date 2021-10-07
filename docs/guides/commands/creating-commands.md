@@ -274,6 +274,16 @@ private async Task ExampleAsync(CommandContext context, CancellationToken cancel
 }
 ```
 
+#### Regex Match
+For Regex commands, you can use Regex @System.Text.RegularExpressions.Match as one of the arguments. This will output the exact regex match for your regex command (therefore won't include prefix).
+
+```csharp
+[RegexCommand("^log (.+)$")]
+public void CmdLog(Match match, ILogger log)
+{
+    log.LogInformation(match.Groups[1].Value);
+}
+```
 
 #### ILogger
 If you enabled logging when you were creating @TehGM.Wolfringo.Commands.CommandsService (by passing a logger into constructor, or using .NET Generic Host/ASP.NET Core), you can pass in an instance of @Microsoft.Extensions.Logging.ILogger. You can then use that in your command code to log anything you want.
