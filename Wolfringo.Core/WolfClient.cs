@@ -38,8 +38,6 @@ namespace TehGM.Wolfringo
 
         /// <summary>URL of the server.</summary>
         public string Url { get; }
-        /// <summary>Token used with the connection.</summary>
-        public string Token { get; }
         /// <summary>Device to pass to the server when connecting.</summary>
         public WolfDevice Device { get; }
         /// <summary>Is this client currently connected?</summary>
@@ -87,6 +85,8 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
+        /// <summary>Token used with the connection.</summary>
+        protected string Token { get; }
         /// <summary>Socket client used by this WOLF client.</summary>
         protected ISocketClient SocketClient { get; }
         /// <summary>Callbacks dispatcher used by this WOLF client.</summary>
@@ -121,22 +121,43 @@ namespace TehGM.Wolfringo
         /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
         /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(string url, WolfDevice device, string token, ILogger logger = null, 
+        public WolfClient(string url, WolfDevice device, string token, ILogger logger = null,
+            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+            : this(url, device, logger, new ConstantWolfTokenProvider(token), messageSerializers, responseSerializers, responseTypeResolver) { }
+
+        /// <summary>Creates a new wolf client instance.</summary>
+        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
+        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
+        /// <paramref name="tokenProvider"/> - <see cref="RandomizedWolfTokenProvider"/><br/>
+        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
+        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
+        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
+        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
+        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
+        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
+        /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
+        /// <param name="device">Device to use when connecting.</param>
+        /// <param name="logger">Logger for logging logs.</param>
+        /// <param name="tokenProvider">Token provider used to generate the token.</param>
+        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
+        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
+        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
+        public WolfClient(string url, WolfDevice device, ILogger logger = null,
+            IWolfTokenProvider tokenProvider = null,
             ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
         {
             // verify input
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentNullException(nameof(url));
-            if (token != null && string.IsNullOrWhiteSpace(token))
-                throw new ArgumentException("Token can be null for auto-generation or have a value, but it cannot be empty or whitespace", nameof(token));
 
             // set defaults
             this.IgnoreOwnChatMessages = true;
 
             // set provided props
+            tokenProvider = tokenProvider ?? new RandomizedWolfTokenProvider();
             this.Url = url;
             this.Device = device;
-            this.Token = token;
+            this.Token = tokenProvider.GetToken();
             this.Log = logger;
             this.ResponseTypeResolver = responseTypeResolver ?? new ResponseTypeResolver();
             this.MessageSerializers = messageSerializers ?? new MessageSerializerProvider();
@@ -160,29 +181,7 @@ namespace TehGM.Wolfringo
         /// <summary>Creates a new wolf client instance.</summary>
         /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
         /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
-        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
-        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
-        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
-        /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
-        /// <param name="device">Device to use when connecting.</param>
-        /// <param name="logger">Logger for logging logs.</param>
-        /// <param name="tokenProvider">Token provider used to generate the token.</param>
-        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
-        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
-        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(string url, WolfDevice device, ILogger logger = null, 
-            ITokenProvider tokenProvider = null, 
-            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
-
-        /// <summary>Creates a new wolf client instance.</summary>
-        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
-        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
+        /// <paramref name="tokenProvider"/> - <see cref="RandomizedWolfTokenProvider"/><br/>
         /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
         /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
         /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
@@ -194,21 +193,10 @@ namespace TehGM.Wolfringo
         /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
         /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
         /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(ILogger logger = null, 
-            ITokenProvider tokenProvider = null,
+        public WolfClient(ILogger logger = null,
+            IWolfTokenProvider tokenProvider = null,
             ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
             : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
-
-        /// <summary>Generates a new token using token provider.</summary>
-        /// <remarks>If token provider is null, <see cref="WolfTokenProvider"/> will be used.</remarks>
-        /// <param name="tokenProvider">Token provider to use when generating token.</param>
-        /// <returns>Generated connection token.</returns>
-        private static string GetNewToken(ITokenProvider tokenProvider = null)
-        {
-            if (tokenProvider == null)
-                tokenProvider = new WolfTokenProvider();
-            return tokenProvider.GenerateToken(18);
-        }
         #endregion
 
         #region Connection management

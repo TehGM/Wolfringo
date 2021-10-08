@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Hosting.Services;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
@@ -48,7 +49,7 @@ namespace TehGM.Wolfringo.Hosting
         private readonly ISerializerProvider<string, IMessageSerializer> _messageSerializers;
         private readonly ISerializerProvider<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
-        private readonly ITokenProvider _tokenProvider;
+        private readonly IWolfTokenProvider _tokenProvider;
 #if NETCOREAPP3_0
         private readonly IHostApplicationLifetime _hostLifetime;
 #else
@@ -84,7 +85,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="responseSerializers">Map of response serializers.</param>
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
         /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
-        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, ITokenProvider tokenProvider,
+        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, IWolfTokenProvider tokenProvider,
             ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver,
 #if NETCOREAPP3_0
@@ -102,7 +103,7 @@ namespace TehGM.Wolfringo.Hosting
             this._messageSerializers = messageSerializers;
             this._responseSerializers = responseSerializers;
             this._responseTypeResolver = responseTypeResolver;
-            this._tokenProvider = tokenProvider;
+            this._tokenProvider = new HostedWolfTokenProvider(options, tokenProvider);
             this._hostLifetime = hostLifetime;
 
             // disconnect when closing
@@ -143,14 +144,7 @@ namespace TehGM.Wolfringo.Hosting
         {
             _log?.LogTrace("Creating underlying client");
             HostedWolfClientOptions options = this._options.CurrentValue;
-            string token = this.GetCurrentToken();
-
-            // if token is null, use default client behaviour for token with token provider
-            if (token == null)
-                this._client = new WolfClient(options.ServerURL, options.Device, _underlyingClientLog, _tokenProvider, _messageSerializers, _responseSerializers, _responseTypeResolver);
-            // otherwise, reuse the token for new client
-            else
-                this._client = new WolfClient(options.ServerURL, options.Device, token, _underlyingClientLog, _messageSerializers, _responseSerializers, _responseTypeResolver);
+            this._client = new WolfClient(options.ServerURL, options.Device, this._underlyingClientLog, this._tokenProvider, this._messageSerializers, this._responseSerializers, this._responseTypeResolver);
 
             // sub to events
             this._client.AddMessageListener<WelcomeEvent>(OnWelcome);
@@ -173,18 +167,9 @@ namespace TehGM.Wolfringo.Hosting
             this._client.CharmsCachingEnabled = options.CharmsCachingEnabled;
             this._client.AchievementsCachingEnabled = options.AchievementsCachingEnabled;
 
-            // store token for reconnections
-            this._token = this._client.Token;
-
             // pass in options
             this._client.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
         }
-
-        /// <summary>Gets memorized token.</summary>
-        /// <remarks>If <see cref="HostedWolfClientOptions"/> has token set, it'll take priority.</remarks>
-        /// <returns>Token to use when recreating underlying client.</returns>
-        private string GetCurrentToken()
-            => this._options.CurrentValue.Token ?? this._client?.Token ?? this._token;
 
         /// <summary>Disposes underlying client.</summary>
         /// <remarks>If underlying client is still connected, a disconnection will be attempted. Auto-reconnection won't be attempted.</remarks>
