@@ -6,11 +6,11 @@ namespace TehGM.Wolfringo.Hosting
     public class HostedWolfClientOptions
     {
         /// <summary>Server URL to connect to.</summary>
-        /// <remarks>Defaults to <see cref="WolfClient.DefaultServerURL"/>.</remarks>
-        public string ServerURL { get; set; } = WolfClient.DefaultServerURL;
+        /// <remarks>Defaults to <see cref="WolfClientOptions.DefaultServerURL"/>.</remarks>
+        public string ServerURL { get; set; } = WolfClientOptions.DefaultServerURL;
         /// <summary>Device to use when connecting.</summary>
-        /// <remarks>Defaults to <see cref="WolfClient.DefaultDevice"/>.</remarks>
-        public WolfDevice Device { get; set; } = WolfClient.DefaultDevice;
+        /// <remarks>Defaults to <see cref="WolfClientOptions.DefaultDevice"/>.</remarks>
+        public WolfDevice Device { get; set; } = WolfClientOptions.DefaultDevice;
         /// <summary>Token to use when connecting.</summary>
         /// <remarks>If not set, the client will automatically generate a valid token.</remarks>
         public string Token { get; set; } = null;

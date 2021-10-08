@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class WolfClientServiceCollectionExtensions
     {
         /// <summary>Adds Hosted Wolf Client to services as a hosted service, and all related services.</summary>
-        /// <remarks><para>This method will also add <see cref="ITokenProvider"/>, <see cref="IResponseTypeResolver"/>,
+        /// <remarks><para>This method will also add <see cref="IWolfTokenProvider"/>, <see cref="IResponseTypeResolver"/>,
         /// and <see cref="ISerializerProvider{TKey, TSerializer}"/> for messages and responses, unless already added.</para>
         /// <para>Added client will be injectable as both <see cref="HostedWolfClient"/> and <see cref="IWolfClient"/>.</para></remarks>
         /// <param name="services">Service collection to add new services to.</param>
@@ -106,16 +106,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Sets server URL to Default.</summary>
         /// <param name="builder">Hosted WOLF Client Service builder.</param>
         /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
-        /// <seealso cref="WolfClient.DefaultServerURL"/>
+        /// <seealso cref="WolfClientOptions.DefaultServerURL"/>
         public static IHostedWolfClientServiceBuilder SetDefaultServerURL(this IHostedWolfClientServiceBuilder builder)
-            => SetServerURL(builder, WolfClient.DefaultServerURL);
+            => SetServerURL(builder, WolfClientOptions.DefaultServerURL);
 
         /// <summary>Sets server URL to Release Candidate server.</summary>
         /// <param name="builder">Hosted WOLF Client Service builder.</param>
         /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
-        /// <seealso cref="WolfClient.BetaServerURL"/>
+        /// <seealso cref="WolfClientOptions.BetaServerURL"/>
         public static IHostedWolfClientServiceBuilder SetBetaServerURL(this IHostedWolfClientServiceBuilder builder)
-            => SetServerURL(builder, WolfClient.BetaServerURL);
+            => SetServerURL(builder, WolfClientOptions.BetaServerURL);
 
 
 

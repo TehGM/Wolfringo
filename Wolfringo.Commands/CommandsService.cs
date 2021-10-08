@@ -47,33 +47,59 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Descriptors of all commands loaded to this commands service.</summary>
         public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Keys;
 
+
         /// <summary>Initializes a command service.</summary>
         /// <param name="client">WOLF client. Required.</param>
         /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
-        /// <param name="services">Services provider that will be used by all commands. Null will cause a backup provider to be used.</param>
+        [Obsolete("Use CommandsServiceBuilder instead")]
+        public CommandsService(IWolfClient client, CommandsOptions options)
+            : this(client, options, null) { }
+
+        /// <summary>Initializes a command service.</summary>
+        /// <param name="client">WOLF client. Required.</param>
+        /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
-        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, ILogger log, IServiceProvider services = null, CancellationToken cancellationToken = default)
+        [Obsolete("Use CommandsServiceBuilder instead")]
+        public CommandsService(IWolfClient client, CommandsOptions options, ILogger log)
+            : this(BuildDefaultServiceProvider(client, options, log), options) { }
+
+        /// <summary>Initializes a command service.</summary>
+        /// <param name="services">Service provider to resolve dependencies from</param>
+        /// <param name="options">Commands options to use for all commands.</param>
+        public CommandsService(IServiceProvider services, CommandsOptions options)
+            : this(services, options, null) { }
+
+        /// <summary>Initializes a command service.</summary>
+        /// <param name="services">Service provider to resolve dependencies from</param>
+        /// <param name="options">Commands options to use for all commands.</param>
+        /// <param name="disposables">Types of services that should be disposed along with this CommandsService.</param>
+        internal CommandsService(IServiceProvider services, CommandsOptions options, ICollection<Type> disposables)
         {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
             // init private
+            this._options = options;
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
             this._lock = new SemaphoreSlim(1, 1);
-            this._cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            this._disposableServices = new List<IDisposable>(2);
+            this._cts = CancellationTokenSource.CreateLinkedTokenSource(this._options.CancellationToken);
+            this._disposableServices = new HashSet<IDisposable>();
             this._started = false;
 
-            // init required
-            this._client = client ?? services?.GetService<IWolfClient>() ?? throw new ArgumentNullException(nameof(client));
-            this._options = options ?? services?.GetService<CommandsOptions>() ?? throw new ArgumentNullException(nameof(options));
-
-            // init optionals
-            this._log = log ?? services?.GetService<ILogger<CommandsService>>() ?? services?.GetService<ILogger<ICommandsService>>() ?? services.GetService<ILogger>();
-            this._argumentConverterProvider = services?.GetService<IArgumentConverterProvider>() ?? CreateAsDisposable<ArgumentConverterProvider>();
-            this._handlerProvider = services?.GetService<ICommandsHandlerProvider>() ?? CreateAsDisposable<CommandsHandlerProvider>();
-            this._argumentsParser = services?.GetService<IArgumentsParser>() ?? new ArgumentsParser();
-            this._parameterBuilder = services?.GetService<IParameterBuilder>() ?? new ParameterBuilder();
-            this._initializers = services?.GetService<ICommandInitializerProvider>() ?? new CommandInitializerProvider();
-            this._commandsLoader = services?.GetService<ICommandsLoader>() ?? new CommandsLoader(this._initializers, this._log);
+            // init services
+            this._client = this.GetService<IWolfClient>(services, disposables);
+            this._argumentConverterProvider = this.GetService<IArgumentConverterProvider>(services, disposables);
+            this._handlerProvider = this.GetService<ICommandsHandlerProvider>(services, disposables);
+            this._argumentsParser = this.GetService<IArgumentsParser>(services, disposables);
+            this._parameterBuilder = this.GetService<IParameterBuilder>(services, disposables);
+            this._initializers = this.GetService<ICommandInitializerProvider>(services, disposables);
+            this._commandsLoader = this.GetService<ICommandsLoader>(services, disposables);
+            this._log = services.GetService<ILogger<CommandsService>>()
+                ?? services.GetService<ILogger<ICommandsService>>()
+                ?? services.GetService<ILogger>()
+                ?? services.GetService<ILoggerFactory>()?.CreateLogger<CommandsService>();
 
             // init service provider - use combine, to use fallback one as well
             this._fallbackServices = this.CreateFallbackServiceProvider();
@@ -83,18 +109,11 @@ namespace TehGM.Wolfringo.Commands
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
         }
 
-        /// <summary>Initializes a command service.</summary>
-        /// <param name="client">WOLF client. Required.</param>
-        /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
-        /// <param name="services">Services provider that will be used by all commands. Null will cause a default to be used.</param>
-        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, CancellationToken cancellationToken = default)
-            : this(client, options, null, services, cancellationToken) { }
-
-        private T CreateAsDisposable<T>() where T : IDisposable, new()
+        private T GetService<T>(IServiceProvider services, ICollection<Type> disposeServices)
         {
-            T result = new T();
-            this._disposableServices.Add(result);
+            T result = services.GetRequiredService<T>();
+            if (result is IDisposable disposable && disposeServices?.Contains(typeof(T)) == true)
+                this._disposableServices.Add(disposable);
             return result;
         }
 
@@ -103,23 +122,54 @@ namespace TehGM.Wolfringo.Commands
             IDictionary<Type, object> servicesMap = new Dictionary<Type, object>
             {
                 { typeof(ICommandsService), this },
-                { this.GetType(), this },
-                { typeof(IWolfClient), this._client },
-                { this._client.GetType(), this._client },
-                { typeof(CommandsOptions), this._options },
-                { typeof(IArgumentsParser), this._argumentsParser },
-                { this._argumentsParser.GetType(), this._argumentsParser },
-                { typeof(IArgumentConverterProvider), this._argumentConverterProvider },
-                { this._argumentConverterProvider.GetType(), this._argumentConverterProvider },
-                { typeof(IParameterBuilder), this._parameterBuilder },
-                { this._parameterBuilder.GetType(), this._parameterBuilder }
+                { this.GetType(), this }
             };
             if (this._log != null)
-            {
                 servicesMap.Add(typeof(ILogger), this._log);
-                servicesMap.Add(this._log.GetType(), this._log);
-            }
+
             return new SimpleServiceProvider(servicesMap);
+        }
+
+        /// <summary>Builds default service provider. Used to temporarily support obsolete non-builder constructors.</summary>
+        /// <param name="client">Wolf Client to use with CommandsService.</param>
+        /// <param name="options">Options for commands service.</param>
+        /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
+        /// <returns>A <see cref="SimpleServiceProvider"/> with default services added.</returns>
+        protected static IServiceProvider BuildDefaultServiceProvider(IWolfClient client, CommandsOptions options, ILogger log = null)
+        {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            IArgumentsParser defaultArgumentsParser = new ArgumentsParser();
+            IArgumentConverterProvider defaultArgumentConverterProvider = new ArgumentConverterProvider();
+            IParameterBuilder defaultParameterBuilder = new ParameterBuilder();
+            ICommandsHandlerProvider defaultCommandsHandlerProvider = new CommandsHandlerProvider();
+            ICommandInitializerProvider defaultCommandInitializerProvider = new CommandInitializerProvider();
+            ICommandsLoader defaultCommandsLoader = new CommandsLoader(defaultCommandInitializerProvider, log);
+
+            IDictionary<Type, object> services = new Dictionary<Type, object>()
+            {
+                { typeof(IWolfClient), client },
+                { client.GetType(), client },
+                { typeof(CommandsOptions), options },
+                { typeof(IArgumentsParser), defaultArgumentsParser },
+                { typeof(IArgumentConverterProvider), defaultArgumentConverterProvider },
+                { typeof(IParameterBuilder), defaultParameterBuilder },
+                { typeof(ICommandsHandlerProvider), defaultCommandsHandlerProvider },
+                { typeof(ICommandInitializerProvider), defaultCommandInitializerProvider },
+                { typeof(ICommandsLoader), defaultCommandsLoader },
+            };
+            if (log != null)
+            {
+                if (log is ILogger<CommandsService> typedLog)
+                    services.Add(typeof(ILogger<CommandsService>), typedLog);
+                else if (log is ILogger<ICommandsService> interfaceTypedLog)
+                    services.Add(typeof(ILogger<ICommandsService>), interfaceTypedLog);
+                services.Add(typeof(ILogger), log);
+            }
+            return new SimpleServiceProvider(services);
         }
 
         /// <inheritdoc/>

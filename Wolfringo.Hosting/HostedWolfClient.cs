@@ -39,7 +39,6 @@ namespace TehGM.Wolfringo.Hosting
         private CancellationToken _hostCancellationToken;
         private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
         private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
-        private string _token;                                  // keep token cached so it's reused when client is recreates
         private bool _isStarted;                                // set to true of first hosted service start, to prevent multiple hosted services starting
 
         // services
@@ -144,7 +143,16 @@ namespace TehGM.Wolfringo.Hosting
         {
             _log?.LogTrace("Creating underlying client");
             HostedWolfClientOptions options = this._options.CurrentValue;
-            this._client = new WolfClient(options.ServerURL, options.Device, this._underlyingClientLog, this._tokenProvider, this._messageSerializers, this._responseSerializers, this._responseTypeResolver);
+            WolfClientBuilder builder = new WolfClientBuilder()
+                .WithServerURL(options.ServerURL)
+                .WithDevice(options.Device)
+                .WithLogging(this._underlyingClientLog)
+                .WithMessageSerializers(this._messageSerializers)
+                .WithResponseSerializers(this._responseSerializers)
+                .WithResponseTypeResolver(this._responseTypeResolver)
+                .WithTokenProvider(this._tokenProvider);
+            builder.Options.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
+            this._client = builder.Build();
 
             // sub to events
             this._client.AddMessageListener<WelcomeEvent>(OnWelcome);
@@ -166,9 +174,6 @@ namespace TehGM.Wolfringo.Hosting
             this._client.UsersCachingEnabled = options.UsersCachingEnabled;
             this._client.CharmsCachingEnabled = options.CharmsCachingEnabled;
             this._client.AchievementsCachingEnabled = options.AchievementsCachingEnabled;
-
-            // pass in options
-            this._client.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
         }
 
         /// <summary>Disposes underlying client.</summary>

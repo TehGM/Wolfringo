@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -19,10 +20,16 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>How prefix requirement is enforced by default. Default value is "Always".</summary>
         /// <seealso cref="Prefix"/>
         public PrefixRequirement RequirePrefix { get; set; } = PrefixRequirement.Always;
+
+        // help
         /// <summary>Whether the built-in default help command should be enabled.</summary>
         /// <remarks><para>This command will be added independently on <see cref="Classes"/> and <see cref="Assemblies"/>.</para>
         /// <para>Defaults to false.</para></remarks>
         public bool EnableDefaultHelpCommand { get; set; } = false;
+
+        // initialization
+        /// <summary>Cancellation token that can be used for cancelling all tasks within <see cref="CommandsService"/>.</summary>
+        public CancellationToken CancellationToken { get; set; }
 
         // for loading
         /// <summary>Collection of Types to load as Command Handlers.</summary>

@@ -37,6 +37,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 => new ArgumentsParser(provider.GetRequiredService<IOptions<ArgumentsParserOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Transient<IArgumentConverterProvider, ArgumentConverterProvider>(provider
                 => new ArgumentConverterProvider(provider.GetRequiredService<IOptions<ArgumentConverterProviderOptions>>().Value)));
+            services.TryAddTransient<CommandsOptions>(provider
+                => provider.GetRequiredService<IOptionsMonitor<CommandsOptions>>().CurrentValue);
 
             services.TryAddSingleton<ICommandsService, HostedCommandsService>();
             services.AddTransient<IHostedService>(provider => (IHostedService)provider.GetRequiredService<ICommandsService>());

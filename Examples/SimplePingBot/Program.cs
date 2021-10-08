@@ -21,7 +21,9 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             ILogger<WolfClient> log = CreateLogger<WolfClient>();
 
             // create client and listen to events we're interested in
-            _client = new WolfClient(log);
+            _client = new WolfClientBuilder()
+                .WithLogging(log)
+                .Build();
             _client.MessageReceived += OnMessageReceived;               // This event is raised when client receives and parses any message type.
             _client.AddMessageListener<WelcomeEvent>(OnWelcome);        // these 2 callbacks are invoked if received message is a WolfEvent (first callback)
             _client.AddMessageListener<ChatMessage>(OnChatMessage);     // or a chat message (second callback).

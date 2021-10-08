@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 {
@@ -18,26 +17,27 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
             // this allows logging exceptions that were not handled with a try-catch block
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
-            // optional: create a logger factory
-            ILoggerFactory logFactory = CreateLoggerFactory();
-            // optional: enable DI - add logger factory to it as well
-            IServiceCollection services = new ServiceCollection()
-                .AddSingleton<ILoggerFactory>(logFactory);
-
-            // create client and listen to events we're interested in
-            _client = new WolfClient(logFactory.CreateLogger<WolfClient>());
-            _client.AddMessageListener<WelcomeEvent>(OnWelcome);        // these 2 callbacks are invoked if received message is a WolfEvent (first callback)
-
-            // initialize commands system
-            CommandsOptions options = new CommandsOptions()
-            {
-                Prefix = "!",                               // set prefix
-                RequirePrefix = PrefixRequirement.Always,   // make prefix always required - can also for example require it in group only
-                CaseSensitivity = false,                    // make commands case insensitive
-                EnableDefaultHelpCommand = true             // enable the default, built-in help command
-            };
-            CommandsService commands = new CommandsService(_client, options, logFactory.CreateLogger<CommandsService>(), services.BuildServiceProvider());
-            await commands.StartAsync();                    // calling StartAsync causes reload of all commands
+            // create client with builder
+            _client = new WolfClientBuilder()
+                // add logging
+                .WithLogging(CreateLoggerFactory())
+                // add commands
+                .WithCommands(commands =>
+                {
+                    // when using .WithCommands, commands.WithWolfClient will be overwritten, so we don't need to call it
+                    // .WithCommands will also automatically use the same IServiceCollection as WolfClientBuilder
+                    // for this reason, we can skip calling commands.WithLogging as well
+                    commands
+                        .WithPrefix("!")                                    // set prefix
+                        .WithPrefixRequirement(PrefixRequirement.Always)    // make prefix always required - can also for example require it in group only
+                        .WithCaseSensitivity(false)                         // make commands case insensitive
+                        .WithDefaultHelpCommand();                          // enable the default, built-in help command
+                })
+                // finally, build the client
+                .Build(); 
+            
+            // register client events
+            _client.AddMessageListener<WelcomeEvent>(OnWelcome);        // this callback is invoked if received message is a WolfEvent
 
             // start connection and prevent the application from closing
             await _client.ConnectAsync();

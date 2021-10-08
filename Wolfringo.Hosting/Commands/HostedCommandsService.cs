@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 #if !NETCOREAPP3_0
@@ -89,18 +90,15 @@ namespace TehGM.Wolfringo.Hosting.Commands
             this.DisposeCommandsService();
 
             this._log?.LogTrace("Creating underlying commands service");
-            this._commands = new CommandsService(
-                this._client,
-                this._options.CurrentValue,
-                this._services);
+            this._commands = new CommandsService(this._services, this._options.CurrentValue);
         }
 
         /// <inheritdoc/>
-        Task<ICommandResult> ICommandsService.ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        Task<ICommandResult> ICommandsService.ExecuteAsync(ICommandContext context, CancellationToken cancellationToken)
             => this._commands.ExecuteAsync(context, cancellationToken);
 
         /// <inheritdoc/>
-        async Task ICommandsService.StartAsync(CancellationToken cancellationToken = default)
+        async Task ICommandsService.StartAsync(CancellationToken cancellationToken)
         {
             using (CancellationTokenSource startingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
             {
