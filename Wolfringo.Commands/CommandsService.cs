@@ -13,6 +13,7 @@ using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands.Parsing;
 using Microsoft.Extensions.DependencyInjection;
 using TehGM.Wolfringo.Messages.Responses;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -39,7 +40,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly ILogger _log;
         private readonly CancellationTokenSource _cts;
 
-        private readonly ICollection<IDisposable> _disposableServices;
+        private readonly DisposableServicesHandler _disposablesHandler;
         private bool _started;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
@@ -67,13 +68,6 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="services">Service provider to resolve dependencies from</param>
         /// <param name="options">Commands options to use for all commands.</param>
         public CommandsService(IServiceProvider services, CommandsOptions options)
-            : this(services, options, null) { }
-
-        /// <summary>Initializes a command service.</summary>
-        /// <param name="services">Service provider to resolve dependencies from</param>
-        /// <param name="options">Commands options to use for all commands.</param>
-        /// <param name="disposables">Types of services that should be disposed along with this CommandsService.</param>
-        internal CommandsService(IServiceProvider services, CommandsOptions options, ICollection<Type> disposables)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
@@ -85,17 +79,17 @@ namespace TehGM.Wolfringo.Commands
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
             this._lock = new SemaphoreSlim(1, 1);
             this._cts = CancellationTokenSource.CreateLinkedTokenSource(this._options.CancellationToken);
-            this._disposableServices = new HashSet<IDisposable>();
+            this._disposablesHandler = services.GetService<DisposableServicesHandler>() ?? new DisposableServicesHandler();
             this._started = false;
 
             // init services
-            this._client = this.GetService<IWolfClient>(services, disposables);
-            this._argumentConverterProvider = this.GetService<IArgumentConverterProvider>(services, disposables);
-            this._handlerProvider = this.GetService<ICommandsHandlerProvider>(services, disposables);
-            this._argumentsParser = this.GetService<IArgumentsParser>(services, disposables);
-            this._parameterBuilder = this.GetService<IParameterBuilder>(services, disposables);
-            this._initializers = this.GetService<ICommandInitializerProvider>(services, disposables);
-            this._commandsLoader = this.GetService<ICommandsLoader>(services, disposables);
+            this._client = this._disposablesHandler.GetRequiredService<IWolfClient>(services);
+            this._argumentConverterProvider = this._disposablesHandler.GetRequiredService<IArgumentConverterProvider>(services);
+            this._handlerProvider = this._disposablesHandler.GetRequiredService<ICommandsHandlerProvider>(services);
+            this._argumentsParser = this._disposablesHandler.GetRequiredService<IArgumentsParser>(services);
+            this._parameterBuilder = this._disposablesHandler.GetRequiredService<IParameterBuilder>(services);
+            this._initializers = this._disposablesHandler.GetRequiredService<ICommandInitializerProvider>(services);
+            this._commandsLoader = this._disposablesHandler.GetRequiredService<ICommandsLoader>(services);
             this._log = services.GetService<ILogger<CommandsService>>()
                 ?? services.GetService<ILogger<ICommandsService>>()
                 ?? services.GetService<ILogger>()
@@ -107,14 +101,6 @@ namespace TehGM.Wolfringo.Commands
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
-        }
-
-        private T GetService<T>(IServiceProvider services, ICollection<Type> disposeServices)
-        {
-            T result = services.GetRequiredService<T>();
-            if (result is IDisposable disposable && disposeServices?.Contains(typeof(T)) == true)
-                this._disposableServices.Add(disposable);
-            return result;
         }
 
         private IServiceProvider CreateFallbackServiceProvider()
@@ -402,12 +388,9 @@ namespace TehGM.Wolfringo.Commands
             try { this._cts?.Dispose(); } catch { }
             // dispose all command instances and descriptors that implement IDisposable
             this.DisposeCommands();
-            // dispose services that were not provided with service provider
-            foreach (IDisposable disposable in this._disposableServices)
-                disposable?.Dispose();
-            this._disposableServices.Clear();
+            this._disposablesHandler?.Dispose();
             // dispose semaphore
-            try { _lock?.Dispose(); } catch { }
+            try { this._lock?.Dispose(); } catch { }
         }
 
         private void DisposeCommands()

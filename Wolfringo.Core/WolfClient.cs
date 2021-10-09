@@ -69,6 +69,8 @@ namespace TehGM.Wolfringo
         protected ILogger Log { get; }
         /// <summary>Caches container.</summary>
         protected IWolfClientCache Caches { get; set; }
+        /// <summary>Handler for tracking services that should be disposed when this <see cref="WolfClient"/> is being disposed.</summary>
+        protected DisposableServicesHandler DisposablesHandler { get; }
 
         private CancellationTokenSource _connectionCts;
 
@@ -86,12 +88,15 @@ namespace TehGM.Wolfringo
             if (string.IsNullOrWhiteSpace(options.ServerURL))
                 throw new ArgumentNullException(nameof(options.ServerURL));
 
+            // resolve disposables handler
+            this.DisposablesHandler = services.GetService<DisposableServicesHandler>() ?? new DisposableServicesHandler();
+
             // resolve services
-            IWolfTokenProvider tokenProvider = services.GetRequiredService<IWolfTokenProvider>();
-            this.ResponseTypeResolver = services.GetRequiredService<IResponseTypeResolver>();
-            this.MessageSerializers = services.GetRequiredService<ISerializerProvider<string, IMessageSerializer>>();
-            this.ResponseSerializers = services.GetRequiredService<ISerializerProvider<Type, IResponseSerializer>>();
-            this.Caches = services.GetRequiredService<IWolfClientCache>();
+            IWolfTokenProvider tokenProvider = this.DisposablesHandler.GetRequiredService<IWolfTokenProvider>(services);
+            this.ResponseTypeResolver = this.DisposablesHandler.GetRequiredService<IResponseTypeResolver>(services);
+            this.MessageSerializers = this.DisposablesHandler.GetRequiredService<ISerializerProvider<string, IMessageSerializer>>(services);
+            this.ResponseSerializers = this.DisposablesHandler.GetRequiredService<ISerializerProvider<Type, IResponseSerializer>>(services);
+            this.Caches = this.DisposablesHandler.GetRequiredService<IWolfClientCache>(services);
             this.Log = services.GetService<ILogger<WolfClient>>()
                 ?? services.GetService<ILogger>()
                 ?? services.GetService<ILoggerFactory>()?.CreateLogger<WolfClient>();
@@ -106,7 +111,7 @@ namespace TehGM.Wolfringo
             this.CallbackDispatcher = new MessageCallbackDispatcher();
 
             // init socket client
-            this.SocketClient = services.GetRequiredService<ISocketClient>();
+            this.SocketClient = this.DisposablesHandler.GetRequiredService<ISocketClient>(services);
             this.SocketClient.MessageReceived += OnClientMessageReceived;
             this.SocketClient.MessageSent += OnClientMessageSent;
             this.SocketClient.Connected += OnClientConnected;
@@ -187,7 +192,7 @@ namespace TehGM.Wolfringo
         public virtual void Dispose()
         {
             this.Clear();
-            (SocketClient as IDisposable)?.Dispose();
+            this.DisposablesHandler?.Dispose();
         }
 
         /// <summary>Clears all connection-bound variables.</summary>

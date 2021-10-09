@@ -15,6 +15,7 @@ namespace TehGM.Wolfringo
         /// <summary>Options for the client.</summary>
         public WolfClientOptions Options { get; set; }
         private readonly IServiceCollection _services;
+        private readonly DisposableServicesHandler _disposablesHandler;
 
         /// <summary>Invoked when the builder is about to build a new instance of <see cref="WolfClient"/>.</summary>
         public event Action<IServiceCollection> Building;
@@ -27,6 +28,7 @@ namespace TehGM.Wolfringo
         {
             this.Options = new WolfClientOptions();
             this._services = services;
+            this._disposablesHandler = new DisposableServicesHandler();
 
             // initialize defaults
             if (!this._services.HasService<ISocketClient>())
@@ -50,18 +52,21 @@ namespace TehGM.Wolfringo
         #region DI HELPERS
         private WolfClientBuilder SetService<TService>(TService service) where TService : class
         {
+            this._disposablesHandler.UnmarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(service);
             return this;
         }
         private WolfClientBuilder SetService<TService>(Func<IServiceProvider, TService> factory) where TService : class
         {
+            this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(factory);
             return this;
         }
         private WolfClientBuilder SetService<TService, TImplementation>() where TService : class where TImplementation : class, TService
         {
+            this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService, TImplementation>();
             return this;
@@ -334,8 +339,9 @@ namespace TehGM.Wolfringo
             if (string.IsNullOrWhiteSpace(this.Options.ServerURL))
                 throw new ArgumentNullException(nameof(this.Options.ServerURL));
 
-            // add options before building
+            // add options and disposables handler before building
             this.SetService<WolfClientOptions>(this.Options);
+            this.SetService<DisposableServicesHandler>(this._disposablesHandler);
 
             // build and return
             this.Building?.Invoke(this._services);

@@ -15,7 +15,7 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Options for the client.</summary>
         public CommandsOptions Options { get; set; }
         private readonly IServiceCollection _services;
-        private readonly HashSet<Type> _disposeServices;
+        private readonly DisposableServicesHandler _disposablesHandler;
         private CancellationToken _cancellationToken;
 
         /// <summary>Invoked when the builder is about to build a new instance of <see cref="WolfClient"/>.</summary>
@@ -29,7 +29,7 @@ namespace TehGM.Wolfringo.Commands
         {
             this.Options = new CommandsOptions();
             this._services = services;
-            this._disposeServices = new HashSet<Type>();
+            this._disposablesHandler = new DisposableServicesHandler();
             this._cancellationToken = default;
 
             // initialize defaults
@@ -52,30 +52,23 @@ namespace TehGM.Wolfringo.Commands
             : this(new ServiceCollection()) { }
 
         #region DI HELPERS
-        // When service is created by the builder, it should be only scoped to the CommandsService lifetime.
-        // Services provided to the builder should never be disposed - it's up to the caller to dispose them.
-        private void MarkForDisposal<T>()
-            => this._disposeServices.Add(typeof(T));
-        private void UnmarkForDisposal<T>()
-            => this._disposeServices.Remove(typeof(T));
-
         private CommandsServiceBuilder SetService<TService>(TService service) where TService : class
         {
-            this.UnmarkForDisposal<TService>();
+            this._disposablesHandler.UnmarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(service);
             return this;
         }
         private CommandsServiceBuilder SetService<TService>(Func<IServiceProvider, TService> factory) where TService : class
         {
-            this.MarkForDisposal<TService>();
+            this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(factory);
             return this;
         }
         private CommandsServiceBuilder SetService<TService, TImplementation>() where TService : class where TImplementation : class, TService
         {
-            this.MarkForDisposal<TService>();
+            this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService, TImplementation>();
             return this;
@@ -328,8 +321,9 @@ namespace TehGM.Wolfringo.Commands
             if (!this._services.HasService<IWolfClient>())
                 throw new InvalidOperationException($"Cannot create commands service without WOLF Client. Please use {nameof(this.WithWolfClient)} before calling {nameof(this.Build)}.");
 
-            // add options before building
+            // add options and disposables handler before building
             this.SetService<CommandsOptions>(this.Options);
+            this.SetService<DisposableServicesHandler>(this._disposablesHandler);
 
             // build and return
             this.Building?.Invoke(this._services);
