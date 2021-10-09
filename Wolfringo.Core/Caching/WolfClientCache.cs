@@ -15,10 +15,14 @@ namespace TehGM.Wolfringo.Caching.Internal
     /// <para>Each cache can be separately enabled or disabled.</para></remarks>
     public class WolfClientCache : IWolfClientCache, IDisposable
     {
-        private bool _enableUsersCaching;
-        private bool _enableGroupsCaching;
-        private bool _enableCharmsCaching;
-        private bool _enableAchievementsCaching;
+        /// <summary>Whether caching of <see cref="WolfUser"/> is enabled.</summary>
+        public bool IsUsersCachingEnabled { get; }
+        /// <summary>Whether caching of <see cref="WolfGroup"/> is enabled.</summary>
+        public bool IsGroupsCachingEnabled { get; }
+        /// <summary>Whether caching of <see cref="WolfCharm"/> is enabled.</summary>
+        public bool IsCharmsCachingEnabled { get; }
+        /// <summary>Whether caching of <see cref="WolfAchievement"/> is enabled.</summary>
+        public bool IsAchievementsCachingEnabled { get; }
 
         /// <summary>Users cache.</summary>
         protected IWolfCachedEntityCollection<WolfUser> UsersCache { get; }
@@ -55,10 +59,10 @@ namespace TehGM.Wolfringo.Caching.Internal
             this.AchievementsCache = new WolfCachedEntityCollection<WolfLanguage, WolfAchievement>();
 
             // enable according to options
-            this._enableUsersCaching = options.UsersCachingEnabled;
-            this._enableGroupsCaching = options.GroupsCachingEnabled;
-            this._enableCharmsCaching = options.CharmsCachingEnabled;
-            this._enableAchievementsCaching = options.AchievementsCachingEnabled;
+            this.IsUsersCachingEnabled = options.UsersCachingEnabled;
+            this.IsGroupsCachingEnabled = options.GroupsCachingEnabled;
+            this.IsCharmsCachingEnabled = options.CharmsCachingEnabled;
+            this.IsAchievementsCachingEnabled = options.AchievementsCachingEnabled;
 
             // assign log
             this.Log = log;
@@ -67,7 +71,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <inheritdoc/>
         public WolfUser GetCachedUser(uint id)
         {
-            if (!this._enableUsersCaching)
+            if (!this.IsUsersCachingEnabled)
                 return null;
             WolfUser result = this.UsersCache?.Get(id);
             if (result != null)
@@ -78,7 +82,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <inheritdoc/>
         public WolfGroup GetCachedGroup(uint id)
         {
-            if (!this._enableGroupsCaching)
+            if (!this.IsGroupsCachingEnabled)
                 return null;
             WolfGroup result = this.GroupsCache?.Get(id);
             if (result != null)
@@ -89,7 +93,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <inheritdoc/>
         public WolfGroup GetCachedGroup(string name)
         {
-            if (!this._enableGroupsCaching)
+            if (!this.IsGroupsCachingEnabled)
                 return null;
             WolfGroup result = this.GroupsCache?.Find(group => group.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if (result != null)
@@ -100,7 +104,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <inheritdoc/>
         public WolfCharm GetCachedCharm(uint id)
         {
-            if (!this._enableCharmsCaching)
+            if (!this.IsCharmsCachingEnabled)
                 return null;
             WolfCharm result = this.CharmsCache?.Get(id);
             if (result != null)
@@ -111,7 +115,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <inheritdoc/>
         public WolfAchievement GetCachedAchievement(WolfLanguage language, uint id)
         {
-            if (!this._enableAchievementsCaching)
+            if (!this.IsAchievementsCachingEnabled)
                 return null;
             WolfAchievement result = this.AchievementsCache?.Get(language, id);
             if (result != null)
@@ -146,7 +150,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <inheritdoc/>
         public virtual Task HandleMessageSentAsync(IWolfClient client, IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
-            if (this._enableUsersCaching)
+            if (this.IsUsersCachingEnabled)
             {
                 // update users cache if it's user profile message
                 if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
@@ -161,7 +165,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                 }
             }
 
-            if (this._enableGroupsCaching)
+            if (this.IsGroupsCachingEnabled)
             {
                 // update groups cache if it's group profile message
                 if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
@@ -209,7 +213,7 @@ namespace TehGM.Wolfringo.Caching.Internal
             }
 
 
-            if (this._enableCharmsCaching)
+            if (this.IsCharmsCachingEnabled)
             {
                 // update charms cache if it's charms list
                 if (response is CharmListResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
@@ -219,7 +223,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                 }
             }
 
-            if (this._enableAchievementsCaching)
+            if (this.IsAchievementsCachingEnabled)
             {
                 if (response is AchievementListResponse achievementListResponse && achievementListResponse.Achievements?.Any() == true &&
                     message is AchievementListMessage achievementListMessage)
@@ -236,7 +240,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         public virtual async Task HandleMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             // update user presence
-            if (this._enableUsersCaching)
+            if (this.IsUsersCachingEnabled)
             {
                 if (message is PresenceUpdateEvent presenceUpdate)
                 {
@@ -260,7 +264,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                 }
             }
 
-            if (this._enableGroupsCaching)
+            if (this.IsGroupsCachingEnabled)
             {
                 // update group audio count
                 if (message is GroupAudioCountUpdateEvent groupAudioCountUpdate)
