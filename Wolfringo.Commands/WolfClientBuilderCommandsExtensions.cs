@@ -20,8 +20,8 @@ namespace TehGM.Wolfringo
                 builder = new CommandsServiceBuilder(services);
                 commandsBuilder?.Invoke(builder);
             };
-            Action<WolfClient> onBuilt = null;
-            onBuilt = client =>
+            Action<WolfClient, IServiceProvider> onBuilt = null;
+            onBuilt = (client, services) =>
             {
                 // add the related Wolf Client
                 builder.WithWolfClient(client);
@@ -29,10 +29,6 @@ namespace TehGM.Wolfringo
                 // build and start
                 CommandsService commands = builder.Build();
                 commands.StartAsync(builder.Options.CancellationToken).GetAwaiter().GetResult();
-
-                // remove event handlers
-                clientBuilder.Building -= onBuilding;
-                clientBuilder.Built -= onBuilt;
             };
 
             clientBuilder.Building += onBuilding;

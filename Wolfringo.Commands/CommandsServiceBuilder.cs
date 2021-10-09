@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,10 +17,10 @@ namespace TehGM.Wolfringo.Commands
         private readonly DisposableServicesHandler _disposablesHandler;
         private CancellationToken _cancellationToken;
 
-        /// <summary>Invoked when the builder is about to build a new instance of <see cref="WolfClient"/>.</summary>
+        /// <summary>Invoked when the builder is about to build a new instance of <see cref="CommandsService"/>.</summary>
         public event Action<IServiceCollection> Building;
-        /// <summary>Invoked when the builder has finished building a new instance of <see cref="WolfClient"/>.</summary>
-        public event Action<CommandsService> Built;
+        /// <summary>Invoked when the builder has finished building a new instance of <see cref="CommandsService"/>.</summary>
+        public event Action<CommandsService, IServiceProvider> Built;
 
         /// <summary>Creates a new CommandsService builder with provided services.</summary>
         /// <param name="services">Initial services to use.</param>
@@ -337,7 +336,7 @@ namespace TehGM.Wolfringo.Commands
             IServiceProvider services = this._services.BuildServiceProvider();
             client = services.GetRequiredService<IWolfClient>();
             CommandsService result = new CommandsService(services, this.Options);
-            this.Built?.Invoke(result);
+            this.Built?.Invoke(result, services);
             return result;
         }
 

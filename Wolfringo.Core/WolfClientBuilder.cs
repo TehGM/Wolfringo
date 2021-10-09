@@ -20,7 +20,7 @@ namespace TehGM.Wolfringo
         /// <summary>Invoked when the builder is about to build a new instance of <see cref="WolfClient"/>.</summary>
         public event Action<IServiceCollection> Building;
         /// <summary>Invoked when the builder has finished building a new instance of <see cref="WolfClient"/>.</summary>
-        public event Action<WolfClient> Built;
+        public event Action<WolfClient, IServiceProvider> Built;
 
         /// <summary>Creates a new WolfClient builder with provided services.</summary>
         /// <param name="services">Initial services to use.</param>
@@ -372,8 +372,9 @@ namespace TehGM.Wolfringo
 
             // build and return
             this.Building?.Invoke(this._services);
-            WolfClient result = new WolfClient(this._services.BuildServiceProvider(), this.Options);
-            this.Built?.Invoke(result);
+            IServiceProvider services = this._services.BuildServiceProvider();
+            WolfClient result = new WolfClient(services, this.Options);
+            this.Built?.Invoke(result, services);
             return result;
         }
     }
