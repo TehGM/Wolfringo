@@ -321,8 +321,9 @@ namespace TehGM.Wolfringo.Commands
 
         /// <summary>Builds a new CommandsService with provided values.</summary>
         /// <param name="client">The WOLF Client that is used by the built CommandsService.</param>
+        /// <param name="services">The built service provider.</param>
         /// <returns>A new CommandsService instance.</returns>
-        public CommandsService Build(out IWolfClient client)
+        public CommandsService Build(out IWolfClient client, out IServiceProvider services)
         {
             if (!this._services.HasService<IWolfClient>())
                 throw new InvalidOperationException($"Cannot create commands service without WOLF Client. Please use {nameof(this.WithWolfClient)} before calling {nameof(this.Build)}.");
@@ -337,7 +338,7 @@ namespace TehGM.Wolfringo.Commands
             this._services.AddSingleton<ICommandsService>(provider => provider.GetRequiredService<CommandsService>());
 
             // build and return
-            IServiceProvider services = this._services.BuildServiceProvider();
+            services = this._services.BuildServiceProvider();
             client = services.GetRequiredService<IWolfClient>();
             CommandsService result = services.GetRequiredService<CommandsService>();
             this.Built?.Invoke(result, services);
@@ -347,6 +348,6 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Builds a new CommandsService with provided values.</summary>
         /// <returns>A new CommandsService instance.</returns>
         public CommandsService Build()
-            => this.Build(out _);
+            => this.Build(out _, out _);
     }
 }

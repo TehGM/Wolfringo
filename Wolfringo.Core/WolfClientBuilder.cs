@@ -359,9 +359,10 @@ namespace TehGM.Wolfringo
         #endregion
 
         /// <summary>Builds a new WolfClient with provided values.</summary>
-        /// <returns>A new WolfClient instance</returns>
+        /// <returns>A new WolfClient instance,</returns>
+        /// <param name="services">The built service provider.</param>
         /// <exception cref="ArgumentNullException">Server URL is null.</exception>
-        public WolfClient Build()
+        public WolfClient Build(out IServiceProvider services)
         {
             if (string.IsNullOrWhiteSpace(this.Options.ServerURL))
                 throw new ArgumentNullException(nameof(this.Options.ServerURL));
@@ -376,10 +377,16 @@ namespace TehGM.Wolfringo
             this._services.AddSingleton<IWolfClient>(provider => provider.GetRequiredService<WolfClient>());
 
             // build and return
-            IServiceProvider services = this._services.BuildServiceProvider();
+            services = this._services.BuildServiceProvider();
             WolfClient result = services.GetRequiredService<WolfClient>();
             this.Built?.Invoke(result, services);
             return result;
         }
+
+        /// <summary>Builds a new WolfClient with provided values.</summary>
+        /// <returns>A new WolfClient instance,</returns>
+        /// <exception cref="ArgumentNullException">Server URL is null.</exception>
+        public WolfClient Build()
+            => this.Build(out _);
     }
 }
