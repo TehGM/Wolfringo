@@ -45,9 +45,8 @@ namespace TehGM.Wolfringo.Commands
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
 
-        /// <summary>Descriptors of all commands loaded to this commands service.</summary>
+        /// <inheritdoc/>
         public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Keys;
-
 
         /// <summary>Initializes a command service.</summary>
         /// <param name="client">WOLF client. Required.</param>

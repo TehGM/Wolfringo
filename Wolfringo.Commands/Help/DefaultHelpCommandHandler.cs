@@ -6,10 +6,10 @@ namespace TehGM.Wolfringo.Commands.Help
 {
     internal class DefaultHelpCommandHandler
     {
-        private readonly CommandsService _service;
+        private readonly ICommandsService _service;
         private readonly CommandsOptions _options;
 
-        public DefaultHelpCommandHandler(CommandsOptions options, CommandsService service)
+        public DefaultHelpCommandHandler(CommandsOptions options, ICommandsService service)
         {
             this._options = options;
             this._service = service;
@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands.Help
             if (!this._options.EnableDefaultHelpCommand)
                 return CommandExecutionResult.Skip;
 
-            CommandsListBuilder builder = new CommandsListBuilder(this._service);
+            CommandsListBuilder builder = new CommandsListBuilder(this._service.Commands);
             builder.PrependedPrefix = this._options.Prefix;
             builder.SpaceCategories = true;
             builder.ListCommandsWithoutSummaries = true;

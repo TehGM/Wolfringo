@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 #if !NETCOREAPP3_0
@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Commands;
+using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo.Hosting.Commands
@@ -38,6 +39,9 @@ namespace TehGM.Wolfringo.Hosting.Commands
         private readonly IWolfClient _client;
         private readonly IOptionsMonitor<CommandsOptions> _options;
         private readonly IServiceProvider _services;
+
+        /// <inheritdoc/>
+        public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Commands;
 
         /// <summary>Creates a new hosted commands service.</summary>
         /// <param name="client">WOLF client.</param>
