@@ -36,6 +36,8 @@ namespace TehGM.Wolfringo
                 this.WithDefaultResponseSerializers();
             if (!this._services.HasService<IResponseTypeResolver>())
                 this.WithDefaultResponseTypeResolver();
+            if (!this._services.HasService<IWolfClientCache>())
+                this.WithDefaultCaching();
         }
 
         /// <summary>Creates a new WolfClient builder with default values pre-set.</summary>
@@ -243,6 +245,37 @@ namespace TehGM.Wolfringo
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultResponseTypeResolver()
             => this.SetService<IResponseTypeResolver, ResponseTypeResolver>();
+        #endregion
+
+        #region CACHING
+        /// <summary>Sets entity cache container that client will use.</summary>
+        /// <param name="cache">The entity cache container.</param>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithCaching(IWolfClientCache cache)
+        {
+            if (cache == null)
+                throw new ArgumentNullException(nameof(cache));
+            return this.SetService<IWolfClientCache>(cache);
+        }
+
+        /// <summary>Sets entity cache container that client will use.</summary>
+        /// <typeparam name="TImplementation">Type of entity cache container.</typeparam>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithCaching<TImplementation>() where TImplementation : class, IWolfClientCache
+            => this.SetService<IWolfClientCache, TImplementation>();
+
+        /// <summary>Switches to default entity cache container.</summary>
+        /// <remarks><see cref="WolfEntityCacheContainer"/> will be used.</remarks>
+        /// <param name="options">Options for the default entity cache container.</param>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithDefaultCaching(WolfCacheOptions options)
+            => this.SetService<IWolfClientCache>(provider => new WolfEntityCacheContainer(options, provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>()));
+
+        /// <summary>Switches to default entity cache container with all caches enabled.</summary>
+        /// <remarks><see cref="WolfEntityCacheContainer"/> will be used.</remarks>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithDefaultCaching()
+            => this.WithDefaultCaching(new WolfCacheOptions());
         #endregion
 
         #region LOGGING

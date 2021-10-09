@@ -45,6 +45,7 @@ namespace TehGM.Wolfringo.Hosting
         private readonly ILogger _log;
         private readonly ILogger _underlyingClientLog;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
+        private readonly IWolfClientCache _cache;
         private readonly ISerializerProvider<string, IMessageSerializer> _messageSerializers;
         private readonly ISerializerProvider<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
@@ -83,10 +84,11 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="messageSerializers">Map of message serializers.</param>
         /// <param name="responseSerializers">Map of response serializers.</param>
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
+        /// <param name="cache">Entity cache container.</param>
         /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, IWolfTokenProvider tokenProvider,
             ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
-            IResponseTypeResolver responseTypeResolver,
+            IResponseTypeResolver responseTypeResolver, IWolfClientCache cache,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
@@ -102,6 +104,7 @@ namespace TehGM.Wolfringo.Hosting
             this._messageSerializers = messageSerializers;
             this._responseSerializers = responseSerializers;
             this._responseTypeResolver = responseTypeResolver;
+            this._cache = cache;
             this._tokenProvider = new HostedWolfTokenProvider(options, tokenProvider);
             this._hostLifetime = hostLifetime;
 
@@ -150,7 +153,8 @@ namespace TehGM.Wolfringo.Hosting
                 .WithMessageSerializers(this._messageSerializers)
                 .WithResponseSerializers(this._responseSerializers)
                 .WithResponseTypeResolver(this._responseTypeResolver)
-                .WithTokenProvider(this._tokenProvider);
+                .WithTokenProvider(this._tokenProvider)
+                .WithCaching(this._cache);
             builder.Options.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
             this._client = builder.Build();
 
@@ -168,12 +172,6 @@ namespace TehGM.Wolfringo.Hosting
                 for (int i = 0; i < _callbacks.Count; i++)
                     this._client.AddMessageListener(_callbacks[i]);
             }
-
-            // set caching options
-            this._client.GroupsCachingEnabled = options.GroupsCachingEnabled;
-            this._client.UsersCachingEnabled = options.UsersCachingEnabled;
-            this._client.CharmsCachingEnabled = options.CharmsCachingEnabled;
-            this._client.AchievementsCachingEnabled = options.AchievementsCachingEnabled;
         }
 
         /// <summary>Disposes underlying client.</summary>

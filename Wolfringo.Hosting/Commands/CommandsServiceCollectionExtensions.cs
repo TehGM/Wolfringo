@@ -9,6 +9,7 @@ using TehGM.Wolfringo.Commands.Parsing;
 using TehGM.Wolfringo.Commands.Attributes;
 using TehGM.Wolfringo.Hosting.Commands;
 using Microsoft.Extensions.Logging;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -30,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<ICommandsHandlerProvider, CommandsHandlerProvider>();
             services.TryAddTransient<IParameterBuilder, ParameterBuilder>();
             services.TryAdd(ServiceDescriptor.Transient<ICommandsLoader, CommandsLoader>(provider
-                => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(), provider.GetRequiredService<ILogger<CommandsLoader>>())));
+                => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(), provider.GetLoggerFor<ICommandsLoader, CommandsLoader>())));
             services.TryAdd(ServiceDescriptor.Transient<ICommandInitializerProvider, CommandInitializerProvider>(provider
                 => new CommandInitializerProvider(provider.GetRequiredService<IOptions<CommandInitializerProviderOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Transient<IArgumentsParser, ArgumentsParser>(provider 

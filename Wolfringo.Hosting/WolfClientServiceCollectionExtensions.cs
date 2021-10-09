@@ -8,6 +8,7 @@ using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Messages;
 using Microsoft.Extensions.Options;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -31,6 +32,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
                 => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value)));
+            services.TryAdd(ServiceDescriptor.Transient<IWolfClientCache, WolfEntityCacheContainer>(provider
+                => new WolfEntityCacheContainer(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>())));
+            services.TryAddTransient<WolfCacheOptions>(provider
+                => provider.GetRequiredService<IOptionsMonitor<WolfCacheOptions>>().CurrentValue);
 
             services.TryAddSingleton<IWolfClient, HostedWolfClient>();
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IWolfClient>());
@@ -116,7 +121,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <seealso cref="WolfClientOptions.BetaServerURL"/>
         public static IHostedWolfClientServiceBuilder SetBetaServerURL(this IHostedWolfClientServiceBuilder builder)
             => SetServerURL(builder, WolfClientOptions.BetaServerURL);
-
 
 
         // message serializers

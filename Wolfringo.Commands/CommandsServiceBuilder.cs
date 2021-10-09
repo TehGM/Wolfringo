@@ -275,7 +275,8 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Switches to default commands loader.</summary>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultCommandsLoader()
-            => this.WithCommandsLoader<CommandsLoader>();
+            => this.SetService<ICommandsLoader>(provider => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(),
+                provider.GetLoggerFor<ICommandsLoader, CommandsLoader>()));
         #endregion
 
         #region LOGGING

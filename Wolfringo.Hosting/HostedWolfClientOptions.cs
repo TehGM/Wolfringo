@@ -39,20 +39,6 @@ namespace TehGM.Wolfringo.Hosting
         /// <para>Defaults to false.</para></remarks>
         public bool CloseOnCriticalError { get; set; } = false;
 
-        // caching
-        /// <summary>Whether users caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool UsersCachingEnabled { get; set; } = true;
-        /// <summary>Whether groups caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool GroupsCachingEnabled { get; set; } = true;
-        /// <summary>Whether charms caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool CharmsCachingEnabled { get; set; } = true;
-        /// <summary>Whether achievements caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool AchievementsCachingEnabled { get; set; } = true;
-
         // messages handling
         /// <summary>Whether the client should skip raising events for messages it sent.</summary>
         /// <remarks>Defaults to true.</remarks>
