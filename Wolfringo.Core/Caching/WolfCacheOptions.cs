@@ -1,4 +1,4 @@
-﻿namespace TehGM.Wolfringo.Utilities
+﻿namespace TehGM.Wolfringo.Caching
 {
     /// <summary>Options for the entity cache used by the client.</summary>
     public class WolfCacheOptions

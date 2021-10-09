@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TehGM.Wolfringo.Caching;
+using TehGM.Wolfringo.Caching.Internal;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Socket;

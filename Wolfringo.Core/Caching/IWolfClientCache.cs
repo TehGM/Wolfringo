@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
-using TehGM.Wolfringo.Utilities.Internal;
 
-namespace TehGM.Wolfringo.Utilities
+namespace TehGM.Wolfringo.Caching
 {
     /// <summary>Utility grouping common entity caches together.</summary>
     /// <remarks><para>This utility contains caches for entities that Wolf client is caching.</para>

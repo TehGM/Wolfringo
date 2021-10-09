@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Utilities.Internal;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Hosting.Services;
+using TehGM.Wolfringo.Caching;
+using TehGM.Wolfringo.Caching.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

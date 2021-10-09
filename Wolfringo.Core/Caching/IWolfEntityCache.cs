@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TehGM.Wolfringo.Utilities.Internal
+namespace TehGM.Wolfringo.Caching.Internal
 {
     /// <summary>Represents cache for a single type of a <see cref="IWolfEntity"/>.</summary>
     /// <typeparam name="TEntity">Type of cached entity.</typeparam>

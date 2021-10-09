@@ -1,4 +1,5 @@
 ﻿using System;
+using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Hosting;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;

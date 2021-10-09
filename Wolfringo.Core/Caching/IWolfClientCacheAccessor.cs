@@ -1,4 +1,4 @@
-﻿namespace TehGM.Wolfringo.Utilities.Internal
+﻿namespace TehGM.Wolfringo.Caching
 {
     /// <summary>Provides get-only access to Wolf client caches.</summary>
     public interface IWolfClientCacheAccessor

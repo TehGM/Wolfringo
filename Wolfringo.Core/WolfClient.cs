@@ -14,6 +14,8 @@ using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using TehGM.Wolfringo.Caching;
+using TehGM.Wolfringo.Caching.Internal;
 
 namespace TehGM.Wolfringo
 {

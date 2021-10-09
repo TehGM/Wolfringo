@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TehGM.Wolfringo.Utilities.Internal
+namespace TehGM.Wolfringo.Caching.Internal
 {
     /// <inheritdoc/>
     public class WolfEntityCache<TEntity> : IWolfEntityCache<TEntity> where TEntity : IWolfEntity

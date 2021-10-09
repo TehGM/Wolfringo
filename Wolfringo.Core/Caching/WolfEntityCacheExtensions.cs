@@ -1,4 +1,4 @@
-﻿namespace TehGM.Wolfringo.Utilities.Internal
+﻿namespace TehGM.Wolfringo.Caching.Internal
 {
     /// <summary>Extensions for <see cref="IWolfEntityCache{TEntity}"/></summary>
     public static class WolfEntityCacheExtensions
