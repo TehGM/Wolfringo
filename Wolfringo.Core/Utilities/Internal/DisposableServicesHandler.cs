@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace TehGM.Wolfringo.Utilities.Internal
 {
     /// <summary>An utility class for handling services that should be disposed (when created by provider/builder, and not by library user).</summary>
-    /// <remarks>Do NOT register this service manually. It should only be initialized by builders, such as <see cref="WolfClientBuilder"/>.</remarks>
+    /// <remarks><para>Do NOT register this service manually. It should only be initialized by builders, such as <see cref="WolfClientBuilder"/>.</para>
+    /// <para>Only singleton services should be marked for disposal.</para></remarks>
     public class DisposableServicesHandler : IDisposable
     {
         private readonly HashSet<Type> _markedForDisposal = new HashSet<Type>();
