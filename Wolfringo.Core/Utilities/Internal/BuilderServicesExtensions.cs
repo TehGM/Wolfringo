@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace TehGM.Wolfringo.Utilities.Internal
 {
     /// <summary>Extension methods for <see cref="IServiceCollection"/> and <see cref="IServiceProvider"/> used by builder classes.</summary>
-    public static class BuilderServiceCollectionExtensions
+    public static class BuilderServicesExtensions
     {
         /// <summary>Removes a service of given type.</summary>
         /// <typeparam name="TService">Service type.</typeparam>
