@@ -243,7 +243,7 @@ If you use an array of [strings](xref:System.String) (`string[]`) as a parameter
 > [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab raw text of the arguments, use see [Arguments Text](#arguments-text) below.
 
 #### Arguments Text
-If you want to see all arguments as single string before they're [split up](#command-arguments), you can add a new string parameter and mark it with [\[ArgumentsText\] attribute](xref:TehGM.Wolfringo.Commands.ArgumentsText).
+If you want to see all arguments as single string before they're [split up](#command-arguments), you can add a new string parameter and mark it with [\[ArgumentsText\] attribute](xref:TehGM.Wolfringo.Commands.ArgumentsTextAttribute).
 
 Assume that in following example, the user sends `!say Hello, this is some text (with parentheses!)`:
 
