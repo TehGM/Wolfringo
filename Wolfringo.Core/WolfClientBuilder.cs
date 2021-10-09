@@ -338,12 +338,24 @@ namespace TehGM.Wolfringo
         /// <param name="logger">Logger to use.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithLogging(ILogger logger)
-            => this.WithService<ILogger>(logger);
+        {
+            this._services.RemoveService<ILoggerFactory>();
+            if (logger is ILogger<WolfClient> typedLogger)
+                this.WithService<ILogger<WolfClient>>(typedLogger);
+            if (logger is ILogger<IWolfClient> interfaceTypedLogger)
+                this.WithService<ILogger<IWolfClient>>(interfaceTypedLogger);
+            return this.WithService<ILogger>(logger);
+        }
         /// <summary>Sets a logger factory that will be used to create a logger.</summary>
         /// <param name="factory">Logger factory to use when creating a logger.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithLogging(ILoggerFactory factory)
-            => this.WithService<ILogger>(_ => factory.CreateLogger<WolfClient>());
+        {
+            this.WithService<ILogger<WolfClient>>(_ => factory.CreateLogger<WolfClient>());
+            this.WithService<ILogger<IWolfClient>>(_ => factory.CreateLogger<IWolfClient>());
+            this.WithService<ILogger>(_ => factory.CreateLogger<WolfClient>());
+            return this.WithService<ILoggerFactory>(factory);
+        }
         #endregion
 
         /// <summary>Builds a new WolfClient with provided values.</summary>

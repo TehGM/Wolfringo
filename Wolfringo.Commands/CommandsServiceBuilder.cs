@@ -285,16 +285,28 @@ namespace TehGM.Wolfringo.Commands
         #endregion
 
         #region LOGGING
-        /// <summary>Sets a logger to be used by the client.</summary>
+        /// <summary>Sets a logger to be used by the <see cref="CommandsService"/>.</summary>
         /// <param name="logger">Logger to use.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithLogging(ILogger logger)
-            => this.WithService<ILogger>(logger);
+        {
+            this._services.RemoveService<ILoggerFactory>();
+            if (logger is ILogger<CommandsService> typedLogger)
+                this.WithService<ILogger<CommandsService>>(typedLogger);
+            if (logger is ILogger<ICommandsService> interfaceTypedLogger)
+                this.WithService<ILogger<ICommandsService>>(interfaceTypedLogger);
+            return this.WithService<ILogger>(logger);
+        }
         /// <summary>Sets a logger factory that will be used to create a logger.</summary>
         /// <param name="factory">Logger factory to use when creating a logger.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithLogging(ILoggerFactory factory)
-            => this.WithService<ILogger>(_ => factory.CreateLogger<CommandsService>());
+        {
+            this.WithService<ILogger<CommandsService>>(_ => factory.CreateLogger<CommandsService>());
+            this.WithService<ILogger<ICommandsService>>(_ => factory.CreateLogger<ICommandsService>());
+            this.WithService<ILogger>(_ => factory.CreateLogger<CommandsService>());
+            return this.WithService<ILoggerFactory>(factory);
+        }
         #endregion
 
         #region CANCELLATION TOKEN

@@ -44,7 +44,7 @@ namespace TehGM.Wolfringo.Hosting
 
         // services
         private readonly ILogger _log;
-        private readonly ILogger _underlyingClientLog;
+        private readonly ILoggerFactory _logFactory;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
         private readonly IWolfClientCache _cache;
         private readonly ISerializerProvider<string, IMessageSerializer> _messageSerializers;
@@ -80,8 +80,8 @@ namespace TehGM.Wolfringo.Hosting
 
         /// <summary>Creates a new hosted client.</summary>
         /// <param name="options">Client configuration.</param>
-        /// <param name="logger">Logger to log all log events.</param>
-        /// <param name="underlyingClientLogger">Logger that will be used by the underlying client.</param>
+        /// <param name="log">Logger to log all log events.</param>
+        /// <param name="logFactory">Logger factory that will be used by the underlying client.</param>
         /// <param name="tokenProvider">Wolf token generator.</param>
         /// <param name="messageSerializers">Map of message serializers.</param>
         /// <param name="responseSerializers">Map of response serializers.</param>
@@ -89,7 +89,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="cache">Entity cache container.</param>
         /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
         /// <param name="socketClient">Low-level socket client to be used by WolfClient.</param>
-        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, IWolfTokenProvider tokenProvider,
+        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> log, ILoggerFactory logFactory, IWolfTokenProvider tokenProvider,
             ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
             IResponseTypeResolver responseTypeResolver, IWolfClientCache cache, ISocketClient socketClient,
 #if NETCOREAPP3_0
@@ -101,8 +101,8 @@ namespace TehGM.Wolfringo.Hosting
         {
             this._callbacks = new List<IMessageCallback>();
 
-            this._log = logger;
-            this._underlyingClientLog = underlyingClientLogger;
+            this._log = log;
+            this._logFactory = logFactory;
             this._options = options;
             this._messageSerializers = messageSerializers;
             this._responseSerializers = responseSerializers;
@@ -154,7 +154,7 @@ namespace TehGM.Wolfringo.Hosting
                 .WithSocketClient(this._socketClient)
                 .WithServerURL(options.ServerURL)
                 .WithDevice(options.Device)
-                .WithLogging(this._underlyingClientLog)
+                .WithLogging(this._logFactory)
                 .WithMessageSerializers(this._messageSerializers)
                 .WithResponseSerializers(this._responseSerializers)
                 .WithResponseTypeResolver(this._responseTypeResolver)
