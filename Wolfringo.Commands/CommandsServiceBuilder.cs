@@ -379,6 +379,7 @@ namespace TehGM.Wolfringo.Commands
 
             // add options and disposables handler before building
             this.WithSingletonService<CommandsOptions>(this.Options);
+            this.WithSingletonService<ICommandOptions>(provider => provider.GetRequiredService<CommandsOptions>());
             this.WithSingletonService<DisposableServicesHandler>(this._disposablesHandler);
 
             // register self result

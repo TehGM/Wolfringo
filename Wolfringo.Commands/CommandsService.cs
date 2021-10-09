@@ -117,6 +117,7 @@ namespace TehGM.Wolfringo.Commands
             services.AddSingleton<IWolfClient>(client);
             services.AddSingleton(client.GetType(), client);
             services.AddSingleton<CommandsOptions>(options);
+            services.AddSingleton<ICommandOptions>(provider => provider.GetRequiredService<CommandsOptions>());
             services.AddTransient<IArgumentsParser, ArgumentsParser>();
             services.AddTransient<IParameterBuilder, ParameterBuilder>();
             services.AddSingleton<IArgumentConverterProvider, ArgumentConverterProvider>();
