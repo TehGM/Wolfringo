@@ -106,7 +106,7 @@ namespace TehGM.Wolfringo
             this.CallbackDispatcher = new MessageCallbackDispatcher();
 
             // init socket client
-            this.SocketClient = new SocketClient();
+            this.SocketClient = services.GetRequiredService<ISocketClient>();
             this.SocketClient.MessageReceived += OnClientMessageReceived;
             this.SocketClient.MessageSent += OnClientMessageSent;
             this.SocketClient.Connected += OnClientConnected;
@@ -141,7 +141,9 @@ namespace TehGM.Wolfringo
                 { typeof(IWolfTokenProvider), new RandomizedWolfTokenProvider() },
                 { typeof(IResponseTypeResolver), new ResponseTypeResolver() },
                 { typeof(ISerializerProvider<string, IMessageSerializer>), new MessageSerializerProvider() },
-                { typeof(ISerializerProvider<Type, IResponseSerializer>), new ResponseSerializerProvider() }
+                { typeof(ISerializerProvider<Type, IResponseSerializer>), new ResponseSerializerProvider() },
+                { typeof(IWolfClientCache), new WolfEntityCacheContainer(new WolfCacheOptions(), log) },
+                { typeof(ISocketClient), new SocketClient() }
             };
             if (log != null)
             {

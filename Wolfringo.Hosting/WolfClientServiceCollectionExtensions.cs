@@ -9,6 +9,7 @@ using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Messages;
 using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Utilities.Internal;
+using TehGM.Wolfringo.Socket;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -28,15 +29,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<IWolfTokenProvider, RandomizedWolfTokenProvider>();
             services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
-            services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
+            services.TryAdd(ServiceDescriptor.Singleton<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
                 => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
-            services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
+            services.TryAdd(ServiceDescriptor.Singleton<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
                 => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value)));
-            services.TryAdd(ServiceDescriptor.Transient<IWolfClientCache, WolfEntityCacheContainer>(provider
+            services.TryAdd(ServiceDescriptor.Singleton<IWolfClientCache, WolfEntityCacheContainer>(provider
                 => new WolfEntityCacheContainer(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>())));
             services.TryAddTransient<WolfCacheOptions>(provider
                 => provider.GetRequiredService<IOptionsMonitor<WolfCacheOptions>>().CurrentValue);
 
+            services.TryAddSingleton<ISocketClient, SocketClient>();
             services.TryAddSingleton<IWolfClient, HostedWolfClient>();
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IWolfClient>());
 

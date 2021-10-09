@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
+using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
 
@@ -28,6 +29,8 @@ namespace TehGM.Wolfringo
             this._services = services;
 
             // initialize defaults
+            if (!this._services.HasService<ISocketClient>())
+                this.WithDefaultSocketClient();
             if (!this._services.HasService<IWolfTokenProvider>())
                 this.WithDefaultTokenProvider();
             if (!this._services.HasService<ISerializerProvider<string, IMessageSerializer>>())
@@ -109,6 +112,33 @@ namespace TehGM.Wolfringo
             configure.Invoke(this.Options);
             return this;
         }
+        #endregion
+
+        #region SOCKET CLIENT
+        /// <summary>Sets the underlying socket client.</summary>
+        /// <param name="client">Socket client.</param>
+        /// <seealso cref="WithDefaultSocketClient"/>
+        /// <returns>Current builder instance.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="client"/> is null.</exception>
+        public WolfClientBuilder WithSocketClient(ISocketClient client)
+        {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+            return this.SetService<ISocketClient>(client);
+        }
+        /// <summary>Sets the underlying socket client.</summary>
+        /// <remarks><typeparamref name="TImplementation"/> must have a constructar that can be resolved from provided services.</remarks>
+        /// <typeparam name="TImplementation">Type of response type resolver.</typeparam>
+        /// <seealso cref="WithDefaultSocketClient"/>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithSocketClient<TImplementation>() where TImplementation : class, ISocketClient
+            => this.SetService<ISocketClient, TImplementation>();
+        /// <summary>Switches to default socket client.</summary>
+        /// <remarks><see cref="SocketClient"/> will be used.</remarks>
+        /// <seealso cref="WithResponseTypeResolver(IResponseTypeResolver)"/>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithDefaultSocketClient()
+            => this.SetService<ISocketClient, SocketClient>();
         #endregion
 
         #region TOKEN PROVIDER

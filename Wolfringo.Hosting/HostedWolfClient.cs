@@ -12,6 +12,7 @@ using TehGM.Wolfringo.Hosting.Services;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
+using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
 
@@ -50,6 +51,7 @@ namespace TehGM.Wolfringo.Hosting
         private readonly ISerializerProvider<Type, IResponseSerializer> _responseSerializers;
         private readonly IResponseTypeResolver _responseTypeResolver;
         private readonly IWolfTokenProvider _tokenProvider;
+        private readonly ISocketClient _socketClient;
 #if NETCOREAPP3_0
         private readonly IHostApplicationLifetime _hostLifetime;
 #else
@@ -86,9 +88,10 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="responseTypeResolver">Resolver of message's response type.</param>
         /// <param name="cache">Entity cache container.</param>
         /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
+        /// <param name="socketClient">Low-level socket client to be used by WolfClient.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, IWolfTokenProvider tokenProvider,
             ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
-            IResponseTypeResolver responseTypeResolver, IWolfClientCache cache,
+            IResponseTypeResolver responseTypeResolver, IWolfClientCache cache, ISocketClient socketClient,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
@@ -105,6 +108,7 @@ namespace TehGM.Wolfringo.Hosting
             this._responseSerializers = responseSerializers;
             this._responseTypeResolver = responseTypeResolver;
             this._cache = cache;
+            this._socketClient = socketClient;
             this._tokenProvider = new HostedWolfTokenProvider(options, tokenProvider);
             this._hostLifetime = hostLifetime;
 
@@ -147,6 +151,7 @@ namespace TehGM.Wolfringo.Hosting
             _log?.LogTrace("Creating underlying client");
             HostedWolfClientOptions options = this._options.CurrentValue;
             WolfClientBuilder builder = new WolfClientBuilder()
+                .WithSocketClient(this._socketClient)
                 .WithServerURL(options.ServerURL)
                 .WithDevice(options.Device)
                 .WithLogging(this._underlyingClientLog)
