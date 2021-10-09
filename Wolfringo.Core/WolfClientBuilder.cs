@@ -370,10 +370,14 @@ namespace TehGM.Wolfringo
             this.WithService<WolfClientOptions>(this.Options);
             this.WithService<DisposableServicesHandler>(this._disposablesHandler);
 
-            // build and return
+            // register self result
             this.Building?.Invoke(this._services);
+            this._services.AddSingleton<WolfClient>(provider => new WolfClient(provider, this.Options));
+            this._services.AddSingleton<IWolfClient>(provider => provider.GetRequiredService<WolfClient>());
+
+            // build and return
             IServiceProvider services = this._services.BuildServiceProvider();
-            WolfClient result = new WolfClient(services, this.Options);
+            WolfClient result = services.GetRequiredService<WolfClient>();
             this.Built?.Invoke(result, services);
             return result;
         }

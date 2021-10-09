@@ -331,11 +331,15 @@ namespace TehGM.Wolfringo.Commands
             this.WithService<CommandsOptions>(this.Options);
             this.WithService<DisposableServicesHandler>(this._disposablesHandler);
 
-            // build and return
+            // register self result
             this.Building?.Invoke(this._services);
+            this._services.AddSingleton<CommandsService>(provider => new CommandsService(provider, this.Options));
+            this._services.AddSingleton<ICommandsService>(provider => provider.GetRequiredService<CommandsService>());
+
+            // build and return
             IServiceProvider services = this._services.BuildServiceProvider();
             client = services.GetRequiredService<IWolfClient>();
-            CommandsService result = new CommandsService(services, this.Options);
+            CommandsService result = services.GetRequiredService<CommandsService>();
             this.Built?.Invoke(result, services);
             return result;
         }
