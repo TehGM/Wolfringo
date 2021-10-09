@@ -104,7 +104,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="client">Wolf Client to use with CommandsService.</param>
         /// <param name="options">Options for commands service.</param>
         /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
-        /// <returns>A <see cref="SimpleServiceProvider"/> with default services added.</returns>
+        /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
         protected static IServiceProvider BuildDefaultServiceProvider(IWolfClient client, CommandsOptions options, ILogger log = null)
         {
             if (client == null)
@@ -112,34 +112,37 @@ namespace TehGM.Wolfringo.Commands
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            IArgumentsParser defaultArgumentsParser = new ArgumentsParser();
-            IArgumentConverterProvider defaultArgumentConverterProvider = new ArgumentConverterProvider();
-            IParameterBuilder defaultParameterBuilder = new ParameterBuilder();
-            ICommandsHandlerProvider defaultCommandsHandlerProvider = new CommandsHandlerProvider();
-            ICommandInitializerProvider defaultCommandInitializerProvider = new CommandInitializerProvider();
-            ICommandsLoader defaultCommandsLoader = new CommandsLoader(defaultCommandInitializerProvider, log);
+            // add all required services
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<IWolfClient>(client);
+            services.AddSingleton(client.GetType(), client);
+            services.AddSingleton<CommandsOptions>(options);
+            services.AddTransient<IArgumentsParser, ArgumentsParser>();
+            services.AddTransient<IParameterBuilder, ParameterBuilder>();
+            services.AddSingleton<IArgumentConverterProvider, ArgumentConverterProvider>();
+            services.AddSingleton<ICommandsHandlerProvider, CommandsHandlerProvider>();
+            services.AddSingleton<ICommandInitializerProvider, CommandInitializerProvider>();
+            services.AddTransient<ICommandsLoader>(provider 
+                => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(), 
+                provider.GetLoggerFor<CommandsLoader>()));
 
-            IDictionary<Type, object> services = new Dictionary<Type, object>()
-            {
-                { typeof(IWolfClient), client },
-                { client.GetType(), client },
-                { typeof(CommandsOptions), options },
-                { typeof(IArgumentsParser), defaultArgumentsParser },
-                { typeof(IArgumentConverterProvider), defaultArgumentConverterProvider },
-                { typeof(IParameterBuilder), defaultParameterBuilder },
-                { typeof(ICommandsHandlerProvider), defaultCommandsHandlerProvider },
-                { typeof(ICommandInitializerProvider), defaultCommandInitializerProvider },
-                { typeof(ICommandsLoader), defaultCommandsLoader },
-            };
             if (log != null)
             {
                 if (log is ILogger<CommandsService> typedLog)
-                    services.Add(typeof(ILogger<CommandsService>), typedLog);
+                    services.AddSingleton<ILogger<CommandsService>>(typedLog);
                 else if (log is ILogger<ICommandsService> interfaceTypedLog)
-                    services.Add(typeof(ILogger<ICommandsService>), interfaceTypedLog);
-                services.Add(typeof(ILogger), log);
+                    services.AddSingleton<ILogger<ICommandsService>>(interfaceTypedLog);
+                services.AddSingleton<ILogger>(log);
             }
-            return new SimpleServiceProvider(services);
+
+            // add tracker to know to dispose them
+            DisposableServicesHandler handler = new DisposableServicesHandler();
+            handler.MarkForDisposal<IArgumentConverterProvider>();
+            handler.MarkForDisposal<ICommandsHandlerProvider>();
+            handler.MarkForDisposal<ICommandInitializerProvider>();
+            services.AddSingleton<DisposableServicesHandler>(handler);
+
+            return services.BuildServiceProvider();
         }
 
         /// <inheritdoc/>

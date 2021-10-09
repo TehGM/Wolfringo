@@ -14,7 +14,6 @@ using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 
 namespace TehGM.Wolfringo
 {
@@ -138,25 +137,35 @@ namespace TehGM.Wolfringo
 
         /// <summary>Builds default service provider. Used to temporarily support obsolete non-builder constructors.</summary>
         /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
-        /// <returns>A <see cref="SimpleServiceProvider"/> with default services added.</returns>
+        /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
         protected static IServiceProvider BuildDefaultServiceProvider(ILogger log = null)
         {
-            IDictionary<Type, object> services = new Dictionary<Type, object>()
-            {
-                { typeof(IWolfTokenProvider), new RandomizedWolfTokenProvider() },
-                { typeof(IResponseTypeResolver), new ResponseTypeResolver() },
-                { typeof(ISerializerProvider<string, IMessageSerializer>), new MessageSerializerProvider() },
-                { typeof(ISerializerProvider<Type, IResponseSerializer>), new ResponseSerializerProvider() },
-                { typeof(IWolfClientCache), new WolfEntityCacheContainer(new WolfCacheOptions(), log) },
-                { typeof(ISocketClient), new SocketClient() }
-            };
+            // add all required services
+            IServiceCollection services = new ServiceCollection();
+            services.AddTransient<IWolfTokenProvider, RandomizedWolfTokenProvider>();
+            services.AddSingleton<IResponseTypeResolver, ResponseTypeResolver>();
+            services.AddSingleton<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>();
+            services.AddSingleton<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>();
+            services.AddSingleton<ISocketClient, SocketClient>();
+            services.AddSingleton<IWolfClientCache>(provider
+                => new WolfEntityCacheContainer(new WolfCacheOptions(), provider.GetLoggerFor<WolfEntityCacheContainer>()));
+
             if (log != null)
             {
                 if (log is ILogger<WolfClient> typedLog)
-                    services.Add(typeof(ILogger<WolfClient>), typedLog);
-                services.Add(typeof(ILogger), log);
+                    services.AddSingleton<ILogger<WolfClient>>(typedLog);
+                else if (log is ILogger<IWolfClient> interfaceTypedLog)
+                    services.AddSingleton<ILogger<IWolfClient>>(interfaceTypedLog);
+                services.AddSingleton<ILogger>(log);
             }
-            return new SimpleServiceProvider(services);
+
+            // add tracker to know to dispose them
+            DisposableServicesHandler handler = new DisposableServicesHandler();
+            handler.MarkForDisposal<ISocketClient>();
+            handler.MarkForDisposal<IWolfClientCache>();
+            services.AddSingleton<DisposableServicesHandler>(handler);
+
+            return services.BuildServiceProvider();
         }
         #endregion
 
