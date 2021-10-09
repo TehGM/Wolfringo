@@ -77,8 +77,7 @@ namespace TehGM.Wolfringo
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentNullException(nameof(url));
-            this.Options.ServerURL = url;
-            return this;
+            return this.ConfigureOptions(options => options.ServerURL = url);
         }
         /// <summary>Sets WOLF server URL to default value.</summary>
         /// <seealso cref="WolfClientOptions.DefaultServerURL"/>
@@ -100,8 +99,14 @@ namespace TehGM.Wolfringo
         /// <param name="device">Device to connect as.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDevice(WolfDevice device)
+            => this.ConfigureOptions(options => options.Device = device);
+
+        /// <summary>Allows configuring options for Wolf Client.</summary>
+        /// <param name="configure">Delegate that can be used for options configuration.</param>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder ConfigureOptions(Action<WolfClientOptions> configure)
         {
-            this.Options.Device = device;
+            configure.Invoke(this.Options);
             return this;
         }
         #endregion

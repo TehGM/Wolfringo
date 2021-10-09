@@ -112,38 +112,35 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="prefix">Prefix value.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithPrefix(string prefix)
-        {
-            this.Options.Prefix = prefix;
-            return this;
-        }
+            => this.ConfigureOptions(options => options.Prefix = prefix);
         /// <summary>Sets whether commands are case-sensitive by default.</summary>
         /// <param name="caseSensitive">Case sensitivity setting.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCaseSensitivity(bool caseSensitive)
-        {
-            this.Options.CaseSensitivity = caseSensitive;
-            return this;
-        }
+            => this.ConfigureOptions(options => options.CaseSensitivity = caseSensitive);
         /// <summary>Sets default prefix requirement for commands.</summary>
         /// <param name="requirePrefix">Prefix requirement.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithPrefixRequirement(PrefixRequirement requirePrefix)
-        {
-            this.Options.RequirePrefix = requirePrefix;
-            return this;
-        }
+            => this.ConfigureOptions(options => options.RequirePrefix = requirePrefix);
         /// <summary>Enables or disables default help command functionality.</summary>
         /// <param name="enabled">Whether the default help command should be enabled.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultHelpCommand(bool enabled)
-        {
-            this.Options.EnableDefaultHelpCommand = enabled;
-            return this;
-        }
+            => this.ConfigureOptions(options => options.EnableDefaultHelpCommand = enabled);
         /// <summary>Enables default help command functionality.</summary>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultHelpCommand()
             => this.WithDefaultHelpCommand(true);
+
+        /// <summary>Allows configuring options for commands service.</summary>
+        /// <param name="configure">Delegate that can be used for options configuration.</param>
+        /// <returns>Current builder instance.</returns>
+        public CommandsServiceBuilder ConfigureOptions(Action<CommandsOptions> configure)
+        {
+            configure.Invoke(this.Options);
+            return this;
+        }
         #endregion
 
         #region ARGUMENTS PARSER
