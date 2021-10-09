@@ -13,7 +13,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
     /// <summary>Utility grouping common entity caches together.</summary>
     /// <remarks><para>This utility contains caches for entities that Wolf client is caching.</para>
     /// <para>Each cache can be separately enabled or disabled.</para></remarks>
-    public class WolfEntityCacheContainer : IWolfClientCache
+    public class WolfEntityCacheContainer : IWolfClientCache, IDisposable
     {
         private bool _enableUsersCaching;
         private bool _enableGroupsCaching;
@@ -271,5 +271,8 @@ namespace TehGM.Wolfringo.Utilities.Internal
             this._log?.LogWarning(message, args);
             return true;
         }
+
+        void IDisposable.Dispose()
+            => this.ClearAll();
     }
 }
