@@ -5,7 +5,7 @@ namespace TehGM.Wolfringo.Caching.Internal
 {
     /// <summary>Represents cache for a single type of a <see cref="IWolfEntity"/>.</summary>
     /// <typeparam name="TEntity">Type of cached entity.</typeparam>
-    public interface IWolfEntityCache<TEntity> where TEntity : IWolfEntity
+    public interface IWolfCachedEntityCollection<TEntity> where TEntity : IWolfEntity
     {
         /// <summary>Retrieves cached entity.</summary>
         /// <param name="id">ID of entity to retrieve.</param>
@@ -28,7 +28,7 @@ namespace TehGM.Wolfringo.Caching.Internal
     /// <summary>Represents cache for a single type of a <see cref="IWolfEntity"/>, additionally grouping them with a key.</summary>
     /// <typeparam name="TKey">Type of the grouping key.</typeparam>
     /// <typeparam name="TEntity">Type of cached entity.</typeparam>
-    public interface IWolfEntityCache<TKey, TEntity> where TEntity : IWolfEntity
+    public interface IWolfCachedEntityCollection<TKey, TEntity> where TEntity : IWolfEntity
     {
         /// <summary>Retrieves cached entity.</summary>
         /// <param name="key">Key of the group for the entity.</param>

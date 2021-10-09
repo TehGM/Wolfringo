@@ -21,13 +21,13 @@ namespace TehGM.Wolfringo.Caching.Internal
         private bool _enableAchievementsCaching;
 
         /// <summary>Users cache.</summary>
-        protected IWolfEntityCache<WolfUser> UsersCache { get; }
+        protected IWolfCachedEntityCollection<WolfUser> UsersCache { get; }
         /// <summary>Groups cache.</summary>
-        protected IWolfEntityCache<WolfGroup> GroupsCache { get; }
+        protected IWolfCachedEntityCollection<WolfGroup> GroupsCache { get; }
         /// <summary>Charms cache.</summary>
-        protected IWolfEntityCache<WolfCharm> CharmsCache { get; }
+        protected IWolfCachedEntityCollection<WolfCharm> CharmsCache { get; }
         /// <summary>Achievements cache.</summary>
-        protected IWolfEntityCache<WolfLanguage, WolfAchievement> AchievementsCache { get; }
+        protected IWolfCachedEntityCollection<WolfLanguage, WolfAchievement> AchievementsCache { get; }
         /// <summary>A logger for logging messages.</summary>
         protected ILogger Log { get; }
 
@@ -49,10 +49,10 @@ namespace TehGM.Wolfringo.Caching.Internal
         public WolfClientCache(WolfCacheOptions options, ILogger log = null)
         {
             // init caches
-            this.UsersCache = new WolfEntityCache<WolfUser>();
-            this.GroupsCache = new WolfEntityCache<WolfGroup>();
-            this.CharmsCache = new WolfEntityCache<WolfCharm>();
-            this.AchievementsCache = new WolfEntityCache<WolfLanguage, WolfAchievement>();
+            this.UsersCache = new WolfCachedEntityCollection<WolfUser>();
+            this.GroupsCache = new WolfCachedEntityCollection<WolfGroup>();
+            this.CharmsCache = new WolfCachedEntityCollection<WolfCharm>();
+            this.AchievementsCache = new WolfCachedEntityCollection<WolfLanguage, WolfAchievement>();
 
             // enable according to options
             this._enableUsersCaching = options.UsersCachingEnabled;
