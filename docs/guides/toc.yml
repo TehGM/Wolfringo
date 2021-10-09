@@ -53,6 +53,8 @@
           topicUid: Guides.Customizing.Client.Responses
         - name: Entity Caching
           topicUid: Guides.Customizing.Client.ClientCache
+        - name: Socket Client
+          topicUid: Guides.Customizing.Client.SocketClient
     - name: Commands System
       topicUid: Guides.Customizing.Commands.CommandType
       items:
