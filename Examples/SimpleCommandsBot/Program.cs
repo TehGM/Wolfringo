@@ -33,6 +33,11 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
                         .WithCaseSensitivity(false)                         // make commands case insensitive
                         .WithDefaultHelpCommand();                          // enable the default, built-in help command
                 })
+                // add reconnector
+                .WithAutoReconnection(reconnector =>
+                {
+                    reconnector.ReconnectAttempts = 100;
+                })
                 // finally, build the client
                 .Build(); 
             
