@@ -34,25 +34,6 @@ The library targets [.NET Standard 2.0](https://docs.microsoft.com/en-gb/dotnet/
 
 See [Introduction](https://wolfringo.tehgm.net/guides/index.html#requirements) in documentation for more details.
 
-
-## Extending the client
-#### Serializer providers
-Client uses power of Dependency Injection to allow customizability. The client accepts optional Message and Response Serializer providers which are used for serializing and deserializing the message and response objects. You can inject own instance of the map to change mapping, or even add new types through their options if it's required.
-
-You can see [MessageSerializerProvider](Wolfringo.Core/Messages/Serialization/MessageSerializerProvider.cs), [ResponseSerializerProvider](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerProvider.cs), [DefaultMessageSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultMessageSerializer.cs) and [DefaultResponseSerializer](Wolfringo.Core/Messages/Serialization/Serializers/DefaultResponseSerializer.cs) for examples of default base implementations.
-
-To check the default mappings, see [MessageSerializerProviderOptions](Wolfringo.Core/Messages/Serialization/MessageSerializerProviderOptions.cs) and [ResponseSerializerProviderOptions](Wolfringo.Core/Messages/Serialization/DefaultResponseSerializerProviderOptions.cs).
-
-#### Overriding client methods
-Client automatically caches the entities based on message/response type. If you add a new type that needs to support this, you must create a new client class inheriting from [WolfClient](Wolfringo.Core/WolfClient.cs). You can override `OnMessageSentInternalAsync` method to change behaviour for sent messages and received responses, and `OnMessageReceivedInternalAsync` method to change behaviour for received events and messages.
-
-> Note: it's recommended to still call base method after own implementation to prevent accidentally breaking default behaviour. Overriding these methods should be handled with caution.
-
-#### Determining response type for sent message
-[WolfClient](Wolfringo.Core/WolfClient.cs) needs to know how to deserialize message's response, and to determine the type, it uses an [IResponseTypeResolver](Wolfringo.Core/Messages/Responses/IResponseTypeResolver.cs) to select the type that will be used with response serializer mappings. This interface can be passed into the client constructor. If null or none is passed in, [DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) will be used automatically.
-
-[DefaultResponseTypeResolver](Wolfringo.Core/Messages/Responses/DefaultResponseTypeResolver.cs) respects [ResponseType](Wolfringo.Core/Messages/Responses/ResponseTypeAttribute.cs) attribute on the message type, and will ignore the generic type passed in with `SendAsync` method. If the attribute is missing, default client implementation will instruct the type resolver to use provided generic type. Client will attempt to cast the response to the provided generic type regardless of the actual response type, and might throw an exception if the cast is impossible.
-
 ## Further development
 #### Known bugs and missing features
 - Avatar setting is not supported, due to Wolf protocol not supporting it yet.
