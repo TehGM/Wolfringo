@@ -119,6 +119,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{C7
 		docs\guides\customizing\commands\parameter-builder.md = docs\guides\customizing\commands\parameter-builder.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "upgrading", "upgrading", "{DA2FE9BB-6409-4F65-B5A6-7D0C4CEB42B9}"
+	ProjectSection(SolutionItems) = preProject
+		docs\upgrading\1.x-2.x.md = docs\upgrading\1.x-2.x.md
+		docs\upgrading\index.md = docs\upgrading\index.md
+		docs\upgrading\toc.yml = docs\upgrading\toc.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +188,7 @@ Global
 		{89EE417A-E001-4E15-B14D-0BC8F55F1ADA} = {50454062-77EE-49E0-A7FC-3CBE1ECCBF39}
 		{712A3DDE-4912-4C3F-8083-B75B572060A5} = {89EE417A-E001-4E15-B14D-0BC8F55F1ADA}
 		{C7D6EBF4-BEAF-4562-8149-6C5C4515E866} = {89EE417A-E001-4E15-B14D-0BC8F55F1ADA}
+		{DA2FE9BB-6409-4F65-B5A6-7D0C4CEB42B9} = {5457BCD4-CBE4-45AE-B2FD-FEDFCE716C46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {690F2255-0BE4-4BAF-B47A-C17A04AF5A19}
