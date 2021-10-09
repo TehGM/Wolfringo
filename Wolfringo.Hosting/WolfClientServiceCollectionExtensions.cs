@@ -10,6 +10,7 @@ using TehGM.Wolfringo.Messages;
 using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Utilities.Internal;
 using TehGM.Wolfringo.Socket;
+using TehGM.Wolfringo.Hosting.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -27,7 +28,8 @@ namespace Microsoft.Extensions.DependencyInjection
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
-            services.TryAddTransient<IWolfTokenProvider, RandomizedWolfTokenProvider>();
+            services.TryAddTransient<IWolfTokenProvider>(provider
+                => new HostedWolfTokenProvider(provider.GetRequiredService<IOptionsMonitor<HostedWolfClientOptions>>(), new RandomizedWolfTokenProvider()));
             services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
             services.TryAdd(ServiceDescriptor.Singleton<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
                 => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
