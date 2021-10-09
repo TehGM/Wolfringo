@@ -13,7 +13,7 @@ namespace TehGM.Wolfringo.Caching.Internal
     /// <summary>Utility grouping common entity caches together.</summary>
     /// <remarks><para>This utility contains caches for entities that Wolf client is caching.</para>
     /// <para>Each cache can be separately enabled or disabled.</para></remarks>
-    public class WolfEntityCacheContainer : IWolfClientCache, IDisposable
+    public class WolfClientCache : IWolfClientCache, IDisposable
     {
         private bool _enableUsersCaching;
         private bool _enableGroupsCaching;
@@ -34,19 +34,19 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <summary>Creates new container and contained caches with all caches enabled.</summary>
         /// <remarks>All caches will be enabled by default.</remarks>
         /// <param name="log">Logger that this cache can log to. If null, logging will be disabled.</param>
-        public WolfEntityCacheContainer(ILogger log = null)
+        public WolfClientCache(ILogger log = null)
             : this(new WolfCacheOptions(), log) { }
 
         /// <summary>Creates new container and contained caches.</summary>
         /// <param name="log">Logger that this cache can log to. If null, logging will be disabled.</param>
         /// <param name="options">Options specifying which caches should be enabled.</param>
-        public WolfEntityCacheContainer(WolfCacheOptions options, ILogger<WolfEntityCacheContainer> log)
+        public WolfClientCache(WolfCacheOptions options, ILogger<WolfClientCache> log)
             : this(options, (ILogger)log) { }
 
         /// <summary>Creates new container and contained caches.</summary>
         /// <param name="log">Logger that this cache can log to. If null, logging will be disabled.</param>
         /// <param name="options">Options specifying which caches should be enabled.</param>
-        public WolfEntityCacheContainer(WolfCacheOptions options, ILogger log = null)
+        public WolfClientCache(WolfCacheOptions options, ILogger log = null)
         {
             // init caches
             this.UsersCache = new WolfEntityCache<WolfUser>();

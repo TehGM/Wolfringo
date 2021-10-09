@@ -37,8 +37,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
             services.TryAdd(ServiceDescriptor.Singleton<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
                 => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value)));
-            services.TryAdd(ServiceDescriptor.Singleton<IWolfClientCache, WolfEntityCacheContainer>(provider
-                => new WolfEntityCacheContainer(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>())));
+            services.TryAdd(ServiceDescriptor.Singleton<IWolfClientCache, WolfClientCache>(provider
+                => new WolfClientCache(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfClientCache>())));
             services.TryAddTransient<WolfCacheOptions>(provider
                 => provider.GetRequiredService<IOptionsMonitor<WolfCacheOptions>>().CurrentValue);
 

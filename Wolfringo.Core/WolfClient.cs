@@ -150,7 +150,7 @@ namespace TehGM.Wolfringo
             services.AddSingleton<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>();
             services.AddSingleton<ISocketClient, SocketClient>();
             services.AddSingleton<IWolfClientCache>(provider
-                => new WolfEntityCacheContainer(new WolfCacheOptions(), provider.GetLoggerFor<WolfEntityCacheContainer>()));
+                => new WolfClientCache(new WolfCacheOptions(), provider.GetLoggerFor<WolfClientCache>()));
 
             if (log != null)
             {

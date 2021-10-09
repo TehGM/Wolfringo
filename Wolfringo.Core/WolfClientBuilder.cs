@@ -322,14 +322,14 @@ namespace TehGM.Wolfringo
             => this.WithService<IWolfClientCache, TImplementation>();
 
         /// <summary>Switches to default entity cache container.</summary>
-        /// <remarks><see cref="WolfEntityCacheContainer"/> will be used.</remarks>
+        /// <remarks><see cref="WolfClientCache"/> will be used.</remarks>
         /// <param name="options">Options for the default entity cache container.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultCaching(WolfCacheOptions options)
-            => this.WithService<IWolfClientCache>(provider => new WolfEntityCacheContainer(options, provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>()));
+            => this.WithService<IWolfClientCache>(provider => new WolfClientCache(options, provider.GetLoggerFor<IWolfClientCache, WolfClientCache>()));
 
         /// <summary>Switches to default entity cache container with all caches enabled.</summary>
-        /// <remarks><see cref="WolfEntityCacheContainer"/> will be used.</remarks>
+        /// <remarks><see cref="WolfClientCache"/> will be used.</remarks>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultCaching()
             => this.WithDefaultCaching(new WolfCacheOptions());
