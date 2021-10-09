@@ -49,11 +49,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     value = values.CancellationToken;
                 // from services
                 else if (TryGetService(param.ParameterType, values.Services, out value)) { }
+                // args text
+                else if (param.ParameterType == typeof(string) && TryGetAttribute(param, out ArgumentsTextAttribute argumentsTextAttribute))
+                    value = values.ArgsText;
                 // logger from factory
                 else if (TryGetGenericLogger(param.ParameterType, values.Services, out value)) { }
-                // args text
-                else if (param.ParameterType == typeof(string) && TryGetAttribute(param, out ArgumentsTextAttribute messageTextAttribute))
-                    value = values.ArgsText;
                 // from args
                 else
                 {
