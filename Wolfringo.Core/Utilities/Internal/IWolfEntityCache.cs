@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TehGM.Wolfringo.Utilities.Internal
 {
-    /// <summary>Caches Wolf entities.</summary>
+    /// <summary>Represents cache for a single type of a <see cref="IWolfEntity"/>.</summary>
     /// <typeparam name="TEntity">Type of cached entity.</typeparam>
     public interface IWolfEntityCache<TEntity> where TEntity : IWolfEntity
     {
@@ -25,7 +25,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
         void Clear();
     }
 
-    /// <summary>Caches Wolf entities, additionally grouping them with a key.</summary>
+    /// <summary>Represents cache for a single type of a <see cref="IWolfEntity"/>, additionally grouping them with a key.</summary>
     /// <typeparam name="TKey">Type of the grouping key.</typeparam>
     /// <typeparam name="TEntity">Type of cached entity.</typeparam>
     public interface IWolfEntityCache<TKey, TEntity> where TEntity : IWolfEntity

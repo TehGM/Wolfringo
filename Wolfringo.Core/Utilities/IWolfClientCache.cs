@@ -9,17 +9,8 @@ namespace TehGM.Wolfringo.Utilities
     /// <summary>Utility grouping common entity caches together.</summary>
     /// <remarks><para>This utility contains caches for entities that Wolf client is caching.</para>
     /// <para>Each cache can be separately enabled or disabled.</para></remarks>
-    public interface IWolfClientCache
+    public interface IWolfClientCache : IWolfClientCacheAccessor
     {
-        /// <summary>Users cache.</summary>
-        IWolfEntityCache<WolfUser> UsersCache { get; }
-        /// <summary>Groups cache.</summary>
-        IWolfEntityCache<WolfGroup> GroupsCache { get; }
-        /// <summary>Charms cache.</summary>
-        IWolfEntityCache<WolfCharm> CharmsCache { get; }
-        /// <summary>Achievements cache.</summary>
-        IWolfEntityCache<WolfLanguage, WolfAchievement> AchievementsCache { get; }
-
         /// <summary>Handle message sent by the client, and the server's response.</summary>
         /// <param name="client">WOLF client that sent the message.</param>
         /// <param name="message">Sent message.</param>
@@ -34,6 +25,6 @@ namespace TehGM.Wolfringo.Utilities
         /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         Task HandleMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default);
         /// <summary>Clear all caches.</summary>
-        void ClearAll();
+        void Clear();
     }
 }

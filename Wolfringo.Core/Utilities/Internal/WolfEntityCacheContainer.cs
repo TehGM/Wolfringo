@@ -21,15 +21,15 @@ namespace TehGM.Wolfringo.Utilities.Internal
         private bool _enableAchievementsCaching;
 
         /// <summary>Users cache.</summary>
-        public IWolfEntityCache<WolfUser> UsersCache { get; }
+        protected IWolfEntityCache<WolfUser> UsersCache { get; }
         /// <summary>Groups cache.</summary>
-        public IWolfEntityCache<WolfGroup> GroupsCache { get; }
+        protected IWolfEntityCache<WolfGroup> GroupsCache { get; }
         /// <summary>Charms cache.</summary>
-        public IWolfEntityCache<WolfCharm> CharmsCache { get; }
+        protected IWolfEntityCache<WolfCharm> CharmsCache { get; }
         /// <summary>Achievements cache.</summary>
-        public IWolfEntityCache<WolfLanguage, WolfAchievement> AchievementsCache { get; }
-
-        private readonly ILogger _log;
+        protected IWolfEntityCache<WolfLanguage, WolfAchievement> AchievementsCache { get; }
+        /// <summary>A logger for logging messages.</summary>
+        protected ILogger Log { get; }
 
         /// <summary>Creates new container and contained caches with all caches enabled.</summary>
         /// <remarks>All caches will be enabled by default.</remarks>
@@ -61,11 +61,66 @@ namespace TehGM.Wolfringo.Utilities.Internal
             this._enableAchievementsCaching = options.AchievementsCachingEnabled;
 
             // assign log
-            this._log = log;
+            this.Log = log;
+        }
+
+        /// <inheritdoc/>
+        public WolfUser GetCachedUser(uint id)
+        {
+            if (!this._enableUsersCaching)
+                return null;
+            WolfUser result = this.UsersCache?.Get(id);
+            if (result != null)
+                this.Log?.LogTrace("User {UserID} found in cache", id);
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public WolfGroup GetCachedGroup(uint id)
+        {
+            if (!this._enableGroupsCaching)
+                return null;
+            WolfGroup result = this.GroupsCache?.Get(id);
+            if (result != null)
+                this.Log?.LogTrace("Group {GroupID} found in cache", id);
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public WolfGroup GetCachedGroup(string name)
+        {
+            if (!this._enableGroupsCaching)
+                return null;
+            WolfGroup result = this.GroupsCache?.Find(group => group.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (result != null)
+                this.Log?.LogTrace("Group {GroupName} found in cache", name);
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public WolfCharm GetCachedCharm(uint id)
+        {
+            if (!this._enableCharmsCaching)
+                return null;
+            WolfCharm result = this.CharmsCache?.Get(id);
+            if (result != null)
+                this.Log?.LogTrace("Charm {CharmID} found in cache", id);
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public WolfAchievement GetCachedAchievement(WolfLanguage language, uint id)
+        {
+            if (!this._enableAchievementsCaching)
+                return null;
+            WolfAchievement result = this.AchievementsCache?.Get(language, id);
+            if (result != null)
+                this.Log?.LogTrace("Achievement {AchievementID} found in cache", id);
+            return result;
         }
 
         /// <summary>Clears all caches.</summary>
-        public virtual void ClearAll()
+        public virtual void Clear()
         {
             this.UsersCache?.Clear();
             this.GroupsCache?.Clear();
@@ -73,8 +128,23 @@ namespace TehGM.Wolfringo.Utilities.Internal
             this.AchievementsCache?.ClearAll();
         }
 
+        /// <summary>Logs message with Warning level, and returns true.</summary>
+        /// <remarks>Designed to use with `catch (Exception) when` pattern. Preserves log scope for logged message.</remarks>
+        /// <param name="message">Log message template.</param>
+        /// <param name="args">Structured log message arguments.</param>
+        /// <returns>True.</returns>
+        protected bool LogWarning(string message, params object[] args)
+        {
+            this.Log?.LogWarning(message, args);
+            return true;
+        }
+
+        void IDisposable.Dispose()
+            => this.Clear();
+
+        #region MESSAGE READING
         /// <inheritdoc/>
-        public Task HandleMessageSentAsync(IWolfClient client, IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
+        public virtual Task HandleMessageSentAsync(IWolfClient client, IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             if (this._enableUsersCaching)
             {
@@ -132,7 +202,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupAudioUpdateResponse.AudioConfig.GroupID);
                     if (cachedGroup != null)
                     {
-                        this._log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
+                        this.Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
                         rawResponse.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
                     }
                 }
@@ -163,7 +233,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
         }
 
         /// <inheritdoc/>
-        public async Task HandleMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
+        public virtual async Task HandleMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             // update user presence
             if (this._enableUsersCaching)
@@ -173,7 +243,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
                     WolfUser cachedUser = this.UsersCache?.Get(presenceUpdate.UserID);
                     if (cachedUser != null)
                     {
-                        this._log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
+                        this.Log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
                         rawMessage.Payload.PopulateObject(cachedUser, "body");
                     }
                 }
@@ -182,7 +252,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
                     WolfUser cachedUser = this.UsersCache?.Get(userUpdatedEvent.UserID);
                     if (cachedUser == null || string.IsNullOrWhiteSpace(userUpdatedEvent.Hash) || cachedUser.Hash != userUpdatedEvent.Hash)
                     {
-                        this._log?.LogTrace("Updating user {UserID}", userUpdatedEvent.UserID);
+                        this.Log?.LogTrace("Updating user {UserID}", userUpdatedEvent.UserID);
                         await client.SendAsync<UserProfileResponse>(
                             new UserProfileMessage(new uint[] { userUpdatedEvent.UserID }, true, true),
                             cancellationToken).ConfigureAwait(false);
@@ -198,7 +268,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupAudioCountUpdate.GroupID);
                     if (cachedGroup != null)
                     {
-                        this._log?.LogTrace("Updating cached group {GroupID} audio counts", cachedGroup.ID);
+                        this.Log?.LogTrace("Updating cached group {GroupID} audio counts", cachedGroup.ID);
                         rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
                     }
                 }
@@ -209,7 +279,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupAudioUpdate.GroupID);
                     if (cachedGroup != null)
                     {
-                        this._log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
+                        this.Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
                         rawMessage.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
                     }
                 }
@@ -265,14 +335,6 @@ namespace TehGM.Wolfringo.Utilities.Internal
                 }
             }
         }
-
-        private bool LogWarning(string message, params object[] args)
-        {
-            this._log?.LogWarning(message, args);
-            return true;
-        }
-
-        void IDisposable.Dispose()
-            => this.ClearAll();
+        #endregion
     }
 }

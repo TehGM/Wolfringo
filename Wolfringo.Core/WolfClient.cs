@@ -67,7 +67,7 @@ namespace TehGM.Wolfringo
         /// <summary>Logger for all log messages.</summary>
         protected ILogger Log { get; }
         /// <summary>Caches container.</summary>
-        protected IWolfClientCache Caches { get; set; }
+        protected IWolfClientCache Cache { get; set; }
         /// <summary>Handler for tracking services that should be disposed when this <see cref="WolfClient"/> is being disposed.</summary>
         protected DisposableServicesHandler DisposablesHandler { get; }
 
@@ -95,7 +95,7 @@ namespace TehGM.Wolfringo
             this.ResponseTypeResolver = this.DisposablesHandler.GetRequiredService<IResponseTypeResolver>(services);
             this.MessageSerializers = this.DisposablesHandler.GetRequiredService<ISerializerProvider<string, IMessageSerializer>>(services);
             this.ResponseSerializers = this.DisposablesHandler.GetRequiredService<ISerializerProvider<Type, IResponseSerializer>>(services);
-            this.Caches = this.DisposablesHandler.GetRequiredService<IWolfClientCache>(services);
+            this.Cache = this.DisposablesHandler.GetRequiredService<IWolfClientCache>(services);
             this.Log = services.GetService<ILogger<WolfClient>>()
                 ?? services.GetService<ILogger>()
                 ?? services.GetService<ILoggerFactory>()?.CreateLogger<WolfClient>();
@@ -211,7 +211,7 @@ namespace TehGM.Wolfringo
             try { this._connectionCts?.Dispose(); } catch { }
             this._connectionCts = null;
             this.CurrentUserID = null;
-            this.Caches?.ClearAll();
+            this.Cache?.Clear();
         }
         #endregion
 
@@ -299,7 +299,7 @@ namespace TehGM.Wolfringo
                             responseData?.Payload?.First?.PopulateObject(chatMsg, "body");
 
                         // cache
-                        await this.Caches.HandleMessageSentAsync(this, sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
+                        await this.Cache.HandleMessageSentAsync(this, sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
                     }
 
                     // notify child classes
@@ -335,92 +335,40 @@ namespace TehGM.Wolfringo
         #endregion
 
         #region Caching
-        // doubling the methods as below allows for hiding interface members
-        // while at once allowing overriding the implementations
-
-        // interface proxies
         /// <inheritdoc/>
         WolfUser IWolfClientCacheAccessor.GetCachedUser(uint id)
-            => GetCachedUserInternal(id);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedUser(id);
+        }
         /// <inheritdoc/>
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
-            => GetCachedGroupInternal(id);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedGroup(id);
+        }
         /// <inheritdoc/>
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(string name)
-            => GetCachedGroupInternal(name);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedGroup(name);
+        }
         /// <inheritdoc/>
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
-            => GetCachedCharmInternal(id);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedCharm(id);
+        }
         /// <inheritdoc/>
         WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
-            => GetCachedAchievementInternal(language, id);
-
-        // overridable methods
-        /// <summary>Get user from cache.</summary>
-        /// <param name="id">ID of the user.</param>
-        /// <returns>Cached user if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfUser GetCachedUserInternal(uint id)
         {
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            WolfUser result = this.Caches?.UsersCache?.Get(id);
-            if (result != null)
-                Log?.LogTrace("User {UserID} found in cache", id);
-            return result;
-        }
-        /// <summary>Get group from cache.</summary>
-        /// <param name="id">ID of the group.</param>
-        /// <returns>Cached group if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfGroup GetCachedGroupInternal(uint id)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            WolfGroup result = this.Caches?.GroupsCache?.Get(id);
-            if (result != null)
-                Log?.LogTrace("Group {GroupID} found in cache", id);
-            return result;
-        }
-        /// <summary>Get group from cache.</summary>
-        /// <param name="name">ID of the group.</param>
-        /// <returns>Cached group if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfGroup GetCachedGroupInternal(string name)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            WolfGroup result = this.Caches?.GroupsCache?.Find(group => group.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-            if (result != null)
-                Log?.LogTrace("Group {GroupName} found in cache", name);
-            return result;
-        }
-        /// <summary>Get charm from cache.</summary>
-        /// <param name="id">ID of the charm.</param>
-        /// <returns>Cached charm if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfCharm GetCachedCharmInternal(uint id)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            WolfCharm result = this.Caches?.CharmsCache?.Get(id);
-            if (result != null)
-                Log?.LogTrace("Charm {CharmID} found in cache", id);
-            return result;
-        }
-        /// <summary>Get achievement from cache.</summary>
-        /// <param name="language">Language of the achievement data.</param>
-        /// <param name="id">ID of the achievement.</param>
-        /// <returns>Cached achievement if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfAchievement GetCachedAchievementInternal(WolfLanguage language, uint id)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            WolfAchievement result = this.Caches?.AchievementsCache?.Get(language, id);
-            if (result != null)
-                Log?.LogTrace("Achievement {AchievementID} found in cache", id);
-            return result;
+            return this.Cache.GetCachedAchievement(language, id);
         }
         #endregion
 
@@ -455,7 +403,7 @@ namespace TehGM.Wolfringo
                         this.CurrentUserID = welcome.LoggedInUser.ID;
 
                     // cache
-                    await this.Caches.HandleMessageReceivedAsync(this, msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+                    await this.Cache.HandleMessageReceivedAsync(this, msg, rawData, _connectionCts.Token).ConfigureAwait(false);
 
                     // notify child classes
                     await OnMessageReceivedAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
