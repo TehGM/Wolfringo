@@ -81,6 +81,7 @@ namespace TehGM.Wolfringo.Commands
             this._cts = CancellationTokenSource.CreateLinkedTokenSource(this._options.CancellationToken);
             this._disposablesHandler = services.GetService<DisposableServicesHandler>() ?? new DisposableServicesHandler();
             this._started = false;
+            this._services = services;
 
             // init services
             this._client = this._disposablesHandler.GetRequiredService<IWolfClient>(services);
@@ -95,25 +96,8 @@ namespace TehGM.Wolfringo.Commands
                 ?? services.GetService<ILogger>()
                 ?? services.GetService<ILoggerFactory>()?.CreateLogger<CommandsService>();
 
-            // init service provider - use combine, to use fallback one as well
-            this._fallbackServices = this.CreateFallbackServiceProvider();
-            this._services = CombinedServiceProvider.Combine(services, this._fallbackServices);
-
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
-        }
-
-        private IServiceProvider CreateFallbackServiceProvider()
-        {
-            IDictionary<Type, object> servicesMap = new Dictionary<Type, object>
-            {
-                { typeof(ICommandsService), this },
-                { this.GetType(), this }
-            };
-            if (this._log != null)
-                servicesMap.Add(typeof(ILogger), this._log);
-
-            return new SimpleServiceProvider(servicesMap);
         }
 
         /// <summary>Builds default service provider. Used to temporarily support obsolete non-builder constructors.</summary>
@@ -264,11 +248,7 @@ namespace TehGM.Wolfringo.Commands
 
                 using (IServiceScope serviceScope = this._services.CreateScope())
                 {
-                    // Because scope won't have fallback services, and commands might need them, combine scope with fallback services
-                    // TODO: think of a nicer way to solve fallback services problem - I don't like it as it is now
                     IServiceProvider services = serviceScope.ServiceProvider;
-                    if (!object.ReferenceEquals(services, this._fallbackServices))
-                        services = CombinedServiceProvider.Combine(serviceScope.ServiceProvider, this._fallbackServices);
 
                     foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
                     {
