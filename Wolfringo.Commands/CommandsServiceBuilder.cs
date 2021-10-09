@@ -51,22 +51,37 @@ namespace TehGM.Wolfringo.Commands
         public CommandsServiceBuilder()
             : this(new ServiceCollection()) { }
 
-        #region DI HELPERS
-        private CommandsServiceBuilder SetService<TService>(TService service) where TService : class
+        #region CUSTOM SERVICES
+        /// <summary>Adds any custom service so it can be resolved during Dependency Injection.</summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <param name="service">The service instance.</param>
+        /// <returns>Current builder instance.</returns>
+        public CommandsServiceBuilder WithService<TService>(TService service) where TService : class
         {
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
             this._disposablesHandler.UnmarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(service);
             return this;
         }
-        private CommandsServiceBuilder SetService<TService>(Func<IServiceProvider, TService> factory) where TService : class
+        /// <summary>Adds any custom service so it can be resolved during Dependency Injection.</summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <param name="factory">Delegate that will be invoked when the service is resolved.</param>
+        /// <returns>Current builder instance.</returns>
+        public CommandsServiceBuilder WithService<TService>(Func<IServiceProvider, TService> factory) where TService : class
         {
             this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(factory);
             return this;
         }
-        private CommandsServiceBuilder SetService<TService, TImplementation>() where TService : class where TImplementation : class, TService
+        /// <summary>Adds any custom service so it can be resolved during Dependency Injection.</summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <typeparam name="TImplementation">Implementation type of the service</typeparam>
+        /// <returns>Current builder instance.</returns>
+        public CommandsServiceBuilder WithService<TService, TImplementation>() where TService : class where TImplementation : class, TService
         {
             this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
@@ -80,13 +95,13 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="client">The WOLF client.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithWolfClient(IWolfClient client)
-            => this.SetService<IWolfClient>(client);
+            => this.WithService<IWolfClient>(client);
 
         /// <summary>Sets WOLF client to use with the <see cref="CommandsService"/>.</summary>
         /// <typeparam name="TImplementation">Implementation type of the WOLF client.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithWolfClient<TImplementation>() where TImplementation : class, IWolfClient
-            => this.SetService<IWolfClient, TImplementation>();
+            => this.WithService<IWolfClient, TImplementation>();
 
         /// <summary>Sets WOLF client to use with the <see cref="CommandsService"/>.</summary>
         /// <remarks>This method allows you configure the client using <see cref="WolfClientBuilder"/>.</remarks>
@@ -96,7 +111,7 @@ namespace TehGM.Wolfringo.Commands
         {
             WolfClientBuilder builder = new WolfClientBuilder(this._services);
             clientBuilder?.Invoke(builder);
-            return this.SetService<IWolfClient>(_ => builder.Build());
+            return this.WithService<IWolfClient>(_ => builder.Build());
         }
         #endregion
 
@@ -141,19 +156,19 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="parser">The arguments parser.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithArgumentsParser(IArgumentsParser parser)
-            => this.SetService<IArgumentsParser>(parser);
+            => this.WithService<IArgumentsParser>(parser);
 
         /// <summary>Sets arguments parser.</summary>
         /// <typeparam name="TImplementation">Implementation type of the arguments parser.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithArgumentsParser<TImplementation>() where TImplementation : class, IArgumentsParser
-            => this.SetService<IArgumentsParser, TImplementation>();
+            => this.WithService<IArgumentsParser, TImplementation>();
 
         /// <summary>Switches to default arguments parser.</summary>
         /// <param name="options">Options for the default parser.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultArgumentsParser(ArgumentsParserOptions options)
-            => this.SetService<IArgumentsParser>(_ => new ArgumentsParser(options));
+            => this.WithService<IArgumentsParser>(_ => new ArgumentsParser(options));
 
         /// <summary>Switches to default arguments parser with default options.</summary>
         /// <returns>Current builder instance.</returns>
@@ -166,19 +181,19 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="provider">The argument converter provider.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithArgumentsConverterProvider(IArgumentConverterProvider provider)
-            => this.SetService<IArgumentConverterProvider>(provider);
+            => this.WithService<IArgumentConverterProvider>(provider);
 
         /// <summary>Sets argument converter provider.</summary>
         /// <typeparam name="TImplementation">Implementation type of argument converter provider.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithArgumentsConverterProvider<TImplementation>() where TImplementation : class, IArgumentConverterProvider
-            => this.SetService<IArgumentConverterProvider, TImplementation>();
+            => this.WithService<IArgumentConverterProvider, TImplementation>();
 
         /// <summary>Switches to default argument converter provider.</summary>
         /// <param name="options">Options for the argument converter provider.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultArgumentsConverterProvider(ArgumentConverterProviderOptions options)
-            => this.SetService<IArgumentConverterProvider>(_ => new ArgumentConverterProvider(options));
+            => this.WithService<IArgumentConverterProvider>(_ => new ArgumentConverterProvider(options));
 
         /// <summary>Switches to default argument converter provider with default options.</summary>
         /// <returns>Current builder instance.</returns>
@@ -191,13 +206,13 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="provider">The commands handler provider.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCommandsHandlerProvider(ICommandsHandlerProvider provider)
-            => this.SetService<ICommandsHandlerProvider>(provider);
+            => this.WithService<ICommandsHandlerProvider>(provider);
 
         /// <summary>Sets commands handler provider.</summary>
         /// <typeparam name="TImplementation">Implementation type of commands handler provider.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCommandsHandlerProvider<TImplementation>() where TImplementation : class, ICommandsHandlerProvider
-            => this.SetService<ICommandsHandlerProvider, TImplementation>();
+            => this.WithService<ICommandsHandlerProvider, TImplementation>();
 
         /// <summary>Switches to default commands handler provider.</summary>
         /// <returns>Current builder instance.</returns>
@@ -210,13 +225,13 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="builder">The parameter builder.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithParameterBuilder(IParameterBuilder builder)
-            => this.SetService<IParameterBuilder>(builder);
+            => this.WithService<IParameterBuilder>(builder);
 
         /// <summary>Sets parameter builder.</summary>
         /// <typeparam name="TImplementation">Implementation type of the parameter builder.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithParameterBuilder<TImplementation>() where TImplementation : class, IParameterBuilder
-            => this.SetService<IParameterBuilder, TImplementation>();
+            => this.WithService<IParameterBuilder, TImplementation>();
 
         /// <summary>Switches to default parameter builder.</summary>
         /// <returns>Current builder instance.</returns>
@@ -229,19 +244,19 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="provider">The command initializer provider.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCommandInitializerProvider(ICommandInitializerProvider provider)
-            => this.SetService<ICommandInitializerProvider>(provider);
+            => this.WithService<ICommandInitializerProvider>(provider);
 
         /// <summary>Sets command initializer provider.</summary>
         /// <typeparam name="TImplementation">Implementation type of the command initializer provider.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCommandInitializerProvider<TImplementation>() where TImplementation : class, ICommandInitializerProvider
-            => this.SetService<ICommandInitializerProvider, TImplementation>();
+            => this.WithService<ICommandInitializerProvider, TImplementation>();
 
         /// <summary>Switches to default command initializer provider.</summary>
         /// <param name="options">Options for the command initializer provider.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultCommandInitializerProvider(CommandInitializerProviderOptions options)
-            => this.SetService<ICommandInitializerProvider>(_ => new CommandInitializerProvider(options));
+            => this.WithService<ICommandInitializerProvider>(_ => new CommandInitializerProvider(options));
 
         /// <summary>Switches to default command initializer provider with default options.</summary>
         /// <returns>Current builder instance.</returns>
@@ -254,18 +269,18 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="loader">The commands loader.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCommandsLoader(ICommandsLoader loader)
-            => this.SetService<ICommandsLoader>(loader);
+            => this.WithService<ICommandsLoader>(loader);
 
         /// <summary>Sets commands loader.</summary>
         /// <typeparam name="TImplementation">Implementation type of the commands loader.</typeparam>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithCommandsLoader<TImplementation>() where TImplementation : class, ICommandsLoader
-            => this.SetService<ICommandsLoader, TImplementation>();
+            => this.WithService<ICommandsLoader, TImplementation>();
 
         /// <summary>Switches to default commands loader.</summary>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithDefaultCommandsLoader()
-            => this.SetService<ICommandsLoader>(provider => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(),
+            => this.WithService<ICommandsLoader>(provider => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(),
                 provider.GetLoggerFor<ICommandsLoader, CommandsLoader>()));
         #endregion
 
@@ -274,12 +289,12 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="logger">Logger to use.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithLogging(ILogger logger)
-            => this.SetService<ILogger>(logger);
+            => this.WithService<ILogger>(logger);
         /// <summary>Sets a logger factory that will be used to create a logger.</summary>
         /// <param name="factory">Logger factory to use when creating a logger.</param>
         /// <returns>Current builder instance.</returns>
         public CommandsServiceBuilder WithLogging(ILoggerFactory factory)
-            => this.SetService<ILogger>(_ => factory.CreateLogger<CommandsService>());
+            => this.WithService<ILogger>(_ => factory.CreateLogger<CommandsService>());
         #endregion
 
         #region CANCELLATION TOKEN
@@ -293,26 +308,6 @@ namespace TehGM.Wolfringo.Commands
         }
         #endregion
 
-        #region CUSTOM SERVICES
-        /// <summary>Adds any custom service so it can be resolved during commands' Dependency Injection.</summary>
-        /// <typeparam name="TService">Type of the service.</typeparam>
-        /// <param name="service">The service instance.</param>
-        /// <returns>Current builder instance.</returns>
-        public CommandsServiceBuilder WithService<TService>(TService service) where TService : class
-        {
-            if (service == null)
-                throw new ArgumentNullException(nameof(service));
-            return this.SetService<TService>(service);
-        }
-
-        /// <summary>Adds any custom service so it can be resolved during commands' Dependency Injection.</summary>
-        /// <typeparam name="TService">Type of the service.</typeparam>
-        /// <typeparam name="TImplementation">Implementation type of the service</typeparam>
-        /// <returns>Current builder instance.</returns>
-        public CommandsServiceBuilder WithService<TService, TImplementation>() where TService : class where TImplementation : class, TService
-            => this.SetService<TService, TImplementation>();
-        #endregion
-
         /// <summary>Builds a new CommandsService with provided values.</summary>
         /// <param name="client">The WOLF Client that is used by the built CommandsService.</param>
         /// <returns>A new CommandsService instance.</returns>
@@ -322,8 +317,8 @@ namespace TehGM.Wolfringo.Commands
                 throw new InvalidOperationException($"Cannot create commands service without WOLF Client. Please use {nameof(this.WithWolfClient)} before calling {nameof(this.Build)}.");
 
             // add options and disposables handler before building
-            this.SetService<CommandsOptions>(this.Options);
-            this.SetService<DisposableServicesHandler>(this._disposablesHandler);
+            this.WithService<CommandsOptions>(this.Options);
+            this.WithService<DisposableServicesHandler>(this._disposablesHandler);
 
             // build and return
             this.Building?.Invoke(this._services);

@@ -49,22 +49,37 @@ namespace TehGM.Wolfringo
         public WolfClientBuilder()
             : this(new ServiceCollection()) { }
 
-        #region DI HELPERS
-        private WolfClientBuilder SetService<TService>(TService service) where TService : class
+        #region CUSTOM SERVICES
+        /// <summary>Adds any custom service so it can be resolved during Dependency Injection.</summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <param name="service">The service instance.</param>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithService<TService>(TService service) where TService : class
         {
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
             this._disposablesHandler.UnmarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(service);
             return this;
         }
-        private WolfClientBuilder SetService<TService>(Func<IServiceProvider, TService> factory) where TService : class
+        /// <summary>Adds any custom service so it can be resolved during Dependency Injection.</summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <param name="factory">Delegate that will be invoked when the service is resolved.</param>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithService<TService>(Func<IServiceProvider, TService> factory) where TService : class
         {
             this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
             this._services.AddSingleton<TService>(factory);
             return this;
         }
-        private WolfClientBuilder SetService<TService, TImplementation>() where TService : class where TImplementation : class, TService
+        /// <summary>Adds any custom service so it can be resolved during Dependency Injection.</summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <typeparam name="TImplementation">Implementation type of the service</typeparam>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithService<TService, TImplementation>() where TService : class where TImplementation : class, TService
         {
             this._disposablesHandler.MarkForDisposal<TService>();
             this._services.RemoveService<TService>();
@@ -129,7 +144,7 @@ namespace TehGM.Wolfringo
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
-            return this.SetService<ISocketClient>(client);
+            return this.WithService<ISocketClient>(client);
         }
         /// <summary>Sets the underlying socket client.</summary>
         /// <remarks><typeparamref name="TImplementation"/> must have a constructar that can be resolved from provided services.</remarks>
@@ -137,13 +152,13 @@ namespace TehGM.Wolfringo
         /// <seealso cref="WithDefaultSocketClient"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithSocketClient<TImplementation>() where TImplementation : class, ISocketClient
-            => this.SetService<ISocketClient, TImplementation>();
+            => this.WithService<ISocketClient, TImplementation>();
         /// <summary>Switches to default socket client.</summary>
         /// <remarks><see cref="SocketClient"/> will be used.</remarks>
         /// <seealso cref="WithResponseTypeResolver(IResponseTypeResolver)"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultSocketClient()
-            => this.SetService<ISocketClient, SocketClient>();
+            => this.WithService<ISocketClient, SocketClient>();
         #endregion
 
         #region TOKEN PROVIDER
@@ -158,7 +173,7 @@ namespace TehGM.Wolfringo
         {
             if (string.IsNullOrWhiteSpace(token))
                 throw new ArgumentNullException(nameof(token));
-            return this.SetService<IWolfTokenProvider>(_ => new ConstantWolfTokenProvider(token));
+            return this.WithService<IWolfTokenProvider>(_ => new ConstantWolfTokenProvider(token));
         }
         /// <summary>Sets token provider used to generate a token for connection.</summary>
         /// <remarks>Using this method disables token set by using <see cref="WithToken(string)"/>.</remarks>
@@ -171,7 +186,7 @@ namespace TehGM.Wolfringo
         {
             if (provider == null)
                 throw new ArgumentNullException(nameof(provider));
-            return this.SetService<IWolfTokenProvider>(provider);
+            return this.WithService<IWolfTokenProvider>(provider);
         }
         /// <summary>Sets token provider used to generate a token for connection.</summary>
         /// <remarks><para>Using this method disables token set by using <see cref="WithToken(string)"/>.</para>
@@ -181,7 +196,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="WithToken(string)"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithTokenProvider<TImplementation>() where TImplementation : class, IWolfTokenProvider
-            => this.SetService<IWolfTokenProvider, TImplementation>();
+            => this.WithService<IWolfTokenProvider, TImplementation>();
         /// <summary>Switches to default token provider to generate a token for connection.</summary>
         /// <remarks><para><see cref="RandomizedWolfTokenProvider"/> will be used.</para>
         /// <para>Using this method disables token set by using <see cref="WithToken(string)"/>.</para></remarks>
@@ -202,7 +217,7 @@ namespace TehGM.Wolfringo
         {
             if (provider == null)
                 throw new ArgumentNullException(nameof(provider));
-            return this.SetService<ISerializerProvider<string, IMessageSerializer>>(provider);
+            return this.WithService<ISerializerProvider<string, IMessageSerializer>>(provider);
         }
         /// <summary>Sets message serializers provider to use for serializing messages.</summary>
         /// <remarks><typeparamref name="TImplementation"/> must have a constructar that can be resolved from provided services.</remarks>
@@ -210,14 +225,14 @@ namespace TehGM.Wolfringo
         /// <seealso cref="WithDefaultMessageSerializers()"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithMessageSerializers<TImplementation>() where TImplementation : class, ISerializerProvider<string, IMessageSerializer>
-            => this.SetService<ISerializerProvider<string, IMessageSerializer>, TImplementation>();
+            => this.WithService<ISerializerProvider<string, IMessageSerializer>, TImplementation>();
         /// <summary>Switches to default message serializers provider to use for serializing messages.</summary>
         /// <remarks><see cref="MessageSerializerProvider"/> will be used.</remarks>
         /// <param name="options">Options for the default provider.</param>
         /// <seealso cref="WithMessageSerializers(ISerializerProvider{string, IMessageSerializer})"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultMessageSerializers(MessageSerializerProviderOptions options)
-            => this.SetService<ISerializerProvider<string, IMessageSerializer>>(_ => new MessageSerializerProvider(options));
+            => this.WithService<ISerializerProvider<string, IMessageSerializer>>(_ => new MessageSerializerProvider(options));
         /// <summary>Switches to default message serializers provider with default options to use for serializing messages.</summary>
         /// <remarks><see cref="MessageSerializerProvider"/> will be used.</remarks>
         /// <seealso cref="WithMessageSerializers(ISerializerProvider{string, IMessageSerializer})"/>
@@ -236,7 +251,7 @@ namespace TehGM.Wolfringo
         {
             if (provider == null)
                 throw new ArgumentNullException(nameof(provider));
-            return this.SetService<ISerializerProvider<Type, IResponseSerializer>>(provider);
+            return this.WithService<ISerializerProvider<Type, IResponseSerializer>>(provider);
         }
         /// <summary>Sets response serializers provider to use for deserializing messages.</summary>
         /// <remarks><typeparamref name="TImplementation"/> must have a constructar that can be resolved from provided services.</remarks>
@@ -244,14 +259,14 @@ namespace TehGM.Wolfringo
         /// <seealso cref="WithDefaultResponseSerializers()"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithResponseSerializers<TImplementation>() where TImplementation : class, ISerializerProvider<Type, IResponseSerializer>
-            => this.SetService<ISerializerProvider<Type, IResponseSerializer>, TImplementation>();
+            => this.WithService<ISerializerProvider<Type, IResponseSerializer>, TImplementation>();
         /// <summary>Switches to default response serializers provider to use for deserializing responses.</summary>
         /// <remarks><see cref="ResponseSerializerProvider"/> will be used.</remarks>
         /// <param name="options">Options for the default provider.</param>
         /// <seealso cref="WithResponseSerializers(ISerializerProvider{Type, IResponseSerializer})"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultResponseSerializers(ResponseSerializerProviderOptions options)
-            => this.SetService<ISerializerProvider<Type, IResponseSerializer>>(_ => new ResponseSerializerProvider(options));
+            => this.WithService<ISerializerProvider<Type, IResponseSerializer>>(_ => new ResponseSerializerProvider(options));
         /// <summary>Switches to default response serializers provider with default options to use for deserializing responses.</summary>
         /// <remarks><see cref="ResponseSerializerProvider"/> will be used.</remarks>
         /// <seealso cref="WithResponseSerializers(ISerializerProvider{Type, IResponseSerializer})"/>
@@ -270,7 +285,7 @@ namespace TehGM.Wolfringo
         {
             if (resolver == null)
                 throw new ArgumentNullException(nameof(resolver));
-            return this.SetService<IResponseTypeResolver>(resolver);
+            return this.WithService<IResponseTypeResolver>(resolver);
         }
         /// <summary>Sets response type resolver to use for deserializing responses.</summary>
         /// <remarks><typeparamref name="TImplementation"/> must have a constructar that can be resolved from provided services.</remarks>
@@ -278,13 +293,13 @@ namespace TehGM.Wolfringo
         /// <seealso cref="WithDefaultResponseTypeResolver"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithResponseTypeResolver<TImplementation>() where TImplementation : class, IResponseTypeResolver
-            => this.SetService<IResponseTypeResolver, TImplementation>();
+            => this.WithService<IResponseTypeResolver, TImplementation>();
         /// <summary>Switches to default response type resolver to use for deserializing responses.</summary>
         /// <remarks><see cref="ResponseTypeResolver"/> will be used.</remarks>
         /// <seealso cref="WithResponseTypeResolver(IResponseTypeResolver)"/>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultResponseTypeResolver()
-            => this.SetService<IResponseTypeResolver, ResponseTypeResolver>();
+            => this.WithService<IResponseTypeResolver, ResponseTypeResolver>();
         #endregion
 
         #region CACHING
@@ -295,21 +310,21 @@ namespace TehGM.Wolfringo
         {
             if (cache == null)
                 throw new ArgumentNullException(nameof(cache));
-            return this.SetService<IWolfClientCache>(cache);
+            return this.WithService<IWolfClientCache>(cache);
         }
 
         /// <summary>Sets entity cache container that client will use.</summary>
         /// <typeparam name="TImplementation">Type of entity cache container.</typeparam>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithCaching<TImplementation>() where TImplementation : class, IWolfClientCache
-            => this.SetService<IWolfClientCache, TImplementation>();
+            => this.WithService<IWolfClientCache, TImplementation>();
 
         /// <summary>Switches to default entity cache container.</summary>
         /// <remarks><see cref="WolfEntityCacheContainer"/> will be used.</remarks>
         /// <param name="options">Options for the default entity cache container.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithDefaultCaching(WolfCacheOptions options)
-            => this.SetService<IWolfClientCache>(provider => new WolfEntityCacheContainer(options, provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>()));
+            => this.WithService<IWolfClientCache>(provider => new WolfEntityCacheContainer(options, provider.GetLoggerFor<IWolfClientCache, WolfEntityCacheContainer>()));
 
         /// <summary>Switches to default entity cache container with all caches enabled.</summary>
         /// <remarks><see cref="WolfEntityCacheContainer"/> will be used.</remarks>
@@ -323,12 +338,12 @@ namespace TehGM.Wolfringo
         /// <param name="logger">Logger to use.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithLogging(ILogger logger)
-            => this.SetService<ILogger>(logger);
+            => this.WithService<ILogger>(logger);
         /// <summary>Sets a logger factory that will be used to create a logger.</summary>
         /// <param name="factory">Logger factory to use when creating a logger.</param>
         /// <returns>Current builder instance.</returns>
         public WolfClientBuilder WithLogging(ILoggerFactory factory)
-            => this.SetService<ILogger>(_ => factory.CreateLogger<WolfClient>());
+            => this.WithService<ILogger>(_ => factory.CreateLogger<WolfClient>());
         #endregion
 
         /// <summary>Builds a new WolfClient with provided values.</summary>
@@ -340,8 +355,8 @@ namespace TehGM.Wolfringo
                 throw new ArgumentNullException(nameof(this.Options.ServerURL));
 
             // add options and disposables handler before building
-            this.SetService<WolfClientOptions>(this.Options);
-            this.SetService<DisposableServicesHandler>(this._disposablesHandler);
+            this.WithService<WolfClientOptions>(this.Options);
+            this.WithService<DisposableServicesHandler>(this._disposablesHandler);
 
             // build and return
             this.Building?.Invoke(this._services);
