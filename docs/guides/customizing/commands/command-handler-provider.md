@@ -18,4 +18,4 @@ That interface only requires one method: [GetCommandHandler](xref:TehGM.Wolfring
 
 This method is required to return an @TehGM.Wolfringo.Commands.Initialization.ICommandsHandlerProviderResult, which includes the handler descriptor (which you need to create in the method) and the actual handler instance. This will then be used by Commands Service to execute the command method.
 
-Once your custom class is finished, you need to register it with @TehGM.Wolfringo.Commands.CommandsService as explained in [Introduction](xref:Guides.Customizing.Intro).
+Once your custom class is finished, you need to register it with @TehGM.Wolfringo.Commands.CommandsServiceBuilder as explained in [Introduction](xref:Guides.Customizing.Intro).

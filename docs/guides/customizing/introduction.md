@@ -10,35 +10,31 @@ Check navigation menu for guides how to customize specific parts of Wolfringo.
 
 ### [Without Wolfringo.Hosting (Normal Bot)](#tab/configuring-normal-bot)
 #### Replacing WolfClient dependencies
-To replace any of @TehGM.Wolfringo.WolfClient dependency, pass it in the constructor. 
+To replace any of @TehGM.Wolfringo.WolfClient dependencies, use `With...` commands on the builder.
 ```csharp
-IResponseTypeResolver customResolver = // ...
-_client = new WolfClient(log, responseTypeResolver: customResolver);
+_client = new WolfClientBuilder()
+    .WithResponseTypeResolver<MyResponseTypeResolver>()
+    // alternatively, factory and instance patterns are also allowed
+    //.WithResponseTypeResolver(provider => new MyResponseTypeResolver())
+    //.WithResponseTypeResolver(_responseTypeResolver)
+    .Build();
 ```
 
 #### Replacing CommandsService dependencies
-@TehGM.Wolfringo.Commands.CommandsService uses @System.IServiceProvider to resolve its dependencies. To replace any of the services, simply register it before creating the Commands Service.  
-This works in a very similar way as [enabling logging](xref:Guides.Features.Logging).
+To replace any of @TehGM.Wolfringo.Commands.CommandsService, use `With...` commands on the builder.
 
 ```csharp
-private static async Task MainAsync(string[] args)
-{
-    // ... other code ...
-
-    ILoggerFactory logFactory = // ...                                  // create the logger factory
-    IArgumentsParser customArgsParser = // ...                          // create your custom service
-    IServiceCollection services = new ServiceCollection()               // create service collection
-        .AddSingleton<ILoggerFactory>(logFactory)                       // include the logger factory
-        .AddSingleton<IArgumentsParser(customArgsParser);               // include the custom service
-    // add any other services as needed
-
-    _client = new WolfClient(logFactory.CreateLogger<WolfClient>());    // create wolf client - pass logger via constructor
-    CommandsService commands = new CommandsService(_client, options,    // initialize commands service
-        logFactory.CreateLogger<CommandsService>(),                 // pass logger via constructor
-        services.BuildServiceProvider());                           // add Dependency Injection Service provider
-
-    // ... other code ...
-}
+_client = new WolfClientBuilder()
+    // ... client config ...
+    .WithCommands(commands =>
+    {
+        commands
+            .WithArgumentsParser<MyArgumentsParser>()
+            // alternatively, factory and instance patterns are also allowed
+            //.WithArgumentsParser(provider => new MyArgumentsParser())
+            //.WithArgumentsParser(precreatedCustomResolver)
+    })
+    .Build();
 ```
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)

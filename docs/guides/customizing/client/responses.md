@@ -50,18 +50,19 @@ Once you have programmed your custom @TehGM.Wolfringo.Messages.Responses.IRespon
 ## Registering ResponseSerializer
 @TehGM.Wolfringo.WolfClient needs to have means to translate Response type to a concrete serializer. If you try sending the message without mapping a response serializer, @TehGM.Wolfringo.WolfClient will log a warning, and attempt to use a [fallback one](xref:TehGM.Wolfringo.Messages.Serialization.DefaultResponseSerializer). But if the message is received from the server, or you simply want to suppress the warning, you'll need to register it. You can use [DefaultResponseSerializer](xref:TehGM.Wolfringo.Messages.Serialization.DefaultResponseSerializer), unless you need custom deserialization logic (which might be required in some cases due to the design of WOLF protocol) - in which case, you can register your custom one.
 
-Registration of the @TehGM.Wolfringo.Messages.Serialization.IResponseSerializer is done by passing [ISerializerProvider<Type, IResponseSerializer>](xref:TehGM.Wolfringo.Messages.Serialization.ISerializerProvider`2) to @TehGM.Wolfringo.WolfClient constructor. The default @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider uses a dictionary map, so for most use cases, you don't even need to create a custom one. 
+Registration of the @TehGM.Wolfringo.Messages.Serialization.IResponseSerializer is done by adding it to [ISerializerProvider<Type, IResponseSerializer>](xref:TehGM.Wolfringo.Messages.Serialization.ISerializerProvider`2)'s options. This can be done easily by using @TehGM.Wolfringo.WolfClientBuilder.
 
 ### [Without Wolfringo.Hosting (Normal Bot)](#tab/configuring-normal-bot)
 1. Manually create an instance of @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.
 2. Add your serializer to @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.Serializers dictionary.
-3. Create a new instance of @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider, passing your options instance via constructor
-4. Pass your @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider instance to @TehGM.Wolfringo.WolfClient constructor.
+3. Use `WithDefaultResponseSerializers` method of @TehGM.Wolfringo.WolfClientBuilder and pass your options as argument.
+
 ```csharp
-ResponseSerializerProviderOptions responseSerializerProviderOptions = new ResponseSerializerProviderOptions();
-responseSerializerProviderOptions.Serializers[typeof(MyCustomResponse)] = new DefaultResponseSerializer();
-ResponseSerializerProvider responseSerializerProvider = new ResponseSerializerProvider(responseSerializerProviderOptions);
-_client = new WolfClient(log, responseSerializers: responseSerializerProvider);
+ResponseSerializerProviderOptions options = new ResponseSerializerProviderOptions();
+options.Serializers[typeof(MyCustomResponse)] = new DefaultResponseSerializer();
+_client = new WolfClientBuilder()
+    .WithDefaultResponseSerializers(options)
+    .Build();
 ```
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)
@@ -77,7 +78,7 @@ services.Configure<ResponseSerializerProviderOptions>(options =>
 ***
 
 >[!TIP]
-> If default @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider doesn't suffice your needs, you can create a [custom one](xref:Guides.Customizing.Client.Responses#custom-responseserializer) (see "Custom ResponseSerializer" below) and provide it to @TehGM.Wolfringo.WolfClient as explained in [Introduction](xref:Guides.Customizing.Intro).
+> If default @TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider doesn't suffice your needs, you can create a [custom one](xref:Guides.Customizing.Client.Responses#custom-responseserializer) (see "Custom ResponseSerializer" below) and provide it to @TehGM.Wolfringo.WolfClientBuilder as explained in [Introduction](xref:Guides.Customizing.Intro).
 > See [ResponseSerializerProvider.cs](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/Messages/Serialization/ResponseSerializerProvider.cs) and [ResponseSerializerProviderOptions](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/Messages/Serialization/ResponseSerializerProviderOptions.cs) on GitHub for reference.
 
 ## Custom ResponseSerializer

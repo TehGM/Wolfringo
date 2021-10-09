@@ -28,13 +28,15 @@ This command is disabled by default, but don't worry - enabling it is just a sin
 
 ### [Without Wolfringo.Hosting (Normal Bot)](#tab/connecting-normal-bot)
 ```csharp
-CommandsOptions options = new CommandsOptions()
-{
-    Prefix = "!",
-    RequirePrefix = PrefixRequirement.Always,
-    CaseSensitivity = false,
-    EnableDefaultHelpCommand = true     // <---- add this line!
-};
+_client = new WolfClientBuilder()
+    .WithCommands(commands =>
+    {
+        commands.WithPrefix("!");
+        commands.WithPrefixRequirement(PrefixRequirement.Always);
+        commands.WithCaseSensitivity(false);
+        commands.WithDefaultHelpCommand();      // <---- call this method!
+    })
+    .Build();
 ```
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
@@ -56,8 +58,8 @@ If you want to add something to your help command, or change the command word, y
 
 Start off by disabling the default help command if you have it enabled. Then create a new command handler, with your help command inside - this can be done in the same way as [creating any other command](xref:Guides.Commands.Handlers).  
 Then creating the commands itself is just a few simple steps:
-1. Inject @TehGM.Wolfringo.Commands.CommandsService and @TehGM.Wolfringo.Commands.CommandsOptions, either via constructor or to the command method itself;
-2. Create @TehGM.Wolfringo.Commands.Help.CommandsListBuilder in your command method. Provide @TehGM.Wolfringo.Commands.CommandsService via the constructor;
+1. Inject @TehGM.Wolfringo.Commands.ICommandsService and @TehGM.Wolfringo.Commands.CommandsOptions, either via constructor or to the command method itself;
+2. Create @TehGM.Wolfringo.Commands.Help.CommandsListBuilder in your command method. Provide <xref:TehGM.Wolfringo.Commands.ICommandsService>.<xref:TehGM.Wolfringo.Commands.ICommandsService.Commands> via the constructor;
 3. Set @TehGM.Wolfringo.Commands.Help.CommandsListBuilder properties to your liking;
 4. Call @TehGM.Wolfringo.Commands.Help.CommandsListBuilder.GetCommandsList to get the string with your commands;
 5. Send the response!
@@ -71,11 +73,11 @@ using TehGM.Wolfringo.Commands.Help;    // CommandsListBuilder is in this namesp
 [CommandsHandler]
 public class MyHelpCommandHandler
 {
-    private readonly CommandsService _service;
+    private readonly ICommandsService _service;
     private readonly CommandsOptions _options;
 
     // injecting CommandsOptions and CommandsService via constructor
-    public MyHelpCommandHandler(CommandsOptions options, CommandsService service)
+    public MyHelpCommandHandler(CommandsOptions options, ICommandsService service)
     {
         this._options = options;
         this._service = service;
@@ -85,7 +87,7 @@ public class MyHelpCommandHandler
     [Hidden]
     private async Task CmdHelpAsync(CommandContext context)
     {
-        CommandsListBuilder builder = new CommandsListBuilder(this._service);   // create builder
+        CommandsListBuilder builder = new CommandsListBuilder(this._service.Commands);   // create builder
         builder.PrependedPrefix = this._options.Prefix;     // set your prefix - here using the value from CommandsOptions
         builder.SpaceCategories = true;                     // set whether there should be additional spaces between categories
         builder.SummarySeparator = " == ";                  // string that separates command name and summary. Default is "    - " (4 spaces, dash, and one more space).
@@ -114,7 +116,7 @@ This wasn't so scary, right? As you can see on the screenshot below, the help co
 Of course you can do much more than this - this help command is now like any other command, so you can do anything that you can do in "normal" commands!
 
 ## Without CommandsListBuilder
-If you need even more customizability, you don't need to use @TehGM.Wolfringo.Commands.Help.CommandsListBuilder at all. Instead you can use [CommandsService.Commands](xref:TehGM.Wolfringo.Commands.CommandsService.Commands) enumerable to get all loaded @TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor, and then use extension methods in `TehGM.Wolfringo.Commands` namespace to get values from the attributes by yourself. This allows you to effectively build your own "CommandsListBuilder".
+If you need even more customizability, you don't need to use @TehGM.Wolfringo.Commands.Help.CommandsListBuilder at all. Instead you can use [CommandsService.Commands](xref:TehGM.Wolfringo.Commands.ICommandsService.Commands) enumerable to get all loaded @TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor, and then use extension methods in `TehGM.Wolfringo.Commands` namespace to get values from the attributes by yourself. This allows you to effectively build your own "CommandsListBuilder".
 
 An example (and very simple) help command could look like this:
 ```csharp

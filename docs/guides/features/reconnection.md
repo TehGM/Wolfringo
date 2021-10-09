@@ -18,9 +18,21 @@ Auto-reconnection without Wolfringo.Hosting needs to be enabled manually. @TehGM
 To use it, create instance of @TehGM.Wolfringo.Utilities.ReconnectorConfig, and create a new instance of @TehGM.Wolfringo.Utilities.WolfClientReconnector using these options and instance of your @TehGM.Wolfringo.IWolfClient.
 
 ```csharp
-_client = new WolfClient();
+_client = new WolfClientBuilder()    
+    .WithAutoReconnection(reconnector =>
+    {
+        // ... configure reconnector here ...
+    })
+    .Build();
+```
+
+If you wish, you can also create reconnector separately - this way you can [handle its errors](#auto-reconnection-errors), or manually [disable it](#disabling-auto-reconnection).
+
+```csharp
+_client = new WolfClientBuilder().Build();
 ReconnectorConfig options = new ReconnectorConfig();
 WolfClientReconnector reconnector = new WolfClientReconnector(_client, options);
+// do something with reconnector
 ```
 
 > [!WARNING]
@@ -30,7 +42,7 @@ WolfClientReconnector reconnector = new WolfClientReconnector(_client, options);
 @TehGM.Wolfringo.Utilities.ReconnectorConfig class has a few properties which can be used to customize reconnection behaviour:
 - @TehGM.Wolfringo.Utilities.ReconnectorConfig.ReconnectAttempts - number of reconnection attempts to make. If set to 0, reconnection will be disabled. If set to negative number, infinite amount of attempts will be made. *Defaults to 5*.
 - @TehGM.Wolfringo.Utilities.ReconnectorConfig.ReconnectionDelay - a @System.TimeSpan that will be waited between reconnection attempts. 0 or negative values disable the wait time. *Defaults to half second*.
-- @TehGM.Wolfringo.Utilities.ReconnectorConfig.Log - an @Microsoft.Extensions.Logging.ILogger to log any messages with. See [Logging guide](xref:Guides.Features.Logging) for more info. If null, logging will be disabled. *Defaults to null*.
+- @TehGM.Wolfringo.Utilities.ReconnectorConfig.Log - an @Microsoft.Extensions.Logging.ILogger to log any messages with. See [Logging guide](xref:Guides.Features.Logging) for more info. If null, logging will be disabled. Using with `WolfClientBuilder.WithAutoReconnection` will make it automatically use configured logging. *Defaults to null*.
 - @TehGM.Wolfringo.Utilities.ReconnectorConfig.CancellationToken - a @System.Threading.CancellationToken that will cancel any reconnections.
 
 ### Auto-reconnection errors

@@ -43,18 +43,20 @@ If message is being sent, you don't need to "nest" `body` property - by default,
 ## Registering MessageSerializer
 @TehGM.Wolfringo.WolfClient needs to have means to translate @TehGM.Wolfringo.IWolfMessage.EventName to a concrete serializer. If you try sending the message without mapping a serializer, @TehGM.Wolfringo.WolfClient will log a warning, and attempt to use a [fallback one](xref:TehGM.Wolfringo.Messages.Serialization.DefaultMessageSerializer`1). But if the message is received from the server, or you simply want to suppress the warning, you'll need to register it. You can use [DefaultMessageSerializer\<T\>](xref:TehGM.Wolfringo.Messages.Serialization.DefaultMessageSerializer`1), unless you need custom serialization logic (which might be required in some cases due to the design of WOLF protocol) - in which case, you can register your custom one.
 
-Registration of the @TehGM.Wolfringo.Messages.Serialization.IMessageSerializer is done by passing [ISerializerProvider<string, IMessageSerializer>](xref:TehGM.Wolfringo.Messages.Serialization.ISerializerProvider`2) to @TehGM.Wolfringo.WolfClient constructor. The default @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider uses a dictionary map, so for most use cases, you don't even need to create a custom one. 
+Registration of the @TehGM.Wolfringo.Messages.Serialization.IMessageSerializer is done by adding it to [ISerializerProvider<string, IMessageSerializer>](xref:TehGM.Wolfringo.Messages.Serialization.ISerializerProvider`2)'s options. This can be done easily by using @TehGM.Wolfringo.WolfClientBuilder.
 
 ### [Without Wolfringo.Hosting (Normal Bot)](#tab/configuring-normal-bot)
+
 1. Manually create an instance of @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.
 2. Add your serializer to @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.Serializers dictionary.
-3. Create a new instance of @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider, passing your options instance via constructor
-4. Pass your @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider instance to @TehGM.Wolfringo.WolfClient constructor.
+3. Use `WithDefaultMessageSerializers` method of @TehGM.Wolfringo.WolfClientBuilder and pass your options as argument.
+
 ```csharp
-MessageSerializerProviderOptions messageSerializerProviderOptions = new MessageSerializerProviderOptions();
-messageSerializerProviderOptions.Serializers["MyCustomMessageEventName"] = new DefaultMessageSerializer<MyCustomMessage>();
-MessageSerializerProvider messageSerializerProvider = new MessageSerializerProvider(messageSerializerProviderOptions);
-_client = new WolfClient(log, messageSerializers: messageSerializerProvider);
+MessageSerializerProviderOptions options = new MessageSerializerProviderOptions();
+options.Serializers["MyCustomMessageEventName"] = new DefaultMessageSerializer<MyCustomMessage>();
+_client = new WolfClientBuilder()
+    .WithDefaultMessageSerializers(options)
+    .Build();
 ```
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)
@@ -70,7 +72,7 @@ services.Configure<MessageSerializerProviderOptions>(options =>
 ***
 
 >[!TIP]
-> If default @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider doesn't suffice your needs, you can create a [custom one](xref:Guides.Customizing.Client.Messages#custom-messageserializer) (see "Custom MessageSerializer" below) and provide it to @TehGM.Wolfringo.WolfClient as explained in [Introduction](xref:Guides.Customizing.Intro).
+> If default @TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider doesn't suffice your needs, you can create a [custom one](xref:Guides.Customizing.Client.Messages#custom-messageserializer) (see "Custom MessageSerializer" below) and provide it to @TehGM.Wolfringo.WolfClientBuilder as explained in [Introduction](xref:Guides.Customizing.Intro).
 > See [MessageSerializerProvider.cs](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/Messages/Serialization/MessageSerializerProvider.cs) and [MessageSerializerProviderOptions](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/Messages/Serialization/MessageSerializerProviderOptions.cs) on GitHub for reference.
 
 ## Custom MessageSerializer

@@ -20,20 +20,17 @@ Options you can change include:
 Note: instructions skip logger setup. See [Logging guide](xref:Guides.Features.Logging) for details.
 1. Manually create an instance of @TehGM.Wolfringo.Commands.Parsing.ArgumentsParserOptions.
 2. Customize the options however you need.
-3. Create a new instance of @TehGM.Wolfringo.Commands.Parsing.ArgumentsParser, passing your options instance via constructor.
-4. Register your @TehGM.Wolfringo.Commands.Parsing.ArgumentsParser instance with @Microsoft.Extensions.DependencyInjection.IServiceCollection.
-5. Build your service provider and pass it to @TehGM.Wolfringo.Commands.CommandsService constructor.
-```csharp
-ArgumentsParserOptions argsParserOptions = new ArgumentsParserOptions();
-argsParserOptions.BaseMarker = '-';
-ArgumentsParser argsParser = new ArgumentsParser(argsParserOptions);
-IServiceCollection services = new ServiceCollection()
-    .AddSingleton<IArgumentsParser>(argsParser);
-// add any other services as needed
+3. Use `WithDefaultArgumentsParser` method of @TehGM.Wolfringo.Commands.CommandsServiceBuilder and pass your options as argument.
 
-_client = new WolfClient(logger);                                           // create wolf client
-CommandsService commands = new CommandsService(_client, options, logger,    // initialize commands service
-    services.BuildServiceProvider());                           // add Dependency Injection Service provider
+```csharp
+ArgumentsParserOptions options = new ArgumentsParserOptions();
+options.BaseMarker = '-';
+_client = new WolfClientBuilder()
+    .WithCommands(commands => 
+    {
+        commands.WithDefaultArgumentsParser(options);
+    })
+    .Build();
 ```
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/configuring-hosted-bot)
@@ -52,6 +49,6 @@ services.Configure<ArgumentsParserOptions>(options =>
 ***
 
 ## Custom Parser
-While the default @TehGM.Wolfringo.Commands.Parsing.ArgumentsParser implementation allows for some customizability, you can get full control by writing your own implementation. To do so, simply create a class implementing @TehGM.Wolfringo.Commands.Parsing.IArgumentsParser interface. Once your class is complete, you can register it with @System.IServiceProvider as explained in [Introduction](xref:Guides.Customizing.Intro).
+While the default @TehGM.Wolfringo.Commands.Parsing.ArgumentsParser implementation allows for some customizability, you can get full control by writing your own implementation. To do so, simply create a class implementing @TehGM.Wolfringo.Commands.Parsing.IArgumentsParser interface. Once your class is complete, you can register it with @TehGM.Wolfringo.Commands.CommandsServiceBuilder as explained in [Introduction](xref:Guides.Customizing.Intro).
 
 You can view default implementation [on GitHub](https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Parsing/ArgumentsParser.cs) for reference.
