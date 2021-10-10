@@ -1,15 +1,16 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
-    /// <summary>Wolf server's response for <see cref="AchievementListMessage"/>.</summary>
-    public class AchievementListResponse : WolfResponse, IWolfResponse
+    /// <summary>Wolf server's response for <see cref="AchievementMessage"/>.</summary>
+    public class AchievementResponse : WolfResponse, IWolfResponse
     {
         /// <summary>Achievements.</summary>
         [JsonProperty("body")]
+        [JsonConverter(typeof(ExtractValuesOnlyConverter<WolfAchievement>))]
         public IEnumerable<WolfAchievement> Achievements { get; private set; }
 
         [JsonIgnore]
@@ -27,6 +28,6 @@ namespace TehGM.Wolfringo.Messages.Responses
 
         /// <summary>Creates a response instance.</summary>
         [JsonConstructor]
-        protected AchievementListResponse() : base() { }
+        protected AchievementResponse() : base() { }
     }
 }

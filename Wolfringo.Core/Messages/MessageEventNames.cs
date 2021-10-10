@@ -79,6 +79,8 @@
         public const string GroupProfileUpdate = "group profile update";
         /// <summary>WOLF Protocol Event name for <see cref="GroupAudioUpdateMessage"/>.</summary>
         public const string GroupAudioUpdate = "group audio update";
+        /// <summary>WOLF Protocol Event name for <see cref="AchievementMessage"/>.</summary>
+        public const string Achievement = "achievement";
         /// <summary>WOLF Protocol Event name for <see cref="AchievementListMessage"/>.</summary>
         public const string AchievementList = "achievement list";
         /// <summary>WOLF Protocol Event name for <see cref="UserAchievementListMessage"/>.</summary>

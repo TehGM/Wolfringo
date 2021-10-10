@@ -833,8 +833,8 @@ namespace TehGM.Wolfringo
             IEnumerable<uint> toRequest = achievementIDs?.Except(results.Select(a => a.ID));
             if (toRequest != null && toRequest.Any())
             {
-                IEnumerable<WolfAchievement> allAchievements = await client.GetAllAchievementsAsync(language, cancellationToken).ConfigureAwait(false);
-                results.AddRange(allAchievements?.Where(a => a != null && toRequest.Contains(a.ID)));
+                AchievementResponse response = await client.SendAsync<AchievementResponse>(new AchievementMessage(language, toRequest), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.GetFlattenedAchievementList());
             }
 
             return results;
