@@ -10,22 +10,14 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
     /// <summary>Json converter using property names as keys and their nested properties as values.</summary>
     public class KeyAndValueDictionaryConverter<TKey, TValue> : JsonConverter
     {
-        private readonly string _valuePropName;
-        private readonly bool _skipInnerBody;
+        private readonly string _valuePropPath;
 
         /// <inheritdoc/>
-        /// <param name="valuePropertyName">Name of property to use as a value.</param>
-        /// <param name="skipInnerBody">Whether inner body message should be ignored, and only its content taken.</param>
-        public KeyAndValueDictionaryConverter(string valuePropertyName, bool skipInnerBody)
+        /// <param name="valuePropertyPath">Path of property to use as a value.</param>
+        public KeyAndValueDictionaryConverter(string valuePropertyPath)
         {
-            this._valuePropName = valuePropertyName;
-            this._skipInnerBody = skipInnerBody;
+            this._valuePropPath = valuePropertyPath;
         }
-
-        /// <inheritdoc/>
-        /// <param name="valuePropertyName">Name of property to use as a value.</param>
-        public KeyAndValueDictionaryConverter(string valuePropertyName)
-            : this(valuePropertyName, true) { }
 
         /// <inheritdoc/>
         public KeyAndValueDictionaryConverter()
@@ -44,8 +36,8 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             JObject results = new JObject();
             foreach (KeyValuePair<TKey, TValue> pair in collection)
             {
-                results.Add(new JProperty(pair.Key.ToString(),
-                    new JProperty(_valuePropName, JToken.FromObject(pair.Value, serializer))));
+                results.AddAtPath($"{pair.Key}.{this._valuePropPath}", 
+                    pair.Value != null ? JToken.FromObject(pair.Value, serializer) : null);
             }
             results.WriteTo(writer);
         }
@@ -62,11 +54,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                 TKey key = (TKey)keyConverter.ConvertFromInvariantString(prop.Name);
                 TValue value = default;
                 if (prop.Value != null)
-                {
-                    // if not skipping inner body, attempt to take that as property. If missing body, or skipping body, take the prop itself
-                    JToken p = _skipInnerBody ? (prop.Value["body"] ?? prop.Value) : prop.Value;
-                    value = p[_valuePropName].ToObject<TValue>(serializer);
-                }
+                    value = prop.Value.SelectToken(this._valuePropPath).ToObject<TValue>(serializer);
                 results.Add(key, value);
             }
             return results;
