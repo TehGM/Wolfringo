@@ -103,7 +103,11 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
         /// <param name="content">The property content.</param>
         /// <returns>The created <see cref="JProperty"/>.</returns>
         public static JProperty AddAtPath(this JObject targetObject, string jsonPath, object content)
-            => targetObject.AddAtPath(jsonPath.Split('.'), content);
+        {
+            if (jsonPath[0] == '$' && jsonPath[1] == '.')
+                jsonPath = jsonPath.Substring(2);
+            return targetObject.AddAtPath(jsonPath.Split('.'), content);
+        }
 
         private static JProperty AddAtPath(this JObject targetObject, IEnumerable<string> jsonPath, object content)
         {
@@ -124,8 +128,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
 
             // annoying case - there's some nesting. Use recursion
             // we need to find what already exists in object, to not try to create doubled properties
-            JObject foundSegment = targetObject[name] as JObject;
-            if (foundSegment != null)
+            if (targetObject[name] is JObject foundSegment)
                 return AddAtPath(foundSegment, jsonPath.Skip(1), content);
 
             // if it's a new segment and not final prop, create new object
