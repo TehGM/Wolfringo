@@ -851,6 +851,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         /// <seealso cref="GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)"/>
+        /// <seealso cref="GetGroupAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         public static async Task<WolfAchievement> GetAchievementAsync(this IWolfClient client, WolfLanguage language, uint id, CancellationToken cancellationToken = default)
         {
             IEnumerable<WolfAchievement> result = await client.GetAchievementsAsync(language, new uint[] { id }, cancellationToken).ConfigureAwait(false);
@@ -867,6 +868,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetGroupAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         public static async Task<IEnumerable<WolfAchievement>> GetAllAchievementsAsync(this IWolfClient client, WolfLanguage language, CancellationToken cancellationToken = default)
         {
             AchievementListResponse response = await client.SendAsync<AchievementListResponse>(
@@ -876,7 +878,6 @@ namespace TehGM.Wolfringo
 
         /// <summary>Retrieve user's achievements.</summary>
         /// <remarks><para>Achievements already cached will be retrieved from cache.</para>
-        /// <para>Due to the construction of the protocol, if any achievement is not cached, the client will request all achievements again.</para>
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
         /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve achievements of.</param>
@@ -886,20 +887,39 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
         /// <seealso cref="GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)"/>
-        public static async Task<IReadOnlyDictionary<WolfAchievement, DateTime>> GetUserAchievementsAsync(this IWolfClient client, uint userID, 
+        /// <seealso cref="GetGroupAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
+        public static Task<IReadOnlyDictionary<WolfAchievement, DateTime?>> GetUserAchievementsAsync(this IWolfClient client, uint userID,
             WolfLanguage language, CancellationToken cancellationToken = default)
+            => GetEntityAchievementsAsync(client, new UserAchievementListMessage(userID), language, cancellationToken);
+
+        /// <summary>Retrieve groups's achievements.</summary>
+        /// <remarks><para>Achievements already cached will be retrieved from cache.</para>
+        /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="groupID">ID of group to retrieve achievements of.</param>
+        /// <param name="language">Language to retrieve achievements in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
+        /// <returns>Dictionary of group achievements, with keys being achievement and value being unlock time.</returns>
+        /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
+        /// <seealso cref="GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)"/>
+        /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
+        public static Task<IReadOnlyDictionary<WolfAchievement, DateTime?>> GetGroupAchievementsAsync(this IWolfClient client, uint groupID,
+            WolfLanguage language, CancellationToken cancellationToken = default)
+            => GetEntityAchievementsAsync(client, new GroupAchievementListMessage(groupID), language, cancellationToken);
+
+        private static async Task<IReadOnlyDictionary<WolfAchievement, DateTime?>> GetEntityAchievementsAsync(IWolfClient client, IWolfMessage request, WolfLanguage language, CancellationToken cancellationToken)
         {
-            UserAchievementListResponse response = await client.SendAsync<UserAchievementListResponse>(
-                new UserAchievementListMessage(userID), cancellationToken).ConfigureAwait(false);
-            Dictionary<WolfAchievement, DateTime> results = new Dictionary<WolfAchievement, DateTime>(response?.UserAchievements?.Count ?? 0);
-            if (response?.UserAchievements != null)
+            EntityAchievementListResponse response = await client.SendAsync<EntityAchievementListResponse>(request, cancellationToken).ConfigureAwait(false);
+            Dictionary<WolfAchievement, DateTime?> results = new Dictionary<WolfAchievement, DateTime?>(response?.Achievements?.Count ?? 0);
+            if (response?.Achievements != null)
             {
                 // get all achievements first
                 IEnumerable<WolfAchievement> achivs =
-                    await client.GetAchievementsAsync(language, response.UserAchievements.Keys, cancellationToken).ConfigureAwait(false);
+                    await client.GetAchievementsAsync(language, response.Achievements.Keys, cancellationToken).ConfigureAwait(false);
                 // map user achievements to retrieved achievement objects
                 foreach (WolfAchievement a in achivs)
-                    results.Add(a, response.UserAchievements[a.ID]);
+                    results.Add(a, response.Achievements[a.ID]);
             }
             return results;
         }

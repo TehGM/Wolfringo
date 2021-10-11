@@ -85,6 +85,8 @@
         public const string AchievementList = "achievement list";
         /// <summary>WOLF Protocol Event name for <see cref="UserAchievementListMessage"/>.</summary>
         public const string AchievementSubscriberList = "achievement subscriber list";
+        /// <summary>WOLF Protocol Event name for <see cref="GroupAchievementListMessage"/>.</summary>
+        public const string AchievementGroupList = "achievement group list";
         /// <summary>WOLF Protocol Event name for <see cref="GroupStatisticsMessage"/>.</summary>
         public const string GroupStats = "group stats";
         /// <summary>WOLF Protocol Event name for <see cref="UserExpiredCharmsListMessage"/>.</summary>
