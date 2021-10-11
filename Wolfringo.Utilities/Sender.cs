@@ -1101,6 +1101,18 @@ namespace TehGM.Wolfringo
         /* TIPS */
         #region Tips
         // summaries
+        /// <summary>Requests tips summaries for a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="messageTimestamp">Timestamp of the message to get tips statistics for.</param>
+        /// <param name="groupID">ID of the group where the message was sent in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
+        /// <returns>Collection of message's tips summaries.</returns>
+        public static async Task<IEnumerable<WolfTip>> GetMessageTipsSummaryAsync(this IWolfClient client, WolfTimestamp messageTimestamp, uint groupID, CancellationToken cancellationToken = default)
+        {
+            TipSummaryResponse result = await client.SendAsync<TipSummaryResponse>(
+                new TipSummaryMessage(WolfTip.ContextType.Message, groupID, new WolfTimestamp[] { messageTimestamp }), cancellationToken).ConfigureAwait(false);
+            return result.Tips[messageTimestamp];
+        }
         /// <summary>Requests tips summaries for messages.</summary>
         /// <param name="client">Client to send the request with.</param>
         /// <param name="messages">Messages to get tips statistics for.</param>
@@ -1117,7 +1129,7 @@ namespace TehGM.Wolfringo
             if (messages.Any(m => m.RecipientID != messages.First().RecipientID))
                 throw new ArgumentException("Tips statistics can be requested at once only for messages from the same group", nameof(messages));
             TipSummaryResponse results = await client.SendAsync<TipSummaryResponse>(
-                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => m.Timestamp.Value)), cancellationToken);
+                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => m.Timestamp.Value)), cancellationToken).ConfigureAwait(false);
             return results.Tips;
         }
         /// <summary>Requests tips summaries for a message.</summary>
@@ -1145,7 +1157,7 @@ namespace TehGM.Wolfringo
                 throw new ArgumentException("Only messages already processed by the Wolf server can be tipped", nameof(message));
             if (!message.IsGroupMessage)
                 throw new ArgumentException("Only group messages can be tipped", nameof(message));
-            TipDetailsResponse result = await client.SendAsync<TipDetailsResponse>(new TipDetailsMessage(message.Timestamp.Value, message.RecipientID, WolfTip.ContextType.Message));
+            TipDetailsResponse result = await client.SendAsync<TipDetailsResponse>(new TipDetailsMessage(message.Timestamp.Value, message.RecipientID, WolfTip.ContextType.Message), cancellationToken).ConfigureAwait(false);
             return result.Tips;
         }
 
