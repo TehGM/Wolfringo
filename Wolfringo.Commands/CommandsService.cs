@@ -30,6 +30,7 @@ namespace TehGM.Wolfringo.Commands
         private readonly IWolfClient _client;
         private readonly CommandsOptions _options;
         private readonly IServiceProvider _services;
+        private readonly IServiceProvider _fallbackServices;
         private readonly ICommandsHandlerProvider _handlerProvider;
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
@@ -214,15 +215,19 @@ namespace TehGM.Wolfringo.Commands
             try
             {
                 ICommandContext context = new CommandContext(message, this._client, this._options);
-                await this.ExecuteAsyncInternal(context).ConfigureAwait(false);
+                await ExecuteAsyncInternal(context).ConfigureAwait(false);
             }
-            catch (OperationCanceledException) { }
             catch (Exception ex) when (ex.LogAsError(this._log, "Unhandled exception when executing commands")) { }
         }
 
         /// <inheritdoc/>
-        public Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
-            => this.ExecuteAsyncInternal(context, cancellationToken);
+        public async Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        {
+            ICommandResult result = await ExecuteAsyncInternal(context, cancellationToken).ConfigureAwait(false);
+            if (result is CommandExecutionResult execResult && execResult.Exception != null)
+                ExceptionDispatchInfo.Capture(execResult.Exception).Throw();
+            return result;
+        }
 
         private async Task<ICommandResult> ExecuteAsyncInternal(ICommandContext context, CancellationToken cancellationToken = default)
         {
@@ -270,8 +275,8 @@ namespace TehGM.Wolfringo.Commands
                                 if (handlerResult?.HandlerInstance == null)
                                 {
                                     this._log?.LogError("Retrieving handler {Handler} for command {Name} has failed, command execution aborting", command.GetHandlerType().Name, command.Method.Name);
-                                    throw new ArgumentNullException(nameof(ICommandsHandlerProviderResult.HandlerInstance),
-                                        $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting");
+                                    return CommandExecutionResult.FromException(new ArgumentNullException(nameof(ICommandsHandlerProviderResult.HandlerInstance),
+                                        $"Retrieving handler {command.GetHandlerType().Name} for command {command.Method.Name} has failed, command execution aborting"));
                                 }
                                 this._log?.LogTrace("Executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
 
@@ -288,10 +293,10 @@ namespace TehGM.Wolfringo.Commands
                             }
                             // special error case: operation canceled
                             // operation canceled is normal, so it shouldn't be logged as error
-                            catch (OperationCanceledException)
+                            catch (OperationCanceledException ex)
                             {
                                 this._log?.LogWarning("Execution of command {Name} from handler {Handler} was cancelled", command.Method.Name, command.GetHandlerType().Name);
-                                throw;
+                                return CommandExecutionResult.FromException(ex);
                             }
                             // special error case: responding when silenced
                             // bots almost always respond to a command - but if they're silenced, an exception will be thrown
@@ -299,12 +304,12 @@ namespace TehGM.Wolfringo.Commands
                             catch (MessageSendingException ex) when 
                             (this.LogSilencedException(ex, context, "Unhandled Exception when executing command {Name} from handler {Handler} - likely due to being silenced or spam filtered", command.Method.Name, command.GetHandlerType().Name))
                             {
-                                throw;
+                                return CommandExecutionResult.FromException(ex);
                             }
                             // normal error case
                             catch (Exception ex) when (ex.LogAsError(_log, "Unhandled Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name))
                             {
-                                throw;
+                                return CommandExecutionResult.FromException(ex);
                             }
                             finally
                             {
