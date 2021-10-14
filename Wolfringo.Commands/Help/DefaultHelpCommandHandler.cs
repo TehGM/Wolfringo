@@ -30,7 +30,7 @@ namespace TehGM.Wolfringo.Commands.Help
 
             string result = builder.GetCommandsList();
             if (string.IsNullOrWhiteSpace(result))
-                return new CommandExecutionResult(CommandResultStatus.Failure, new string[] { "No commands found!" }, null);
+                return new CommandExecutionResult(CommandResultStatus.Failure, new string[] { "No commands found!" });
 
             await context.ReplyTextAsync(result, cancellationToken).ConfigureAwait(false);
             return CommandExecutionResult.Success;
