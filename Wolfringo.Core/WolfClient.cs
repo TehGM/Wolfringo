@@ -103,7 +103,7 @@ namespace TehGM.Wolfringo
                 ?? services.GetService<ILoggerFactory>()?.CreateLogger<WolfClient>();
 
             // set options
-            this.IgnoreOwnChatMessages = true;
+            this.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
             this.Url = options.ServerURL;
             this.Device = options.Device;
             this.Token = tokenProvider.GetToken();
