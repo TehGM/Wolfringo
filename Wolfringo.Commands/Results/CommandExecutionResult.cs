@@ -12,7 +12,10 @@ namespace TehGM.Wolfringo.Commands.Results
         public bool IsSuccess => this.Status == CommandResultStatus.Success;
         /// <inheritdoc/>
         public IEnumerable<string> Messages { get; }
-        /// <inheritdoc/>
+        /// <summary>An exception that has occured.</summary>
+        /// <remarks><see cref="CommandExecutionResult"/> provides exception, as there are 2 ways commands could be executed - from background
+        /// thread, or invoked on public method. Those invoked on public method should throw always, while those invoked by background thread shouldn't,
+        /// as this will allow more selective logging.</remarks>
         public Exception Exception { get; }
         /// <inheritdoc/>
         public CommandResultStatus Status { get; }
