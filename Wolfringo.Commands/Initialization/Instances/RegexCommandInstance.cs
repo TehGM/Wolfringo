@@ -30,8 +30,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
         /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
         /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
-        public RegexCommandInstance(string pattern, RegexOptions regexOptions, TimeSpan regexTimeout, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
-            : base(method, requirements, prefixOverride, prefixRequirementOverride, caseSensitivityOverride)
+        /// <param name="timeout">Timeout value for command execution. -1 for no timeout.</param>
+        public RegexCommandInstance(string pattern, RegexOptions regexOptions, TimeSpan regexTimeout, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride, int timeout)
+            : base(method, requirements, prefixOverride, prefixRequirementOverride, caseSensitivityOverride, timeout)
         {
             this.Pattern = pattern;
 

@@ -28,8 +28,9 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
         /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
         /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
-        public StandardCommandInstance(string text, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
-            : base(method, requirements, prefixOverride, prefixRequirementOverride, caseSensitivityOverride)
+        /// <param name="timeout">Timeout value for command execution. -1 for no timeout.</param>
+        public StandardCommandInstance(string text, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride, int timeout)
+            : base(method, requirements, prefixOverride, prefixRequirementOverride, caseSensitivityOverride, timeout)
         {
             this.Text = text.Trim();
 

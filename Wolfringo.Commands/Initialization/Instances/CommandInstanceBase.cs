@@ -25,6 +25,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public PrefixRequirement? PrefixRequirementOverride { get; }
         /// <summary>Case sensitivity override; null for no overriding.</summary>
         public bool? CaseSensitivityOverride { get; }
+        /// <summary>Timeout value for command execution.</summary>
+        public TimeSpan Timeout { get; }
         /// <summary>Type of the handler containing the command.</summary>
         public Type HandlerType => this.Method.DeclaringType;
         /// <summary>All command method's parameters.</summary>
@@ -36,13 +38,15 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
         /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
         /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
-        public CommandInstanceBase(MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
+        /// <param name="timeout">Timeout value for command execution. -1 for no timeout.</param>
+        public CommandInstanceBase(MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride, int timeout)
         {
             this.Method = method;
             this.Requirements = requirements;
             this.PrefixOverride = prefixOverride;
             this.PrefixRequirementOverride = prefixRequirementOverride;
             this.CaseSensitivityOverride = caseSensitivityOverride;
+            this.Timeout = TimeSpan.FromMilliseconds(timeout);
 
             this.Parameters = method.GetParameters();
         }
@@ -94,23 +98,34 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <returns>Result of the execution.</returns>
         protected async Task<ICommandResult> InvokeCommandAsync(ParameterBuilderValues parameterBuilderValues, IServiceProvider services, object handler, CancellationToken cancellationToken)
         {
-            IParameterBuilder paramBuilder = services.GetRequiredService<IParameterBuilder>();
-            ParameterBuildingResult paramsResult = await paramBuilder.BuildParamsAsync(this.Parameters, parameterBuilderValues, cancellationToken).ConfigureAwait(false);
-            if (paramsResult.Status != CommandResultStatus.Success)
-                return paramsResult;
+            // create linked cancellation token for params
+            using (CancellationTokenSource cts = 
+                CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, parameterBuilderValues.CancellationToken))
+            {
+                parameterBuilderValues.CancellationToken = cts.Token;
 
-            // execute - if it's a task, await it
-            // also check if it's ICommandResult - if so, return it
-            cancellationToken.ThrowIfCancellationRequested();
-            object invokedMethod = this.Method.Invoke(handler, paramsResult.Values);
-            if (invokedMethod is Task<ICommandResult> returnTaskWithResult)
-                return await returnTaskWithResult.ConfigureAwait(false);
-            else if (invokedMethod is ICommandResult returnResult)
-                return returnResult;
-            else if (invokedMethod is Task returnTask)
-                await returnTask.ConfigureAwait(false);
+                // build params
+                IParameterBuilder paramBuilder = services.GetRequiredService<IParameterBuilder>();
+                ParameterBuildingResult paramsResult = await paramBuilder.BuildParamsAsync(this.Parameters, parameterBuilderValues, cancellationToken).ConfigureAwait(false);
+                if (paramsResult.Status != CommandResultStatus.Success)
+                    return paramsResult;
 
-            return CommandExecutionResult.Success;
+                // init timeout
+                cts.CancelAfter(this.Timeout);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // execute - if it's a task, await it
+                // also check if it's ICommandResult - if so, return it
+                object invokedMethod = this.Method.Invoke(handler, paramsResult.Values);
+                if (invokedMethod is Task<ICommandResult> returnTaskWithResult)
+                    return await returnTaskWithResult.ConfigureAwait(false);
+                else if (invokedMethod is ICommandResult returnResult)
+                    return returnResult;
+                else if (invokedMethod is Task returnTask)
+                    await returnTask.ConfigureAwait(false);
+
+                return CommandExecutionResult.Success;
+            }
         }
     }
 }

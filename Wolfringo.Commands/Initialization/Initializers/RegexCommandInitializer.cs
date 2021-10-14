@@ -28,7 +28,8 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 requirements: descriptor.GetRequirements(),
                 prefixOverride: descriptor.GetPrefixOverride(),
                 prefixRequirementOverride: descriptor.GetPrefixRequirementOverride(),
-                caseSensitivityOverride: descriptor.GetCaseSensitivityOverride());
+                caseSensitivityOverride: descriptor.GetCaseSensitivityOverride(), 
+                timeout: regexCommand.Timeout);
         }
     }
 }
