@@ -244,18 +244,21 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 
         /*** Example: Command timeout.
          * By default, commands will time out after a long time (1 day).
-         * You can however change the timeout value using Timeout property in the attribute.
-         * This works for both Standard and Regex commands.
+         * You can however change the timeout value using Timeout property in the attribute. This works for both Standard and Regex commands.
+         * Note that in order for timeout to work, you need to use CancellationToken.
          * 
          * When command times out, it'll throw a new exception, which Commands Service will log as an error.
          * 
          * You can also disable timeout completely by setting its value to -1.
          ***/
         [Command("timeout", Timeout = 1000)]
-        public async Task CmdTimeoutAsync()
+        public async Task CmdTimeoutAsync(CancellationToken cancellationToken)
         {
             // simulate long running task
-            await Task.Delay(1500);
+            await Task.Delay(1500, cancellationToken);
+
+            // check timeout
+            cancellationToken.ThrowIfCancellationRequested();
 
             // oops! This will time out!
             Console.WriteLine("This will never be written to console, because long-running task takes longer than Timeout!");
