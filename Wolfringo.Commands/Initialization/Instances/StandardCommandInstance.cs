@@ -34,8 +34,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this.Text = text.Trim();
 
             string pattern = $@"\G{this.Text}\b(.*)?$";
-            this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.Singleline));
-            this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline));
+            TimeSpan regexTimeout = TimeSpan.FromMilliseconds(RegexCommandAttribute.RegexDefaultTimeout);
+            this._caseSensitiveRegex = new Lazy<Regex>(() 
+                => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.Singleline, regexTimeout));
+            this._caseInsensitiveRegex = new Lazy<Regex>(() 
+                => new Regex(pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline, regexTimeout));
         }
 
         /// <inheritdoc/>

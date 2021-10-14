@@ -24,18 +24,19 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <summary>Creates a new command instance.</summary>
         /// <param name="pattern">Regex pattern that triggers this command.</param>
         /// <param name="regexOptions">Regex options to build Regex with.</param>
+        /// <param name="regexTimeout">Timeout for regex engine.</param>
         /// <param name="method">Method that will be executed.</param>
         /// <param name="requirements">Execution requirements.</param>
         /// <param name="prefixOverride">Prefix override; null for no overriding.</param>
         /// <param name="prefixRequirementOverride">Prefix requireent override; null for no overriding.</param>
         /// <param name="caseSensitivityOverride">Case sensitivity override; null for no overriding.</param>
-        public RegexCommandInstance(string pattern, RegexOptions regexOptions, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
+        public RegexCommandInstance(string pattern, RegexOptions regexOptions, TimeSpan regexTimeout, MethodInfo method, IEnumerable<ICommandRequirement> requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride)
             : base(method, requirements, prefixOverride, prefixRequirementOverride, caseSensitivityOverride)
         {
             this.Pattern = pattern;
 
-            this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions & ~RegexOptions.IgnoreCase));
-            this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions | RegexOptions.IgnoreCase));
+            this._caseSensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions & ~RegexOptions.IgnoreCase, regexTimeout));
+            this._caseInsensitiveRegex = new Lazy<Regex>(() => new Regex(pattern, regexOptions | RegexOptions.IgnoreCase, regexTimeout));
         }
 
         /// <inheritdoc/>

@@ -58,7 +58,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
         /*** Example: command methods.
          * Command methods themselves work exactly the same as with non-persistent handlers - look there for more command examples.
          ***/
-        [RegexCommand("^log (.+)$")]
+        [RegexCommand("^log (.+)$", RegexTimeout = 5000)]
         public void CmdLog(CommandContext context, Match match)
         {
             if (_log == null)

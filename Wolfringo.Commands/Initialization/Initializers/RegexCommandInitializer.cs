@@ -23,6 +23,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             return new RegexCommandInstance(
                 pattern: pattern,
                 regexOptions: regexCommand.Options,
+                regexTimeout: TimeSpan.FromMilliseconds(regexCommand.RegexTimeout),
                 method: descriptor.Method,
                 requirements: descriptor.GetRequirements(),
                 prefixOverride: descriptor.GetPrefixOverride(),
