@@ -67,8 +67,10 @@ namespace TehGM.Wolfringo.Commands.Parsing
                         return ParameterBuildingResult.Failure(new string[] {
                             await param.GetConvertingErrorAttribute().ToStringAsync(values.Context, values.Args[argIndex], param, cancellationToken).ConfigureAwait(false) });
                     // if it's optional, just let it pass
+                    else if (param.HasDefaultValue)
+                        value = param.DefaultValue ?? null;
                     else if (param.IsOptional)
-                        value = param.HasDefaultValue ? param.DefaultValue : null;
+                        value = Type.Missing;
                     // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message
                     else if (argIndex <= values.Args.Length)
                     {
