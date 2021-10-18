@@ -61,7 +61,7 @@ namespace TehGM.Wolfringo.Commands
                 return result as T;
             }
             else
-                return await GetUserAsync(context, context.Message.RecipientID, cancellationToken) as T;
+                return (await GetUserAsync(context, context.Message.RecipientID, cancellationToken).ConfigureAwait(false)) as T;
         }
 
         private static async Task<WolfUser> GetUserAsync(ICommandContext context, uint id, CancellationToken cancellationToken = default)

@@ -217,6 +217,8 @@ As example above shows, these custom messages can also have placeholders inside 
 - `{{SenderID}}` - ID of the user that invoked the command.
 - `{{BotNickname}}` - nickname (display name) of the bot.
 - `{{BotID}}` - ID of the bot.
+- `{{RecipientID}}` - ID of the message recipient (bot ID for private messages, group ID for group messages).
+- `{{RecipientName}}` - name of the message recipient (bot nickname for private messages, group name for group messages).
 
 You can also set text to `null` or empty string - in such case, error response will be disabled for that command.
 
