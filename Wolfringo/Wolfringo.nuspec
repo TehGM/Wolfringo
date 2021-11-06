@@ -10,6 +10,7 @@
     <tags>wolf palringo wolfringo pal bot client</tags>
     <projectUrl>https://wolfringo.tehgm.net</projectUrl>
     <icon>wolfringo_logo.png</icon>
+	<readme>NUGET_README.md</readme>
     <repository type="git" url="https://github.com/TehGM/Wolfringo" />
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -28,5 +29,6 @@
   </metadata>
   <files>
     <file src="..\wolfringo_logo.png" target="" />
+	<file src="..\NUGET_README.png" target="" />
   </files>
 </package>

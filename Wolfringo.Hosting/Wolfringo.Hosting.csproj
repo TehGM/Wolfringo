@@ -17,6 +17,7 @@
     <AssemblyVersion>1.1.1.0</AssemblyVersion>
     <FileVersion>1.1.1.0</FileVersion>
     <PackageReleaseNotes>- Improve internal de-registering of events in HostedWolfClient.</PackageReleaseNotes>
+	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -48,6 +49,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+	<None Include="..\NUGET_README.md">
+	  <Pack>True</Pack>
+	  <PackagePath></PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>
