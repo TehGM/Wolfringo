@@ -77,6 +77,6 @@ This version features significant amount of changes. Please see upgrade guide: h
   </metadata>
   <files>
     <file src="..\wolfringo_logo.png" target="" />
-	<file src="..\NUGET_README.png" target="" />
+	<file src="..\NUGET_README.md" target="" />
   </files>
 </package>
