@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>1.1.2</Version>
+    <Version>2.0.0</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -15,9 +15,33 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>wolf palringo wolfringo pal bot client commands</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
-    <PackageReleaseNotes>Compatibility patch for Wolfringo metapackage v1.1.2.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <PackageReleaseNotes>This version features significant amount of changes. Please see upgrade guide: https://wolfringo.tehgm.net/upgrading/1.x-2.x.html
+
+- Added CommandsServiceBuilder that makes creation of a CommandsService much easier!
+- Added an easy help command support.
+- Added {{RecipientID}} and {{RecipientName}} placeholders are now supported in command argument error messages.
+- Added [ArgumentText] attribute for command method arguments.
+- Both standard and regex commands now support a timeout.
+- Regex commands now support a Regex engine timeout to prevent potential attacks.
+- Added an extension method for ChatMessage class: GetMessageWithoutPrefix.
+- Added CommandContextOptions class which can now be injected into command method.
+- Added CommandRequirementsResult class for use by command requirements.
+- Command requirements' CheckAsync method now returns ICommandResult instead of a boolean. Supporting AbortOnFail and SendMessageWhenSkipping properties and ResultFromBoolean method were added to CommandRequirementAttribute class.
+- StandardCommandInstance and RegexCommandInstance now inherit from a shared CommandInstanceBase class.
+- CommandsOptions now implement a new ICommandOptions interface.
+- Some CommandsService constructors were removed or marked as obsolete. Favour using CommandsServiceBuilder.
+- Types implementing ICommandResult are now classes instead of structs.
+- IsSuccess property of ICommandResult is now obsolete. Favour using Status property.
+- Exception property has been removed from most of classes implementing ICommandResult.
+- ErrorMessage property of ICommandRequirement has been removed. It is still present in CommandRequirementAttribute, so existing error messages should still work just fine.
+- ICommandsService now has Commands property, containing all instance descriptors currently active within the service.
+- SimpleServiceProvider and CombinedServiceProvider classes were removed, as they're no longer needed internally.
+- CommandInstanceDescriptorExtensions class has been moved from TehGM.Wolfringo.Commands.Initialization to TehGM.Wolfringo.Commands namespace.
+- Command instance descriptor extension methods now use new internal attribute cache class DescriptorAttributeCache. This cache uses lazy reflection for performance.
+- Priority property of CommandInstanceDescriptor has been removed. Favour using extension methods.
+- Dependency Injection mechanisms for Commands now correctly differentiate between argument with default value and optional argument.</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>
 

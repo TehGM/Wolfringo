@@ -6,10 +6,10 @@
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
-    <Version>1.1.2</Version>
+    <Version>2.0.0</Version>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
@@ -21,7 +21,13 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>- Handle user and group icon being null.</PackageReleaseNotes>
+    <PackageReleaseNotes>This version features significant amount of changes. Please see upgrade guide: https://wolfringo.tehgm.net/upgrading/1.x-2.x.html
+
+- Added support for checking URL metadata.
+- Added support for requesting group achievements.
+- Sender utility now returns achievements with nullable timestamps. This is due to how WOLF server handles them.
+- Requesting specific achievements has been optimized, which should result in a slightly reduced network usage.
+- Some Sender methods were not configuring await properly. This is now fixed.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

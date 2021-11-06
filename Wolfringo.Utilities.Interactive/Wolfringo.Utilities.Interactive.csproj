@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>TehGM</Authors>
     <Company>TehGM</Company>
-    <Version>1.1.2</Version>
+    <Version>2.0.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -20,9 +20,11 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>- Handle all `OperationCanceledException` instead of only `TaskCanceledException`.</PackageReleaseNotes>
-    <FileVersion>1.1.1.0</FileVersion>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <PackageReleaseNotes>Compatibility patch for Wolfringo metapackage v1.1.2.
+
+This version features significant amount of changes. Please see upgrade guide: https://wolfringo.tehgm.net/upgrading/1.x-2.x.html</PackageReleaseNotes>
+    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

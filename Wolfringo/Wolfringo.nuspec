@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>1.1.2</version>
+    <version>2.0.0</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -16,14 +16,62 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <releaseNotes>
-- Handle user and group icon being null.
-    </releaseNotes>
+This version features significant amount of changes. Please see upgrade guide: https://wolfringo.tehgm.net/upgrading/1.x-2.x.html
+
+- Added WolfClientBuilder that makes creation of a WolfClient much easier!
+- Added CommandsServiceBuilder that makes creation of a CommandsService much easier!
+- Added an easy help command support.
+- Added {{RecipientID}} and {{RecipientName}} placeholders are now supported in command argument error messages.
+- Added [ArgumentText] attribute for command method arguments.
+- Added support for checking URL metadata.
+- Added support for requesting group achievements.
+- Both standard and regex commands now support a timeout.
+- Regex commands now support a Regex engine timeout to prevent potential attacks.
+- Added an extension method for ChatMessage class: GetMessageWithoutPrefix.
+- Added CommandContextOptions class which can now be injected into command method.
+- Added CommandRequirementsResult class for use by command requirements.
+- Added IWolfTokenProvider interface, along with ConstantWolfTokenProvider, RandomizedWolfTokenProvider and HostedWolfTokenProvider classes, which are used by WolfClient. This increases flexibility of resolving token. They replaceWolfTokenProvider.
+- Added a new IWolfClientCache interface which allows for cache customization via Dependency Injection.
+- Added a new WolfClientCache class with default caching implementation. This replaces old WolfEntityCacheContainer, which is now removed.
+- Added a new WolfCacheOptions class for configuring built-in caching.
+- Caching related properties have been removed from WolfClient.
+- IWolfEntityCache&lt;TEntity&gt; has been renamed to IWolfCachedEntityCollection&lt;TEntity&gt;.
+- WolfEntityCacheExtensions has been renamed to WolfCachedEntityCollectionExtensions.
+- Caching related types (including IWolfClientCacheAccessor) were moved from TehGM.Wolfringo.Utilities to new TehGM.Wolfringo.Caching namespace.
+- DefaultServerURL, BetaServerURL and DefaultDevice constants have been moved from WolfClient to a new WolfClientOptions class.
+- ServerURL, Device and IgnoreOwnChatMessages properties of WolfClient have been moved to a new WolfClientOptions class.
+- It is now possible to provide a custom ISocketClient to WolfClient.
+- WolfClient's OnMessageSentInternalAsync and OnMessageReceivedInternalAsync were renamed to OnMessageSentAsync and OnMessageReceivedAsync respectively. Since caching logic has been moved to IWolfClientCache, they also are now empty, sooverriding them is completely safe.
+- UserAchievementListResponse has been replaced by EntityAchievementListResponse, which supports both user and group achievements.
+- Sender utility now returns achievements with nullable timestamps. This is due to how WOLF server handles them.
+- Command requirements' CheckAsync method now returns ICommandResult instead of a boolean. Supporting AbortOnFail and SendMessageWhenSkipping properties and ResultFromBoolean method were added to CommandRequirementAttribute class.
+- StandardCommandInstance and RegexCommandInstance now inherit from a shared CommandInstanceBase class.
+- CommandsOptions now implement a new ICommandOptions interface.
+- Some WolfClient constructors were removed or marked as obsolete. Favour using WolfClientBuilder.
+- Some CommandsService constructors were removed or marked as obsolete. Favour using CommandsServiceBuilder.
+- Types implementing ICommandResult are now classes instead of structs.
+- IsSuccess property of ICommandResult is now obsolete. Favour using Status property.
+- Exception property has been removed from most of classes implementing ICommandResult.
+- ErrorMessage property of ICommandRequirement has been removed. It is still present in CommandRequirementAttribute, so existing error messages should still work just fine.
+- ICommandsService now has Commands property, containing all instance descriptors currently active within the service.
+- SimpleServiceProvider and CombinedServiceProvider classes were removed, as they're no longer needed internally.
+- CommandInstanceDescriptorExtensions class has been moved from TehGM.Wolfringo.Commands.Initialization to TehGM.Wolfringo.Commands namespace.
+- Command instance descriptor extension methods now use new internal attribute cache class DescriptorAttributeCache. This cache uses lazy reflection for performance.
+- Priority property of CommandInstanceDescriptor has been removed. Favour using extension methods.
+- JSON Converters have been modified to support JsonPath.
+- "command" argument has been renamed to "eventName" in signatures of built-in message and response serializers.
+- Constructor of HostedWolfClient has been simplified.
+- IHostedWolfClientServiceBuilder now has a new ConfigureCaching method.
+- Requesting specific achievements has been optimized, which should result in a slightly reduced network usage.
+- Dependency Injection mechanisms for Commands now correctly differentiate between argument with default value and optional argument.
+- Some Sender methods were not configuring await properly. This is now fixed.
+	</releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="1.1.2" />
-        <dependency id="Wolfringo.Utilities" version="1.1.2" />
-        <dependency id="Wolfringo.Utilities.Interactive" version="1.1.2" />
-        <dependency id="Wolfringo.Commands" version="1.1.2"/>
+        <dependency id="Wolfringo.Core" version="2.0.0" />
+        <dependency id="Wolfringo.Utilities" version="2.0.0" />
+        <dependency id="Wolfringo.Utilities.Interactive" version="2.0.0" />
+        <dependency id="Wolfringo.Commands" version="2.0.0"/>
       </group>
     </dependencies>
   </metadata>
