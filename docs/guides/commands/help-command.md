@@ -21,7 +21,10 @@ Wolfringo Commands package comes with a default help command. This command:
 - is transient;
 - is hidden;
 - has priority of [int.MinValue](xref:System.Int32.MinValue);
-- will list commands without summaries set;
+- will list commands even if they have no summary set;
+- will group commands by category;
+- will list commands without category first;
+- will order commands based on priority;
 - will respond with "No commands found!" if it finds no commands to list.
 
 This command is disabled by default, but don't worry - enabling it is just a single line change in Commands Options!
