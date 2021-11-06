@@ -118,12 +118,13 @@ namespace TehGM.Wolfringo.Socket
             {
                 _lastMessageID = 7;
                 _connectionCts = new CancellationTokenSource();
+                CancellationToken cancellationToken = this._connectionCts?.Token ?? default;
                 ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024]);
 
-                while (_connectionCts?.Token.IsCancellationRequested != true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     // read from stream
-                    SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
+                    SocketReceiveResult receivedMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
                     if (!IsAnythingReceived(receivedMessage))
                         continue;
 
@@ -136,7 +137,7 @@ namespace TehGM.Wolfringo.Socket
                         List<byte[]> binaryMessages = new List<byte[]>(msg.BinaryMessagesCount);
                         for (int i = 0; i < msg.BinaryMessagesCount; i++)
                         {
-                            SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, _connectionCts.Token).ConfigureAwait(false);
+                            SocketReceiveResult receivedBinaryMessage = await ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
                             if (!IsAnythingReceived(receivedBinaryMessage))
                                 continue;
                             if (receivedBinaryMessage.MessageType == WebSocketMessageType.Text)
@@ -161,9 +162,11 @@ namespace TehGM.Wolfringo.Socket
             finally
             {
                 // craft closed event, keeping the exception in mind
-                WebSocketCloseStatus status = _websocketClient?.CloseStatus ??                              // websocketclient reported status has priority
-                    (IsClosedPrematurelyException(closeException) ? WebSocketCloseStatus.ProtocolError :    // if premature close, report as protocol error
+                WebSocketCloseStatus status = 
                     (closeException is OperationCanceledException) ? WebSocketCloseStatus.NormalClosure :   // if operation canceled, report as normal closure
+                    this._connectionCts == null ? WebSocketCloseStatus.NormalClosure :                      // if CTS is null, that means we're disposing - normal closure
+                    this._websocketClient?.CloseStatus ??                                                   // websocketclient reported status has priority
+                    (IsClosedPrematurelyException(closeException) ? WebSocketCloseStatus.ProtocolError :    // if premature close, report as protocol error
                     WebSocketCloseStatus.Empty);                                                            // otherwise report unknown status
                 string message = _websocketClient?.CloseStatusDescription ?? closeException?.Message;
 
