@@ -10,6 +10,7 @@ namespace TehGM.Wolfringo.Commands
     {
         /// <summary>Descriptors of all commands loaded to this commands service.</summary>
         IEnumerable<ICommandInstanceDescriptor> Commands { get; }
+        /// <summary>Starts the Command Service.</summary>
         /// <param name="cancellationToken">Cancellation token to cancel loading with.</param>
         Task StartAsync(CancellationToken cancellationToken = default);
         /// <summary>Executes commands against a command context.</summary>
