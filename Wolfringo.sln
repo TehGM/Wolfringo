@@ -105,7 +105,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "customizing", "customizing"
 		docs\guides\customizing\introduction.md = docs\guides\customizing\introduction.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{712A3DDE-4912-4C3F-8083-B75B572060A5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "customizing-client", "customizing-client", "{712A3DDE-4912-4C3F-8083-B75B572060A5}"
 	ProjectSection(SolutionItems) = preProject
 		docs\guides\customizing\client\client-cache.md = docs\guides\customizing\client\client-cache.md
 		docs\guides\customizing\client\messages.md = docs\guides\customizing\client\messages.md
@@ -113,7 +113,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{712A3D
 		docs\guides\customizing\client\socket-client.md = docs\guides\customizing\client\socket-client.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commands", "commands", "{C7D6EBF4-BEAF-4562-8149-6C5C4515E866}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "customizing-commands", "customizing-commands", "{C7D6EBF4-BEAF-4562-8149-6C5C4515E866}"
 	ProjectSection(SolutionItems) = preProject
 		docs\guides\customizing\commands\argument-converters.md = docs\guides\customizing\commands\argument-converters.md
 		docs\guides\customizing\commands\arguments-parser.md = docs\guides\customizing\commands\arguments-parser.md
