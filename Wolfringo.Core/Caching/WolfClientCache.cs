@@ -148,14 +148,14 @@ namespace TehGM.Wolfringo.Caching.Internal
             => this.Clear();
 
         /// <inheritdoc/>
-        public Task OnConnectingAsync(IWolfClient client, CancellationToken cancellationToken = default)
+        public virtual Task OnConnectingAsync(IWolfClient client, CancellationToken cancellationToken = default)
         {
             this.Clear();
             return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
-        public void OnDisconnected(IWolfClient client, SocketClosedEventArgs e)
+        public virtual void OnDisconnected(IWolfClient client, SocketClosedEventArgs e)
             => this.Clear();
 
         #region MESSAGE READING
