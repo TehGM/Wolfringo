@@ -86,3 +86,8 @@ In a bot using Wolfringo.Hosting, you can disable caches using @TehGM.Wolfringo.
 	  }
 	}
 	```
+
+## Custom Cache
+It is possible to customize or completely replace the built-in caching solution. This can be useful if you want to add support for new types or switch to Redis, or anything else.
+
+See [Cusomizing Client Cache](xref:Guides.Customizing.Client.ClientCache) guide for more details.
