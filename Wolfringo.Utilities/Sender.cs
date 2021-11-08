@@ -812,7 +812,7 @@ namespace TehGM.Wolfringo
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
         /// <param name="client">Client to send the request with.</param>
         /// <param name="language">Language to retrieve achievements in.</param>
-        /// <param name="achievementIDs">IDs of achievements to retrieve.</param>
+        /// <param name="achievementIDs">IDs of achievements to retrieve. Null or empty to get all achievements.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved achievements.</returns>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
