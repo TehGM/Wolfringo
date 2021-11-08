@@ -301,7 +301,7 @@ namespace TehGM.Wolfringo
                             responseData?.Payload?.First?.PopulateObject(chatMsg, "body");
 
                         // cache
-                        await this.Cache.HandleMessageSentAsync(this, sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
+                        await this.Cache.OnMessageSentAsync(this, sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
                     }
 
                     // notify child classes
@@ -405,7 +405,7 @@ namespace TehGM.Wolfringo
                         this.CurrentUserID = welcome.LoggedInUser.ID;
 
                     // cache
-                    await this.Cache.HandleMessageReceivedAsync(this, msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+                    await this.Cache.OnMessageReceivedAsync(this, msg, rawData, _connectionCts.Token).ConfigureAwait(false);
 
                     // notify child classes
                     await OnMessageReceivedAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);

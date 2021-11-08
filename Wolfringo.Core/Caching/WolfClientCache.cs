@@ -148,7 +148,7 @@ namespace TehGM.Wolfringo.Caching.Internal
 
         #region MESSAGE READING
         /// <inheritdoc/>
-        public virtual Task HandleMessageSentAsync(IWolfClient client, IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
+        public virtual Task OnMessageSentAsync(IWolfClient client, IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
         {
             if (this.IsUsersCachingEnabled)
             {
@@ -237,7 +237,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         }
 
         /// <inheritdoc/>
-        public virtual async Task HandleMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
+        public virtual async Task OnMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
         {
             // update user presence
             if (this.IsUsersCachingEnabled)
