@@ -331,7 +331,7 @@ namespace TehGM.Wolfringo.Commands
                 return false;
             if (!(ex.Response is WolfResponse wolfResponse))
                 return false;
-            if (wolfResponse.ErrorCode != WolfErrorCode.AlreadyContactOrGroupNameForbidden)
+            if (wolfResponse.ErrorCode != WolfErrorCode.LoginIncorrectOrCannotSendMessage)
                 return false;
 
             // only handle for sent chat messages
