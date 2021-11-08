@@ -49,3 +49,16 @@ Refer to [Dependency injection in .NET](https://docs.microsoft.com/en-us/dotnet/
 
 > [!TIP]
 > Check [WolfClientServiceCollectionExtensions](https://github.com/TehGM/Wolfringo/tree/master/Wolfringo.Hosting/WolfClientServiceCollectionExtensions.cs) and [CommandsServiceCollectionExtensions](https://github.com/TehGM/Wolfringo/tree/master/Wolfringo.Hosting/Commands/CommandsServiceCollectionExtensions.cs) to check what lifetimes the services are registered with by default.
+
+***
+
+## IDisposable services
+Your custom service can implement @System.IDisposable - both @TehGM.Wolfringo.WolfClient and @TehGM.Wolfringo.Commands.CommandsService handle disposable services depending on how they were registered.
+
+Service will be automatically disposed for you when <xref:TehGM.Wolfringo.WolfClient>/<xref:TehGM.Wolfringo.Commands.CommandsService> is disposing service was registered by either:
+- using generic method (`WithResponseTypeResolver<MyResponseTypeResolver>()`;
+- using factory method (`WithResponseTypeResolver(provider => new MyResponseTypeResolver())`;
+- using Wolfringo.Hosting.
+
+If service was registered using concrete type, or you didn't use @TehGM.Wolfringo.WolfClientBuilder or @TehGM.Wolfringo.Commands.CommandsServiceBuilder and opted to use constructors directly, you'll need to dispose these services manually.  
+This is because Wolfringo has no way to know whether you're using these services in other places - disposing them in such case would break your code.
