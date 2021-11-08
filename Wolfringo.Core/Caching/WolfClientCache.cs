@@ -127,6 +127,7 @@ namespace TehGM.Wolfringo.Caching.Internal
         /// <summary>Clears all caches.</summary>
         public virtual void Clear()
         {
+            this.Log?.LogTrace("Clearing Wolf Client caches");
             this.UsersCache?.Clear();
             this.GroupsCache?.Clear();
             this.CharmsCache?.Clear();
