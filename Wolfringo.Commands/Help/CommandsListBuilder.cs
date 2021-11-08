@@ -92,7 +92,7 @@ namespace TehGM.Wolfringo.Commands.Help
 
         /// <summary>Creates a new Builder.</summary>
         /// <param name="commandsService">Commands service with loaded commands.</param>
-        public CommandsListBuilder(CommandsService commandsService)
+        public CommandsListBuilder(ICommandsService commandsService)
             : this(commandsService?.Commands) { }
 
         /// <summary>Builds a commands list.</summary>
