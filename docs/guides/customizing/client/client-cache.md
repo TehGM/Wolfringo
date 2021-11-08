@@ -51,8 +51,9 @@ public class MyCustomWolfClient : WolfClientCache
 ## Custom Client Cache
 If you need more customization of entity caching (for example, you want to cache using [Redis](https://redis.io/)), you can create a new class implementing @TehGM.Wolfringo.Caching.IWolfClientCache interface. This abstraction requires a few components:
 - *OnMessageSentAsync()* - invoked when @TehGM.Wolfringo.IWolfClient has sent a message and has received a server response. You can use it to cache entities sent by the server in a response. *Note: if the response indicated an error, this method will not be called*.
-- *OnMessageReceivedAsync* - invoked when @TehGM.Wolfringo.IWolfClient has received a new event or message from the server. You can use it to cache entities sent by the server.
-- *Clear()* - called by the client when it disconnects from WOLF server to clear all caches.
+- *OnMessageReceivedAsync()* - invoked when @TehGM.Wolfringo.IWolfClient has received a new event or message from the server. You can use it to cache entities sent by the server.
+- *OnConnectingAsync()* - invoked before @TehGM.Wolfringo.IWolfClient establishes connection to the server.
+- *OnDisconnected()* - invoked when @TehGM.Wolfringo.IWolfClient has disconnected from the server.
 - A few methods to retrieve specific entities from the cache - see @TehGM.Wolfringo.Caching.IWolfClientCacheAccessor.
 
 Once your custom class is finished, you need to register it with @TehGM.Wolfringo.WolfClientBuilder as explained in [Introduction](xref:Guides.Customizing.Intro).

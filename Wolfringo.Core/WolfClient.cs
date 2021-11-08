@@ -175,17 +175,18 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         /// <param name="device">Device to connect as.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
-        public Task ConnectAsync(WolfDevice device, CancellationToken cancellationToken = default)
+        public async Task ConnectAsync(WolfDevice device, CancellationToken cancellationToken = default)
         {
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            Log?.LogDebug("Connecting");
+            this.Log?.LogDebug("Connecting");
             this.Clear();
+            await this.Cache.OnConnectingAsync(this, cancellationToken).ConfigureAwait(false);
             this._connectionCts = new CancellationTokenSource();
-            return SocketClient.ConnectAsync(
+            await this.SocketClient.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket"),
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -213,7 +214,6 @@ namespace TehGM.Wolfringo
             try { this._connectionCts?.Dispose(); } catch { }
             this._connectionCts = null;
             this.CurrentUserID = null;
-            this.Cache?.Clear();
         }
         #endregion
 
@@ -470,6 +470,7 @@ namespace TehGM.Wolfringo
                 Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseMessage ?? "-");
 
             this.Clear();
+            this.Cache?.OnDisconnected(this, e);
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
 

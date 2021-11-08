@@ -7,6 +7,7 @@ using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
+using TehGM.Wolfringo.Socket;
 
 namespace TehGM.Wolfringo.Caching.Internal
 {
@@ -144,6 +145,17 @@ namespace TehGM.Wolfringo.Caching.Internal
         }
 
         void IDisposable.Dispose()
+            => this.Clear();
+
+        /// <inheritdoc/>
+        public Task OnConnectingAsync(IWolfClient client, CancellationToken cancellationToken = default)
+        {
+            this.Clear();
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public void OnDisconnected(IWolfClient client, SocketClosedEventArgs e)
             => this.Clear();
 
         #region MESSAGE READING

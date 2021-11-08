@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization;
+using TehGM.Wolfringo.Socket;
 
 namespace TehGM.Wolfringo.Caching
 {
@@ -23,8 +24,13 @@ namespace TehGM.Wolfringo.Caching
         /// <param name="rawMessage">Raw received message.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
         Task OnMessageReceivedAsync(IWolfClient client, IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default);
-        /// <summary>Clear all caches.</summary>
-        /// <remarks>This method can be called by <see cref="IWolfClient"/> multiple times in a row.</remarks>
-        void Clear();
+        /// <summary>Invoked when client is about to connect to the server.</summary>
+        /// <param name="client">WOLF client that is connecting to the server.</param>
+        /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
+        Task OnConnectingAsync(IWolfClient client, CancellationToken cancellationToken = default);
+        /// <summary>Invoked when the client has disconnected from the server.</summary>
+        /// <param name="client">WOLF client that has disconnected from the server.</param>
+        /// <param name="e">Event args raised when connection was closed.</param>
+        void OnDisconnected(IWolfClient client, SocketClosedEventArgs e);
     }
 }
