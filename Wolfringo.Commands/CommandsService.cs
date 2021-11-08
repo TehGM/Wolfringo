@@ -30,7 +30,6 @@ namespace TehGM.Wolfringo.Commands
         private readonly IWolfClient _client;
         private readonly CommandsOptions _options;
         private readonly IServiceProvider _services;
-        private readonly IServiceProvider _fallbackServices;
         private readonly ICommandsHandlerProvider _handlerProvider;
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
