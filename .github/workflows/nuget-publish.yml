@@ -48,10 +48,10 @@ jobs:
         run: dotnet sln remove Examples/**
       - name: Install dependencies
         run: dotnet restore
-      - name: Setup latest NuGet version
+      - name: Setup latest NuGet preview version
         uses: NuGet/setup-nuget@v1.0.5
         with:
-          nuget-version: 'latest'
+          nuget-version: 'preview'
       
       # Publish each package
       - name: Publish Wolfringo.Core
