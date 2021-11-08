@@ -33,12 +33,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IWolfTokenProvider>(provider
                 => new HostedWolfTokenProvider(provider.GetRequiredService<IOptionsMonitor<HostedWolfClientOptions>>(), new RandomizedWolfTokenProvider()));
             services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
-            services.TryAdd(ServiceDescriptor.Singleton<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
-                => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
-            services.TryAdd(ServiceDescriptor.Singleton<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
-                => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value)));
-            services.TryAdd(ServiceDescriptor.Singleton<IWolfClientCache, WolfClientCache>(provider
-                => new WolfClientCache(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfClientCache>())));
+            services.TryAddSingleton<ISerializerProvider<string, IMessageSerializer>>(provider
+                => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value));
+            services.TryAddSingleton<ISerializerProvider<Type, IResponseSerializer>>(provider
+                => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value));
+            services.TryAddSingleton<IWolfClientCache>(provider
+                => new WolfClientCache(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfClientCache>()));
             services.TryAddTransient<WolfCacheOptions>(provider
                 => provider.GetRequiredService<IOptionsMonitor<WolfCacheOptions>>().CurrentValue);
 
