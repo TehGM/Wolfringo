@@ -8,9 +8,9 @@
         /// <returns>Serialized message data.</returns>
         SerializedMessageData Serialize(IWolfMessage message);
         /// <summary>Deserializes a message.</summary>
-        /// <param name="command">Message command.</param>
+        /// <param name="eventName">Message command.</param>
         /// <param name="messageData">Serialized message data.</param>
         /// <returns>Deserialized message.</returns>
-        IWolfMessage Deserialize(string command, SerializedMessageData messageData);
+        IWolfMessage Deserialize(string eventName, SerializedMessageData messageData);
     }
 }

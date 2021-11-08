@@ -1,34 +1,39 @@
 ﻿using System;
+using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Results
 {
     /// <summary>Represents results of a check whether a Standard Command should run.</summary>
-    public struct StandardCommandMatchResult : ICommandResult
+    public class StandardCommandMatchResult : ICommandResult
     {
         /// <inheritdoc/>
-        public bool IsSuccess { get; }
-        /// <summary>Found arguments.</summary>
-        public string[] Arguments { get; }
+        [Obsolete("Use Status property instead.")]
+        public bool IsSuccess => this.Status == CommandResultStatus.Success;
+        /// <summary>String containing un-parsed arguments.</summary>
+        public string ArgumentsText { get; }
         /// <inheritdoc/>
-        public Exception Exception { get; }
+        public CommandResultStatus Status { get; }
+        /// <summary>Options for command context, with command's overrides applied.</summary>
+        public CommandContextOptions Options { get; }
 
         /// <summary>Creates a new result instance.</summary>
-        /// <param name="isSuccess">Whether check was successful.</param>
-        /// <param name="arguments">Found arguments.</param>
-        /// <param name="exception">Exception that occured.</param>
-        public StandardCommandMatchResult(bool isSuccess, string[] arguments, Exception exception)
+        /// <param name="status">Status telling Command Service how to proceed.</param>
+        /// <param name="argumentsText">Found arguments.</param>
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
+        public StandardCommandMatchResult(CommandResultStatus status, string argumentsText, CommandContextOptions options)
         {
-            this.IsSuccess = isSuccess;
-            this.Arguments = arguments;
-            this.Exception = exception;
+            this.Status = status;
+            this.ArgumentsText = argumentsText;
+            this.Options = options;
         }
 
         /// <summary>Shared failure result.</summary>
-        public static readonly StandardCommandMatchResult Failure = new StandardCommandMatchResult(false, null, null);
+        public static readonly StandardCommandMatchResult Skip = new StandardCommandMatchResult(CommandResultStatus.Skip, null, null);
 
         /// <summary>Creates a success result.</summary>
-        /// <param name="arguments">Found arguments.</param>
-        public static StandardCommandMatchResult Success(string[] arguments)
-            => new StandardCommandMatchResult(true, arguments, null);
+        /// <param name="argumentsText">Found arguments.</param>
+        /// <param name="options">Options for command context, with command's overrides applied.</param>
+        public static StandardCommandMatchResult Success(string argumentsText, CommandContextOptions options)
+            => new StandardCommandMatchResult(CommandResultStatus.Success, argumentsText, options);
     }
 }

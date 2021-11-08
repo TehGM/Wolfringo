@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -14,6 +13,7 @@ using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Commands.Parsing;
 using Microsoft.Extensions.DependencyInjection;
 using TehGM.Wolfringo.Messages.Responses;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -40,82 +40,109 @@ namespace TehGM.Wolfringo.Commands
         private readonly ILogger _log;
         private readonly CancellationTokenSource _cts;
 
-        private readonly ICollection<IDisposable> _disposableServices;
+        private readonly DisposableServicesHandler _disposablesHandler;
         private bool _started;
         private readonly SemaphoreSlim _lock;
         private readonly IDictionary<ICommandInstanceDescriptor, ICommandInstance> _commands;
 
+        /// <inheritdoc/>
+        public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Keys;
+
         /// <summary>Initializes a command service.</summary>
         /// <param name="client">WOLF client. Required.</param>
         /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
-        /// <param name="services">Services provider that will be used by all commands. Null will cause a backup provider to be used.</param>
+        [Obsolete("Use CommandsServiceBuilder instead")]
+        public CommandsService(IWolfClient client, CommandsOptions options)
+            : this(client, options, null) { }
+
+        /// <summary>Initializes a command service.</summary>
+        /// <param name="client">WOLF client. Required.</param>
+        /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
-        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, ILogger log, IServiceProvider services = null, CancellationToken cancellationToken = default)
+        [Obsolete("Use CommandsServiceBuilder instead")]
+        public CommandsService(IWolfClient client, CommandsOptions options, ILogger log)
+            : this(BuildDefaultServiceProvider(client, options, log), options) { }
+
+        /// <summary>Initializes a command service.</summary>
+        /// <param name="services">Service provider to resolve dependencies from</param>
+        /// <param name="options">Commands options to use for all commands.</param>
+        public CommandsService(IServiceProvider services, CommandsOptions options)
         {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
             // init private
+            this._options = options;
             this._commands = new Dictionary<ICommandInstanceDescriptor, ICommandInstance>();
             this._lock = new SemaphoreSlim(1, 1);
-            this._cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            this._disposableServices = new List<IDisposable>(2);
+            this._cts = CancellationTokenSource.CreateLinkedTokenSource(this._options.CancellationToken);
+            this._disposablesHandler = services.GetService<DisposableServicesHandler>() ?? new DisposableServicesHandler();
             this._started = false;
+            this._services = services;
 
-            // init required
-            this._client = client ?? services?.GetService<IWolfClient>() ?? throw new ArgumentNullException(nameof(client));
-            this._options = options ?? services?.GetService<CommandsOptions>() ?? throw new ArgumentNullException(nameof(options));
-
-            // init optionals
-            this._log = log ?? services?.GetService<ILogger<CommandsService>>() ?? services?.GetService<ILogger<ICommandsService>>() ?? services.GetService<ILogger>();
-            this._argumentConverterProvider = services?.GetService<IArgumentConverterProvider>() ?? CreateAsDisposable<ArgumentConverterProvider>();
-            this._handlerProvider = services?.GetService<ICommandsHandlerProvider>() ?? CreateAsDisposable<CommandsHandlerProvider>();
-            this._argumentsParser = services?.GetService<IArgumentsParser>() ?? new ArgumentsParser();
-            this._parameterBuilder = services?.GetService<IParameterBuilder>() ?? new ParameterBuilder();
-            this._initializers = services?.GetService<ICommandInitializerProvider>() ?? new CommandInitializerProvider();
-            this._commandsLoader = services?.GetService<ICommandsLoader>() ?? new CommandsLoader(this._initializers, this._log);
-
-            // init service provider - use combine, to use fallback one as well
-            this._fallbackServices = this.CreateFallbackServiceProvider();
-            this._services = CombinedServiceProvider.Combine(services, this._fallbackServices);
+            // init services
+            this._client = this._disposablesHandler.GetRequiredService<IWolfClient>(services);
+            this._argumentConverterProvider = this._disposablesHandler.GetRequiredService<IArgumentConverterProvider>(services);
+            this._handlerProvider = this._disposablesHandler.GetRequiredService<ICommandsHandlerProvider>(services);
+            this._argumentsParser = this._disposablesHandler.GetRequiredService<IArgumentsParser>(services);
+            this._parameterBuilder = this._disposablesHandler.GetRequiredService<IParameterBuilder>(services);
+            this._initializers = this._disposablesHandler.GetRequiredService<ICommandInitializerProvider>(services);
+            this._commandsLoader = this._disposablesHandler.GetRequiredService<ICommandsLoader>(services);
+            this._log = services.GetService<ILogger<CommandsService>>()
+                ?? services.GetService<ILogger<ICommandsService>>()
+                ?? services.GetService<ILogger>()
+                ?? services.GetService<ILoggerFactory>()?.CreateLogger<CommandsService>();
 
             // register event handlers
             this._client.AddMessageListener<ChatMessage>(OnMessageReceived);
         }
 
-        /// <summary>Initializes a command service.</summary>
-        /// <param name="client">WOLF client. Required.</param>
-        /// <param name="options">Commands options that will be used as default when running a command. Required.</param>
-        /// <param name="services">Services provider that will be used by all commands. Null will cause a default to be used.</param>
-        /// <param name="cancellationToken">Cancellation token that can be used for cancelling all tasks.</param>
-        public CommandsService(IWolfClient client, CommandsOptions options, IServiceProvider services = null, CancellationToken cancellationToken = default)
-            : this(client, options, null, services, cancellationToken) { }
-
-        private T CreateAsDisposable<T>() where T : IDisposable, new()
+        /// <summary>Builds default service provider. Used to temporarily support obsolete non-builder constructors.</summary>
+        /// <param name="client">Wolf Client to use with CommandsService.</param>
+        /// <param name="options">Options for commands service.</param>
+        /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
+        /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
+        protected static IServiceProvider BuildDefaultServiceProvider(IWolfClient client, CommandsOptions options, ILogger log = null)
         {
-            T result = new T();
-            this._disposableServices.Add(result);
-            return result;
-        }
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
 
-        private IServiceProvider CreateFallbackServiceProvider()
-        {
-            IDictionary<Type, object> servicesMap = new Dictionary<Type, object>
+            // add all required services
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<IWolfClient>(client);
+            services.AddSingleton(client.GetType(), client);
+            services.AddSingleton<CommandsOptions>(options);
+            services.AddSingleton<ICommandOptions>(provider => provider.GetRequiredService<CommandsOptions>());
+            services.AddTransient<IArgumentsParser, ArgumentsParser>();
+            services.AddTransient<IParameterBuilder, ParameterBuilder>();
+            services.AddSingleton<IArgumentConverterProvider, ArgumentConverterProvider>();
+            services.AddSingleton<ICommandsHandlerProvider, CommandsHandlerProvider>();
+            services.AddSingleton<ICommandInitializerProvider, CommandInitializerProvider>();
+            services.AddTransient<ICommandsLoader>(provider 
+                => new CommandsLoader(provider.GetRequiredService<ICommandInitializerProvider>(), 
+                provider.GetLoggerFor<CommandsLoader>()));
+
+            if (log != null)
             {
-                { typeof(IWolfClient), this._client },
-                { this._client.GetType(), this._client },
-                { typeof(CommandsOptions), this._options },
-                { typeof(IArgumentsParser), this._argumentsParser },
-                { this._argumentsParser.GetType(), this._argumentsParser },
-                { typeof(IArgumentConverterProvider), this._argumentConverterProvider },
-                { this._argumentConverterProvider.GetType(), this._argumentConverterProvider },
-                { typeof(IParameterBuilder), this._parameterBuilder },
-                { this._parameterBuilder.GetType(), this._parameterBuilder }
-            };
-            if (this._log != null)
-            {
-                servicesMap.Add(typeof(ILogger), this._log);
-                servicesMap.Add(this._log.GetType(), this._log);
+                if (log is ILogger<CommandsService> typedLog)
+                    services.AddSingleton<ILogger<CommandsService>>(typedLog);
+                else if (log is ILogger<ICommandsService> interfaceTypedLog)
+                    services.AddSingleton<ILogger<ICommandsService>>(interfaceTypedLog);
+                services.AddSingleton<ILogger>(log);
             }
-            return new SimpleServiceProvider(servicesMap);
+
+            // add tracker to know to dispose them
+            DisposableServicesHandler handler = new DisposableServicesHandler();
+            handler.MarkForDisposal<IArgumentConverterProvider>();
+            handler.MarkForDisposal<ICommandsHandlerProvider>();
+            handler.MarkForDisposal<ICommandInitializerProvider>();
+            services.AddSingleton<DisposableServicesHandler>(handler);
+
+            return services.BuildServiceProvider();
         }
 
         /// <inheritdoc/>
@@ -136,9 +163,17 @@ namespace TehGM.Wolfringo.Commands
                     IEnumerable<ICommandInstanceDescriptor> descriptors = await _commandsLoader.LoadFromAssembliesAsync(_options.Assemblies ?? Enumerable.Empty<Assembly>(), cts.Token).ConfigureAwait(false);
                     descriptors = descriptors.Union(await _commandsLoader.LoadFromTypesAsync(_options.Classes.Select(t => t.GetTypeInfo()) ?? Enumerable.Empty<TypeInfo>(), cts.Token).ConfigureAwait(false));
 
+                    // add default help command if enabled
+                    if (this._options.EnableDefaultHelpCommand)
+                    {
+                        this._log?.LogTrace("Default help command is enabled, loading");
+                        descriptors = descriptors.Union(await _commandsLoader.LoadFromMethodAsync(
+                            typeof(Help.DefaultHelpCommandHandler).GetMethod(nameof(Help.DefaultHelpCommandHandler.CmdHelpAsync), BindingFlags.Instance | BindingFlags.Public), cts.Token).ConfigureAwait(false));
+                    }
+
                     // make sure there's no duplicates
                     descriptors = descriptors.Distinct();
-
+                    
                     // for each loaded command, handle pre-initialization and caching
                     foreach (ICommandInstanceDescriptor descriptor in descriptors)
                     {
@@ -189,8 +224,8 @@ namespace TehGM.Wolfringo.Commands
         public async Task<ICommandResult> ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
         {
             ICommandResult result = await ExecuteAsyncInternal(context, cancellationToken).ConfigureAwait(false);
-            if (result.Exception != null)
-                ExceptionDispatchInfo.Capture(result.Exception).Throw();
+            if (result is CommandExecutionResult execResult && execResult.Exception != null)
+                ExceptionDispatchInfo.Capture(execResult.Exception).Throw();
             return result;
         }
 
@@ -207,8 +242,7 @@ namespace TehGM.Wolfringo.Commands
                 try
                 {
                     // order commands by priority
-                    // try to get from concrete Descriptor if possible, as it should be precached and avoid additional reflection and thus faster
-                    commandsCopy = this._commands.OrderByDescending(kvp => (kvp.Key is CommandInstanceDescriptor cid) ? cid.Priority : kvp.Key.GetPriority());
+                    commandsCopy = this._commands.OrderByDescending(kvp => kvp.Key.GetPriority());
                 }
                 finally
                 {
@@ -217,11 +251,7 @@ namespace TehGM.Wolfringo.Commands
 
                 using (IServiceScope serviceScope = this._services.CreateScope())
                 {
-                    // Because scope won't have fallback services, and commands might need them, combine scope with fallback services
-                    // TODO: think of a nicer way to solve fallback services problem - I don't like it as it is now
                     IServiceProvider services = serviceScope.ServiceProvider;
-                    if (!object.ReferenceEquals(services, this._fallbackServices))
-                        services = CombinedServiceProvider.Combine(serviceScope.ServiceProvider, this._fallbackServices);
 
                     foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
                     {
@@ -236,7 +266,7 @@ namespace TehGM.Wolfringo.Commands
 
                                 // check if the command should run at all - if not, skip
                                 ICommandResult matchResult = await instance.CheckMatchAsync(context, services, cts.Token).ConfigureAwait(false);
-                                if (!matchResult.IsSuccess)
+                                if (matchResult.Status != CommandResultStatus.Success)
                                     continue;
 
                                 // initialize handler
@@ -252,16 +282,13 @@ namespace TehGM.Wolfringo.Commands
 
                                 // execute the command
                                 ICommandResult executeResult = await instance.ExecuteAsync(context, services, matchResult, handlerResult.HandlerInstance, cts.Token).ConfigureAwait(false);
-                                if (executeResult.Exception != null)
-                                {
-                                    this._log?.LogError(executeResult.Exception, "Exception when executing command {Name} from handler {Handler}", command.Method.Name, command.GetHandlerType().Name);
-                                    return executeResult;
-                                }
                                 if (executeResult is IMessagesCommandResult messagesResult && messagesResult.Messages?.Any() == true)
                                 {
                                     this._log?.LogTrace("Sending command results messages as a command response");
                                     await context.ReplyTextAsync(string.Join("\n", messagesResult.Messages), cts.Token).ConfigureAwait(false);
                                 }
+                                if (executeResult.Status == CommandResultStatus.Skip)
+                                    continue;
                                 return executeResult;
                             }
                             // special error case: operation canceled
@@ -344,12 +371,9 @@ namespace TehGM.Wolfringo.Commands
             try { this._cts?.Dispose(); } catch { }
             // dispose all command instances and descriptors that implement IDisposable
             this.DisposeCommands();
-            // dispose services that were not provided with service provider
-            foreach (IDisposable disposable in this._disposableServices)
-                disposable?.Dispose();
-            this._disposableServices.Clear();
+            this._disposablesHandler?.Dispose();
             // dispose semaphore
-            try { _lock?.Dispose(); } catch { }
+            try { this._lock?.Dispose(); } catch { }
         }
 
         private void DisposeCommands()

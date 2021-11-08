@@ -5,6 +5,8 @@
   topicUid: API
 - name: FAQ
   topicUid: FAQ
+- name: Upgrade Guides
+  topicUid: Upgrading.Introduction
 - name: Changelog
   href: https://github.com/TehGM/Wolfringo/releases
 - name: Examples

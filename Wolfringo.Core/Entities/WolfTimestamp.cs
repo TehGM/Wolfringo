@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
@@ -9,6 +10,7 @@ namespace TehGM.Wolfringo
     /// <remarks>This type is designed to provide easy and out-of-the-box conversions between WOLF Timestamp long format and DateTime.</remarks>
     [JsonConverter(typeof(WolfTimestampConverter))]
     [TypeConverter(typeof(WolfTimestampTypeConverter))]
+    [DebuggerDisplay("{_value,nq}")]
     public struct WolfTimestamp : IEquatable<WolfTimestamp>, IEquatable<DateTime>, IEquatable<long>, IComparable<WolfTimestamp>, IComparable<DateTime>, IComparable<long>, IConvertible
     {
         /// <summary>Unix Epoch.</summary>

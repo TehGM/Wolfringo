@@ -102,8 +102,10 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 {
                     if (ParameterBuilder.TryGetService(param.ParameterType, services, out value)) { }
                     else if (ParameterBuilder.TryGetGenericLogger(param.ParameterType, services, out value)) { }
+                    else if (param.HasDefaultValue)
+                        value = param.DefaultValue ?? null;
                     else if (param.IsOptional)
-                        value = param.HasDefaultValue ? param.DefaultValue : null;
+                        value = Type.Missing;
                     else
                         return false;
 

@@ -13,6 +13,69 @@ using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Utilities;
 ```
 
+### Create Client
+Inside of Program class, add a new variable to store your bot client in:
+```csharp
+class Program
+{
+    private static IWolfClient _client;
+}
+```
+
+Modify your Main method and add a new MainAsync method:
+> Note: this step can be skipped if you're using C# 7.1 or later - in such case, simply [change return type of Main from `void` to `Task`](https://docs.microsoft.com/en-gb/dotnet/csharp/whats-new/csharp-7#async-main).
+```csharp
+static void Main(string[] args)
+{
+    MainAsync(args).GetAwaiter().GetResult();
+}
+
+static async Task MainAsync(string[] args)
+{
+    // other startup code will go here!
+}
+
+```
+
+Now we need to do a few things - create a WolfClient instance using a builder, register event listeners, connect the bot, and prevent application from exiting. To do this, you can use following code inside of your MainAsync method:
+```csharp
+// create client and listen to events we're interested in
+_client = new WolfClientBuilder().Build();
+// these will show error for now - don't worry, we'll handle that in a moment!
+_client.AddMessageListener<WelcomeEvent>(OnWelcome);
+_client.AddMessageListener<ChatMessage>(OnChatMessage);
+
+// start connection and prevent the application from closing
+await _client.ConnectAsync();
+await Task.Delay(-1);
+```
+
+AddMessageListener is a method to add event listener for receiving messages and events. It takes a generic parameter and a callback as normal parameter. It'll call callback when a received message is of type specified by generic parameter - for example, in the code above, OnWelcome will be called when @TehGM.Wolfringo.Messages.WelcomeEvent is received, and OnChatMessage when @TehGM.Wolfringo.Messages.ChatMessage is received.  
+Wolfringo contains many message types - check @TehGM.Wolfringo.Messages to check out others!
+
+> [!NOTE]
+> It is recommended that you enable logging as well - check [Logging guide](xref:Guides.Features.Logging) to see how!
+
+#### Make the bot reconnect automatically
+We already have all code to get bot started, but it won't reconnect automatically - and WOLF protocol forces disconnection eveyr hour. Not good!  
+But don't worry - there's an easy way to enable automatic reconnection.
+
+[Wolfringo.Utilities](https://www.nuget.org/packages/Wolfringo.Utilities) package (installed by default when you install [Wolfringo](https://www.nuget.org/packages/Wolfringo) metapackage) has an utility class called @TehGM.Wolfringo.Utilities.WolfClientReconnector. This class is 'outside' of WolfClient because that makes this class implementation independent.
+
+To enable @TehGM.Wolfringo.Utilities.WolfClientReconnector the easy way, you can simply add it to the builder:
+```csharp
+_client = new WolfClientBuilder()
+    .WithAutoReconnection(reconnector =>
+    {
+        // by default, ReconnectorConfig will retry 5 times - here we change it to -1, which makes it infinite
+        reconnector.ReconnectAttempts = -1;
+    })
+    .Build();
+```
+
+> [!TIP]
+> Pro tip: Check out [Reconnecting guide](xref:Guides.Features.Reconnection) for more details.
+
 ### Add event listeners
 There are numerous events that can come from WolfClient, but the most important are when server sends "Welcome" (which is the place to login the bot) and when bot receives a chat message. To handle them, let's add 2 new event listener methods to Program class.
 
@@ -42,117 +105,8 @@ private static async void OnChatMessage(ChatMessage message)
 }
 ```
 
-### Connect the bot
-With event listener methods ready, it's time to make our bot actually connect. Inside of Program class, add a new variable to store your bot client in:
-```csharp
-class Program
-{
-    private static IWolfClient _client;
-}
-```
-
-Modify your Main method and add a new MainAsync method:
-> Note: this step can be skipped if you're using C# 7.1 or later - in such case, simply [change return type of Main from `void` to `Task`](https://docs.microsoft.com/en-gb/dotnet/csharp/whats-new/csharp-7#async-main).
-```csharp
-static void Main(string[] args)
-{
-    MainAsync(args).GetAwaiter().GetResult();
-}
-
-static async Task MainAsync(string[] args)
-{
-    // other startup code will go here!
-}
-
-```
-
-Now we need to do a few things - create a WolfClient instance, register event listeners, connect the bot, and prevent application from exiting. To do this, you can use following code inside of your MainAsync method:
-```csharp
-// create client and listen to events we're interested in
-_client = new WolfClient(log);
-_client.AddMessageListener<WelcomeEvent>(OnWelcome);
-_client.AddMessageListener<ChatMessage>(OnChatMessage);
-
-// start connection and prevent the application from closing
-await _client.ConnectAsync();
-await Task.Delay(-1);
-```
-
-AddMessageListener is a method to add event listener for receiving messages and events. It takes a generic parameter and a callback as normal parameter. It'll call callback when a received message is of type specified by generic parameter - for example, in the code above, OnWelcome will be called when @TehGM.Wolfringo.Messages.WelcomeEvent is received, and OnChatMessage when @TehGM.Wolfringo.Messages.ChatMessage is received.  
-Wolfringo contains many message types - check @TehGM.Wolfringo.Messages to check out others!
-
-### Make the bot reconnect automatically
-We already have all code to get bot working, but it won't reconnect automatically - and WOLF protocol forces disconnection eveyr hour. Not good!  
-But don't worry - there's an easy way to enable automatic reconnection.
-
-[Wolfringo.Utilities](https://www.nuget.org/packages/Wolfringo.Utilities) package (installed by default when you install [Wolfringo](https://www.nuget.org/packages/Wolfringo) metapackage) has an utility class called @TehGM.Wolfringo.Utilities.WolfClientReconnector. This class is 'outside' of WolfClient because that makes this class implementation independent.
-
-To enable @TehGM.Wolfringo.Utilities.WolfClientReconnector, simply add this code to your MainAsync - just after you create WolfClient, but before you ConnectAsync() it:
-```csharp
-ReconnectorConfig reconnectorConfig = new ReconnectorConfig();
-reconnectorConfig.ReconnectAttempts = -1;       // by default, ReconnectorConfig will retry 5 times - here we change it to -1, which makes it infinite
-WolfClientReconnector reconnector = new WolfClientReconnector(_client, reconnectorConfig);
-```
-
-> [!TIP]
-> Pro tip: Check out [Reconnecting guide](xref:Guides.Features.Reconnection) for more details.
-
-
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
-### Add event listeners
-To handle WolfClient events, we need a handler class. Let's create add a new class called `HostedMessageHandler` to our project. Once the class is created, add following using directives:
-```csharp
-using TehGM.Wolfringo;
-using TehGM.Wolfringo.Messages;
-using TehGM.Wolfringo.Utilities;
-```
-
-There are numerous events that can come from WolfClient, but the most important are when server sends "Welcome" (which is the place to login the bot) and when bot receives a chat message. Handling Welcome is handled by @TehGM.Wolfringo.Hosting.HostedWolfClient automatically by default, but we still need to handle received message to determine what to do. To do so, let's add a simple event listener to our `HostedMessageHandler`:
-```csharp
-// this method will be called whenever the bot receives a message in chat
-// see Commands System guides to check how implement proper commands, without using this listener at all
-private async void OnChatMessage(ChatMessage message)
-{
-    // reply only to private text messages that start with "!mybot hello"
-    if (message.IsText && message.Text.StartsWith("!mybot hello", StringComparison.OrdinalIgnoreCase))
-    {
-        await _client.ReplyTextAsync(message, "Hello there!!!");
-    }
-}
-```
-
-Now we need to grab our client instance, and register the listener. To do it in .NET Generic Host, we'll use [Constructor Dependency Injection](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection). Add following variable and constructor for your `HostedMessageHandler`:
-```csharp
-private readonly IWolfClient _client;
-
-// can also be IWolfClient
-public HostedMessageHandler(IWolfClient client)
-{
-    this._client = client;
-    this._client.AddMessageListener<ChatMessage>(OnChatMessage);
-}
-```
-AddMessageListener is a method to add event listener for receiving messages and events. It takes a generic parameter and a callback as normal parameter. It'll call callback when a received message is of type specified by generic parameter - for example, in the code above, OnChatMessage when @TehGM.Wolfringo.Messages.ChatMessage is received.  
-Wolfringo contains many message types - check @TehGM.Wolfringo.Messages to check out others!
-
-With this in place, IDE should stop complaining, and class should be functional. However, it's never started. To get it to start on application startup, we need to implement @Microsoft.Extensions.Hosting.IHostedService:
-```csharp
-public class HostedMessageHandler : IHostedService
-{
-    // .. 
-    // ... all other code here ...
-    // ..
-
-    // Implementing IHostedService ensures this class is created on start
-    Task IHostedService.StartAsync(CancellationToken cancellationToken)
-        => Task.CompletedTask;
-    Task IHostedService.StopAsync(CancellationToken cancellationToken)
-        => Task.CompletedTask;
-}
-```
-
-### Connect the bot
-Our Message Handler class is ready, now we can update our ConfigureServices method. The way it's done depends on whether you created an ASP.NET Core project or not.
+Adding WolfClient is done in ConfigureServices method. The way it's done depends on whether you created an ASP.NET Core project or not.
 
 #### ASP.NET Core - with Startup.cs
 If your project used some of ASP.NET Core templates, most likely it'll already have a generated Startup.cs file. Let's add following using directives on top of Startup.cs:
@@ -227,6 +181,64 @@ services.AddWolfClient()
 ```
 > [!TIP]
 > Pro tip: Check out [Reconnecting guide](xref:Guides.Features.Reconnection) for more details.
+
+
+### Add event listeners
+To handle WolfClient events, we need a handler class. Let's create add a new class called `HostedMessageHandler` to our project. Once the class is created, add following using directives:
+```csharp
+using TehGM.Wolfringo;
+using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Utilities;
+```
+
+There are numerous events that can come from WolfClient, but the most important are when server sends "Welcome" (which is the place to login the bot) and when bot receives a chat message. Handling Welcome is handled by @TehGM.Wolfringo.Hosting.HostedWolfClient automatically by default, but we still need to handle received message to determine what to do. To do so, let's add a simple event listener to our `HostedMessageHandler`:
+```csharp
+// this method will be called whenever the bot receives a message in chat
+// see Commands System guides to check how implement proper commands, without using this listener at all
+private async void OnChatMessage(ChatMessage message)
+{
+    // reply only to private text messages that start with "!mybot hello"
+    if (message.IsText && message.Text.StartsWith("!mybot hello", StringComparison.OrdinalIgnoreCase))
+    {
+        await _client.ReplyTextAsync(message, "Hello there!!!");
+    }
+}
+```
+
+Now we need to grab our client instance, and register the listener. To do it in .NET Generic Host, we'll use [Constructor Dependency Injection](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection). Add following variable and constructor for your `HostedMessageHandler`:
+```csharp
+private readonly IWolfClient _client;
+
+// can also be IWolfClient
+public HostedMessageHandler(IWolfClient client)
+{
+    this._client = client;
+    this._client.AddMessageListener<ChatMessage>(OnChatMessage);
+}
+```
+AddMessageListener is a method to add event listener for receiving messages and events. It takes a generic parameter and a callback as normal parameter. It'll call callback when a received message is of type specified by generic parameter - for example, in the code above, OnChatMessage when @TehGM.Wolfringo.Messages.ChatMessage is received.  
+Wolfringo contains many message types - check @TehGM.Wolfringo.Messages to check out others!
+
+With this in place, IDE should stop complaining, and class should be functional. However, it's never started. To get it to start on application startup, we need to implement @Microsoft.Extensions.Hosting.IHostedService:
+```csharp
+public class HostedMessageHandler : IHostedService
+{
+    // .. 
+    // ... all other code here ...
+    // ..
+
+    // Implementing IHostedService ensures this class is created on start
+    Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+    Task IHostedService.StopAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+}
+```
+
+Now we can add this to ConfigureServices method:
+```csharp
+services.AddHostedService<HostedMessageHandler>();
+```
 ***
 
 

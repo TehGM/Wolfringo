@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 #if !NETCOREAPP3_0
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TehGM.Wolfringo.Commands;
+using TehGM.Wolfringo.Commands.Initialization;
 using TehGM.Wolfringo.Utilities;
 
 namespace TehGM.Wolfringo.Hosting.Commands
@@ -34,17 +36,18 @@ namespace TehGM.Wolfringo.Hosting.Commands
         private readonly ILogger _log;
 
         // services for underlying commands service
-        private readonly IWolfClient _client;
         private readonly IOptionsMonitor<CommandsOptions> _options;
         private readonly IServiceProvider _services;
 
+        /// <inheritdoc/>
+        public IEnumerable<ICommandInstanceDescriptor> Commands => this._commands.Commands;
+
         /// <summary>Creates a new hosted commands service.</summary>
-        /// <param name="client">WOLF client.</param>
         /// <param name="options">Commands options that will be used as default when running a command.</param>
         /// <param name="services">Services provider that will be used by all commands.</param>
         /// <param name="hostLifetime">Host lifetime that will be used to dispose service when application is exiting.</param>
         /// <param name="log">Logger used by hosted commands service.</param>
-        public HostedCommandsService(IWolfClient client, IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ILogger<HostedCommandsService> log,
+        public HostedCommandsService(IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ILogger<HostedCommandsService> log,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
@@ -52,7 +55,6 @@ namespace TehGM.Wolfringo.Hosting.Commands
 #endif
             )
         {
-            this._client = client;
             this._options = options;
             this._services = services;
             this._log = log;
@@ -89,18 +91,15 @@ namespace TehGM.Wolfringo.Hosting.Commands
             this.DisposeCommandsService();
 
             this._log?.LogTrace("Creating underlying commands service");
-            this._commands = new CommandsService(
-                this._client,
-                this._options.CurrentValue,
-                this._services);
+            this._commands = new CommandsService(this._services, this._options.CurrentValue);
         }
 
         /// <inheritdoc/>
-        Task<ICommandResult> ICommandsService.ExecuteAsync(ICommandContext context, CancellationToken cancellationToken = default)
+        Task<ICommandResult> ICommandsService.ExecuteAsync(ICommandContext context, CancellationToken cancellationToken)
             => this._commands.ExecuteAsync(context, cancellationToken);
 
         /// <inheritdoc/>
-        async Task ICommandsService.StartAsync(CancellationToken cancellationToken = default)
+        async Task ICommandsService.StartAsync(CancellationToken cancellationToken)
         {
             using (CancellationTokenSource startingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
             {

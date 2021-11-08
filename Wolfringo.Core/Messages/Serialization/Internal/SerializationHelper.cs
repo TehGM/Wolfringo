@@ -97,6 +97,55 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             target.Add(new JProperty(propertyName, value));
         }
 
+        /// <summary>Adds a new JProperty at given JsonPath. Note that only dot-notated child syntax is currently supported.</summary>
+        /// <param name="targetObject">The <see cref="JObject"/> to add property to.</param>
+        /// <param name="jsonPath">The JsonPath of the new property.</param>
+        /// <param name="content">The property content.</param>
+        /// <returns>The created <see cref="JProperty"/>.</returns>
+        public static JProperty AddAtPath(this JObject targetObject, string jsonPath, object content)
+        {
+            if (jsonPath[0] == '$' && jsonPath[1] == '.')
+                jsonPath = jsonPath.Substring(2);
+            return targetObject.AddAtPath(jsonPath.Split('.'), content);
+        }
+
+        private static JProperty AddAtPath(this JObject targetObject, IEnumerable<string> jsonPath, object content)
+        {
+            // fail case - property name is required
+            if (jsonPath?.Any() != true)
+                throw new ArgumentException("At least one path segment is required.", nameof(jsonPath));
+
+            int segmentsCount = jsonPath.Count();
+            string name = jsonPath.First();
+            JProperty result;
+            // simple case - no further nesting, just create
+            if (segmentsCount == 1)
+            {
+                result = new JProperty(name, content);
+                targetObject.Add(result);
+                return result;
+            }
+
+            // annoying case - there's some nesting. Use recursion
+            // we need to find what already exists in object, to not try to create doubled properties
+            if (targetObject[name] is JObject foundSegment)
+                return AddAtPath(foundSegment, jsonPath.Skip(1), content);
+
+            // if it's a new segment and not final prop, create new object
+            if (segmentsCount > 1)
+            {
+                JObject newSegment = new JObject();
+                result = AddAtPath(newSegment, jsonPath.Skip(1), content);
+                targetObject.Add(name, newSegment);
+                return result;
+            }
+
+            // if it's final segment, finally create the property
+            result = new JProperty(name, content);
+            targetObject.Add(result);
+            return result;
+        }
+
         /// <summary>Populates chat message's raw data.</summary>
         /// <typeparam name="T">Type of chat message.</typeparam>
         /// <param name="message">Chat message.</param>

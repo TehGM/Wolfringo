@@ -35,5 +35,38 @@
       topicUid: Guides.Commands.Handlers
     - name: Commands Requirements
       topicUid: Guides.Commands.Requirements
+    - name: Help Command
+      topicUid: Guides.Commands.HelpCommand
     - name: Dependency Injection
       topicUid: Guides.Commands.DependencyInjection
+- name: Customizing
+  topicUid: Guides.Customizing.Intro
+  items:
+    - name: Introduction
+      topicUid: Guides.Customizing.Intro
+    - name: Client
+      topicUid: Guides.Customizing.Client.Messages
+      items:
+        - name: Custom Messages
+          topicUid: Guides.Customizing.Client.Messages
+        - name: Custom Responses
+          topicUid: Guides.Customizing.Client.Responses
+        - name: Entity Caching
+          topicUid: Guides.Customizing.Client.ClientCache
+        - name: Socket Client
+          topicUid: Guides.Customizing.Client.SocketClient
+    - name: Commands System
+      topicUid: Guides.Customizing.Commands.CommandType
+      items:
+        - name: Command Type
+          topicUid: Guides.Customizing.Commands.CommandType
+        - name: Commands Loader
+          topicUid: Guides.Customizing.Commands.CommandsLoader
+        - name: Command Handler Provider
+          topicUid: Guides.Customizing.Commands.CommandHandlerProvider
+        - name: Arguments Parser
+          topicUid: Guides.Customizing.Commands.ArgumentsParser
+        - name: Argument Converters
+          topicUid: Guides.Customizing.Commands.ArgumentConverters
+        - name: Parameter Builder
+          topicUid: Guides.Customizing.Commands.ParameterBuilder

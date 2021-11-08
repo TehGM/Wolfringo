@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
     public class DefaultMessageSerializer<T> : IMessageSerializer where T : IWolfMessage
     {
         /// <inheritdoc/>
-        public virtual IWolfMessage Deserialize(string command, SerializedMessageData messageData)
+        public virtual IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)
         {
             IWolfMessage result = messageData.Payload.ToObject<T>(SerializationHelper.DefaultSerializer);
             messageData.Payload.FlattenCommonProperties(result, SerializationHelper.DefaultSerializer);

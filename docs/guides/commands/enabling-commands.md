@@ -18,61 +18,94 @@ First add following using directive to your Program.cs:
 using Wolfringo.Commands;
 ```
 
-Commands System's main entry point is @TehGM.Wolfringo.Commands.CommandsService class. Its constructor takes minimum of 2 parameters: @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.CommandsOptions. @TehGM.Wolfringo.IWolfClient should be created by you already - see [Connecting the Bot guide](xref:Guides.GettingStarted.Connecting) if not - so let's skip to creating @TehGM.Wolfringo.Commands.CommandsOptions.
+Since Wolfringo v2.0, commands can be really easily enabled by calling `WithCommands` method on the client builder. This method expects a delegate, where you can build commands service.
 
 ```csharp
-CommandsOptions options = new CommandsOptions()
-{
-    Prefix = "!",
-    RequirePrefix = PrefixRequirement.Always,
-    CaseSensitivity = false
-};
-```
+_client = new WolfClientBuilder()
+    // .. other client configuration ...
+    .WithLogging(CreateLoggerFactory())
+    .WithCommands(commands => 
+    {
+        // determines what all the commands should start with - for example "!", "!mybot" etc. Default value is "!".
+        commands.WithPrefix("!");
+        // determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to PrefixRequirement.Group.
+        commands.WithPrefixRequirement(PrefixRequirement.Always);
+        // determines whether commands are case-sensitive. By default, all commands are case-insensitive.
+        commands.WithCaseSensitivity(false);
 
-Basic Commands Options are pretty straightforward:
-- [Prefix](xref:TehGM.Wolfringo.Commands.CommandsOptions.Prefix) determines what all the commands should start with - for example "!", "!mybot" etc. Default value is "!".
-- [RequirePrefix](xref:TehGM.Wolfringo.Commands.CommandsOptions.RequirePrefix) determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to [PrefixRequirement.Group](xref:TehGM.Wolfringo.Commands.PrefixRequirement.Group).
-- [CaseSensitivity](xref:TehGM.Wolfringo.Commands.CommandsOptions.CaseSensitivity) determines whether commands are case-sensitive. By default, all commands are case-insensitive (the value is set to "false").
-
-Once you have your options set, you can create and start Commands System. You should do it after creating bot client, but before you connect your bot:
-```csharp
-_client = new WolfClient();
-// other client set up here - for example event listeners or reconnecting
-
-CommandsService commands = new CommandsService(_client, options);
-await commands.StartAsync();
+        // you can also register any custom service by using
+        // commands.WithService<T>();
+    })
+    .Build();
 
 // connect bot here with "_client.ConnectAsync();"
 ```
 
-> Note: Calling [commands.StartAsync()](xref:TehGM.Wolfringo.Commands.CommandsService.StartAsync(System.Threading.CancellationToken)) will reload all commands each time. However, it will not dispose persistent handlers. To dispose them, call [commands.Dispose()](xref:TehGM.Wolfringo.Commands.CommandsService.Dispose) and recreate the CommandsSystem entirely.
+Commands enable this way will automatically inherit all services and settings, such as logging and Wolf Client itself provided to `WolfClientBuilder` itself. Services set inside of `WithCommands` delegate will be available only to Commands System.
+
+If you wish, you can create CommandsService separately to get more control. Please note that in such case, you need to manually provide @TehGM.Wolfringo.IWolfClient instance, call `StartAsync()`, and that services and logging will NOT be automatically shared.
+
+```csharp
+_client = new WolfClientBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .Build();
+CommandsService commands = new CommandsServiceBuilder()
+    .WithWolfClient(_client)            // required when creating separately
+    .WithLogging(CreateLoggerFactory()) // when created separately, client and commands don't share logging
+    .ConfigureOptions(options => 
+    {
+        // do configuration here
+    })
+    .Build();
+
+await services.StartAsync();
+// connect bot here with "_client.ConnectAsync();"
+```
 
 ### Choose where commands are loaded from
-By default, all commands in the project that starts your bot process are loaded. You can change that using @TehGM.Wolfringo.Commands.CommandsOptions.
+By default, all commands in the project that starts your bot process are loaded. You can change that using `.ConfigureOptions` method and the @TehGM.Wolfringo.Commands.CommandsOptions it provides in the delegate.
 
 #### Load commands from other assemblies
 You can load commands from other projects, or even different libraries. To do so, simply add assembly to [Assemblies](xref:TehGM.Wolfringo.Commands.CommandsOptions#TehGM_Wolfringo_Commands_CommandsOptions_Assemblies) property:
 ```csharp
-options.Assemblies.Add(typeof(HandlerInAnotherProject).Assembly));
+.ConfigureOptions(options =>
+{
+    options.Assemblies.Add(typeof(HandlerInAnotherProject).Assembly));
+})
 ```
 
 #### Add commands individually
 You can also add individual [Handler](xref:Guides.Commands.Handlers) to be loaded. Simply add its type to [Classes](xref:TehGM.Wolfringo.Commands.CommandsOptions#TehGM_Wolfringo_Commands_CommandsOptions_Classes) property:
+
 ```csharp
-options.Classes.Add(typeof(Handler));
+.ConfigureOptions(options =>
+{
+    options.Classes.Add(typeof(Handler));
+})
 ```
 
 If you're adding handlers individually, you might want to disable behaviour of loading all commands from bot entry assembly.
 ```csharp
-options.Assemblies.Clear();
+.ConfigureOptions(options =>
+{
+    options.Assemblies.Clear();
+})
 ```
 
 ### Logging
-One of purposes of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Commands.CommandsSystem fully supports logging, however you still need to provide an ILogger instance to its constructor:
+When using `WolfClientBuilder.WithCommands()` to add commands, Commands Service will automatically inherit logging configuration from the client.
+
 ```csharp
-ILogger log = // ... create logger according to your logging library isntructions
-CommandsService commands = new CommandsService(_client, options, log);
+_client = new WolfClientBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .WithCommands(commands => 
+    {
+        // do other config. Logging will automatically be inherited.
+    })
+    .Build();
 ```
+
+If you're creating CommandsService separately using <xref:TehGM.Wolfringo.Commands.CommandsServiceBuilder>, CommandsServiceBuilder also has `WithLogging` method which functions the same way.
 
 Check [Logging guide](xref:Guides.Features.Logging) for more information.
 

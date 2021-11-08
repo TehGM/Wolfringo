@@ -78,6 +78,7 @@ Commands System will attempt to use constructors with higher priority before con
 Commands methods are the methods that are executed when command is invoked. Commands methods:
 - **Cannot** be static
 - Should **not** be "async void". If you need "async" in your command, return a @System.Threading.Tasks.Task or a @System.Threading.Tasks.Task`1 instead.
+- If needed, can return @TehGM.Wolfringo.Commands.ICommandResult or [Task\<ICommandResult\>](xref:System.Threading.Tasks.Task`1)
 - Need to be marked as a command.
 
 ### Marking method as a command
@@ -216,6 +217,8 @@ As example above shows, these custom messages can also have placeholders inside 
 - `{{SenderID}}` - ID of the user that invoked the command.
 - `{{BotNickname}}` - nickname (display name) of the bot.
 - `{{BotID}}` - ID of the bot.
+- `{{RecipientID}}` - ID of the message recipient (bot ID for private messages, group ID for group messages).
+- `{{RecipientName}}` - name of the message recipient (bot nickname for private messages, group name for group messages).
 
 You can also set text to `null` or empty string - in such case, error response will be disabled for that command.
 
@@ -239,7 +242,28 @@ Optional arguments will not cause an error if they're missing - command will sti
 ##### Catch-all
 If you use an array of [strings](xref:System.String) (`string[]`) as a parameter type, all arguments will be inserted into it.  
 > [!WARNING]
-> [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab full text of the message, use `Text` property of [CommandContext.Message](xref:TehGM.Wolfringo.Commands.CommandContext.Message).
+> [Argument Group](xref:Guides.Commands.Handlers#arguments-splitting) markers will not be included, only the values themselves. If you want to grab raw text of the arguments, use see [Arguments Text](#arguments-text) below.
+
+#### Arguments Text
+If you want to see all arguments as single string before they're [split up](#command-arguments), you can add a new string parameter and mark it with [\[ArgumentsText\] attribute](xref:TehGM.Wolfringo.Commands.ArgumentsTextAttribute).
+
+Assume that in following example, the user sends `!say Hello, this is some text (with parentheses!)`:
+
+```csharp
+[Prefix("!")]
+[Command("say")]
+private async Task ExampleAsync([ArgumentsText] string text)
+{
+    Console.WriteLine(text);	// will print "Hello, this is some text (with parentheses!)"
+}
+```
+
+> [!WARNING]
+> When used with Regex command, this will return entire regex match text. This is because with Regex commands, Wolfringo has no way to separate command name from the arguments.
+> You can instead use [groups](https://docs.microsoft.com/en-gb/dotnet/standard/base-types/grouping-constructs-in-regular-expressions) in your regex, and inject Regex @System.Text.RegularExpressions.Match into your command.
+
+#### ICommandOptions
+By using @TehGM.Wolfringo.Commands.ICommandOptions you can get the values of prefix, prefix requirement and case sensitivity for this command. These options will automatically use overrides from command's arguments (such as [\[Prefix\]](xref:TehGM.Wolfringo.Commands.PrefixAttribute)) if there are any.
 
 #### CancellationToken
 You can pass @System.Threading.CancellationToken as paremeter. You can then use this cancellation token in your other asynchronous calls. This cancellation token will be set to cancelled when @TehGM.Wolfringo.Commands.CommandsService is being disposed - for example when the application is exiting.
@@ -249,6 +273,17 @@ You can pass @System.Threading.CancellationToken as paremeter. You can then use 
 private async Task ExampleAsync(CommandContext context, CancellationToken cancellationToken)
 {
     string fileContents = await File.ReadAllTextAsync("myfile.txt", cancellationToken);
+}
+```
+
+#### Regex Match
+For Regex commands, you can use Regex @System.Text.RegularExpressions.Match as one of the arguments. This will output the exact regex match for your regex command (therefore won't include prefix).
+
+```csharp
+[RegexCommand("^log (.+)$")]
+public void CmdLog(Match match, ILogger log)
+{
+    log.LogInformation(match.Groups[1].Value);
 }
 ```
 
@@ -262,7 +297,7 @@ Any services registered with [Dependency Injection](xref:Guides.Commands.Depende
 Internally, all [\[Command\]](xref:TehGM.Wolfringo.Commands.CommandAttribute) and [\[RegexCommand\]](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) are converted into command instance objects. For most scenarios this just a fun-fact, but sometimes (for example, when using [Aliases](xref:Guides.Commands.Handlers#aliases)) you may want to get access to the instance of the class. To do so, simply add a parameter of type @TehGM.Wolfringo.Commands.Initialization.ICommandInstance.
 
 ### Commands Priorities
-Commands System will always execute maximum of **one** command method, even if multiple commands could be triggered by user's text. For example: `[Command("test")]` and `[Command("test2")]`.  
+Unless you use [ICommandResult](xref:Guides.Commands.Handlers#returning-icommandresult), Commands System will execute maximum of **one** command method, even if multiple commands could be triggered by user's text. For example: `[Command("test")]` and `[Command("test2")]`.  
 If you want to control which command gets attempted first, use [\[Priority(value)\] attribute](xref:TehGM.Wolfringo.Commands.PriorityAttribute). Commands with highest priority value will be checked first.
 
 ```csharp
@@ -321,6 +356,33 @@ public Task ExampleAsync()
     // command code
 }
 ```
+
+### Returning ICommandResult
+By default, Wolfringo's @TehGM.Wolfringo.Commands.CommandsService will consider command successful if it ran fully, or failed if any exception was thrown. In either of these cases, the Commands System will stop processing the received message, so no further [\[Command\] attribute](xref:TehGM.Wolfringo.Commands.CommandAttribute) or [\[RegexCommand\] attribute](xref:TehGM.Wolfringo.Commands.RegexCommandAttribute) will be attempted.
+
+However if you wish, you can mark the command as skipped instead - in such case, Wolfringo will attempt to execute other commands if they match. To do so, you can return @TehGM.Wolfringo.Commands.ICommandResult or [Task\<ICommandResult\>](xref:System.Threading.Tasks.Task`1) and set the @TehGM.Wolfringo.Commands.ICommandResult.Status property to @TehGM.Wolfringo.Commands.Results.CommandResultStatus.Skip. You can return any type of @TehGM.Wolfringo.Commands.ICommandResult, but the built-in @TehGM.Wolfringo.Commands.Results.CommandExecutionResult is sufficient for most use cases.
+
+```csharp
+using TehGM.Wolfringo.Commands.Results;
+
+[Command("example")]
+[Priority(5)]
+public async Task<ICommandResult> Example1()
+{
+    // command code here
+    return CommandExecutionResult.Skip;
+}
+[Command("example")]
+[Priority(15)]
+public async Task Example2()
+{
+    // because Example1 returned result CommandResultStatus.Skip, this method will run as well!
+    // command code here
+}
+```
+
+> [!TIP]
+> For internal purposes, @TehGM.Wolfringo.Commands.Results.CommandExecutionResult can have Exception property. However it is recommended to not use it for that purpose - simply throw the exception instead!
 
 ## What's next?
 ### Examples

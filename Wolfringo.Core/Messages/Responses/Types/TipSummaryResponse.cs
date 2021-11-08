@@ -9,7 +9,7 @@ namespace TehGM.Wolfringo.Messages.Responses
     {
         /// <summary>Dictionary, where key is message ID and value is a list of tips the message has received.</summary>
         [JsonProperty("body")]
-        [JsonConverter(typeof(KeyAndValueDictionaryConverter<WolfTimestamp, IEnumerable<WolfTip>>), "charmList")]
+        [JsonConverter(typeof(KeyAndValueDictionaryConverter<WolfTimestamp, IEnumerable<WolfTip>>), "body.charmList")]
         public IReadOnlyDictionary<WolfTimestamp, IEnumerable<WolfTip>> Tips { get; private set; }
 
         /// <summary>Creates a response instance.</summary>

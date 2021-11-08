@@ -10,6 +10,8 @@ namespace TehGM.Wolfringo.Commands
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public class RegexCommandAttribute : CommandAttributeBase
     {
+        /// <summary>Indicates default timeout (in milliseconds) to use when parsing user's input. Equals 1000 milliseconds.</summary>
+        public static int RegexDefaultTimeout { get; } = 1000;
         /// <summary>Default regex options for the regex command.</summary>
         public const RegexOptions DefaultOptions = RegexOptions.CultureInvariant | RegexOptions.Singleline;
 
@@ -17,6 +19,8 @@ namespace TehGM.Wolfringo.Commands
         public string Pattern { get; }
         /// <summary>Regex options for the command.</summary>
         public RegexOptions Options { get; }
+        /// <summary>Specifies timeout (in milliseconds) for Regex engine. <see cref="RegexDefaultTimeout"/> is used by default.</summary>
+        public int RegexTimeout { get; set; } = RegexDefaultTimeout;
 
         /// <summary>Creates the attribute with specified regex settings.</summary>
         /// <param name="pattern">Regex pattern for the command.</param>

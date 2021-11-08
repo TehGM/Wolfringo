@@ -47,47 +47,40 @@ See [Creating Custom Command Requirements guide](xref:Guides.Commands.Requiremen
 ## Registering Services
 Registration of Dependency Injection services varies slightly depending whether you use Wolfringo.Hosting or not.
 
-
 ### [Without Wolfringo.Hosting (Normal Bot)](#tab/connecting-normal-bot)
-To use Dependency Injection without Wolfringo.Hosting, you need to construct an @System.IServiceProvider and pass it into @TehGM.Wolfringo.Commands.CommandsService constructor.  
-To do this, it is recommended to install [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection/) NuGet package, and use its @Microsoft.Extensions.DependencyInjection.ServiceCollection class.
+Since Wolfringo v2.0, adding services is a matter of calling `WithSingletonService`, `WithScopedService` or `WithTransientService` on <xref:TehGM.Wolfringo.Commands.CommandsServiceBuilder>. See [Services Lifetime](#services-lifetime) to understand the difference between these methods.
 
 ```csharp
-// on top of Program.cs:
-using Microsoft.Extensions.DependencyInjection;
-
 // in your MainAsync method:
-IServiceProvider services = new ServiceCollection()
-    .AddSingleton<IMySuperDatabase, MySuperDatabase>()
-    // alternatively: .AddSingleton<IMySuperDatabase>(new MySuperDatabase())
-    .BuildServiceProvider();
-
-// put into CommandsService constructor
-CommandsService commands = new CommandsService(_client, options, services);
+_client = new WolfClientBuilder()
+    .WithCommands(commands =>
+    {
+        commands.WithSingletonService<IMySuperDatabase, MySuperDatabase>();
+    })
+    .Build();
 ```
 
 You can add as many custom services as you want, as long as their resolving types (in example above - *IMySuperDatabase*) are different.
+
+> [!NOTE]
+> Note: services registered with @TehGM.Wolfringo.Commands.CommandsServiceBuilder are NOT available to WolfClient, which might be important if you're [customizing Wolfringo](xref:Guides.Customizing.Intro).
+> @TehGM.Wolfringo.WolfClientBuilder also has a `WithService` method. All services added with this method will be available to both WolfClient and Commands (unless they're created separately), however they will always be registered with ***Singleton*** lifetime.
+
+> [!WARNING]
+> Please note that both @TehGM.Wolfringo.Commands.CommandsServiceBuilder and @TehGM.Wolfringo.WolfClientBuilder build their @System.IServiceProvider separately. That means both will get DIFFERENT copies of the same service.  
+> Note: this is not applicable to Wolfringo.Hosting - in that scenario, both WolfClient and CommandsService use the same, host-provided @System.IServiceProvider.
 
 ### [With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)](#tab/connecting-hosted-bot)
 [.NET Generic Host](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0)/[ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.0) have Dependency Injection deeply baked into them, and as such, they support it out of the box.  
 @TehGM.Wolfringo.Hosting.HostedWolfClient will automatically pick up any services that you register in your ConfigureServices method. You don't need to do anything else - these services will be automatically used by Wolfringo.
 
 Refer to [Dependency injection in .NET](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection) and [Dependency injection in ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.0) for more information about Dependency Injection in [.NET Generic Host](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0)/[ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.0).
-
 ***
-> [!TIP]
-> Services that are required by Commands System (@TehGM.Wolfringo.IWolfClient, @TehGM.Wolfringo.Commands.CommandsOptions, @TehGM.Wolfringo.Commands.Parsing.IArgumentsParser, @TehGM.Wolfringo.Commands.Parsing.IArgumentConverterProvider and @TehGM.Wolfringo.Commands.Parsing.IParameterBuilder ) do not need to be registered manually. Same applies to @Microsoft.Extensions.Logging.ILogger if it was provided via @TehGM.Wolfringo.Commands.CommandsService constructor.  
-> Only register them if you want to provide your own implementations to customize how Wolfringo Commands System works (advanced).
 
 ## Services Lifetime
 Services can have following lifetimes:
-- Singleton (`AddSingleton<T>()`) - this service is created once, and kept alive until application exits.
-- Scoped (`AddScoped<T>()`) - this service is created once for a received message. Each new message will get a new copy of this service.
-- Scoped (`AddTransient<T>()`) - this service is created once per injection. If the service is used in constructor, method, requirement, or any combination of them, each will receive a new copy.
+- Singleton (`AddSingletonService<T>()`) - this service is created once, and kept alive until application exits.
+- Scoped (`AddScopedService<T>()`) - this service is created once for a received message. Each new message will get a new copy of this service.
+- Scoped (`AddTransientService<T>()`) - this service is created once per injection. If the service is used in constructor, method, requirement, or any combination of them, each will receive a new copy.
 
 It is likely that you'll mostly use singleton services.
-
-> [!NOTE]
-> Note: All required services (@TehGM.Wolfringo.IWolfClient, @TehGM.Wolfringo.Commands.CommandsOptions, @TehGM.Wolfringo.Commands.Parsing.IArgumentsParser, @TehGM.Wolfringo.Commands.Parsing.IArgumentConverterProvider and @TehGM.Wolfringo.Commands.Parsing.IParameterBuilder ) are created as singletons by @TehGM.Wolfringo.Commands.CommandsService, unless they're registered manually.
-> [!WARNING]
-> @TehGM.Wolfringo.Commands.Initialization.SimpleServiceProvider is designed for internal use, and only supports singleton services. It is recommended to use ServiceProvider created by @Microsoft.Extensions.DependencyInjection.ServiceCollection from *Microsoft.Extensions.DependencyInjection* package instead.

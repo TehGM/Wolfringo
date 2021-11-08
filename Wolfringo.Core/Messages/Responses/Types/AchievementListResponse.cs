@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
@@ -20,25 +21,8 @@ namespace TehGM.Wolfringo.Messages.Responses
             if (this.Achievements == null || !this.Achievements.Any())
                 return this.Achievements;
             if (_flattenedAchievements == null)
-            {
-                List<WolfAchievement> results = new List<WolfAchievement>(this.Achievements.Count());
-                AddWithChildren(ref results, this.Achievements);
-                _flattenedAchievements = results.AsEnumerable();
-            }
-            return _flattenedAchievements;
-
-            void AddWithChildren(ref List<WolfAchievement> resultsList, IEnumerable<WolfAchievement> achievements)
-            {
-                if (achievements?.Any() != true)
-                    return;
-
-                // add all provided first
-                resultsList.AddRange(achievements);
-
-                // recursively add children of each
-                foreach (WolfAchievement achiv in achievements)
-                    AddWithChildren(ref resultsList, achiv.ChildAchievements);
-            }
+                this._flattenedAchievements = NestedEntitiesHelper.FlattenAchievementsList(this.Achievements);
+            return this._flattenedAchievements;
         }
 
         /// <summary>Creates a response instance.</summary>

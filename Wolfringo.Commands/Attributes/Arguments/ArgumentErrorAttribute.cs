@@ -39,6 +39,10 @@ namespace TehGM.Wolfringo.Commands.Attributes
         public const string BotNicknamePlaceholder = "{{BotNickname}}";
         /// <summary>This placeholder will be replaced with ID of the bot at runtime.</summary>
         public const string BotIdPlaceholder = "{{BotID}}";
+        /// <summary>This placeholder will be replaced with ID of the message recipient (bot ID for PMs, group ID for group messages).</summary>
+        public const string RecipientIdPlaceholder = "{{RecipientID}}";
+        /// <summary>This placeholder will be replaced with name of the message recipient (bot nickname for PMs, group name for group messages).</summary>
+        public const string RecipientNamePlaceholder = "{{RecipientName}}";
 
         // placeholder regexes
         private const RegexOptions _regexOptions = RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
@@ -50,7 +54,8 @@ namespace TehGM.Wolfringo.Commands.Attributes
         private static readonly Lazy<Regex> _senderIdRegex = new Lazy<Regex>(() => new Regex(SenderIdPlaceholder, _regexOptions));
         private static readonly Lazy<Regex> _botNicknameRegex = new Lazy<Regex>(() => new Regex(BotNicknamePlaceholder, _regexOptions));
         private static readonly Lazy<Regex> _botIdRegex = new Lazy<Regex>(() => new Regex(BotIdPlaceholder, _regexOptions));
-
+        private static readonly Lazy<Regex> _recipientIdRegex = new Lazy<Regex>(() => new Regex(RecipientIdPlaceholder, _regexOptions));
+        private static readonly Lazy<Regex> _recipientNameRegex = new Lazy<Regex>(() => new Regex(RecipientNamePlaceholder, _regexOptions));
 
         /// <summary>Attribute to specify message that will be sent as respone when argument error occurs.</summary>
         /// <param name="messageTemplate">Message that will be sent as response on error.</param>
@@ -78,11 +83,19 @@ namespace TehGM.Wolfringo.Commands.Attributes
             result = _messageRegex.Value.Replace(result, Encoding.UTF8.GetString(context.Message.RawData.ToArray()));
             result = _senderIdRegex.Value.Replace(result, context.Message.SenderID.Value.ToString());
             result = _botIdRegex.Value.Replace(result, context.Client.CurrentUserID.Value.ToString());
+            result = _recipientIdRegex.Value.Replace(result, context.Message.RecipientID.ToString());
             // do IndexOf checks for values that are potentially expensive to get
             if (result.IndexOf(SenderNicknamePlaceholder, StringComparison.OrdinalIgnoreCase) != -1)
                 result = _senderNicknameRegex.Value.Replace(result, (await context.GetSenderAsync(cancellationToken).ConfigureAwait(false)).Nickname);
             if (result.IndexOf(BotNicknamePlaceholder, StringComparison.OrdinalIgnoreCase) != -1)
                 result = _botNicknameRegex.Value.Replace(result, (await context.GetBotProfileAsync(cancellationToken).ConfigureAwait(false)).Nickname);
+            if (result.IndexOf(RecipientIdPlaceholder, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                string recipientName = context.Message.IsGroupMessage
+                    ? (await context.GetRecipientAsync<WolfGroup>(cancellationToken).ConfigureAwait(false)).Name
+                    : (await context.GetRecipientAsync<WolfUser>(cancellationToken).ConfigureAwait(false)).Nickname;
+                result = _recipientNameRegex.Value.Replace(result, recipientName);
+            }
             return result;
         }
 

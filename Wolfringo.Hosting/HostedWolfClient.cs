@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
-using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
 
@@ -38,17 +38,12 @@ namespace TehGM.Wolfringo.Hosting
         private CancellationToken _hostCancellationToken;
         private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
         private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
-        private string _token;                                  // keep token cached so it's reused when client is recreates
         private bool _isStarted;                                // set to true of first hosted service start, to prevent multiple hosted services starting
 
         // services
         private readonly ILogger _log;
-        private readonly ILogger _underlyingClientLog;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
-        private readonly ISerializerProvider<string, IMessageSerializer> _messageSerializers;
-        private readonly ISerializerProvider<Type, IResponseSerializer> _responseSerializers;
-        private readonly IResponseTypeResolver _responseTypeResolver;
-        private readonly ITokenProvider _tokenProvider;
+        private readonly IServiceProvider _services;
 #if NETCOREAPP3_0
         private readonly IHostApplicationLifetime _hostLifetime;
 #else
@@ -77,16 +72,10 @@ namespace TehGM.Wolfringo.Hosting
 
         /// <summary>Creates a new hosted client.</summary>
         /// <param name="options">Client configuration.</param>
-        /// <param name="logger">Logger to log all log events.</param>
-        /// <param name="underlyingClientLogger">Logger that will be used by the underlying client.</param>
-        /// <param name="tokenProvider">Wolf token generator.</param>
-        /// <param name="messageSerializers">Map of message serializers.</param>
-        /// <param name="responseSerializers">Map of response serializers.</param>
-        /// <param name="responseTypeResolver">Resolver of message's response type.</param>
+        /// <param name="log">Logger to log all log events.</param>
+        /// <param name="services">Service provider that will be passed to underlying <see cref="WolfClient"/>.</param>
         /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
-        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> logger, ILogger<WolfClient> underlyingClientLogger, ITokenProvider tokenProvider,
-            ISerializerProvider<string, IMessageSerializer> messageSerializers, ISerializerProvider<Type, IResponseSerializer> responseSerializers,
-            IResponseTypeResolver responseTypeResolver,
+        public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> log, IServiceProvider services,
 #if NETCOREAPP3_0
             IHostApplicationLifetime hostLifetime
 #else
@@ -96,13 +85,9 @@ namespace TehGM.Wolfringo.Hosting
         {
             this._callbacks = new List<IMessageCallback>();
 
-            this._log = logger;
-            this._underlyingClientLog = underlyingClientLogger;
+            this._log = log;
+            this._services = services;
             this._options = options;
-            this._messageSerializers = messageSerializers;
-            this._responseSerializers = responseSerializers;
-            this._responseTypeResolver = responseTypeResolver;
-            this._tokenProvider = tokenProvider;
             this._hostLifetime = hostLifetime;
 
             // disconnect when closing
@@ -112,24 +97,24 @@ namespace TehGM.Wolfringo.Hosting
             });
 
             // when options change, we need to dispose existing client, and create new one with new options
-            this._optionsChangeEventRegistration = _options.OnChange(async (opts) =>
+            this._optionsChangeEventRegistration = this._options.OnChange(async (opts) =>
             {
                 // lock to avoid race conditions
-                await _clientLock.WaitAsync(_hostCancellationToken).ConfigureAwait(false);
+                await _clientLock.WaitAsync(this._hostCancellationToken).ConfigureAwait(false);
                 try
                 {
-                    if (_client == null)
+                    if (this._client == null)
                         return;
-                    _log?.LogDebug("Options changed, recreating client");
-                    await DisposeClientAsync(_hostCancellationToken).ConfigureAwait(false);
+                    this._log?.LogDebug("Options changed, recreating client");
+                    await this.DisposeClientAsync(this._hostCancellationToken).ConfigureAwait(false);
                     // if it wasn't manually disconnected, reconnect it
                     if (!this._manuallyDisconnected)
-                        await this.ConnectInternalAsync(_hostCancellationToken).ConfigureAwait(false);
+                        await this.ConnectInternalAsync(this._hostCancellationToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) { }
                 finally
                 {
-                    _clientLock.Release();
+                    this._clientLock.Release();
                 }
             });
         }
@@ -143,14 +128,12 @@ namespace TehGM.Wolfringo.Hosting
         {
             _log?.LogTrace("Creating underlying client");
             HostedWolfClientOptions options = this._options.CurrentValue;
-            string token = this.GetCurrentToken();
-
-            // if token is null, use default client behaviour for token with token provider
-            if (token == null)
-                this._client = new WolfClient(options.ServerURL, options.Device, _underlyingClientLog, _tokenProvider, _messageSerializers, _responseSerializers, _responseTypeResolver);
-            // otherwise, reuse the token for new client
-            else
-                this._client = new WolfClient(options.ServerURL, options.Device, token, _underlyingClientLog, _messageSerializers, _responseSerializers, _responseTypeResolver);
+            this._client = new WolfClient(this._services, new WolfClientOptions()
+            {
+                IgnoreOwnChatMessages = options.IgnoreOwnChatMessages,
+                Device = options.Device,
+                ServerURL = options.ServerURL
+            });
 
             // sub to events
             this._client.AddMessageListener<WelcomeEvent>(OnWelcome);
@@ -166,25 +149,7 @@ namespace TehGM.Wolfringo.Hosting
                 for (int i = 0; i < _callbacks.Count; i++)
                     this._client.AddMessageListener(_callbacks[i]);
             }
-
-            // set caching options
-            this._client.GroupsCachingEnabled = options.GroupsCachingEnabled;
-            this._client.UsersCachingEnabled = options.UsersCachingEnabled;
-            this._client.CharmsCachingEnabled = options.CharmsCachingEnabled;
-            this._client.AchievementsCachingEnabled = options.AchievementsCachingEnabled;
-
-            // store token for reconnections
-            this._token = this._client.Token;
-
-            // pass in options
-            this._client.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
         }
-
-        /// <summary>Gets memorized token.</summary>
-        /// <remarks>If <see cref="HostedWolfClientOptions"/> has token set, it'll take priority.</remarks>
-        /// <returns>Token to use when recreating underlying client.</returns>
-        private string GetCurrentToken()
-            => this._options.CurrentValue.Token ?? this._client?.Token ?? this._token;
 
         /// <summary>Disposes underlying client.</summary>
         /// <remarks>If underlying client is still connected, a disconnection will be attempted. Auto-reconnection won't be attempted.</remarks>
@@ -247,16 +212,16 @@ namespace TehGM.Wolfringo.Hosting
                 else loggedInNickname = welcome.LoggedInUser.Nickname;
 
                 // subscribe to all the things
-                await this.SendAsync(new SubscribeToPmMessage(), _hostCancellationToken).ConfigureAwait(false);
-                await this.SendAsync(new SubscribeToGroupMessage(), _hostCancellationToken).ConfigureAwait(false);
-                _log?.LogInformation("Automatically logged in as {Nickname}", loggedInNickname);
+                await this.SendAsync(new SubscribeToPmMessage(), this._hostCancellationToken).ConfigureAwait(false);
+                await this.SendAsync(new SubscribeToGroupMessage(), this._hostCancellationToken).ConfigureAwait(false);
+                this._log?.LogInformation("Automatically logged in as {Nickname}", loggedInNickname);
             }
             catch (OperationCanceledException ex) when (ex.LogAsDebug(this._log, "Automatic login canceled")) { }
             catch (Exception ex) when (ex.LogAsCritical(this._log, "Exception occured when automatically logging in"))
             {
                 this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, true));
-                if (_options.CurrentValue.CloseOnCriticalError)
-                    _hostLifetime?.StopApplication();
+                if (this._options.CurrentValue.CloseOnCriticalError)
+                    this._hostLifetime?.StopApplication();
             }
         }
 
@@ -294,17 +259,17 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public async Task ConnectAsync(CancellationToken cancellationToken = default)
         {
-            using (CancellationTokenSource connectingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
+            using (CancellationTokenSource connectingCts = CancellationTokenSource.CreateLinkedTokenSource(this._hostCancellationToken, cancellationToken))
             {
                 // public connection should always be done with locking to avoid race conditions
-                await _clientLock.WaitAsync(connectingCts.Token).ConfigureAwait(false);
+                await this._clientLock.WaitAsync(connectingCts.Token).ConfigureAwait(false);
                 try
                 {
                     await this.ConnectInternalAsync(connectingCts.Token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _clientLock.Release();
+                    this._clientLock.Release();
                 }
             }
         }
@@ -315,30 +280,30 @@ namespace TehGM.Wolfringo.Hosting
         /// <para>If calling this method, lock the client first. Otherwise use <see cref="ConnectAsync(CancellationToken)"/>.</para></remarks>
         private Task ConnectInternalAsync(CancellationToken cancellationToken = default)
         {
-            ThrowIfConnected();
-            if (_client == null)
-                CreateClient();
+            this.ThrowIfConnected();
+            if (this._client == null)
+                this.CreateClient();
 
             this._manuallyDisconnected = false;
-            return _client.ConnectAsync(cancellationToken);
+            return this._client.ConnectAsync(cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
-            using (CancellationTokenSource disconnectingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
+            using (CancellationTokenSource disconnectingCts = CancellationTokenSource.CreateLinkedTokenSource(this._hostCancellationToken, cancellationToken))
             {
                 // public disconnection should always be done with locking to avoid race conditions
                 await _clientLock.WaitAsync(disconnectingCts.Token).ConfigureAwait(false);
                 try
                 {
-                    ThrowIfNotConnected();
+                    this.ThrowIfNotConnected();
                     this._manuallyDisconnected = true;
-                    await _client.DisconnectAsync(disconnectingCts.Token).ConfigureAwait(false);
+                    await this._client.DisconnectAsync(disconnectingCts.Token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _clientLock.Release();
+                    this._clientLock.Release();
                 }
             }
         }
@@ -354,7 +319,7 @@ namespace TehGM.Wolfringo.Hosting
             HostedWolfClientOptions options = this._options.CurrentValue;
 
             // lock first to avoid race conditions
-            await _clientLock.WaitAsync(_hostCancellationToken).ConfigureAwait(false);
+            await this._clientLock.WaitAsync(this._hostCancellationToken).ConfigureAwait(false);
             try
             {
                 // only reconnect if client exists, wasn't diconnected manually, and auto-reconnect is actually enabled
@@ -401,7 +366,7 @@ namespace TehGM.Wolfringo.Hosting
             }
             finally
             {
-                _clientLock.Release();
+                this._clientLock.Release();
                 this.Disconnected?.Invoke(this, e);
             }
         }
@@ -413,7 +378,7 @@ namespace TehGM.Wolfringo.Hosting
             lock (this._callbacks)
             {
                 this._callbacks.Add(listener);
-                _client?.AddMessageListener(listener);
+                this._client?.AddMessageListener(listener);
             }
         }
         /// <inheritdoc/>
@@ -422,7 +387,7 @@ namespace TehGM.Wolfringo.Hosting
             lock (this._callbacks)
             {
                 this._callbacks.Remove(listener);
-                _client?.RemoveMessageListener(listener);
+                this._client?.RemoveMessageListener(listener);
             }
         }
 
@@ -444,24 +409,24 @@ namespace TehGM.Wolfringo.Hosting
         public async Task<TResponse> SendAsync<TResponse>(IWolfMessage message, CancellationToken cancellationToken = default) where TResponse : IWolfResponse
         {
             using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(_hostCancellationToken, cancellationToken))
-                return await _client.SendAsync<TResponse>(message, sendingCts.Token).ConfigureAwait(false);
+                return await this._client.SendAsync<TResponse>(message, sendingCts.Token).ConfigureAwait(false);
         }
 
         /* CACHES */
         /// <inheritdoc/>
         WolfUser IWolfClientCacheAccessor.GetCachedUser(uint id)
-            => (_client as IWolfClientCacheAccessor)?.GetCachedUser(id);
+            => (this._client as IWolfClientCacheAccessor)?.GetCachedUser(id);
         /// <inheritdoc/>
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
-            => (_client as IWolfClientCacheAccessor)?.GetCachedGroup(id);
+            => (this._client as IWolfClientCacheAccessor)?.GetCachedGroup(id);
         /// <inheritdoc/>
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
-            => (_client as IWolfClientCacheAccessor)?.GetCachedCharm(id);
+            => (this._client as IWolfClientCacheAccessor)?.GetCachedCharm(id);
         /// <inheritdoc/>
         WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
-            => (_client as IWolfClientCacheAccessor)?.GetCachedAchievement(language, id);
+            => (this._client as IWolfClientCacheAccessor)?.GetCachedAchievement(language, id);
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(string name)
-            => (_client as IWolfClientCacheAccessor)?.GetCachedGroup(name);
+            => (this._client as IWolfClientCacheAccessor)?.GetCachedGroup(name);
 
         /* UTILS */
         /// <summary>Throws exception if underlying client is not connected.</summary>
@@ -483,13 +448,13 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>Disposes this client, underlying client and all related resources.</summary>
         public void Dispose()
         {
-            _manuallyDisconnected = true;
-            _optionsChangeEventRegistration?.Dispose();
-            _exitingEventRegistration?.Dispose();
-            DisposeClientAsync().GetAwaiter().GetResult();
-            _client = null;
-            _callbacks?.Clear();
-            _clientLock?.Dispose();
+            this._manuallyDisconnected = true;
+            this._optionsChangeEventRegistration?.Dispose();
+            this._exitingEventRegistration?.Dispose();
+            this.DisposeClientAsync().GetAwaiter().GetResult();
+            this._client = null;
+            this._callbacks?.Clear();
+            this._clientLock?.Dispose();
         }
     }
 }

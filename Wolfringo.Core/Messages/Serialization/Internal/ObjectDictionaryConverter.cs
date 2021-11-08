@@ -10,13 +10,13 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
     /// <typeparam name="TValue">Type of the value.</typeparam>
     public class ObjectDictionaryConverter<TKey, TValue> : JsonConverter
     {
-        private readonly string _keyPropName;
+        private readonly string _keyPropPath;
 
         /// <inheritdoc/>
-        /// <param name="keyPropertyName">Name of the property to use as a key.</param>
-        public ObjectDictionaryConverter(string keyPropertyName)
+        /// <param name="keyPropertyPath">Path of the property to use as a key.</param>
+        public ObjectDictionaryConverter(string keyPropertyPath)
         {
-            this._keyPropName = keyPropertyName;
+            this._keyPropPath = keyPropertyPath;
         }
 
         /// <inheritdoc/>
@@ -37,7 +37,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             foreach (KeyValuePair<TKey, TValue> pair in collection)
             {
                 JObject item = JObject.FromObject(pair.Value, serializer);
-                item.Add(_keyPropName, JToken.FromObject(pair.Key, serializer));
+                item.Add(this._keyPropPath, JToken.FromObject(pair.Key, serializer));
                 results.Add(item);
             }
             results.WriteTo(writer);
@@ -50,7 +50,7 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
             Dictionary<TKey, TValue> results = new Dictionary<TKey, TValue>(jsonArray.Count);
             foreach (JToken obj in jsonArray)
             {
-                TKey key = obj[_keyPropName].ToObject<TKey>(serializer);
+                TKey key = obj.SelectToken(this._keyPropPath).ToObject<TKey>(serializer);
                 TValue value = obj.ToObject<TValue>(serializer);
                 results.Add(key, value);
             }

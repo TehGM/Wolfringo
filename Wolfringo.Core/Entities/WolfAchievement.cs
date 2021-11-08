@@ -54,7 +54,7 @@ namespace TehGM.Wolfringo
 
         /// <inheritdoc/>
         public override int GetHashCode()
-            => 1213502048 + ID.GetHashCode();
+            => this.ID.GetHashCode();
 
         /// <inheritdoc/>
         public static bool operator ==(WolfAchievement left, WolfAchievement right)

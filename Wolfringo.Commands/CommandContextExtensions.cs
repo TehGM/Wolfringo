@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Utilities.Internal;
@@ -60,7 +61,7 @@ namespace TehGM.Wolfringo.Commands
                 return result as T;
             }
             else
-                return await GetUserAsync(context, context.Message.RecipientID, cancellationToken) as T;
+                return (await GetUserAsync(context, context.Message.RecipientID, cancellationToken).ConfigureAwait(false)) as T;
         }
 
         private static async Task<WolfUser> GetUserAsync(ICommandContext context, uint id, CancellationToken cancellationToken = default)

@@ -23,11 +23,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
         }
 
         /// <inheritdoc/>
-        public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
+        public override IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)
         {
             // replace "id" with "targetId" if it exists
             if (messageData.Payload["body"]?["targetId"] == null)
-                return base.Deserialize(command, messageData);
+                return base.Deserialize(eventName, messageData);
             else
             {
                 JToken payload = messageData.Payload.DeepClone();
@@ -36,7 +36,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 body.Remove("targetId");
                 body["id"] = value;
                 //body.Add("id", value);
-                return base.Deserialize(command, new SerializedMessageData(payload, messageData.BinaryMessages));
+                return base.Deserialize(eventName, new SerializedMessageData(payload, messageData.BinaryMessages));
             }
         }
 

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TehGM.Wolfringo.Utilities.Internal
+namespace TehGM.Wolfringo.Caching.Internal
 {
     /// <inheritdoc/>
-    public class WolfEntityCache<TEntity> : IWolfEntityCache<TEntity> where TEntity : IWolfEntity
+    public class WolfCachedEntityCollection<TEntity> : IWolfCachedEntityCollection<TEntity> where TEntity : IWolfEntity
     {
         private readonly IDictionary<uint, TEntity> _items = new Dictionary<uint, TEntity>();
 
@@ -34,16 +34,16 @@ namespace TehGM.Wolfringo.Utilities.Internal
     }
 
     /// <inheritdoc/>
-    public class WolfEntityCache<TKey, TEntity> : IWolfEntityCache<TKey, TEntity> where TEntity : IWolfEntity
+    public class WolfCachedEntityCollection<TKey, TEntity> : IWolfCachedEntityCollection<TKey, TEntity> where TEntity : IWolfEntity
     {
-        private readonly IDictionary<TKey, IWolfEntityCache<TEntity>> _items = new Dictionary<TKey, IWolfEntityCache<TEntity>>();
+        private readonly IDictionary<TKey, IWolfCachedEntityCollection<TEntity>> _items = new Dictionary<TKey, IWolfCachedEntityCollection<TEntity>>();
 
         /// <inheritdoc/>
         public void AddOrReplace(TKey key, TEntity item)
         {
-            if (!_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache))
+            if (!_items.TryGetValue(key, out IWolfCachedEntityCollection<TEntity> subCache))
             {
-                subCache = new WolfEntityCache<TEntity>();
+                subCache = new WolfCachedEntityCollection<TEntity>();
                 _items.Add(key, subCache);
             }
             subCache.AddOrReplace(item);
@@ -52,21 +52,21 @@ namespace TehGM.Wolfringo.Utilities.Internal
         /// <inheritdoc/>
         public void Clear(TKey key)
         {
-            if (_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache))
+            if (_items.TryGetValue(key, out IWolfCachedEntityCollection<TEntity> subCache))
                 subCache?.Clear();
         }
 
         /// <inheritdoc/>
         public void ClearAll()
         {
-            foreach (IWolfEntityCache<TEntity> subCache in _items.Values)
+            foreach (IWolfCachedEntityCollection<TEntity> subCache in _items.Values)
                 subCache?.Clear();
         }
 
         /// <inheritdoc/>
         public TEntity Get(TKey key, uint id)
         {
-            if (_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache) && subCache != null)
+            if (_items.TryGetValue(key, out IWolfCachedEntityCollection<TEntity> subCache) && subCache != null)
                 return subCache.Get(id);
             return default;
         }
@@ -74,7 +74,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
         /// <inheritdoc/>
         public IEnumerable<TEntity> Find(TKey key, Func<TEntity, bool> selector)
         {
-            if (_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache) && subCache != null)
+            if (_items.TryGetValue(key, out IWolfCachedEntityCollection<TEntity> subCache) && subCache != null)
                 return subCache.Find(selector);
             return Enumerable.Empty<TEntity>();
         }
@@ -82,7 +82,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
         /// <inheritdoc/>
         public void Remove(TKey key, uint id)
         {
-            if (_items.TryGetValue(key, out IWolfEntityCache<TEntity> subCache) && subCache != null)
+            if (_items.TryGetValue(key, out IWolfCachedEntityCollection<TEntity> subCache) && subCache != null)
                 subCache.Remove(id);
         }
     }

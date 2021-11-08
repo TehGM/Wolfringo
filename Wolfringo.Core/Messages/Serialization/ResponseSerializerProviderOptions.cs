@@ -38,7 +38,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { typeof(BlockListResponse), DefaultSerializer },
                 { typeof(GroupAudioUpdateResponse), DefaultSerializer },
                 { typeof(AchievementListResponse), DefaultSerializer },
-                { typeof(UserAchievementListResponse), DefaultSerializer },
+                { typeof(EntityAchievementListResponse), DefaultSerializer },
                 { typeof(UserCharmsListResponse), DefaultSerializer },
                 { typeof(EntitiesSubscribeResponse), DefaultSerializer },
                 { typeof(TipSummaryResponse), DefaultSerializer },

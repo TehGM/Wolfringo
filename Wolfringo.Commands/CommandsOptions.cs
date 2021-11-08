@@ -1,26 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 namespace TehGM.Wolfringo.Commands
 {
     /// <summary>Options used for command processing.</summary>
     /// <remarks><para>These are default options for <see cref="CommandsService"/>. They contain minimum amount of settings for core of Commands System to work.</para>
     /// <para>If you need to create custom options, inherit from this class. All properties are settable, so they can be changed from child classes.</para></remarks>
-    public class CommandsOptions
+    public class CommandsOptions : ICommandOptions
     {
-        /// <summary>Prefix commands need to have.</summary>
-        /// <remarks><para>The actual requirement for command to have a prefix is specified by <see cref="RequirePrefix"/>.</para></remarks>
-        /// <seealso cref="RequirePrefix"/>
+        /// <inheritdoc/>
+        /// <summary>Prefix commands need to have. Default value is "!".</summary>
         public string Prefix { get; set; } = "!";
-        /// <summary>Whether commands should behave case-sensitive by default.</summary>
-        /// <remarks><para>This setting can be overwritten per command using <see cref="CaseSensitivityAttribute"/>.</para></remarks>
-        /// <seealso cref="CaseSensitivityAttribute"/>
+        /// <inheritdoc/>
+        /// <summary>Whether commands should behave case-sensitive by default. Default value is false.</summary>
         public bool CaseSensitivity { get; set; } = false;
-        /// <summary>How prefix requirement is enforced by default.</summary>
-        /// <remarks><para>Prefix value can be set using <see cref="Prefix"/></para></remarks>
+        /// <inheritdoc/>
+        /// <summary>How prefix requirement is enforced by default. Default value is "Always".</summary>
         /// <seealso cref="Prefix"/>
         public PrefixRequirement RequirePrefix { get; set; } = PrefixRequirement.Always;
+
+        // help
+        /// <summary>Whether the built-in default help command should be enabled.</summary>
+        /// <remarks><para>This command will be added independently on <see cref="Classes"/> and <see cref="Assemblies"/>.</para>
+        /// <para>Defaults to false.</para></remarks>
+        public bool EnableDefaultHelpCommand { get; set; } = false;
+
+        // initialization
+        /// <summary>Cancellation token that can be used for cancelling all tasks within <see cref="CommandsService"/>.</summary>
+        public CancellationToken CancellationToken { get; set; }
 
         // for loading
         /// <summary>Collection of Types to load as Command Handlers.</summary>

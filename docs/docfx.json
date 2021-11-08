@@ -36,6 +36,12 @@
       },
       {
         "files": [
+          "upgrading/**.md",
+          "upgrading/**/toc.yml"
+        ]
+      },
+      {
+        "files": [
           "faq/**.md",
           "faq/**/toc.yml"
         ]

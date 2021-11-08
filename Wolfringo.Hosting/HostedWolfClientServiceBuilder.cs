@@ -1,6 +1,8 @@
 ﻿using System;
+using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Hosting;
 using TehGM.Wolfringo.Messages.Serialization;
+using TehGM.Wolfringo.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -23,6 +25,13 @@ namespace Microsoft.Extensions.DependencyInjection
         public IHostedWolfClientServiceBuilder Configure(Action<HostedWolfClientOptions> configure)
         {
             this._services.Configure<HostedWolfClientOptions>(configure);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IHostedWolfClientServiceBuilder ConfigureCaching(Action<WolfCacheOptions> configure)
+        {
+            this._services.Configure<WolfCacheOptions>(configure);
             return this;
         }
 

@@ -16,9 +16,9 @@ The exact way to set up logging might vary between libraries. Here I show a few 
 
 All examples will use a special method called "*CreateLogger*" in Program.cs. It'll be called before creating @TehGM.Wolfringo.IWolfClient and @TehGM.Wolfringo.Commands.ICommandsService. We'll also add it to service provider. You can also register other services - check [Dependency Injection guide](xref:Guides.Commands.DependencyInjection) for more info.
 
-You should install [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection/) NuGet package and then alter Program.cs as follows:
+You should install [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging/) NuGet package and then alter Program.cs as follows:
 ```csharp
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 ```
 
 ```csharp
@@ -26,14 +26,10 @@ private static async Task MainAsync(string[] args)
 {
     // ... other code ...
 
-    ILoggerFactory logFactory = CreateLoggerFactory();                  // create the logger factory
-    IServiceCollection services = new ServiceCollection()               // create service collection
-        .AddSingleton<ILoggerFactory>(logFactory);                      // include the logger factory
-
-    _client = new WolfClient(logFactory.CreateLogger<WolfClient>());    // create wolf client - pass logger via constructor
-    CommandsService commands = new CommandsService(_client, options,    // initialize commands service
-        logFactory.CreateLogger<CommandsService>(),                 // pass logger via constructor
-        services.BuildServiceProvider());                           // add Dependency Injection Service provider
+    _client = new WolfClientBuilder()
+        .WithLogging(CreateLoggerFactory())     // pass a new logger factory
+        .WithCommands()                         // enable commands - they'll automatically use the same factory! 
+        .Build();
 
     // ... other code ...
 }
@@ -44,8 +40,6 @@ private static ILoggerFactory CreateLoggerFactory()
 }
 ```
 
-> [!TIP]
-> While installation of [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection/) and registering logging factory is optional, it's **recommended** - this way the commands can use generic @Microsoft.Extensions.Logging.ILogger`1.
 > [!NOTE]
 > You can find example on [GitHub](https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/Program.cs).
 
@@ -57,7 +51,6 @@ First, using your NuGet package manager, install [Serilog](https://www.nuget.org
 
 Once downloaded, add following *using* directives to your Program.cs:
 ```csharp
-using Microsoft.Extensions.Logging;
 using Serilog;
 ```
 
@@ -87,12 +80,7 @@ Microsoft extensions logging also has some providers. These tend to be quite bas
 First, using your NuGet package manager, install [Microsoft.Extensions.Logging.Console 2.0.0](https://www.nuget.org/packages/microsoft.extensions.logging.console/2.0.0).  
 ![](/_images/guides/logging-microsoft-1.png)
 
-Once downloaded, add following *using* directive to your Program.cs:
-```csharp
-using Microsoft.Extensions.Logging;
-```
-
-Finally, populate your *CreateLoggerFactory* method:
+Once downloaded, populate your *CreateLoggerFactory* method:
 ```csharp
 private static ILoggerFactory CreateLoggerFactory()
 {

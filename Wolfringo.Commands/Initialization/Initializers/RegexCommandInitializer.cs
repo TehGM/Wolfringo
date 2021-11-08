@@ -23,11 +23,13 @@ namespace TehGM.Wolfringo.Commands.Initialization
             return new RegexCommandInstance(
                 pattern: pattern,
                 regexOptions: regexCommand.Options,
+                regexTimeout: TimeSpan.FromMilliseconds(regexCommand.RegexTimeout),
                 method: descriptor.Method,
                 requirements: descriptor.GetRequirements(),
                 prefixOverride: descriptor.GetPrefixOverride(),
                 prefixRequirementOverride: descriptor.GetPrefixRequirementOverride(),
-                caseSensitivityOverride: descriptor.GetCaseSensitivityOverride());
+                caseSensitivityOverride: descriptor.GetCaseSensitivityOverride(), 
+                timeout: regexCommand.Timeout);
         }
     }
 }

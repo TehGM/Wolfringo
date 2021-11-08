@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
@@ -811,7 +812,7 @@ namespace TehGM.Wolfringo
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
         /// <param name="client">Client to send the request with.</param>
         /// <param name="language">Language to retrieve achievements in.</param>
-        /// <param name="achievementIDs">IDs of achievements to retrieve.</param>
+        /// <param name="achievementIDs">IDs of achievements to retrieve. Null or empty to get all achievements.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Enumerable of retrieved achievements.</returns>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
@@ -832,8 +833,8 @@ namespace TehGM.Wolfringo
             IEnumerable<uint> toRequest = achievementIDs?.Except(results.Select(a => a.ID));
             if (toRequest != null && toRequest.Any())
             {
-                IEnumerable<WolfAchievement> allAchievements = await client.GetAllAchievementsAsync(language, cancellationToken).ConfigureAwait(false);
-                results.AddRange(allAchievements?.Where(a => a != null && toRequest.Contains(a.ID)));
+                AchievementResponse response = await client.SendAsync<AchievementResponse>(new AchievementMessage(language, toRequest), cancellationToken).ConfigureAwait(false);
+                results.AddRange(response.GetFlattenedAchievementList());
             }
 
             return results;
@@ -850,6 +851,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         /// <seealso cref="GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)"/>
+        /// <seealso cref="GetGroupAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         public static async Task<WolfAchievement> GetAchievementAsync(this IWolfClient client, WolfLanguage language, uint id, CancellationToken cancellationToken = default)
         {
             IEnumerable<WolfAchievement> result = await client.GetAchievementsAsync(language, new uint[] { id }, cancellationToken).ConfigureAwait(false);
@@ -866,6 +868,7 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
         /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetGroupAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
         public static async Task<IEnumerable<WolfAchievement>> GetAllAchievementsAsync(this IWolfClient client, WolfLanguage language, CancellationToken cancellationToken = default)
         {
             AchievementListResponse response = await client.SendAsync<AchievementListResponse>(
@@ -875,7 +878,6 @@ namespace TehGM.Wolfringo
 
         /// <summary>Retrieve user's achievements.</summary>
         /// <remarks><para>Achievements already cached will be retrieved from cache.</para>
-        /// <para>Due to the construction of the protocol, if any achievement is not cached, the client will request all achievements again.</para>
         /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
         /// <param name="client">Client to send the request with.</param>
         /// <param name="userID">ID of user to retrieve achievements of.</param>
@@ -885,20 +887,39 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
         /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
         /// <seealso cref="GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)"/>
-        public static async Task<IReadOnlyDictionary<WolfAchievement, DateTime>> GetUserAchievementsAsync(this IWolfClient client, uint userID, 
+        /// <seealso cref="GetGroupAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
+        public static Task<IReadOnlyDictionary<WolfAchievement, DateTime?>> GetUserAchievementsAsync(this IWolfClient client, uint userID,
             WolfLanguage language, CancellationToken cancellationToken = default)
+            => GetEntityAchievementsAsync(client, new UserAchievementListMessage(userID), language, cancellationToken);
+
+        /// <summary>Retrieve groups's achievements.</summary>
+        /// <remarks><para>Achievements already cached will be retrieved from cache.</para>
+        /// <para>All child achievements will be surfaced to the top level, so can be accessed by direct enumerable queries.</para></remarks>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="groupID">ID of group to retrieve achievements of.</param>
+        /// <param name="language">Language to retrieve achievements in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
+        /// <returns>Dictionary of group achievements, with keys being achievement and value being unlock time.</returns>
+        /// <seealso cref="GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable{uint}, CancellationToken)"/>
+        /// <seealso cref="GetAchievementAsync(IWolfClient, WolfLanguage, uint, CancellationToken)"/>
+        /// <seealso cref="GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)"/>
+        /// <seealso cref="GetUserAchievementsAsync(IWolfClient, uint, WolfLanguage, CancellationToken)"/>
+        public static Task<IReadOnlyDictionary<WolfAchievement, DateTime?>> GetGroupAchievementsAsync(this IWolfClient client, uint groupID,
+            WolfLanguage language, CancellationToken cancellationToken = default)
+            => GetEntityAchievementsAsync(client, new GroupAchievementListMessage(groupID), language, cancellationToken);
+
+        private static async Task<IReadOnlyDictionary<WolfAchievement, DateTime?>> GetEntityAchievementsAsync(IWolfClient client, IWolfMessage request, WolfLanguage language, CancellationToken cancellationToken)
         {
-            UserAchievementListResponse response = await client.SendAsync<UserAchievementListResponse>(
-                new UserAchievementListMessage(userID), cancellationToken).ConfigureAwait(false);
-            Dictionary<WolfAchievement, DateTime> results = new Dictionary<WolfAchievement, DateTime>(response?.UserAchievements?.Count ?? 0);
-            if (response?.UserAchievements != null)
+            EntityAchievementListResponse response = await client.SendAsync<EntityAchievementListResponse>(request, cancellationToken).ConfigureAwait(false);
+            Dictionary<WolfAchievement, DateTime?> results = new Dictionary<WolfAchievement, DateTime?>(response?.Achievements?.Count ?? 0);
+            if (response?.Achievements != null)
             {
                 // get all achievements first
                 IEnumerable<WolfAchievement> achivs =
-                    await client.GetAchievementsAsync(language, response.UserAchievements.Keys, cancellationToken).ConfigureAwait(false);
+                    await client.GetAchievementsAsync(language, response.Achievements.Keys, cancellationToken).ConfigureAwait(false);
                 // map user achievements to retrieved achievement objects
                 foreach (WolfAchievement a in achivs)
-                    results.Add(a, response.UserAchievements[a.ID]);
+                    results.Add(a, response.Achievements[a.ID]);
             }
             return results;
         }
@@ -1082,12 +1103,36 @@ namespace TehGM.Wolfringo
         /// <returns>Message updating result.</returns>
         public static Task<ChatUpdateResponse> RestoreChatMessageAsync(this IWolfClient client, ChatMessage message, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatUpdateResponse>(new ChatUpdateMessage.Builder(message) { IsDeleted = false }.Build(), cancellationToken);
+
+
+        // URL metadata
+        /// <summary>Requests metadata of the link, as seen by WOLF servers.</summary>
+        /// <param name="client">Client to send the message with.</param>
+        /// <param name="url">URL to get metadata of.</param>
+        /// <param name="cancellationToken">>Cancellation token that can cancel the task.</param>
+        /// <returns>Link metadata.</returns>
+        /// <exception cref="ArgumentNullException">URL is null.</exception>
+        /// <exception cref="ArgumentException">URL is empty, whitespace, or otherwise invalid.</exception>
+        public static Task<UrlMetadataResponse> GetLinkMetadataAsync(this IWolfClient client, string url, CancellationToken cancellationToken = default)
+            => client.SendAsync<UrlMetadataResponse>(new UrlMetadataMessage(url), cancellationToken);
         #endregion
 
 
         /* TIPS */
         #region Tips
         // summaries
+        /// <summary>Requests tips summaries for a message.</summary>
+        /// <param name="client">Client to send the request with.</param>
+        /// <param name="messageTimestamp">Timestamp of the message to get tips statistics for.</param>
+        /// <param name="groupID">ID of the group where the message was sent in.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
+        /// <returns>Collection of message's tips summaries.</returns>
+        public static async Task<IEnumerable<WolfTip>> GetMessageTipsSummaryAsync(this IWolfClient client, WolfTimestamp messageTimestamp, uint groupID, CancellationToken cancellationToken = default)
+        {
+            TipSummaryResponse result = await client.SendAsync<TipSummaryResponse>(
+                new TipSummaryMessage(WolfTip.ContextType.Message, groupID, new WolfTimestamp[] { messageTimestamp }), cancellationToken).ConfigureAwait(false);
+            return result.Tips[messageTimestamp];
+        }
         /// <summary>Requests tips summaries for messages.</summary>
         /// <param name="client">Client to send the request with.</param>
         /// <param name="messages">Messages to get tips statistics for.</param>
@@ -1104,7 +1149,7 @@ namespace TehGM.Wolfringo
             if (messages.Any(m => m.RecipientID != messages.First().RecipientID))
                 throw new ArgumentException("Tips statistics can be requested at once only for messages from the same group", nameof(messages));
             TipSummaryResponse results = await client.SendAsync<TipSummaryResponse>(
-                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => m.Timestamp.Value)), cancellationToken);
+                new TipSummaryMessage(WolfTip.ContextType.Message, messages.First().RecipientID, messages.Select(m => m.Timestamp.Value)), cancellationToken).ConfigureAwait(false);
             return results.Tips;
         }
         /// <summary>Requests tips summaries for a message.</summary>
@@ -1132,7 +1177,7 @@ namespace TehGM.Wolfringo
                 throw new ArgumentException("Only messages already processed by the Wolf server can be tipped", nameof(message));
             if (!message.IsGroupMessage)
                 throw new ArgumentException("Only group messages can be tipped", nameof(message));
-            TipDetailsResponse result = await client.SendAsync<TipDetailsResponse>(new TipDetailsMessage(message.Timestamp.Value, message.RecipientID, WolfTip.ContextType.Message));
+            TipDetailsResponse result = await client.SendAsync<TipDetailsResponse>(new TipDetailsMessage(message.Timestamp.Value, message.RecipientID, WolfTip.ContextType.Message), cancellationToken).ConfigureAwait(false);
             return result.Tips;
         }
 

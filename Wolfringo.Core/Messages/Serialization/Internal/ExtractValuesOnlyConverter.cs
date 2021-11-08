@@ -37,15 +37,41 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                     results.Add(default);
                     continue;
                 }
-                string codeValue = item.First["code"]?.Value<string>();
+
+                string codeValue = GetCodeValue();
                 if (int.TryParse(codeValue, out int code) && !(code >= 200 && code < 300))
                 {
                     results.Add(default);
                     continue;
                 }
-                T result = item.First.ToObject<T>(serializer);
-                item.First.FlattenCommonProperties(result, serializer);
-                results.Add(result);
+                results.Add(GetResult());
+
+                // if item is a JProperty, treat the collection as a dictionary
+                // if it's a JObject, we're most likely dealing with an array
+                // WOLF be inconsistent like that
+                string GetCodeValue()
+                {
+                    if (item is JProperty)
+                        return item.First["code"]?.Value<string>();
+                    else
+                        return item["code"]?.Value<string>();
+                }
+
+                T GetResult()
+                {
+                    T result;
+                    if (item is JProperty)
+                    {
+                        result = item.First.ToObject<T>(serializer);
+                        item.First.FlattenCommonProperties(result, serializer);
+                    }
+                    else
+                    {
+                        result = item.ToObject<T>(serializer);
+                        item.FlattenCommonProperties(result, serializer);
+                    }
+                    return result;
+                }
             }
             return results.ToArray();
         }

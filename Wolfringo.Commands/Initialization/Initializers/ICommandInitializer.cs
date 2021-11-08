@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TehGM.Wolfringo.Commands.Initialization
+﻿namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <summary>An initializer that creates a command instance from a descriptor.</summary>
     public interface ICommandInitializer

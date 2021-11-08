@@ -19,11 +19,17 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <summary>Creates a new loader instance.</summary>
         /// <param name="initializers">Command initializers mapping.</param>
         /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
-        public CommandsLoader(ICommandInitializerProvider initializers, ILogger log)
+        public CommandsLoader(ICommandInitializerProvider initializers, ILogger log = null)
         {
             this._initializers = initializers;
             this._log = log;
         }
+
+        /// <summary>Creates a new loader instance.</summary>
+        /// <param name="initializers">Command initializers mapping.</param>
+        /// <param name="log">Logger to log messages and errors to. If null, all logging will be disabled.</param>
+        public CommandsLoader(ICommandInitializerProvider initializers, ILogger<CommandsLoader> log)
+            : this(initializers, (ILogger)log) { }
 
         /// <inheritdoc/>
         /// <remarks>Only commands from types marked with <see cref="CommandsHandlerAttribute"/> will be loaded.</remarks>

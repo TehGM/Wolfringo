@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TehGM.Wolfringo.Commands.Results;
+using TehGM.Wolfringo.Messages;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
@@ -30,20 +32,26 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 // check additionals first, in case they override something
                 if (TryFindAdditional(param.ParameterType, values.AdditionalObjects, out object value)) { }
                 // from context
-                else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.GetType()))
+                else if (IsParamAssignable(param, values.Context))
                     value = values.Context;
-                else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.Message.GetType()))
+                else if (IsParamAssignable(param, values.Context?.Message))
                     value = values.Context.Message;
-                else if (values.Context != null && param.ParameterType.IsAssignableFrom(values.Context.Client.GetType()))
+                else if (IsParamAssignable(param, values.Context?.Client))
                     value = values.Context.Client;
+                // context options
+                else if (IsParamAssignable(param, values.Options))
+                    value = values.Options;
                 // command instance
-                else if (values.CommandInstance != null && param.ParameterType.IsAssignableFrom(values.CommandInstance.GetType()))
+                else if (IsParamAssignable(param, values.CommandInstance))
                     value = values.CommandInstance;
                 // cancellation token
                 else if (param.ParameterType.IsAssignableFrom(typeof(CancellationToken)))
                     value = values.CancellationToken;
                 // from services
                 else if (TryGetService(param.ParameterType, values.Services, out value)) { }
+                // args text
+                else if (param.ParameterType == typeof(string) && TryGetAttribute(param, out ArgumentsTextAttribute argumentsTextAttribute))
+                    value = values.ArgsText;
                 // logger from factory
                 else if (TryGetGenericLogger(param.ParameterType, values.Services, out value)) { }
                 // from args
@@ -54,19 +62,27 @@ namespace TehGM.Wolfringo.Commands.Parsing
                     {
                         argIndex++;
                     }
-                    // if there's an error, let's return result with message - but without exception, as we don't want input errors to be logged
+                    // if there's an error, let's return result with message
                     else if (convertingError != null)
-                        return ParameterBuildingResult.Failure(null, new string[] {
+                        return ParameterBuildingResult.Failure(new string[] {
                             await param.GetConvertingErrorAttribute().ToStringAsync(values.Context, values.Args[argIndex], param, cancellationToken).ConfigureAwait(false) });
                     // if it's optional, just let it pass
+                    else if (param.HasDefaultValue)
+                        value = param.DefaultValue ?? null;
                     else if (param.IsOptional)
-                        value = param.HasDefaultValue ? param.DefaultValue : null;
-                    // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message - do not provide exception, as we don't want it logged
+                        value = Type.Missing;
+                    // if not default and not thrown conversion error, but still not found yet - means it's arg that is expected, but user didn't provide it in command - so return error with message
                     else if (argIndex <= values.Args.Length)
-                        return ParameterBuildingResult.Failure(null, new string[] {
-                            await param.GetMissingErrorAttribute().ToStringAsync(values.Context,
-                            values.Args.Length > argIndex ? values.Args[argIndex] : string.Empty,
-                            param, cancellationToken).ConfigureAwait(false) });
+                    {
+                        if (values.Context != null)
+                        {
+                            string arg = values.Args.Length > argIndex ? values.Args[argIndex] : string.Empty;
+                            string msg = await param.GetMissingErrorAttribute().ToStringAsync(values.Context, arg, param, cancellationToken).ConfigureAwait(false);
+                            return ParameterBuildingResult.Failure(new string[] { msg });
+                        }
+                        else
+                            return ParameterBuildingResult.Failure();
+                    }
                     // none found, throw
                     else
                         throw new InvalidOperationException($"Unsupported param type: {param.ParameterType.FullName}");
@@ -76,6 +92,28 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
             return ParameterBuildingResult.Success(paramsValues);
         }
+
+        /// <summary>Checks if parameter can be assigned from given object.</summary>
+        /// <remarks><para>This check does null check in addition to reflection type check.</para>
+        /// <para>This method is intended to be internal helper reducing code repetition.</para></remarks>
+        /// <param name="type">Type of the parameter.</param>
+        /// <param name="value">The object to check.</param>
+        /// <returns>True if object can be assigned to given param; otherwise false.</returns>
+        protected static bool IsParamAssignable(Type type, object value)
+        {
+            if (value == null)
+                return false;
+            return type.IsAssignableFrom(value.GetType());
+        }
+
+        /// <summary>Checks if parameter can be assigned from given object.</summary>
+        /// <remarks><para>This check does null check in addition to reflection type check.</para>
+        /// <para>This method is intended to be internal helper reducing code repetition.</para></remarks>
+        /// <param name="parameter">The parameter info.</param>
+        /// <param name="value">The object to check.</param>
+        /// <returns>True if object can be assigned to given param; otherwise false.</returns>
+        protected static bool IsParamAssignable(ParameterInfo parameter, object value)
+            => IsParamAssignable(parameter.ParameterType, value);
 
         /// <summary>Attempts to find an object of specific type from enumerable of objects.</summary>
         /// <param name="type">Type of object to find.</param>
@@ -98,6 +136,17 @@ namespace TehGM.Wolfringo.Commands.Parsing
 
             result = null;
             return false;
+        }
+
+        /// <summary>Attempts to get an attribute present on the parameter.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parameter"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected static bool TryGetAttribute<T>(ParameterInfo parameter, out T result) where T : Attribute
+        {
+            result = parameter.GetCustomAttribute<T>();
+            return result != null;
         }
 
         /// <summary>Attempts to find a service of type from service provider.</summary>

@@ -6,11 +6,11 @@ namespace TehGM.Wolfringo.Hosting
     public class HostedWolfClientOptions
     {
         /// <summary>Server URL to connect to.</summary>
-        /// <remarks>Defaults to <see cref="WolfClient.DefaultServerURL"/>.</remarks>
-        public string ServerURL { get; set; } = WolfClient.DefaultServerURL;
+        /// <remarks>Defaults to <see cref="WolfClientOptions.DefaultServerURL"/>.</remarks>
+        public string ServerURL { get; set; } = WolfClientOptions.DefaultServerURL;
         /// <summary>Device to use when connecting.</summary>
-        /// <remarks>Defaults to <see cref="WolfClient.DefaultDevice"/>.</remarks>
-        public WolfDevice Device { get; set; } = WolfClient.DefaultDevice;
+        /// <remarks>Defaults to <see cref="WolfClientOptions.DefaultDevice"/>.</remarks>
+        public WolfDevice Device { get; set; } = WolfClientOptions.DefaultDevice;
         /// <summary>Token to use when connecting.</summary>
         /// <remarks>If not set, the client will automatically generate a valid token.</remarks>
         public string Token { get; set; } = null;
@@ -38,20 +38,6 @@ namespace TehGM.Wolfringo.Hosting
         /// <remarks><para>Setting this to true might be useful if the application is running as a service, so it's auto-restarted.</para>
         /// <para>Defaults to false.</para></remarks>
         public bool CloseOnCriticalError { get; set; } = false;
-
-        // caching
-        /// <summary>Whether users caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool UsersCachingEnabled { get; set; } = true;
-        /// <summary>Whether groups caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool GroupsCachingEnabled { get; set; } = true;
-        /// <summary>Whether charms caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool CharmsCachingEnabled { get; set; } = true;
-        /// <summary>Whether achievements caching should be enabled.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool AchievementsCachingEnabled { get; set; } = true;
 
         // messages handling
         /// <summary>Whether the client should skip raising events for messages it sent.</summary>

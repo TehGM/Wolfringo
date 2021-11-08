@@ -8,6 +8,11 @@ using TehGM.Wolfringo.Messages.Serialization;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Messages;
 using Microsoft.Extensions.Options;
+using TehGM.Wolfringo.Utilities.Internal;
+using TehGM.Wolfringo.Socket;
+using TehGM.Wolfringo.Hosting.Services;
+using TehGM.Wolfringo.Caching;
+using TehGM.Wolfringo.Caching.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -15,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class WolfClientServiceCollectionExtensions
     {
         /// <summary>Adds Hosted Wolf Client to services as a hosted service, and all related services.</summary>
-        /// <remarks><para>This method will also add <see cref="ITokenProvider"/>, <see cref="IResponseTypeResolver"/>,
+        /// <remarks><para>This method will also add <see cref="IWolfTokenProvider"/>, <see cref="IResponseTypeResolver"/>,
         /// and <see cref="ISerializerProvider{TKey, TSerializer}"/> for messages and responses, unless already added.</para>
         /// <para>Added client will be injectable as both <see cref="HostedWolfClient"/> and <see cref="IWolfClient"/>.</para></remarks>
         /// <param name="services">Service collection to add new services to.</param>
@@ -25,13 +30,19 @@ namespace Microsoft.Extensions.DependencyInjection
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
-            services.TryAddTransient<ITokenProvider, WolfTokenProvider>();
+            services.TryAddTransient<IWolfTokenProvider>(provider
+                => new HostedWolfTokenProvider(provider.GetRequiredService<IOptionsMonitor<HostedWolfClientOptions>>(), new RandomizedWolfTokenProvider()));
             services.TryAddTransient<IResponseTypeResolver, ResponseTypeResolver>();
-            services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>(provider
-                => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value)));
-            services.TryAdd(ServiceDescriptor.Transient<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>(provider
-                => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value)));
+            services.TryAddSingleton<ISerializerProvider<string, IMessageSerializer>>(provider
+                => new MessageSerializerProvider(provider.GetRequiredService<IOptions<MessageSerializerProviderOptions>>().Value));
+            services.TryAddSingleton<ISerializerProvider<Type, IResponseSerializer>>(provider
+                => new ResponseSerializerProvider(provider.GetRequiredService<IOptions<ResponseSerializerProviderOptions>>().Value));
+            services.TryAddSingleton<IWolfClientCache>(provider
+                => new WolfClientCache(provider.GetRequiredService<WolfCacheOptions>(), provider.GetLoggerFor<IWolfClientCache, WolfClientCache>()));
+            services.TryAddTransient<WolfCacheOptions>(provider
+                => provider.GetRequiredService<IOptionsMonitor<WolfCacheOptions>>().CurrentValue);
 
+            services.TryAddSingleton<ISocketClient, SocketClient>();
             services.TryAddSingleton<IWolfClient, HostedWolfClient>();
             services.AddTransient<IHostedService>(x => (IHostedService)x.GetRequiredService<IWolfClient>());
 
@@ -106,17 +117,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Sets server URL to Default.</summary>
         /// <param name="builder">Hosted WOLF Client Service builder.</param>
         /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
-        /// <seealso cref="WolfClient.DefaultServerURL"/>
+        /// <seealso cref="WolfClientOptions.DefaultServerURL"/>
         public static IHostedWolfClientServiceBuilder SetDefaultServerURL(this IHostedWolfClientServiceBuilder builder)
-            => SetServerURL(builder, WolfClient.DefaultServerURL);
+            => SetServerURL(builder, WolfClientOptions.DefaultServerURL);
 
         /// <summary>Sets server URL to Release Candidate server.</summary>
         /// <param name="builder">Hosted WOLF Client Service builder.</param>
         /// <seealso cref="HostedWolfClientOptions.ServerURL"/>
-        /// <seealso cref="WolfClient.BetaServerURL"/>
+        /// <seealso cref="WolfClientOptions.BetaServerURL"/>
         public static IHostedWolfClientServiceBuilder SetBetaServerURL(this IHostedWolfClientServiceBuilder builder)
-            => SetServerURL(builder, WolfClient.BetaServerURL);
-
+            => SetServerURL(builder, WolfClientOptions.BetaServerURL);
 
 
         // message serializers

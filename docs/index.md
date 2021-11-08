@@ -16,6 +16,8 @@ Check [API Reference](xref:API) for documentation on all Wolfringo types and met
 
 Check [FAQ](xref:FAQ) for frequently asked questions.
 
+Check [Upgrading Guides](xref:Upgrading.Introduction) to see how to upgrade your bot to new major Wolfringo versions.
+
 Check [Changelog](https://github.com/TehGM/Wolfringo/releases) to view Wolfringo changelog.
 
 ### Examples

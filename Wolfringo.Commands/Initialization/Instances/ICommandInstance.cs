@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands.Initialization
 {

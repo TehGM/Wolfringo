@@ -9,10 +9,10 @@ namespace TehGM.Wolfringo.Messages.Serialization
     public class ChatUpdateMessageSerializer : DefaultMessageSerializer<ChatUpdateMessage>
     {
         /// <inheritdoc/>
-        public override IWolfMessage Deserialize(string command, SerializedMessageData messageData)
+        public override IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)
         {
             // deserialize message
-            ChatUpdateMessage result = (ChatUpdateMessage)base.Deserialize(command, messageData);
+            ChatUpdateMessage result = (ChatUpdateMessage)base.Deserialize(eventName, messageData);
 
             // parse and populate binary data
             if (messageData.BinaryMessages?.Any() == true)

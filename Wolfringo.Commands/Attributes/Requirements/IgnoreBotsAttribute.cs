@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Commands.Attributes;
+using TehGM.Wolfringo.Commands.Results;
 
 namespace TehGM.Wolfringo.Commands
 {
@@ -10,10 +11,10 @@ namespace TehGM.Wolfringo.Commands
     public class IgnoreBotsAttribute : CommandRequirementAttribute
     {
         /// <inheritdoc/>
-        public override async Task<bool> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+        public override async Task<ICommandResult> CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
         {
             bool isBot = await RequireUserPrivilegeAttribute.CheckPrivilegeAsync(context, context.Message.SenderID.Value, WolfPrivilege.Bot, cancellationToken).ConfigureAwait(false);
-            return !isBot;
+            return base.ResultFromBoolean(isBot);
         }
     }
 }

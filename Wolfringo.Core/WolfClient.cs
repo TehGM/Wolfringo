@@ -13,6 +13,9 @@ using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Socket;
 using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using TehGM.Wolfringo.Caching;
+using TehGM.Wolfringo.Caching.Internal;
 
 namespace TehGM.Wolfringo
 {
@@ -24,57 +27,19 @@ namespace TehGM.Wolfringo
     /// Wolf, and may not be suitable for other scenarios.</para>
     /// <para>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
     /// For this reason, it's important to be careful when overriding 
-    /// <see cref="OnMessageSentInternalAsync(IWolfMessage, IWolfResponse, SerializedMessageData, CancellationToken)"/> and
-    /// <see cref="OnMessageReceivedInternalAsync(IWolfMessage, SerializedMessageData, CancellationToken)"/>, as not calling base
+    /// <see cref="OnMessageSentAsync(IWolfMessage, IWolfResponse, SerializedMessageData, CancellationToken)"/> and
+    /// <see cref="OnMessageReceivedAsync(IWolfMessage, SerializedMessageData, CancellationToken)"/>, as not calling base
     /// implementation (or not implementing replacement behaviour) might cause functionality loss.</para></remarks>
     public class WolfClient : IWolfClient, IWolfClientCacheAccessor, IDisposable
     {
-        /// <summary>Default Wolf server URL.</summary>
-        public const string DefaultServerURL = "wss://v3.palringo.com:3051";
-        /// <summary>Pre-release Wolf server URL.</summary>
-        public const string BetaServerURL = "wss://v3-rc.palringo.com:3051";
-        /// <summary>Default device string to pass to the server when connecting.</summary>
-        public const WolfDevice DefaultDevice = WolfDevice.Bot;
-
         /// <summary>URL of the server.</summary>
         public string Url { get; }
-        /// <summary>Token used with the connection.</summary>
-        public string Token { get; }
-        /// <summary>Device string to pass to the server when connecting.</summary>
+        /// <summary>Device to pass to the server when connecting.</summary>
         public WolfDevice Device { get; }
         /// <summary>Is this client currently connected?</summary>
         public bool IsConnected => this.SocketClient?.IsConnected == true;
         /// <inheritdoc/>
         public uint? CurrentUserID { get; protected set; }
-
-        /// <summary>Enable or disable users cache.</summary>
-        public bool UsersCachingEnabled
-        {
-            get => this.Caches?.UsersCachingEnabled == true;
-            set => this.Caches.UsersCachingEnabled = value;
-        }
-        /// <summary>Enable or disable groups cache.</summary>
-        public bool GroupsCachingEnabled
-        {
-            get => this.Caches?.GroupsCachingEnabled == true;
-            set => this.Caches.GroupsCachingEnabled = value;
-        }
-        /// <summary>Enable or disable charms cache.</summary>
-        public bool CharmsCachingEnabled
-        {
-            get => this.Caches?.CharmsCachingEnabled == true;
-            set => this.Caches.CharmsCachingEnabled = value;
-        }
-        /// <summary>Enable or disable achievements cache.</summary>
-        public bool AchievementsCachingEnabled
-        {
-            get => this.Caches?.AchievementsCachingEnabled == true;
-            set => this.Caches.AchievementsCachingEnabled = value;
-        }
-
-        /// <summary>Whether the client should skip raising events for messages it sent.</summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool IgnoreOwnChatMessages { get; set; }
 
         /// <inheritdoc/>
         public event EventHandler Connected;
@@ -87,6 +52,10 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         public event EventHandler<UnhandledExceptionEventArgs> ErrorRaised;
 
+        /// <summary>Whether the client should skip raising events for messages it sent.</summary>
+        protected bool IgnoreOwnChatMessages { get; }
+        /// <summary>Token used with the connection.</summary>
+        protected string Token { get; }
         /// <summary>Socket client used by this WOLF client.</summary>
         protected ISocketClient SocketClient { get; }
         /// <summary>Callbacks dispatcher used by this WOLF client.</summary>
@@ -100,56 +69,50 @@ namespace TehGM.Wolfringo
         /// <summary>Logger for all log messages.</summary>
         protected ILogger Log { get; }
         /// <summary>Caches container.</summary>
-        protected WolfEntityCacheContainer Caches { get; set; }
+        protected IWolfClientCache Cache { get; set; }
+        /// <summary>Handler for tracking services that should be disposed when this <see cref="WolfClient"/> is being disposed.</summary>
+        protected DisposableServicesHandler DisposablesHandler { get; }
 
         private CancellationTokenSource _connectionCts;
 
         #region Constructors
         /// <summary>Creates a new wolf client instance.</summary>
-        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
-        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
-        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
-        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
-        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
-        /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
-        /// <param name="device">Device to use when connecting.</param>
-        /// <param name="token">Token to use for connection.</param>
-        /// <param name="logger">Logger for logging logs.</param>
-        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
-        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
-        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(string url, WolfDevice device, string token, ILogger logger = null, 
-            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
+        /// <param name="services">Services provider to resolve dependencies from.</param>
+        /// <param name="options">Options for this client.</param>
+        public WolfClient(IServiceProvider services, WolfClientOptions options)
         {
             // verify input
-            if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentNullException(nameof(url));
-            if (token != null && string.IsNullOrWhiteSpace(token))
-                throw new ArgumentException("Token can be null for auto-generation or have a value, but it cannot be empty or whitespace", nameof(token));
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            if (string.IsNullOrWhiteSpace(options.ServerURL))
+                throw new ArgumentNullException(nameof(options.ServerURL));
 
-            // set defaults
-            this.IgnoreOwnChatMessages = true;
+            // resolve disposables handler
+            this.DisposablesHandler = services.GetService<DisposableServicesHandler>() ?? new DisposableServicesHandler();
 
-            // set provided props
-            this.Url = url;
-            this.Device = device;
-            this.Token = token;
-            this.Log = logger;
-            this.ResponseTypeResolver = responseTypeResolver ?? new ResponseTypeResolver();
-            this.MessageSerializers = messageSerializers ?? new MessageSerializerProvider();
-            this.ResponseSerializers = responseSerializers ?? new ResponseSerializerProvider();
+            // resolve services
+            IWolfTokenProvider tokenProvider = this.DisposablesHandler.GetRequiredService<IWolfTokenProvider>(services);
+            this.ResponseTypeResolver = this.DisposablesHandler.GetRequiredService<IResponseTypeResolver>(services);
+            this.MessageSerializers = this.DisposablesHandler.GetRequiredService<ISerializerProvider<string, IMessageSerializer>>(services);
+            this.ResponseSerializers = this.DisposablesHandler.GetRequiredService<ISerializerProvider<Type, IResponseSerializer>>(services);
+            this.Cache = this.DisposablesHandler.GetRequiredService<IWolfClientCache>(services);
+            this.Log = services.GetService<ILogger<WolfClient>>()
+                ?? services.GetService<ILogger>()
+                ?? services.GetService<ILoggerFactory>()?.CreateLogger<WolfClient>();
+
+            // set options
+            this.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
+            this.Url = options.ServerURL;
+            this.Device = options.Device;
+            this.Token = tokenProvider.GetToken();
 
             // init dispatcher
             this.CallbackDispatcher = new MessageCallbackDispatcher();
 
-            // init caches
-            this.Caches = new WolfEntityCacheContainer();
-
             // init socket client
-            this.SocketClient = new SocketClient();
+            this.SocketClient = this.DisposablesHandler.GetRequiredService<ISocketClient>(services);
             this.SocketClient.MessageReceived += OnClientMessageReceived;
             this.SocketClient.MessageSent += OnClientMessageSent;
             this.SocketClient.Connected += OnClientConnected;
@@ -157,57 +120,54 @@ namespace TehGM.Wolfringo
             this.SocketClient.ErrorRaised += OnClientError;
         }
 
+        // backwards compatibility constructor overloads
         /// <summary>Creates a new wolf client instance.</summary>
-        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
-        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
-        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
-        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
-        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
-        /// <param name="url">Wolf server URL. Needs to be WSS protocol.</param>
-        /// <param name="device">Device to use when connecting.</param>
-        /// <param name="logger">Logger for logging logs.</param>
-        /// <param name="tokenProvider">Token provider used to generate the token.</param>
-        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
-        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
-        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(string url, WolfDevice device, ILogger logger = null, 
-            ITokenProvider tokenProvider = null, 
-            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(url, device, GetNewToken(tokenProvider), logger, messageSerializers, responseSerializers, responseTypeResolver) { }
+        [Obsolete("Use WolfClientBuilder instead")]
+        public WolfClient() : this(BuildDefaultServiceProvider(null), new WolfClientOptions()) { }
 
         /// <summary>Creates a new wolf client instance.</summary>
-        /// <remarks><para>If any of the optional arguments is skipped or null, the following will be used:<br/>
-        /// <paramref name="logger"/> - null (logging will be disabled)<br/>
-        /// <paramref name="tokenProvider"/> - <see cref="WolfTokenProvider"/><br/>
-        /// <paramref name="messageSerializers"/> - <see cref="MessageSerializerProvider"/><br/>
-        /// <paramref name="responseSerializers"/> - <see cref="ResponseSerializerProvider"/><br/>
-        /// <paramref name="responseTypeResolver"/> - <see cref="Messages.Responses.ResponseTypeResolver"/></para>
-        /// <para>Both message and response serializers have a default fallback - if serializer for given message command/response type
-        /// is not mapped, a default will be used. These fallback will log a warning when used. Note that message serializer
-        /// uses fallback only when sending - when receiving, it'll log an error.</para></remarks>
-        /// <param name="logger">Logger for logging logs.</param>
-        /// <param name="tokenProvider">Token provider used to generate the token.</param>
-        /// <param name="messageSerializers">Message serializers mapping used when serializing and deserializing messages.</param>
-        /// <param name="responseSerializers">Response serializers mapping used when deserializing responses.</param>
-        /// <param name="responseTypeResolver">Response type resolver used when deserializing responses.</param>
-        public WolfClient(ILogger logger = null, 
-            ITokenProvider tokenProvider = null,
-            ISerializerProvider<string, IMessageSerializer> messageSerializers = null, ISerializerProvider<Type, IResponseSerializer> responseSerializers = null, IResponseTypeResolver responseTypeResolver = null)
-            : this(DefaultServerURL, DefaultDevice, logger, tokenProvider, messageSerializers, responseSerializers, responseTypeResolver) { }
+        /// <param name="log">Logger to use with this client. If null, no messages will be logged.</param>
+        [Obsolete("Use WolfClientBuilder instead")]
+        public WolfClient(ILogger log)
+            : this(BuildDefaultServiceProvider(log), new WolfClientOptions()) { }
 
-        /// <summary>Generates a new token using token provider.</summary>
-        /// <remarks>If token provider is null, <see cref="WolfTokenProvider"/> will be used.</remarks>
-        /// <param name="tokenProvider">Token provider to use when generating token.</param>
-        /// <returns>Generated connection token.</returns>
-        private static string GetNewToken(ITokenProvider tokenProvider = null)
+        /// <summary>Creates a new wolf client instance.</summary>
+        /// <param name="logFactory">Logger factory to use with this client. If null, no messages will be logged.</param>
+        [Obsolete("Use WolfClientBuilder instead")]
+        public WolfClient(ILoggerFactory logFactory)
+            : this(BuildDefaultServiceProvider(logFactory?.CreateLogger<WolfClient>()), new WolfClientOptions()) { }
+
+        /// <summary>Builds default service provider. Used to temporarily support obsolete non-builder constructors.</summary>
+        /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
+        /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
+        protected static IServiceProvider BuildDefaultServiceProvider(ILogger log = null)
         {
-            if (tokenProvider == null)
-                tokenProvider = new WolfTokenProvider();
-            return tokenProvider.GenerateToken(18);
+            // add all required services
+            IServiceCollection services = new ServiceCollection();
+            services.AddTransient<IWolfTokenProvider, RandomizedWolfTokenProvider>();
+            services.AddSingleton<IResponseTypeResolver, ResponseTypeResolver>();
+            services.AddSingleton<ISerializerProvider<string, IMessageSerializer>, MessageSerializerProvider>();
+            services.AddSingleton<ISerializerProvider<Type, IResponseSerializer>, ResponseSerializerProvider>();
+            services.AddSingleton<ISocketClient, SocketClient>();
+            services.AddSingleton<IWolfClientCache>(provider
+                => new WolfClientCache(new WolfCacheOptions(), provider.GetLoggerFor<WolfClientCache>()));
+
+            if (log != null)
+            {
+                if (log is ILogger<WolfClient> typedLog)
+                    services.AddSingleton<ILogger<WolfClient>>(typedLog);
+                else if (log is ILogger<IWolfClient> interfaceTypedLog)
+                    services.AddSingleton<ILogger<IWolfClient>>(interfaceTypedLog);
+                services.AddSingleton<ILogger>(log);
+            }
+
+            // add tracker to know to dispose them
+            DisposableServicesHandler handler = new DisposableServicesHandler();
+            handler.MarkForDisposal<ISocketClient>();
+            handler.MarkForDisposal<IWolfClientCache>();
+            services.AddSingleton<DisposableServicesHandler>(handler);
+
+            return services.BuildServiceProvider();
         }
         #endregion
 
@@ -215,17 +175,18 @@ namespace TehGM.Wolfringo
         /// <inheritdoc/>
         /// <param name="device">Device to connect as.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
-        public Task ConnectAsync(WolfDevice device, CancellationToken cancellationToken = default)
+        public async Task ConnectAsync(WolfDevice device, CancellationToken cancellationToken = default)
         {
             if (this.IsConnected)
                 throw new InvalidOperationException("Already connected");
 
-            Log?.LogDebug("Connecting");
+            this.Log?.LogDebug("Connecting");
             this.Clear();
+            await this.Cache.OnConnectingAsync(this, cancellationToken).ConfigureAwait(false);
             this._connectionCts = new CancellationTokenSource();
-            return SocketClient.ConnectAsync(
+            await this.SocketClient.ConnectAsync(
                 new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket"),
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -243,7 +204,7 @@ namespace TehGM.Wolfringo
         public virtual void Dispose()
         {
             this.Clear();
-            (SocketClient as IDisposable)?.Dispose();
+            this.DisposablesHandler?.Dispose();
         }
 
         /// <summary>Clears all connection-bound variables.</summary>
@@ -253,7 +214,6 @@ namespace TehGM.Wolfringo
             try { this._connectionCts?.Dispose(); } catch { }
             this._connectionCts = null;
             this.CurrentUserID = null;
-            this.Caches?.ClearAll();
         }
         #endregion
 
@@ -325,7 +285,27 @@ namespace TehGM.Wolfringo
                     }
                     SerializedMessageData responseData = new SerializedMessageData(e.Message.Payload, e.BinaryMessages);
                     IWolfResponse response = serializer.Deserialize(responseType, responseData);
-                    await OnMessageSentInternalAsync(sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
+
+                    if (!response.IsError())
+                    {
+                        // if it's a login message, we can extract current user ID
+                        if (response is LoginResponse loginResponse)
+                            this.CurrentUserID = loginResponse.User.ID;
+
+                        // when logging out, null the user ID.
+                        else if (sentMessage is LogoutMessage)
+                            this.CurrentUserID = null;
+
+                        // if it's chat message, populate with response info to get timestamp
+                        else if (sentMessage is ChatMessage chatMsg && response is ChatResponse)
+                            responseData?.Payload?.First?.PopulateObject(chatMsg, "body");
+
+                        // cache
+                        await this.Cache.OnMessageSentAsync(this, sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
+                    }
+
+                    // notify child classes
+                    await OnMessageSentAsync(sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
@@ -347,215 +327,50 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Internal method for handling additional actions on sent message.</summary>
-        /// <remarks>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
-        /// For this reason, it's important to be careful when overriding this method, as not calling base
-        /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
+        /// <remarks>This method is invoked after client parses current user (for login/logout), populates chat message body data, and caches the entities.</remarks>
         /// <param name="message">Sent message.</param>
         /// <param name="response">Response received.</param>
         /// <param name="rawResponse">Raw response data.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
-        protected virtual Task OnMessageSentInternalAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
-        {
-            // don't do anything if response is not successful
-            if (response.IsError())
-                return Task.CompletedTask;
-
-            // if it's a login message, we can extract current user ID
-            if (response is LoginResponse loginResponse)
-                this.CurrentUserID = loginResponse.User.ID;
-
-            // when logging out, null the user ID.
-            else if (message is LogoutMessage)
-                this.CurrentUserID = null;
-
-            // if it's chat message, populate with response info to get timestamp
-            else if (message is ChatMessage chatMsg && response is ChatResponse)
-                rawResponse?.Payload?.First?.PopulateObject(chatMsg, "body");
-
-            if (this.UsersCachingEnabled)
-            {
-                // update users cache if it's user profile message
-                if (response is UserProfileResponse userProfileResponse && userProfileResponse.UserProfiles?.Any() == true)
-                {
-                    foreach (WolfUser user in userProfileResponse.UserProfiles)
-                    {
-                        if (user == null)
-                            continue;
-
-                        this.Caches?.UsersCache?.AddOrReplaceIfChanged(user);
-                    }
-                }
-            }
-
-            if (this.GroupsCachingEnabled)
-            {
-                // update groups cache if it's group profile message
-                if (response is GroupProfileResponse groupProfileResponse && groupProfileResponse.GroupProfiles?.Any() == true)
-                {
-                    foreach (WolfGroup group in groupProfileResponse.GroupProfiles)
-                    {
-                        if (group == null)
-                            continue;
-
-                        // repopulate group members if new group profile came without them
-                        WolfGroup existingGroup = this.Caches?.GroupsCache?.Get(group.ID);
-                        if (existingGroup != null && existingGroup.Members?.Any() == true && group.Members?.Any() != true)
-                            EntityModificationHelper.ReplaceAllGroupMembers(group, existingGroup.Members.Values);
-                        // replace cached group itself
-                        this.Caches?.GroupsCache?.AddOrReplaceIfChanged(group);
-                    }
-                }
-
-                // update group member list if one was requested
-                else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMembersListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMembersMessage.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
-                // add group if it was created
-                else if (response is GroupEditResponse groupEditResponse && message is GroupCreateMessage)
-                    this.Caches?.GroupsCache.AddOrReplaceIfChanged(groupEditResponse.GroupProfile);
-
-                // update group audio config
-                else if (message is GroupAudioUpdateResponse groupAudioUpdateResponse && groupAudioUpdateResponse.AudioConfig != null)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdateResponse.AudioConfig.GroupID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
-                        rawResponse.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
-                    }
-                }
-            }
-
-
-            if (this.CharmsCachingEnabled)
-            {
-                // update charms cache if it's charms list
-                if (response is CharmListResponse listCharmsResponse && listCharmsResponse.Charms?.Any() == true)
-                {
-                    foreach (WolfCharm charm in listCharmsResponse.Charms)
-                        this.Caches?.CharmsCache?.AddOrReplace(charm);
-                }
-            }
-
-            if (this.AchievementsCachingEnabled)
-            {
-                if (response is AchievementListResponse achievementListResponse && achievementListResponse.Achievements?.Any() == true &&
-                    message is AchievementListMessage achievementListMessage)
-                {
-                    foreach (WolfAchievement achiv in achievementListResponse.GetFlattenedAchievementList())
-                        this.Caches?.AchievementsCache?.AddOrReplace(achievementListMessage.Language, achiv);
-                }
-            }
-
-            return Task.CompletedTask;
-        }
+        protected virtual Task OnMessageSentAsync(IWolfMessage message, IWolfResponse response, SerializedMessageData rawResponse, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
         #endregion
 
         #region Caching
-        // doubling the methods as below allows for hiding interface members
-        // while at once allowing overriding the implementations
-
-        // interface proxies
         /// <inheritdoc/>
         WolfUser IWolfClientCacheAccessor.GetCachedUser(uint id)
-            => GetCachedUserInternal(id);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedUser(id);
+        }
         /// <inheritdoc/>
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(uint id)
-            => GetCachedGroupInternal(id);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedGroup(id);
+        }
         /// <inheritdoc/>
         WolfGroup IWolfClientCacheAccessor.GetCachedGroup(string name)
-            => GetCachedGroupInternal(name);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedGroup(name);
+        }
         /// <inheritdoc/>
         WolfCharm IWolfClientCacheAccessor.GetCachedCharm(uint id)
-            => GetCachedCharmInternal(id);
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("Not connected");
+            return this.Cache.GetCachedCharm(id);
+        }
         /// <inheritdoc/>
         WolfAchievement IWolfClientCacheAccessor.GetCachedAchievement(WolfLanguage language, uint id)
-            => GetCachedAchievementInternal(language, id);
-
-        // overridable methods
-        /// <summary>Get user from cache.</summary>
-        /// <param name="id">ID of the user.</param>
-        /// <returns>Cached user if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfUser GetCachedUserInternal(uint id)
         {
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
-            if (!this.UsersCachingEnabled)
-                return null;
-            WolfUser result = this.Caches?.UsersCache?.Get(id);
-            if (result != null)
-                Log?.LogTrace("User {UserID} found in cache", id);
-            return result;
-        }
-        /// <summary>Get group from cache.</summary>
-        /// <param name="id">ID of the group.</param>
-        /// <returns>Cached group if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfGroup GetCachedGroupInternal(uint id)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            if (!this.GroupsCachingEnabled)
-                return null;
-            WolfGroup result = this.Caches?.GroupsCache?.Get(id);
-            if (result != null)
-                Log?.LogTrace("Group {GroupID} found in cache", id);
-            return result;
-        }
-        /// <summary>Get group from cache.</summary>
-        /// <param name="name">ID of the group.</param>
-        /// <returns>Cached group if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfGroup GetCachedGroupInternal(string name)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            if (!this.GroupsCachingEnabled)
-                return null;
-            WolfGroup result = this.Caches?.GroupsCache?.Find(group => group.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-            if (result != null)
-                Log?.LogTrace("Group {GroupName} found in cache", name);
-            return result;
-        }
-        /// <summary>Get charm from cache.</summary>
-        /// <param name="id">ID of the charm.</param>
-        /// <returns>Cached charm if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfCharm GetCachedCharmInternal(uint id)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            if (!this.CharmsCachingEnabled)
-                return null;
-            WolfCharm result = this.Caches?.CharmsCache?.Get(id);
-            if (result != null)
-                Log?.LogTrace("Charm {CharmID} found in cache", id);
-            return result;
-        }
-        /// <summary>Get achievement from cache.</summary>
-        /// <param name="language">Language of the achievement data.</param>
-        /// <param name="id">ID of the achievement.</param>
-        /// <returns>Cached achievement if found; otherwise null.</returns>
-        /// <exception cref="InvalidOperationException">Not connected.</exception>
-        protected virtual WolfAchievement GetCachedAchievementInternal(WolfLanguage language, uint id)
-        {
-            if (!this.IsConnected)
-                throw new InvalidOperationException("Not connected");
-            if (!this.AchievementsCachingEnabled)
-                return null;
-            WolfAchievement result = this.Caches?.AchievementsCache?.Get(language, id);
-            if (result != null)
-                Log?.LogTrace("Achievement {AchievementID} found in cache", id);
-            return result;
+            return this.Cache.GetCachedAchievement(language, id);
         }
         #endregion
 
@@ -584,7 +399,16 @@ namespace TehGM.Wolfringo
                         return;
 
                     Log?.LogDebug("Message received: {Command}", command);
-                    await OnMessageReceivedInternalAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+
+                    // if welcome is already logged in, we can populate userID
+                    if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
+                        this.CurrentUserID = welcome.LoggedInUser.ID;
+
+                    // cache
+                    await this.Cache.OnMessageReceivedAsync(this, msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+
+                    // notify child classes
+                    await OnMessageReceivedAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
 
                     // invoke events, unless this message is a self-sent chat message
                     if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages && chatMessage.SenderID.Value == this.CurrentUserID)
@@ -602,119 +426,12 @@ namespace TehGM.Wolfringo
         }
 
         /// <summary>Internal method for handling additional actions on received message.</summary>
-        /// <remarks>This implementation automatically handles cache updates whenever a correct type of message or response is sent or received.
-        /// Additionally, this method will automatically subscribe to PM and Group messages for <see cref="WelcomeEvent"/> when LoggedInUser is not null.
-        /// For this reason, it's important to be careful when overriding this method, as not calling base
-        /// implementation (or not implementing replacement behaviour) might cause functionality loss.</remarks>
+        /// <remarks>This method is invoked after client parses current user (for welcome) and caches the entities.</remarks>
         /// <param name="message">Received message.</param>
         /// <param name="rawMessage">Raw received message.</param>
         /// <param name="cancellationToken">Cancellation token that can be used for Task cancellation.</param>
-        protected virtual async Task OnMessageReceivedInternalAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
-        {
-            // if welcome is already logged in, we can populate userID
-            if (message is WelcomeEvent welcome && welcome.LoggedInUser != null)
-                this.CurrentUserID = welcome.LoggedInUser.ID;
-
-            // update user presence
-            if (this.UsersCachingEnabled)
-            {
-                if (message is PresenceUpdateEvent presenceUpdate)
-                {
-                    WolfUser cachedUser = this.Caches?.UsersCache?.Get(presenceUpdate.UserID);
-                    if (cachedUser != null)
-                    {
-                        Log?.LogTrace("Updating cached user {UserID} presence", cachedUser.ID);
-                        rawMessage.Payload.PopulateObject(cachedUser, "body");
-                    }
-                }
-                else if (message is UserUpdateEvent userUpdatedEvent)
-                {
-                    WolfUser cachedUser = this.Caches?.UsersCache?.Get(userUpdatedEvent.UserID);
-                    if (cachedUser == null || string.IsNullOrWhiteSpace(userUpdatedEvent.Hash) || cachedUser.Hash != userUpdatedEvent.Hash)
-                    {
-                        Log?.LogTrace("Updating user {UserID}", userUpdatedEvent.UserID);
-                        await SendAsync<UserProfileResponse>(
-                            new UserProfileMessage(new uint[] { userUpdatedEvent.UserID }, true, true),
-                            cancellationToken).ConfigureAwait(false);
-                    }
-                }
-            }
-
-            if (this.GroupsCachingEnabled)
-            {
-                // update group audio count
-                if (message is GroupAudioCountUpdateEvent groupAudioCountUpdate)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioCountUpdate.GroupID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Updating cached group {GroupID} audio counts", cachedGroup.ID);
-                        rawMessage.Payload.PopulateObject(cachedGroup.AudioCounts, "body");
-                    }
-                }
-
-                // update group audio config
-                if (message is GroupAudioUpdateMessage groupAudioUpdate)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupAudioUpdate.GroupID);
-                    if (cachedGroup != null)
-                    {
-                        Log?.LogTrace("Updating cached group {GroupID} audio config", cachedGroup.ID);
-                        rawMessage.Payload.PopulateObject(cachedGroup.AudioConfig, "body");
-                    }
-                }
-
-                // update group when change event by requesting group profile
-                else if (message is GroupUpdateEvent groupUpdate)
-                {
-                    // trigger group download only if cached group has different hash
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupUpdate.GroupID);
-                    if (cachedGroup != null && cachedGroup.Hash != groupUpdate.Hash)
-                    {
-                        await SendAsync<GroupProfileResponse>(
-                            new GroupProfileMessage(new uint[] { groupUpdate.GroupID }), cancellationToken).ConfigureAwait(false);
-                    }
-                }
-
-                // update group member list when one joined
-                else if (message is GroupJoinMessage groupMemberJoined)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
-                // update group member list if one left
-                else if (message is GroupLeaveMessage groupMemberLeft)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberLeft.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
-                // update group member capabilities if member was updated
-                else if (message is GroupMemberUpdateEvent groupMemberUpdated)
-                {
-                    WolfGroup cachedGroup = this.Caches?.GroupsCache?.Get(groupMemberUpdated.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-            }
-        }
+        protected virtual Task OnMessageReceivedAsync(IWolfMessage message, SerializedMessageData rawMessage, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
 
         /// <inheritdoc/>
         public void AddMessageListener(IMessageCallback listener)
@@ -753,6 +470,7 @@ namespace TehGM.Wolfringo
                 Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseMessage ?? "-");
 
             this.Clear();
+            this.Cache?.OnDisconnected(this, e);
             this.Disconnected?.Invoke(this, EventArgs.Empty);
         }
 

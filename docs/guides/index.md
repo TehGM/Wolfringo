@@ -5,7 +5,7 @@ uid: Guides.Introduction
 # Introduction
 Welcome to Wolfringo library usage guide. If you don't know what Wolfringo is - please check [Home Page](/).
 
-Please check navigation on the left ⬅ for more articles.
+Please check navigation on the left ⬅ (or in menu ☰ on mobile devices) for more articles.
 
 ### Requirements
 Wolfringo library should work with any framework version supported by [.NET Standard 2.0](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard) or greater. However, it is guaranteed only with .NET Core 2.0 and up and .NET 5 and up - I did not test .NET Framework, Mono, Xamarin or Unity.
@@ -24,8 +24,10 @@ For more details on how to use Wolfringo, check [Working with Wolfringo](xref:Gu
 
 To learn how to use Commands System for your bots' commands, check [Commands System](xref:Guides.Commands.Intro) section.
 
-##### Customizing Wolfringo
-Wolfringo utilizes Dependency Injection to allow customization of the library behaviour. For now that part of Wolfringo is not documented - I recommend checking [source code on GitHub](https://github.com/TehGM/Wolfringo) if you want to customize Wolfringo before the documentation for that is ready.
+## Customizing Wolfringo
+Wolfringo utilizes Dependency Injection to allow customization of the library behaviour - many parts of both client and commands system can be configured or even replaced without the need to rewrite everything.
+
+Check [Customizing guides](xref:Guides.Customizing.Intro) for more info!
 
 ## Questions?
 To ask questions or share ideas, feel free to start a new [GitHub Discussion](https://github.com/TehGM/Wolfringo/discussions).
