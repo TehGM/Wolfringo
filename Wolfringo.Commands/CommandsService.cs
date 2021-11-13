@@ -30,7 +30,6 @@ namespace TehGM.Wolfringo.Commands
         private readonly IWolfClient _client;
         private readonly CommandsOptions _options;
         private readonly IServiceProvider _services;
-        private readonly IServiceProvider _fallbackServices;
         private readonly ICommandsHandlerProvider _handlerProvider;
         private readonly ICommandInitializerProvider _initializers;
         private readonly ICommandsLoader _commandsLoader;
@@ -331,7 +330,7 @@ namespace TehGM.Wolfringo.Commands
                 return false;
             if (!(ex.Response is WolfResponse wolfResponse))
                 return false;
-            if (wolfResponse.ErrorCode != WolfErrorCode.AlreadyContactOrGroupNameForbidden)
+            if (wolfResponse.ErrorCode != WolfErrorCode.LoginIncorrectOrCannotSendMessage)
                 return false;
 
             // only handle for sent chat messages

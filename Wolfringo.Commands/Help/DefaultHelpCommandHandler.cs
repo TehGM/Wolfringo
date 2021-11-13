@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Commands.Help
             if (!this._options.EnableDefaultHelpCommand)
                 return CommandExecutionResult.Skip;
 
-            CommandsListBuilder builder = new CommandsListBuilder(this._service.Commands);
+            CommandsListBuilder builder = new CommandsListBuilder(this._service);
             builder.PrependedPrefix = this._options.Prefix;
             builder.SpaceCategories = true;
             builder.ListCommandsWithoutSummaries = true;
