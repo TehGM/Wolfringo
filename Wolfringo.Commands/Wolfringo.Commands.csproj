@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -17,8 +17,10 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
-    <PackageReleaseNotes>- CommandsListBuilder now takes ICommandsService instead of CommandsService
-- Logging of silenced message exceptions now checks for correct error type</PackageReleaseNotes>
+    <PackageReleaseNotes>
+- Fix prefix checks for empty prefixes.
+- Separated PrefixRequirement from PrefixAttribute to combat the way CLR handles nullables in attribute constructors.
+    </PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>
 
