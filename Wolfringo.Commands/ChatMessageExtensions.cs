@@ -17,7 +17,7 @@ namespace TehGM.Wolfringo.Commands
         {
             startIndex = GetPrefixStartIndex(message, prefix, caseSensitive);
             // if it does start with prefix, we know for sure it matches requirement
-            if (startIndex != 0)
+            if (startIndex != -1)
                 return true;
             // now we know it does NOT start with prefix
             // so let's check if prefix is required in group messages if the message is in group...
@@ -46,7 +46,7 @@ namespace TehGM.Wolfringo.Commands
         public static string GetMessageWithoutPrefix(this ChatMessage message, string prefix, bool caseSensitive)
         {
             int startIndex = GetPrefixStartIndex(message, prefix, caseSensitive);
-            if (startIndex == 0)
+            if (startIndex == -1 || startIndex == 0)
                 return message.Text;
             else
                 return message.Text.Substring(startIndex, message.Text.Length - startIndex);
@@ -61,9 +61,12 @@ namespace TehGM.Wolfringo.Commands
 
         private static int GetPrefixStartIndex(ChatMessage message, string prefix, bool caseSensitive)
         {
+            if (string.IsNullOrEmpty(prefix))
+                return 0;
+
             StringComparison comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
             bool startsWithPrefix = message.Text.StartsWith(prefix, comparison);
-            return startsWithPrefix ? prefix.Length : 0;
+            return startsWithPrefix ? prefix.Length : -1;
         }
     }
 }
