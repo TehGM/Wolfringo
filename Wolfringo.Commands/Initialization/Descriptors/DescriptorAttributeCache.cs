@@ -70,7 +70,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this._priority = new Lazy<int>(() => this.GetAttribute<PriorityAttribute>(true)?.Priority ?? 0);
             this._caseSensitivityOverride = new Lazy<bool?>(() => this.GetAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive);
             this._prefixOverride = new Lazy<string>(() => this.GetAllAttributes<PrefixAttribute>(true).LastOrDefault(attr => attr.PrefixOverride != null)?.PrefixOverride);
-            this._prefixRequirementOverride = new Lazy<PrefixRequirement?>(() => this.GetAllAttributes<PrefixAttribute>(true).LastOrDefault(attr => attr.PrefixRequirementOverride != null)?.PrefixRequirementOverride);
+            this._prefixRequirementOverride = new Lazy<PrefixRequirement?>(() => this.GetAllAttributes<PrefixRequirementAttribute>(true).LastOrDefault(attr => attr.PrefixRequirementOverride != null)?.PrefixRequirementOverride);
             this._requirements = new Lazy<IEnumerable<CommandRequirementAttribute>>(() => this.GetAllAttributes<CommandRequirementAttribute>(true));
 
             // cache help attributes

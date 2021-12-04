@@ -132,7 +132,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          ***/
         [RegexCommand("^hello (.+?)(?:\\s(.*))?$")]
         [DisplayName("hello <name>")]
-        [Prefix(PrefixRequirement.Group)]
+        [PrefixRequirement(PrefixRequirement.Group)]
         [HelpCategory("Category Example")]
         public async Task CmdHelloAsync(CommandContext context, Match match, string arg1)
         {
@@ -213,7 +213,7 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
          ***/
         [Command("private only")]
         [PrivateOnly(ErrorMessage = null)]
-        [Prefix(PrefixRequirement.Never)]
+        [PrefixRequirement(PrefixRequirement.Never)]
         [Summary("This command will only work in PMs!")]
         public Task CmdPrivateOnlyAsync(CommandContext context)
             => context.ReplyTextAsync("Welcome to my PM!");
