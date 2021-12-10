@@ -27,6 +27,7 @@ namespace TehGM.Wolfringo.Commands
             if (message.IsPrivateMessage && (requirement & PrefixRequirement.Private) == PrefixRequirement.Private)
                 return false;
             // if we got here, we know that the prefix is not required
+            startIndex = 0;
             return true;
         }
 
