@@ -42,11 +42,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public bool IsHidden => this._hidden.Value;
         /// <summary>Cached help category of command or its descriptor.</summary>
         public HelpCategoryAttribute HelpCategory => this._helpCategory.Value;
+        /// <summary>Cached command help order.</summary>
+        public int? HelpOrder => this._helpOrder.Value;
 
         private readonly Lazy<string> _displayName;
         private readonly Lazy<string> _summary;
         private readonly Lazy<bool> _hidden;
         private readonly Lazy<HelpCategoryAttribute> _helpCategory;
+        private readonly Lazy<int?> _helpOrder;
 
         /*** All attributes ***/
         private readonly Lazy<IEnumerable<Attribute>> _commandAttributes;
@@ -78,6 +81,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this._summary = new Lazy<string>(() => this.GetAttribute<SummaryAttribute>(false)?.Text);
             this._hidden = new Lazy<bool>(() => this.GetAttribute<HiddenAttribute>(true) != null);
             this._helpCategory = new Lazy<HelpCategoryAttribute>(() => this.GetAttribute<HelpCategoryAttribute>(true));
+            this._helpOrder = new Lazy<int?>(() => this.GetAttribute<HelpOrderAttribute>(true)?.Order);
         }
 
         private string GetDisplayName()

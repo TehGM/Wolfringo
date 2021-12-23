@@ -24,6 +24,14 @@ namespace TehGM.Wolfringo.Commands
         public static int GetPriority(this ICommandInstanceDescriptor descriptor)
             => DescriptorAttributeCache.GetCache(descriptor).Priority;
 
+        /// <summary>Gets command's help order.</summary>
+        /// <remarks>See <see cref="HelpOrderAttribute"/> for more information about command help order.</remarks>
+        /// <param name="descriptor">Command descriptor.</param>
+        /// <returns>Command's help order value. Null if help order is not specified.</returns>
+        /// <seealso cref="HelpOrderAttribute"/>
+        public static int? GetHelpOrder(this ICommandInstanceDescriptor descriptor)
+            => DescriptorAttributeCache.GetCache(descriptor).HelpOrder;
+
         /// <summary>Gets type of the command's handler.</summary>
         /// <param name="descriptor">Command descriptor.</param>
         /// <returns>Type of command's handler.</returns>

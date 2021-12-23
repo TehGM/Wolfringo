@@ -168,7 +168,7 @@ namespace TehGM.Wolfringo.Commands.Help
 
             // order commands based on priority and name
             IOrderedEnumerable<ICommandInstanceDescriptor> orderedDescriptors = descriptors
-                .OrderByDescending(cmd => cmd.GetPriority())
+                .OrderByDescending(cmd => cmd.GetHelpOrder() ?? cmd.GetPriority())
                 .ThenBy(cmd => cmd.GetDisplayName());
 
             // group commands by category
