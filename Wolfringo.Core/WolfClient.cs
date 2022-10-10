@@ -420,7 +420,8 @@ namespace TehGM.Wolfringo
                     await this.OnMessageReceivedAsync(msg, rawData, cancellationToken).ConfigureAwait(false);
 
                     // invoke events, unless this message is a self-sent chat message
-                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages && chatMessage.SenderID.Value == this.CurrentUserID)
+                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages 
+                        && this.CurrentUserID != null && chatMessage.SenderID == this.CurrentUserID)
                         return;
                     this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
                     this.CallbackDispatcher.Invoke(msg);
