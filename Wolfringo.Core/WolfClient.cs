@@ -414,7 +414,8 @@ namespace TehGM.Wolfringo
                         this.CurrentUserID = welcome.LoggedInUser.ID;
 
                     // cache
-                    await this.Cache.OnMessageReceivedAsync(this, msg, rawData, cancellationToken).ConfigureAwait(false);
+                    if (this.Cache != null)
+                        await this.Cache.OnMessageReceivedAsync(this, msg, rawData, cancellationToken).ConfigureAwait(false);
 
                     // notify child classes
                     await this.OnMessageReceivedAsync(msg, rawData, cancellationToken).ConfigureAwait(false);
