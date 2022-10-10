@@ -230,7 +230,7 @@ namespace TehGM.Wolfringo
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
-            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
+            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._connectionCts?.Token ?? default))
             {
                 Log?.LogTrace("Sending {Command}", message.EventName);
                 // select serializer
@@ -382,6 +382,7 @@ namespace TehGM.Wolfringo
         private async void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
             this.TryLogMessageTrace(e, "Received");
+            CancellationToken cancellationToken = this._connectionCts?.Token ?? default;
 
             if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
             {
@@ -413,10 +414,10 @@ namespace TehGM.Wolfringo
                         this.CurrentUserID = welcome.LoggedInUser.ID;
 
                     // cache
-                    await this.Cache.OnMessageReceivedAsync(this, msg, rawData, this._connectionCts.Token).ConfigureAwait(false);
+                    await this.Cache.OnMessageReceivedAsync(this, msg, rawData, cancellationToken).ConfigureAwait(false);
 
                     // notify child classes
-                    await this.OnMessageReceivedAsync(msg, rawData, this._connectionCts.Token).ConfigureAwait(false);
+                    await this.OnMessageReceivedAsync(msg, rawData, cancellationToken).ConfigureAwait(false);
 
                     // invoke events, unless this message is a self-sent chat message
                     if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages && chatMessage.SenderID.Value == this.CurrentUserID)
