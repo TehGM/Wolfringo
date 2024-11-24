@@ -285,7 +285,13 @@ namespace TehGM.Wolfringo
                         Log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
                         serializer = ResponseSerializers.FallbackSerializer;
                     }
+
                     SerializedMessageData responseData = new SerializedMessageData(e.Message.Payload, e.BinaryMessages);
+                    if (responseData.IsError())
+                    {
+                        serializer = ResponseSerializers.FallbackSerializer;
+                    }
+
                     IWolfResponse response = serializer.Deserialize(responseType, responseData);
 
                     if (!response.IsError())
