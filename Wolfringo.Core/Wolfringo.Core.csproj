@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>2.0.2</Version>
+    <Version>2.1.0</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -11,34 +11,24 @@
     <Description>A .NET Library for WOLF (previously Palringo)</Description>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
-    <PackageReleaseNotes>This version features significant amount of changes. Please see upgrade guide: https://wolfringo.tehgm.net/upgrading/1.x-2.x.html
-
-- Added WolfClientBuilder that makes creation of a WolfClient much easier!
-- Added support for checking URL metadata.
-- Added support for requesting group achievements.
-- Added IWolfTokenProvider interface, along with ConstantWolfTokenProvider, RandomizedWolfTokenProvider and HostedWolfTokenProvider classes, which are used by WolfClient. This increases flexibility of resolving token. They replaceWolfTokenProvider.
-- Added a new IWolfClientCache interface which allows for cache customization via Dependency Injection.
-- Added a new WolfClientCache class with default caching implementation. This replaces old WolfEntityCacheContainer, which is now removed.
-- Added a new WolfCacheOptions class for configuring built-in caching.
-- Caching related properties have been removed from WolfClient.
-- IWolfEntityCache&amp;lt;TEntity&amp;gt; has been renamed to IWolfCachedEntityCollection&amp;lt;TEntity&amp;gt;.
-- WolfEntityCacheExtensions has been renamed to WolfCachedEntityCollectionExtensions.
-- Caching related types (including IWolfClientCacheAccessor) were moved from TehGM.Wolfringo.Utilities to new TehGM.Wolfringo.Caching namespace.
-- DefaultServerURL, BetaServerURL and DefaultDevice constants have been moved from WolfClient to a new WolfClientOptions class.
-- ServerURL, Device and IgnoreOwnChatMessages properties of WolfClient have been moved to a new WolfClientOptions class.
-- It is now possible to provide a custom ISocketClient to WolfClient.
-- WolfClient's OnMessageSentInternalAsync and OnMessageReceivedInternalAsync were renamed to OnMessageSentAsync and OnMessageReceivedAsync respectively. Since caching logic has been moved to IWolfClientCache, they also are now empty, sooverriding them is completely safe.
-- UserAchievementListResponse has been replaced by EntityAchievementListResponse, which supports both user and group achievements.
-- Some WolfClient constructors were removed or marked as obsolete. Favour using WolfClientBuilder.
-- JSON Converters have been modified to support JsonPath.
-- "command" argument has been renamed to "eventName" in signatures of built-in message and response serializers.</PackageReleaseNotes>
+    <PackageReleaseNotes>
+- Add GroupMemberRegularListMessage and GroupMemberPrivilegedListMessage.
+- Add support for ChatMessage metadata for links (normal URLs and group links).
+- Add GroupLinkDetectionHelper internal utility class.
+- GroupMembersListMessage is now obsolete.
+- Support for GroupName in GroupJoinMessage is now obsolete, as WOLF protocol changes made it not work.
+- Fix core logic for updating group member list.
+- Fix serialization errors when WOLF server responds with an error response.
+- Fix some logging bugs and issues.
+- Fix some CancellationToken race conditions.
+	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>
   

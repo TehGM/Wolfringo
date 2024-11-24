@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
@@ -16,10 +16,7 @@
     <PackageIcon>wolfringo_logo.png</PackageIcon>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
-    <PackageReleaseNotes>This version features significant amount of changes. Please see upgrade guide: https://wolfringo.tehgm.net/upgrading/1.x-2.x.html
-
-- Constructor of HostedWolfClient has been simplified.
-- IHostedWolfClientServiceBuilder now has a new ConfigureCaching method.</PackageReleaseNotes>
+    <PackageReleaseNotes>Compatibility patch for Wolfringo metapackage v2.1.0.</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>
 
