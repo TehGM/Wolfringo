@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,17 +27,41 @@ namespace TehGM.Wolfringo.Utilities.Internal
 
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
+
+            List<WolfGroupMember> retrievedMembers = new List<WolfGroupMember>();
             try
             {
-                GroupMembersListResponse membersResponse = await client.SendAsync<GroupMembersListResponse>(
-                    new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
-                // client should be configured to intercept this response
-                // however, just in case it's not (like when caching is disabled), do it here as well
-                if (membersResponse?.GroupMembers?.Any() == true)
+                GroupMembersListResponse privilegedMembersResponse = await client.SendAsync<GroupMembersListResponse>(
+                    new GroupMemberPrivilegedListMessage(group.ID, true), cancellationToken).ConfigureAwait(false);
+                if (privilegedMembersResponse?.GroupMembers?.Any() == true)
+                    retrievedMembers.AddRange(privilegedMembersResponse?.GroupMembers);
+
+
+                const int limit = 100;
+                uint lastMemberID = 0;
+
+                for (; ; )
+                {
+                    GroupMembersListResponse regularMembersResponse = await client.SendAsync<GroupMembersListResponse>(
+                        new GroupMemberRegularListMessage(group.ID, lastMemberID, limit, true), cancellationToken).ConfigureAwait(false);
+
+                    int retrievedCount = regularMembersResponse?.GroupMembers?.Count() ?? 0;
+                    if (retrievedCount > 0)
+                    {
+                        retrievedMembers.AddRange(regularMembersResponse.GroupMembers);
+                        lastMemberID = retrievedMembers[retrievedMembers.Count - 1].UserID;
+                    }
+
+                    if (retrievedCount < limit)
+                        break;
+                }
+
+
+                if (retrievedMembers.Count > 0)
                 {
                     try
                     {
-                        EntityModificationHelper.ReplaceAllGroupMembers(group, membersResponse.GroupMembers);
+                        EntityModificationHelper.ReplaceAllGroupMembers(group, retrievedMembers);
                     }
                     catch (NotSupportedException) { return false; }
                     return true;

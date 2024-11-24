@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -7,6 +8,7 @@ namespace TehGM.Wolfringo.Messages
     /// <summary>A message for requesting group members list.</summary>
     /// <remarks>Uses <see cref="GroupMembersListResponse"/> as response type.</remarks>
     [ResponseType(typeof(GroupMembersListResponse))]
+    [Obsolete("WOLF protocol changed and only returns 100 members for this message. Use GroupMemberRegularListMessage and GroupMemberPrivilegedListMessage instead.")]
     public class GroupMembersListMessage : IWolfMessage, IHeadersWolfMessage
     {
         /// <inheritdoc/>

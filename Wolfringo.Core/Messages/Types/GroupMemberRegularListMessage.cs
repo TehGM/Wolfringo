@@ -22,12 +22,12 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("subscribe")]
         public bool SubscribeToUpdates { get; private set; }
 
-        /// <summary>How many members to skip (for pagination purposes).</summary>
+        /// <summary>Users with ID smaller or equal to this value will be skipped (for pagination purposes).</summary>
         /// <seealso cref="Limit"/>
         [JsonProperty("after")]
-        public uint Skip { get; private set; }
+        public uint AfterUserID { get; private set; }
         /// <summary>How many members to retrieve (for pagination purposes).</summary>
-        /// <seealso cref="Skip"/>
+        /// <seealso cref="AfterUserID"/>
         [JsonProperty("limit")]
         public uint Limit { get; private set; }
 
@@ -37,16 +37,16 @@ namespace TehGM.Wolfringo.Messages
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupID">ID of the group to get members of.</param>
-        /// <param name="skip">How many members to skip (for pagination purposes).</param>
+        /// <param name="afterUserID">Users with ID smaller or equal to this value will be skipped (for pagination purposes).</param>
         /// <param name="limit">How many members to retrieve (for pagination purposes).</param>
         /// <param name="subscribe">Subscribe to group members' profile updates?</param>
-        public GroupMemberRegularListMessage(uint groupID, uint skip, uint limit = 100, bool subscribe = true)
+        public GroupMemberRegularListMessage(uint groupID, uint afterUserID, uint limit = 100, bool subscribe = true)
             : this()
         {
             this.GroupID = groupID;
             this.SubscribeToUpdates = subscribe;
 
-            this.Skip = skip;
+            this.AfterUserID = afterUserID;
             this.Limit = limit;
         }
     }
