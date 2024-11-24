@@ -52,12 +52,4 @@ namespace TehGM.Wolfringo.Messages
         [JsonIgnore]
         IReadOnlyCollection<byte> RawData { get; }
     }
-
-    /// <summary>Represents a message that can have formatting metdatada attached to it</summary>
-    public interface IFormattableMessage
-    {
-        /// <summary>The metadata for formatting of links in the message text.</summary>
-        [JsonProperty("formatting", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        ChatMessageFormatting FormattingMetadata { get; }
-    }
 }

@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     /// <remarks>Uses <see cref="ChatResponse"/> as response type.</remarks>
     /// <seealso cref="GroupActionChatEvent"/>
     [ResponseType(typeof(ChatResponse))]
-    public class ChatMessage : IChatMessage, IWolfMessage, IRawDataMessage, IFormattableMessage
+    public class ChatMessage : IChatMessage, IWolfMessage, IRawDataMessage
     {
         /// <inheritdoc/>
         /// <remarks>Equals to <see cref="MessageEventNames.MessageSend"/>.</remarks>
