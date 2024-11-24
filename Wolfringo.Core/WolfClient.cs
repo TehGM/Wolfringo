@@ -398,7 +398,7 @@ namespace TehGM.Wolfringo
                     if (!this.MessageSerializers.TryFindSerializer(command, out IMessageSerializer serializer))
                     {
                         // don't throw exception here, as doing so will kill the socket client loop
-                        this.Log?.LogError("Serializer for command {Command} not found");
+                        this.Log?.LogError("Serializer for command {Command} not found", command);
                         return;
                     }
                     // deserialize message
@@ -407,7 +407,7 @@ namespace TehGM.Wolfringo
                     if (msg == null)
                         return;
 
-                    this.Log?.LogDebug("Message received: {Command}");
+                    this.Log?.LogDebug("Message received: {Command}", command);
 
                     // if welcome is already logged in, we can populate userID
                     if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
