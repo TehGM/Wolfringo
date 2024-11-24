@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Responses;
+using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo.Commands.Attributes
 {
@@ -54,15 +55,9 @@ namespace TehGM.Wolfringo.Commands.Attributes
         public static async Task<bool> CheckPrivilegeAsync(ICommandContext context, uint userID, WolfGroupCapabilities privileges, CancellationToken cancellationToken = default)
         {
             WolfGroup group = await context.GetRecipientAsync<WolfGroup>(cancellationToken).ConfigureAwait(false);
-            if (!group.Members.TryGetValue(userID, out WolfGroupMember member) && group.Members?.Any() != true)
-            {
-                GroupMembersListResponse membersResponse = await context.Client.SendAsync<GroupMembersListResponse>(
-                    new GroupMembersListMessage(group.ID), cancellationToken).ConfigureAwait(false);
-                member = membersResponse.GroupMembers.FirstOrDefault(u => u.UserID == userID);
-            }
-            if (member == null)
-                return false;
-            return (privileges & member.Capabilities) == member.Capabilities;
+            await context.Client.RevalidateGroupMembersAsync(group, cancellationToken).ConfigureAwait(false);
+
+            return group.Members.TryGetValue(userID, out WolfGroupMember member) && (privileges & member.Capabilities) == member.Capabilities;
         }
     }
 }
