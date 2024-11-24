@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace TehGM.Wolfringo.Messages
 {
@@ -14,6 +15,7 @@ namespace TehGM.Wolfringo.Messages
         [JsonProperty("groupId", NullValueHandling = NullValueHandling.Ignore)]
         public uint? GroupID { get; private set; }
         /// <summary>Name of the group.</summary>
+        [Obsolete("This property has been removed from the protocol")]
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string GroupName { get; private set; }
 
@@ -39,13 +41,13 @@ namespace TehGM.Wolfringo.Messages
         public GroupJoinMessage(uint groupID, string password = null) : this()
         {
             this.GroupID = groupID;
-            this.GroupName = null;
             this.Password = password ?? string.Empty;
         }
 
         /// <summary>Creates a message instance.</summary>
         /// <param name="groupName">Name of the group to join.</param>
         /// <param name="password">Password to use when joining the group.</param>
+        [Obsolete("Joining group by name has been removed from the protocol.")]
         public GroupJoinMessage(string groupName, string password = null) : this()
         {
             this.GroupID = null;

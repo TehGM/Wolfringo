@@ -441,7 +441,8 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, string groupName, string password, CancellationToken cancellationToken = default)
         {
-            await client.SendAsync(new GroupJoinMessage(groupName, password), cancellationToken).ConfigureAwait(false);
+            WolfGroup groupLookup = await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
+            await client.SendAsync(new GroupJoinMessage(groupLookup.ID, password), cancellationToken).ConfigureAwait(false);
             return await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Join a group.</summary>
