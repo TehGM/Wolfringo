@@ -25,26 +25,15 @@ namespace TehGM.Wolfringo.Commands
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
-        {
-            return Equals(obj as PriorityAttribute);
-        }
+            => this.Equals(obj as PriorityAttribute);
 
         /// <inheritdoc/>
         public bool Equals(PriorityAttribute other)
-        {
-            return other != null &&
-                   base.Equals(other) &&
-                   Priority == other.Priority;
-        }
+            => other != null && Priority == other.Priority;
 
         /// <inheritdoc/>
         public override int GetHashCode()
-        {
-            int hashCode = 197095871;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + Priority.GetHashCode();
-            return hashCode;
-        }
+            => this.Priority.GetHashCode();
 
         /// <inheritdoc/>
         public int CompareTo(PriorityAttribute other)
@@ -52,14 +41,10 @@ namespace TehGM.Wolfringo.Commands
 
         /// <inheritdoc/>
         public static bool operator ==(PriorityAttribute left, PriorityAttribute right)
-        {
-            return EqualityComparer<PriorityAttribute>.Default.Equals(left, right);
-        }
+            => EqualityComparer<PriorityAttribute>.Default.Equals(left, right);
 
         /// <inheritdoc/>
         public static bool operator !=(PriorityAttribute left, PriorityAttribute right)
-        {
-            return !(left == right);
-        }
+            => !(left == right);
     }
 }

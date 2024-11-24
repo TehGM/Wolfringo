@@ -42,11 +42,14 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public bool IsHidden => this._hidden.Value;
         /// <summary>Cached help category of command or its descriptor.</summary>
         public HelpCategoryAttribute HelpCategory => this._helpCategory.Value;
+        /// <summary>Cached command help order.</summary>
+        public int? HelpOrder => this._helpOrder.Value;
 
         private readonly Lazy<string> _displayName;
         private readonly Lazy<string> _summary;
         private readonly Lazy<bool> _hidden;
         private readonly Lazy<HelpCategoryAttribute> _helpCategory;
+        private readonly Lazy<int?> _helpOrder;
 
         /*** All attributes ***/
         private readonly Lazy<IEnumerable<Attribute>> _commandAttributes;
@@ -70,7 +73,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this._priority = new Lazy<int>(() => this.GetAttribute<PriorityAttribute>(true)?.Priority ?? 0);
             this._caseSensitivityOverride = new Lazy<bool?>(() => this.GetAttribute<CaseSensitivityAttribute>(true)?.CaseSensitive);
             this._prefixOverride = new Lazy<string>(() => this.GetAllAttributes<PrefixAttribute>(true).LastOrDefault(attr => attr.PrefixOverride != null)?.PrefixOverride);
-            this._prefixRequirementOverride = new Lazy<PrefixRequirement?>(() => this.GetAllAttributes<PrefixAttribute>(true).LastOrDefault(attr => attr.PrefixRequirementOverride != null)?.PrefixRequirementOverride);
+            this._prefixRequirementOverride = new Lazy<PrefixRequirement?>(() => this.GetAllAttributes<PrefixRequirementAttribute>(true).LastOrDefault(attr => attr.PrefixRequirementOverride != null)?.PrefixRequirementOverride);
             this._requirements = new Lazy<IEnumerable<CommandRequirementAttribute>>(() => this.GetAllAttributes<CommandRequirementAttribute>(true));
 
             // cache help attributes
@@ -78,6 +81,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             this._summary = new Lazy<string>(() => this.GetAttribute<SummaryAttribute>(false)?.Text);
             this._hidden = new Lazy<bool>(() => this.GetAttribute<HiddenAttribute>(true) != null);
             this._helpCategory = new Lazy<HelpCategoryAttribute>(() => this.GetAttribute<HelpCategoryAttribute>(true));
+            this._helpOrder = new Lazy<int?>(() => this.GetAttribute<HelpOrderAttribute>(true)?.Order);
         }
 
         private string GetDisplayName()

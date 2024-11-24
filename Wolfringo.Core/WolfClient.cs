@@ -16,6 +16,8 @@ using TehGM.Wolfringo.Utilities.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Caching.Internal;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace TehGM.Wolfringo
 {
@@ -228,7 +230,7 @@ namespace TehGM.Wolfringo
             if (!this.IsConnected)
                 throw new InvalidOperationException("Not connected");
 
-            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _connectionCts.Token))
+            using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._connectionCts?.Token ?? default))
             {
                 Log?.LogTrace("Sending {Command}", message.EventName);
                 // select serializer
@@ -283,7 +285,13 @@ namespace TehGM.Wolfringo
                         Log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
                         serializer = ResponseSerializers.FallbackSerializer;
                     }
+
                     SerializedMessageData responseData = new SerializedMessageData(e.Message.Payload, e.BinaryMessages);
+                    if (responseData.IsError())
+                    {
+                        serializer = ResponseSerializers.FallbackSerializer;
+                    }
+
                     IWolfResponse response = serializer.Deserialize(responseType, responseData);
 
                     if (!response.IsError())
@@ -379,17 +387,24 @@ namespace TehGM.Wolfringo
         /// <remarks>This method is invoked when underlying socket client receives a socket message.</remarks>
         private async void OnClientMessageReceived(object sender, SocketMessageEventArgs e)
         {
-            try
-            {
-                TryLogMessageTrace(e, "Received");
+            this.TryLogMessageTrace(e, "Received");
+            CancellationToken cancellationToken = this._connectionCts?.Token ?? default;
 
-                if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
+            if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
+            {
+                IDisposable logScope = this.Log?.BeginScope(new Dictionary<string, object>()
+                {
+                    { "Command", command },
+                    { "Payload", payload?.ToString(Formatting.None) }
+                });
+
+                try
                 {
                     // find serializer for command
-                    if (!MessageSerializers.TryFindSerializer(command, out IMessageSerializer serializer))
+                    if (!this.MessageSerializers.TryFindSerializer(command, out IMessageSerializer serializer))
                     {
                         // don't throw exception here, as doing so will kill the socket client loop
-                        Log?.LogError("Serializer for command {Command} not found", command);
+                        this.Log?.LogError("Serializer for command {Command} not found", command);
                         return;
                     }
                     // deserialize message
@@ -398,30 +413,36 @@ namespace TehGM.Wolfringo
                     if (msg == null)
                         return;
 
-                    Log?.LogDebug("Message received: {Command}", command);
+                    this.Log?.LogDebug("Message received: {Command}", command);
 
                     // if welcome is already logged in, we can populate userID
                     if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
                         this.CurrentUserID = welcome.LoggedInUser.ID;
 
                     // cache
-                    await this.Cache.OnMessageReceivedAsync(this, msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+                    if (this.Cache != null)
+                        await this.Cache.OnMessageReceivedAsync(this, msg, rawData, cancellationToken).ConfigureAwait(false);
 
                     // notify child classes
-                    await OnMessageReceivedAsync(msg, rawData, _connectionCts.Token).ConfigureAwait(false);
+                    await this.OnMessageReceivedAsync(msg, rawData, cancellationToken).ConfigureAwait(false);
 
                     // invoke events, unless this message is a self-sent chat message
-                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages && chatMessage.SenderID.Value == this.CurrentUserID)
+                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages 
+                        && this.CurrentUserID != null && chatMessage.SenderID == this.CurrentUserID)
                         return;
                     this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
-                    CallbackDispatcher.Invoke(msg);
+                    this.CallbackDispatcher.Invoke(msg);
                 }
-            }
-            catch (OperationCanceledException) when (LogWarning("Message receiving aborted due to connection task being canceled")) { }
-            catch (Exception ex) when (ex.LogAsError(this.Log, "Exception occured when handling received message"))
-            {
-                // don't rethrow exception here, as doing so will kill the socket client loop
-                this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
+                catch (OperationCanceledException) when (this.LogWarning("Message receiving aborted due to connection task being canceled")) { }
+                catch (Exception ex) when (ex.LogAsError(this.Log, "Exception occured when handling received message with command {Command}", command))
+                {
+                    // don't rethrow exception here, as doing so will kill the socket client loop
+                    this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
+                }
+                finally
+                {
+                    logScope?.Dispose();
+                }
             }
         }
 

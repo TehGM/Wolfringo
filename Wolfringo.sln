@@ -127,6 +127,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "upgrading", "upgrading", "{DA2FE9BB-6409-4F65-B5A6-7D0C4CEB42B9}"
 	ProjectSection(SolutionItems) = preProject
 		docs\upgrading\1.x-2.x.md = docs\upgrading\1.x-2.x.md
+		docs\upgrading\2.0-2.1.md = docs\upgrading\2.0-2.1.md
 		docs\upgrading\index.md = docs\upgrading\index.md
 		docs\upgrading\toc.yml = docs\upgrading\toc.yml
 	EndProjectSection

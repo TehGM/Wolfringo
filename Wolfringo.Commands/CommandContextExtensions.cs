@@ -85,8 +85,12 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="text">Content of the message.</param>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Message sending response.</returns>
-        public static Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, CancellationToken cancellationToken = default)
-        => context.Client.SendAsync<ChatResponse>(new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        public static async Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(context.Client, text, cancellationToken).ConfigureAwait(false);
+            ChatMessage message = new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, null));
+            return await context.Client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
+        }
         /// <summary>Sends an image response message to group or user.</summary>
         /// <param name="context">Command context.</param>
         /// <param name="imageBytes">Bytes of the image to send.</param>

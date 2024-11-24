@@ -36,6 +36,30 @@ namespace TehGM.Wolfringo.Messages.Serialization
             JObject metadata = new JObject();
             SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isDeleted");
             SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "isTipped");
+            if (body.ContainsKey("formatting"))
+            {
+                JObject formatting = body["formatting"] as JObject;
+                if (formatting == null)
+                    body.Remove("formatting");
+
+                if (formatting.ContainsKey("links"))
+                {
+                    JArray formattingLinks = formatting["links"] as JArray;
+                    if (formattingLinks == null || !formattingLinks.Any())
+                        formatting.Remove("links");
+                }
+                if (formatting.ContainsKey("groupLinks"))
+                {
+                    JArray formattingGroupLinks = formatting["groupLinks"] as JArray;
+                    if (formattingGroupLinks == null || !formattingGroupLinks.Any())
+                        formatting.Remove("groupLinks");
+                }
+
+                if (formatting.HasValues)
+                    SerializationHelper.MovePropertyIfExists(ref body, ref metadata, "formatting");
+                else
+                    body.Remove("formatting");
+            }
             if (metadata.HasValues)
                 body.Add(new JProperty("metadata", metadata));
 

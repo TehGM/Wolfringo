@@ -30,6 +30,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.GroupAudioCountUpdate, new DefaultMessageSerializer<GroupAudioCountUpdateEvent>() },
                 { MessageEventNames.GroupUpdate, new DefaultMessageSerializer<GroupUpdateEvent>() },
                 { MessageEventNames.GroupMemberList, new DefaultMessageSerializer<GroupMembersListMessage>() },
+                { MessageEventNames.GroupMemberPrivilegedList, new DefaultMessageSerializer<GroupMemberPrivilegedListMessage>() },
+                { MessageEventNames.GroupMemberRegularList, new DefaultMessageSerializer<GroupMemberRegularListMessage>() },
                 { MessageEventNames.MessageGroupHistoryList, new DefaultMessageSerializer<GroupChatHistoryMessage>() },
                 { MessageEventNames.MessagePrivateHistoryList, new DefaultMessageSerializer<PrivateChatHistoryMessage>() },
                 { MessageEventNames.MessageConversationList, new DefaultMessageSerializer<RecentConversationsMessage>() },

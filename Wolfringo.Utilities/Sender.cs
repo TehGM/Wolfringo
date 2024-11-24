@@ -441,7 +441,8 @@ namespace TehGM.Wolfringo
         /// <seealso cref="GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)"/>
         public static async Task<WolfGroup> JoinGroupAsync(this IWolfClient client, string groupName, string password, CancellationToken cancellationToken = default)
         {
-            await client.SendAsync(new GroupJoinMessage(groupName, password), cancellationToken).ConfigureAwait(false);
+            WolfGroup groupLookup = await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
+            await client.SendAsync(new GroupJoinMessage(groupLookup.ID, password), cancellationToken).ConfigureAwait(false);
             return await client.GetGroupAsync(groupName, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Join a group.</summary>
@@ -1012,16 +1013,24 @@ namespace TehGM.Wolfringo
         /// <param name="text">Content of the message.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
-        public static Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
-            => client.SendAsync<ChatResponse>(new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        public static async Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
+            ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, null));
+            return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
+        }
         /// <summary>Sends a group text message.</summary>
         /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
         /// <param name="text">Content of the message.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
-        public static Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
-            => client.SendAsync<ChatResponse>(new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        public static async Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
+            ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, null));
+            return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
+        }
 
 
         /// <summary>Sends a private image message.</summary>
@@ -1066,8 +1075,12 @@ namespace TehGM.Wolfringo
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> ReplyTextAsync(this IWolfClient client, ChatMessage incomingMessage, string text, CancellationToken cancellationToken = default)
-            => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
-                incomingMessage.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text)), cancellationToken);
+        {
+            if (incomingMessage.IsGroupMessage)
+                return SendGroupTextMessageAsync(client, incomingMessage.RecipientID, text, cancellationToken);
+            else
+                return SendPrivateTextMessageAsync(client, incomingMessage.SenderID.Value, text, cancellationToken);
+        }
         /// <summary>Sends an image response message to group or user.</summary>
         /// <param name="client">Client to send the message with.</param>
         /// <param name="incomingMessage">Message the user or group sent to the client.</param>
@@ -1086,6 +1099,8 @@ namespace TehGM.Wolfringo
         public static Task<ChatResponse> ReplyVoiceAsync(this IWolfClient client, ChatMessage incomingMessage, IEnumerable<byte> voiceBytes, CancellationToken cancellationToken = default)
             => client.SendAsync<ChatResponse>(new ChatMessage(incomingMessage.IsGroupMessage ? incomingMessage.RecipientID : incomingMessage.SenderID.Value,
                 incomingMessage.IsGroupMessage, ChatMessageTypes.Voice, voiceBytes), cancellationToken);
+
+        
 
 
         // deleting

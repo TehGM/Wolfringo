@@ -32,5 +32,28 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <param name="payload">JSON payload.</param>
         public SerializedMessageData(JToken payload)
             : this(payload, Enumerable.Empty<byte[]>()) { }
+
+        /// <summary>Is response an error?</summary>
+        /// <returns>True if response is an error; otherwise false.</returns>
+        // Baleringo does some really crappy way of returning the response codes
+        public bool IsError()
+        {
+            if (this.Payload == null)
+                return false;
+
+            if (this.Payload is JArray elements && elements.Count == 1)
+            {
+                if (elements.First is JObject obj)
+                {
+                    if (!obj.ContainsKey("code"))
+                        return false;
+
+                    int code = obj["code"].ToObject<int>();
+                    return code < 200 || code > 299;
+                }
+            }
+
+            return false;
+        }
     }
 }

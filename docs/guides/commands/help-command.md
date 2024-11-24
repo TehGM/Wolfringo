@@ -12,6 +12,7 @@ Wolfringo has a few built-in attributes that are automatically supported by both
 - [\[Summary\]](xref:TehGM.Wolfringo.Commands.SummaryAttribute) - a short description of what the command does. If you don't add this, the command will be listed without any description.
 - [\[Hidden\]](xref:TehGM.Wolfringo.Commands.HiddenAttribute) - commands marked as hidden will not be listed by default help command or @TehGM.Wolfringo.Commands.Help.CommandsListBuilder. This attribute can also be put on the handler class - this will hide all commands in the handler.
 - [\[HelpCategory\]](xref:TehGM.Wolfringo.Commands.HelpCategoryAttribute) - allows you to group the commands together. You can also provide the priority - categories with higher priority will appear before commands with lower priority. Can also be put on the handler class to make all commands in the handler share this category. Please note that commands without any category will be listed BEFORE the categories.
+- [\[HelpOrder\]](xref:TehGM.Wolfringo.Commands.HelpOrderAttribute) - by default, commands will be ordered according to their [priorities](xref:Guides.Commands.Handlers#commands-priorities). If you want to change the order without affecting the priority, you can use [\[HelpOrder\] attribute](xref:TehGM.Wolfringo.Commands.HelpOrderAttribute).
 
 You can see examples of how to use these attributes in [ExampleTransientCommandsHandler.cs](https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/ExampleTransientCommandsHandler.cs) example.
 
@@ -24,7 +25,7 @@ Wolfringo Commands package comes with a default help command. This command:
 - will list commands even if they have no summary set;
 - will group commands by category;
 - will list commands without category first;
-- will order commands based on priority;
+- will order commands based on [help order](xref:TehGM.Wolfringo.Commands.HelpOrderAttribute), or [priority](xref:Guides.Commands.Handlers#commands-priorities) if order not specified;
 - will respond with "No commands found!" if it finds no commands to list.
 
 This command is disabled by default, but don't worry - enabling it is just a single line change in Commands Options!

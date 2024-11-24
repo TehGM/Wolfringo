@@ -18,3 +18,4 @@ How much will need changing? Let's take a look at the versions.
 
 ## Upgrade Guides
 - [1.x => 2.x](xref:Upgrading.1_x-to-2_x)
+- [2.0 => 2.1](xref:Upgrading.2_0-to-2_1)

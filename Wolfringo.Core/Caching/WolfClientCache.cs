@@ -197,18 +197,6 @@ namespace TehGM.Wolfringo.Caching.Internal
                     }
                 }
 
-                // update group member list if one was requested
-                else if (response is GroupMembersListResponse groupMembersResponse && message is GroupMembersListMessage groupMembersMessage && groupMembersResponse.GroupMembers?.Any() == true)
-                {
-                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMembersMessage.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.ReplaceAllGroupMembers(cachedGroup, groupMembersResponse.GroupMembers);
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
                 // add group if it was created
                 else if (response is GroupEditResponse groupEditResponse && message is GroupCreateMessage)
                     this.GroupsCache.AddOrReplaceIfChanged(groupEditResponse.GroupProfile);
