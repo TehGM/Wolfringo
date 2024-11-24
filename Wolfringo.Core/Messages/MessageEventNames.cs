@@ -33,6 +33,8 @@
         public const string GroupUpdate = "group update";
         /// <summary>WOLF Protocol Event name for <see cref="GroupMembersListMessage"/>.</summary>
         public const string GroupMemberList = "group member list";
+        /// <summary>WOLF Protocol Event name for <see cref="GroupMemberPrivilegedListMessage"/>.</summary>
+        public const string GroupMemberPrivilegedList = "group member privileged list";
         /// <summary>WOLF Protocol Event name for <see cref="GroupJoinMessage"/>.</summary>
         public const string GroupMemberAdd = "group member add";
         /// <summary>WOLF Protocol Event name for <see cref="GroupLeaveMessage"/>.</summary>
