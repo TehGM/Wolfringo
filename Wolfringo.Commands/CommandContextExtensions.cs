@@ -88,7 +88,8 @@ namespace TehGM.Wolfringo.Commands
         public static async Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, CancellationToken cancellationToken = default)
         {
             IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(context.Client, text, cancellationToken).ConfigureAwait(false);
-            ChatMessage message = new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, null));
+            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
+            ChatMessage message = new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks));
             return await context.Client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Sends an image response message to group or user.</summary>

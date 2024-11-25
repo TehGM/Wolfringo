@@ -1016,7 +1016,8 @@ namespace TehGM.Wolfringo
         public static async Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
         {
             IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
-            ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, null));
+            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
+            ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks));
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>Sends a group text message.</summary>
@@ -1028,7 +1029,8 @@ namespace TehGM.Wolfringo
         public static async Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
         {
             IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
-            ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, null));
+            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
+            ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks));
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
 
