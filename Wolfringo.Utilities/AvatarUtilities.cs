@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Newtonsoft.Json.Linq;
 namespace TehGM.Wolfringo.Utilities
 {
     /// <summary>Utilities for getting avatar.</summary>
+    [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
     public static class AvatarUtilities
     {
         /// <summary>Gets URL for retrieving user avatar.</summary>
@@ -17,6 +19,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <para><paramref name="size"/> is only a requested size of the avatar. It is not guaranteed that URL will contain avatar with this size.</para>
         /// <para>Currently, changing <paramref name="iconID"/> to an invalid value seems to not cause error when the URL is used. However it is not guaranteed to always be the case, so a valid <see cref="WolfUser.Icon">WolfUser.Icon</see> value is recommended.</para></remarks>
         /// <returns>URL to user's avatar.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static string GetUserAvatarURL(uint userID, int? iconID = null, uint size = 500)
         {
             string result = $"https://clientavatars.palapi.net/FileServerSpring/subscriber/avatar/{userID}?size={size}";
@@ -31,6 +34,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <remarks><para>This method will return URL to user avatar. You can use this URL with <see cref="HttpClient"/> to download the avatar, or use for any other purpose.</para>
         /// <para><paramref name="size"/> is only a requested size of the avatar. It is not guaranteed that URL will contain avatar with this size.</para></remarks>
         /// <returns>URL to user's avatar.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static string GetAvatarURL(this WolfUser user, uint size = 500)
             => GetUserAvatarURL(user.ID, user.Icon, size);
 
@@ -42,6 +46,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <para><paramref name="size"/> is only a requested size of the avatar. It is not guaranteed that URL will contain avatar with this size.</para>
         /// <para>Currently, changing <paramref name="iconID"/> to an invalid value seems to not cause error when the URL is used. However it is not guaranteed to always be the case, so a valid <see cref="WolfGroup.Icon">WolfGroup.Icon</see> value is recommended.</para></remarks>
         /// <returns>URL to group's avatar.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static string GetGroupAvatarURL(uint groupID, int? iconID = null, uint size = 500)
         {
             string result = $"https://clientavatars.palapi.net/FileServerSpring/group/avatar/{groupID}?size={size}";
@@ -56,6 +61,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <remarks><para>This method will return URL to group avatar. You can use this URL with <see cref="HttpClient"/> to download the avatar, or use for any other purpose.</para>
         /// <para><paramref name="size"/> is only a requested size of the avatar. It is not guaranteed that URL will contain avatar with this size.</para></remarks>
         /// <returns>URL to group's avatar.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static string GetAvatarURL(this WolfGroup group, uint size = 500)
             => GetGroupAvatarURL(group.ID, group.Icon, size);
 
@@ -65,6 +71,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <param name="cancellationToken">Token to cancel the request.</param>
         /// <remarks>This method creates a temporary HttpClient just for the request. This might be performance heavy, and therefore it's recommended to provide your own client from own cache, or using a client factory.</remarks>
         /// <returns>Bytes of user avatar. Null if user of avatar not found.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static async Task<byte[]> DownloadAvatarAsync(this WolfUser user, uint size = 500, CancellationToken cancellationToken = default)
         {
             using (HttpClient client = GetDefaultClient())
@@ -76,6 +83,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <param name="size">Size of the avatar to request.</param>
         /// <param name="cancellationToken">Token to cancel the request.</param>
         /// <returns>Bytes of user avatar. Null if user of avatar not found.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static Task<byte[]> DownloadAvatarAsync(this WolfUser user, HttpClient client, uint size = 500, CancellationToken cancellationToken = default)
             => DownloadAvatarAsync(GetAvatarURL(user, size), client, cancellationToken);
 
@@ -85,6 +93,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <param name="cancellationToken">Token to cancel the request.</param>
         /// <remarks>This method creates a temporary HttpClient just for the request. This might be performance heavy, and therefore it's recommended to provide your own client from own cache, or using a client factory.</remarks>
         /// <returns>Bytes of group avatar. Null if group of avatar not found.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static async Task<byte[]> DownloadAvatarAsync(this WolfGroup group, uint size = 500, CancellationToken cancellationToken = default)
         {
             using (HttpClient client = GetDefaultClient())
@@ -96,6 +105,7 @@ namespace TehGM.Wolfringo.Utilities
         /// <param name="size">Size of the avatar to request.</param>
         /// <param name="cancellationToken">Token to cancel the request.</param>
         /// <returns>Bytes of group avatar. Null if group of avatar not found.</returns>
+        [Obsolete("Current implementation returns old, unsupported URLs. This class will be redesigned in an upcoming update.")]
         public static Task<byte[]> DownloadAvatarAsync(this WolfGroup group, HttpClient client, uint size = 500, CancellationToken cancellationToken = default)
             => DownloadAvatarAsync(GetAvatarURL(group, size), client, cancellationToken);
 

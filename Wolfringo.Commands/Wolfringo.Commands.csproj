@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -18,12 +18,8 @@
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <PackageReleaseNotes>
-- Added [HelpOrder] attribute.
-- Fix prefix checks for empty prefixes.
-- Separated PrefixRequirement from PrefixAttribute to combat the way CLR handles nullables in attribute constructors.
-- Fix CommandContext extensions code for updating group members list.
-- Fix [RequireGroupPrivilege] attribute code for updating group members list.
-    </PackageReleaseNotes>
+- Automatically build metadata for http and https links when sending a message.
+	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>
 

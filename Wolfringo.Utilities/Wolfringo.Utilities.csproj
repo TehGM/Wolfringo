@@ -6,7 +6,7 @@
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <FileVersion>2.1.0.0</FileVersion>
@@ -22,9 +22,8 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageReleaseNotes>
-- Add support for ChatMessage metadata for links (normal URLs and group links).
-- Fix Sender utility code for updating group members list.
-- Fix Sender utility code for joining group by name.
+- AvatarUtilities is now obsolete.
+- Automatically build metadata for http and https links when sending a message.
 	</PackageReleaseNotes>
   </PropertyGroup>
 

@@ -5,6 +5,10 @@ uid: Guides.Features.Avatars
 # Working with Avatars
 Avatars of users and groups are one of core features of WOLF. For this reason you might want to work with them. In this guide, I briefly explain what Wolfringo provides in that matter.
 
+> [!CAUTION]
+> As of Wolfringo v2.1.1, @TehGM.Wolfringo.Utilities.AvatarUtilities class has been obsoleted, due to old links format no longer working and new seemingly requiring API calls. This means this class will need to get reworked.
+> Please avoid using this class until it's been redesigned and fixed in a future update.
+
 ## Retrieving avatars
 Since [version 1.1.0](https://github.com/TehGM/Wolfringo/releases/tag/1.0.0), [Wolfringo.Utilities](https://www.nuget.org/packages/Wolfringo.Utilities) (installed automatically by [Wolfringo metapackage](https://www.nuget.org/packages/Wolfringo)) includes a set of small extension methods contained in @TehGM.Wolfringo.Utilities.AvatarUtilities class. These methods are designed to help with retrieving user avatar.
 
