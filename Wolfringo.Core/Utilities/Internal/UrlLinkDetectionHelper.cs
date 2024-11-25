@@ -7,7 +7,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
     /// <summary>Internal utility helper for detecting and building URL links in outgoing messages.</summary>
     public static class UrlLinkDetectionHelper
     {
-        private static readonly char[] _endMarkers = new char[] { ' ', '\n' };
+        private static readonly char[] _endMarkers = new char[] { ' ', '\n', '\r' };
 
         /// <summary>Finds URL links in the text, and builds metadata for each found link.</summary>
         /// <param name="text">Text to find group links in.</param>
