@@ -7,6 +7,8 @@ namespace TehGM.Wolfringo.Utilities.Internal
     /// <summary>Internal utility helper for detecting and building URL links in outgoing messages.</summary>
     public static class UrlLinkDetectionHelper
     {
+        private static readonly char[] _endMarkers = new char[] { ' ', '\n' };
+
         /// <summary>Finds URL links in the text, and builds metadata for each found link.</summary>
         /// <param name="text">Text to find group links in.</param>
         public static IEnumerable<ChatMessageFormatting.LinkData> FindLinks(string text)
@@ -16,7 +18,7 @@ namespace TehGM.Wolfringo.Utilities.Internal
                 int openIndex = FindIndexOfLink(text);
                 while (openIndex > -1)
                 {
-                    int closeIndex = text.IndexOf(' ', openIndex);
+                    int closeIndex = text.IndexOfAny(_endMarkers, openIndex);
                     if (closeIndex < 0)
                         closeIndex = text.Length;
                     int length = closeIndex - openIndex;
