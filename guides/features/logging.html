@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Logging | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Logging | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Features.Logging">
+<h1 id="logging-in-wolfringo">Logging in Wolfringo</h1>
+
+<p>A bot is a background process - most often it'll be running in background, without user interaction. For that reason, it's important to <strong>log</strong> information.</p>
+<p>Wolfringo on its own doesn't have a logger. It also doesn't have &quot;Log&quot; event or anything like that - these events often are error-prone, and require additional work when setting up.<br>
+Instead Wolfringo has full support for @Microsoft.Extensions.Logging.ILogger interface. This makes it fully compatible with any relevant .NET logging library - <a href="https://serilog.net/">Serilog</a>, <a href="https://nlog-project.org/">NLog</a>, <a href="https://logging.apache.org/log4net/">Log4Net</a>, you name it! (Well, as long as it works with <a href="xref:Microsoft.Extensions.Logging.ILogger">Microsoft.Extensions.Logging.ILogger</a>).</p>
+<h2 id="setting-logging-up">Setting logging up</h2>
+<p>The exact way to set up logging might vary between libraries. Here I show a few examples.</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_logging-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_logging-normal-bot" data-tab="logging-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_logging-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_logging-hosted-bot" data-tab="logging-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_logging-normal-bot" role="tabpanel" data-tab="logging-normal-bot">
+
+<p>All examples will use a special method called &quot;<em>CreateLogger</em>&quot; in Program.cs. It'll be called before creating <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandsService.html">ICommandsService</a>. We'll also add it to service provider. You can also register other services - check <a class="xref" href="../commands/dependency-injection.html">Dependency Injection guide</a> for more info.</p>
+<p>You should install <a href="https://www.nuget.org/packages/Microsoft.Extensions.Logging/">Microsoft.Extensions.Logging</a> NuGet package and then alter Program.cs as follows:</p>
+<pre><code class="lang-csharp">using Microsoft.Extensions.Logging;
+</code></pre>
+<pre><code class="lang-csharp">private static async Task MainAsync(string[] args)
+{
+    // ... other code ...
+
+    _client = new WolfClientBuilder()
+        .WithLogging(CreateLoggerFactory())     // pass a new logger factory
+        .WithCommands()                         // enable commands - they'll automatically use the same factory! 
+        .Build();
+
+    // ... other code ...
+}
+
+private static ILoggerFactory CreateLoggerFactory()
+{
+    // creating a logger factory depends on the library - see below!
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>You can find example on <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/Program.cs">GitHub</a>.</p>
+</div>
+<h3 id="serilog">Serilog</h3>
+<p><a href="https://serilog.net/">Serilog</a> is one of the most popular (if not <em>the</em> most popular) logging libraries for .NET. It is my personal choice in my projects, so let's start with it!</p>
+<p>First, using your NuGet package manager, install <a href="https://www.nuget.org/packages/serilog">Serilog</a>, <a href="https://www.nuget.org/packages/Serilog.Extensions.Logging">Serilog.Extensions.Logging</a>, and any of the <a href="https://github.com/serilog/serilog/wiki/Provided-Sinks">sinks</a> you want to use. For the sake of example, I will use <a href="https://www.nuget.org/packages/Serilog.Sinks.File">Serilog.Sinks.File</a> and <a href="https://www.nuget.org/packages/Serilog.Sinks.Console">Serilog.Sinks.Console</a>.<br>
+<img src="/_images/guides/logging-serilog-1.png" alt=""></p>
+<p>Once downloaded, add following <em>using</em> directives to your Program.cs:</p>
+<pre><code class="lang-csharp">using Serilog;
+</code></pre>
+<p>Finally, populate your <em>CreateLoggerFactory</em> method:</p>
+<pre><code class="lang-csharp">private static ILoggerFactory CreateLoggerFactory()
+{
+    Log.Logger = new LoggerConfiguration()  // initialize Serilog configuration
+        .MinimumLevel.Information()         // set minimum logs level to Information - feel free to change it to whatever suits your needs
+        .Enrich.FromLogContext()            // add log context to logs - optional, but Wolfringo makes use of it!
+        .WriteTo.Console()                  // enable logging to console
+        .WriteTo.File(&quot;logs.txt&quot;)           // enable logging to &quot;logs.txt&quot; files
+        .CreateLogger();                    // create logger instance
+
+    return new LoggerFactory()              // create factory for Microsoft.Extensions.Logging.ILogger
+        .AddSerilog(Log.Logger);            // add our Serilog logger
+}
+</code></pre>
+<p>Check <a href="https://github.com/serilog/serilog">Serilog repo on GitHub</a> for more guides how to configure Serilog.</p>
+<blockquote>
+<p>Note: remember to add logger instance to <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandsService.html">ICommandsService</a> via constructor - if you only set <em>Log.Logger</em>, Wolfringo will not be able to log anything!</p>
+</blockquote>
+<h3 id="microsoftextensionslogging">Microsoft.Extensions.Logging</h3>
+<p>Microsoft extensions logging also has some providers. These tend to be quite basic, and using logging libraries such as <a href="https://serilog.net/">Serilog</a>, <a href="https://nlog-project.org/">NLog</a> or <a href="https://logging.apache.org/log4net/">Log4Net</a> is recommended - but it is enough to get most basic logs!</p>
+<p>First, using your NuGet package manager, install <a href="https://www.nuget.org/packages/microsoft.extensions.logging.console/2.0.0">Microsoft.Extensions.Logging.Console 2.0.0</a>.<br>
+<img src="/_images/guides/logging-microsoft-1.png" alt=""></p>
+<p>Once downloaded, populate your <em>CreateLoggerFactory</em> method:</p>
+<pre><code class="lang-csharp">private static ILoggerFactory CreateLoggerFactory()
+{
+    return new LoggerFactory(                                       // create Microsoft.Extensions.Logging.ILogger factory
+        new[] { new ConsoleLoggerProvider((_, level)                // enable logging to console
+          =&gt; level != LogLevel.Trace &amp;&amp; level != LogLevel.Debug,    // disable any logs below Information - feel free to change it to whatever suits yourneeds
+        true) }                                                     // do include log scopes
+    );
+}
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Note that this <em>ConsoleLoggerProvider</em> constructor is removed since version 3.0.0 of <a href="https://www.nuget.org/packages/microsoft.extensions.logging.console">Microsoft.Extensions.Logging.Console</a>. The new versions require use of @Microsoft.Extensions.Options.IOptionsMonitor`1.<br>
+If you don't want to hack your way around it, you can either switch to <a href="https://www.nuget.org/packages/microsoft.extensions.logging.console/2.0.0">versions 2.0.0-2.2.0 of Microsoft.Extensions.Logging.Console</a>, or use a different logging library.</p>
+</div>
+<h3 id="other-libraries">Other libraries</h3>
+<p>Many other libraries support Microsoft.Extensions.Logging. Some might support it out of the box, while some might have a wrapper package available (like Serilog). Check out their documentations to see how to use them!</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>If you're searching on @Microsoft.Extensions.Logging.ILogger support for your library, you can use a phrase like &quot;ASP.NET Core&quot; - it includes native support for <em>Microsoft.Extensions.Logging</em>, so many articles focus on this use-case.</p>
+</div>
+</section>
+<section id="tabpanel_bHGHmlrG6S_logging-hosted-bot" role="tabpanel" data-tab="logging-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<p>Logging is built into <a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0">.NET Generic Host</a>/<a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.0">ASP.NET Core</a>, so setting it up is really easy - just set it as you normally would in ASP.NET Core application!</p>
+<p>Wolfringo.Hosting's wrappers for Wolfringo services (<a class="xref" href="../../api/TehGM.Wolfringo.Hosting.HostedWolfClient.html">HostedWolfClient</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Hosting.Commands.HostedCommandsService.html">HostedCommandsService</a>) will automatically use logging if it's configured in your host.</p>
+<blockquote>
+<p>Note: In addition to steps I include as examples below, I recommend checking <a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/logging/?view=aspnetcore-3.0">Logging in .NET Core and ASP.NET Core</a> for more details!</p>
+</blockquote>
+<h3 id="serilog-1">Serilog</h3>
+<p><a href="https://serilog.net/">Serilog</a> is one of the most popular (if not <em>the</em> most popular) logging libraries for .NET. It is my personal choice in my projects, so let's start with it!</p>
+<p>Serilog has 2 recommended utility packages for hosted scenarios:</p>
+<ul>
+<li><a href="https://www.nuget.org/packages/Serilog.AspNetCore">Serilog.AspNetCore</a> when using ASP.NET Core</li>
+<li><a href="https://www.nuget.org/packages/Serilog.Extensions.Hosting">Serilog.Extensions.Hosting</a> when using Generic Host without ASP.NET Core</li>
+</ul>
+<p>You will need to install the suitable utility package. To use configuration, we'll also use <a href="https://www.nuget.org/packages/Serilog.Settings.Configuration">Serilog.Settings.Configuration</a>. In addition, you'll want to install some <a href="https://github.com/serilog/serilog/wiki/Provided-Sinks">sinks</a> - for the sake of example, I will use <a href="https://www.nuget.org/packages/Serilog.Sinks.File">Serilog.Sinks.File</a> and <a href="https://www.nuget.org/packages/Serilog.Sinks.Console">Serilog.Sinks.Console</a>.<br>
+<img src="/_images/guides/logging-serilog-2.png" alt=""></p>
+<p>2nd step is to enable logging in your Program.cs, where you configure your host:</p>
+<pre><code class="lang-csharp">// ...
+IHost host = Host.CreateDefaultBuilder(args)
+    // ... other ConfigureSomething methods - such as ConfigureServices, etc
+    .UseSerilog((context, config) =&gt;
+    {
+        config.ReadFrom.Configuration(context.Configuration);   // read configuration from appsettings.json
+    }, true)
+    .Build();
+</code></pre>
+<p>Lastly, you need to configure your appsettings.json to include logging configuration. Remove &quot;Logging&quot; section, and add a new &quot;Serilog&quot; section. Make sure to include every sink you're using in &quot;Using&quot; array, and configure each in &quot;WriteTo&quot; array:</p>
+<pre><code class="lang-json">&quot;Serilog&quot;: {
+  &quot;Using&quot;: [ &quot;Serilog.Sinks.Console&quot;, &quot;Serilog.Sinks.File&quot; ],
+  &quot;MinimumLevel&quot;: {
+    &quot;Default&quot;: &quot;Information&quot;,
+    &quot;Override&quot;: {
+      &quot;Microsoft&quot;: &quot;Warning&quot;,
+      &quot;Microsoft.Hosting.Lifetime&quot;: &quot;Information&quot;,
+      &quot;System.Net.Http.HttpClient&quot;: &quot;Warning&quot;
+    }
+  },
+  &quot;Enrich&quot;: [
+    &quot;FromLogContext&quot;
+  ],
+  &quot;WriteTo&quot;: [
+    {
+      &quot;Name&quot;: &quot;Console&quot;
+    },
+    {
+      &quot;Name&quot;: &quot;File&quot;,
+      &quot;Args&quot;: {
+        &quot;path&quot;: &quot;logs.txt&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>See <a href="https://github.com/serilog/serilog-settings-configuration">Serilog.Settings.Configuration repo on GitHub</a> for more information on how to use configuration with Serilog.<br>
+Check <a href="https://github.com/serilog/serilog-aspnetcore">Serilog.AspNetCore</a> and <a href="https://github.com/serilog/serilog-extensions-hosting">Serilog.Extensions.Hosting</a> GitHub repositories as well, for more information on how to use these packages!</p>
+<h3 id="microsoftextensionslogging-1">Microsoft.Extensions.Logging</h3>
+<p>Microsoft extensions logging also has some providers. These tend to be quite basic, and using logging libraries such as <a href="https://serilog.net/">Serilog</a>, <a href="https://nlog-project.org/">NLog</a> or <a href="https://logging.apache.org/log4net/">Log4Net</a> is recommended - but it is enough to get most basic logs!</p>
+<p>Console logger for this approach is already built into Hosting, so you don't need to install any packages. Simply add a new <em>using</em> directive to Program.cs:</p>
+<pre><code class="lang-csharp">using Microsoft.Extensions.Logging;
+</code></pre>
+<p>Now, just add your configuration. In Hosted approach, logging is configured in Program.cs, where you configure your host:</p>
+<pre><code class="lang-csharp">// ...
+IHost host = Host.CreateDefaultBuilder(args)
+    // ... other ConfigureSomething methods - such as ConfigureServices, etc
+    .ConfigureLogging((context, config) =&gt;
+    {
+        config.SetMinimumLevel(LogLevel.Information);   // set minimum logs level to Information - feel free to change it to whatever suits your needs
+    })
+    .Build();
+</code></pre>
+<h3 id="other-libraries-1">Other libraries</h3>
+<p>Many other libraries support Microsoft.Extensions.Logging. Some might support it out of the box, while some might have a wrapper package available (like Serilog). Check out their documentations to see how to use them!</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>If you're searching on @Microsoft.Extensions.Logging.ILogger support for your library, you can use a phrase like &quot;ASP.NET Core&quot; - it includes native support for <em>Microsoft.Extensions.Logging</em>, so many articles focus on this use-case.</p>
+</div>
+</section>
+</div>
+<h2 id="logging-in-handlers-and-services">Logging in Handlers and Services</h2>
+<p>Any service registered with Dependency Injection and all Handlers that <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> loads can use @Microsoft.Extensions.Logging.ILogger - simply inject it via constructor or method parameters. Check <a class="xref" href="../commands/dependency-injection.html">Dependency Injection guide</a> for more details.<br>
+You can inject either @Microsoft.Extensions.Logging.ILogger or @Microsoft.Extensions.Logging.ILogger`1 - if you use the generic one, the logs will use that type's full name as a category.</p>
+<pre><code class="lang-csharp">[CommandsHandler]
+private class ExampleCommandsHandler
+{
+    private readonly ILogger _log;
+
+    public ExampleCommandsHandler(ILogger&lt;ExampleCommandsHandler&gt; log)
+    {
+        this._log = log;
+    }
+
+    [Command(&quot;example&quot;)]
+    public async Task ExampleAsync(CommandContext context, ILogger log)
+    {
+        log.LogInformation(&quot;Received a message from {SenderID}&quot;, context.Message.SenderID.Value);
+        // can also use _log instead of log
+    }
+}
+</code></pre>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>
