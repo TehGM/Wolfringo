@@ -7,7 +7,7 @@ using TehGM.Wolfringo.Commands.Attributes;
 namespace TehGM.Wolfringo.Commands.Initialization
 {
     /// <summary>A class caching descriptor attribute data.</summary>
-    /// <remarks>This class is used internally by <see cref="CommandInstanceDescriptorExtensions"/> and <see cref="Help.DescriptorHelpExtensions"/>.</remarks>
+    /// <remarks>This class is used internally by <see cref="CommandInstanceDescriptorExtensions"/>.</remarks>
     internal class DescriptorAttributeCache
     {
         private static readonly IDictionary<ICommandInstanceDescriptor, DescriptorAttributeCache> _cache = new Dictionary<ICommandInstanceDescriptor, DescriptorAttributeCache>();
