@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -19,15 +19,7 @@
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
     <PackageReleaseNotes>
-- Add GroupMemberRegularListMessage and GroupMemberPrivilegedListMessage.
-- Add support for ChatMessage metadata for links (normal URLs and group links).
-- Add GroupLinkDetectionHelper internal utility class.
-- GroupMembersListMessage is now obsolete.
-- Support for GroupName in GroupJoinMessage is now obsolete, as WOLF protocol changes made it not work.
-- Fix core logic for updating group member list.
-- Fix serialization errors when WOLF server responds with an error response.
-- Fix some logging bugs and issues.
-- Fix some CancellationToken race conditions.
+- Fix some missing documentation.
 	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>

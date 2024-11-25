@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -16,29 +16,16 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <releaseNotes>
-- Separated PrefixRequirement from PrefixAttribute to combat the way CLR handles nullables in attribute constructors.
-- Add GroupMemberRegularListMessage and GroupMemberPrivilegedListMessage.
-- Add support for ChatMessage metadata for links (normal URLs and group links).
-- Add GroupLinkDetectionHelper internal utility class.
-- Added [HelpOrder] attribute.
-- Fix prefix checks for empty prefixes.
-- Fix CommandContext extensions code for updating group members list.
-- Fix Sender utility code for updating group members list.
-- Fix Sender utility code for joining group by name.
-- Fix [RequireGroupPrivilege] attribute code for updating group members list.
-- Fix core logic for updating group member list.
-- Fix serialization errors when WOLF server responds with an error response.
-- Fix some logging bugs and issues.
-- Fix some CancellationToken race conditions.
-- GroupMembersListMessage is now obsolete.
-- Support for GroupName in GroupJoinMessage is now obsolete, as WOLF protocol changes made it not work.
+- Automatically build metadata for http and https links when sending a message with Sender utility or CommandContext response.
+- AvatarUtilities is now obsolete.
+- Fix some missing documentation.
 	</releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="2.1.0" />
-        <dependency id="Wolfringo.Utilities" version="2.1.0" />
+        <dependency id="Wolfringo.Core" version="2.1.1" />
+        <dependency id="Wolfringo.Utilities" version="2.1.1" />
         <dependency id="Wolfringo.Utilities.Interactive" version="2.0.0" />
-        <dependency id="Wolfringo.Commands" version="2.1.0"/>
+        <dependency id="Wolfringo.Commands" version="2.1.1"/>
       </group>
     </dependencies>
   </metadata>
