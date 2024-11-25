@@ -13,6 +13,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         public IMessageSerializer FallbackSerializer { get; set; } = new DefaultMessageSerializer<IWolfMessage>();
 
         /// <summary>Map for event type and assigned message serializer.</summary>
+#pragma warning disable CS0618 // Type or member is obsolete
         public IDictionary<string, IMessageSerializer> Serializers { get; set; } = new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
                 // default ones
@@ -74,4 +75,5 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.MessageUpdate, new ChatUpdateMessageSerializer() }
             };
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 }
