@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Working with Avatars | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Working with Avatars | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Features.Avatars">
+<h1 id="working-with-avatars">Working with Avatars</h1>
+
+<p>Avatars of users and groups are one of core features of WOLF. For this reason you might want to work with them. In this guide, I briefly explain what Wolfringo provides in that matter.</p>
+<div class="CAUTION">
+<h5>Caution</h5>
+<p>As of Wolfringo v2.1.1, <a class="xref" href="../../api/TehGM.Wolfringo.Utilities.AvatarUtilities.html">AvatarUtilities</a> class has been obsoleted, due to old links format no longer working and new seemingly requiring API calls. This means this class will need to get reworked.
+Please avoid using this class until it's been redesigned and fixed in a future update.</p>
+</div>
+<h2 id="retrieving-avatars">Retrieving avatars</h2>
+<p>Since <a href="https://github.com/TehGM/Wolfringo/releases/tag/1.0.0">version 1.1.0</a>, <a href="https://www.nuget.org/packages/Wolfringo.Utilities">Wolfringo.Utilities</a> (installed automatically by <a href="https://www.nuget.org/packages/Wolfringo">Wolfringo metapackage</a>) includes a set of small extension methods contained in <a class="xref" href="../../api/TehGM.Wolfringo.Utilities.AvatarUtilities.html">AvatarUtilities</a> class. These methods are designed to help with retrieving user avatar.</p>
+<h4 id="getting-url">Getting URL</h4>
+<p>WOLF exposes avatar images through URL. <a class="xref" href="../../api/TehGM.Wolfringo.Utilities.AvatarUtilities.html">AvatarUtilities</a> has a few methods that will help you format this link.</p>
+<pre><code class="lang-csharp">// AvatarUtilities is included in Utilities namespace
+using TehGM.Wolfringo.Utilities;
+
+// you can get URL to user or group avatars
+WolfUser user = await _client.GetUserAsync(2644384);
+WolfGroup group = await _client.GetGroupAsync(&quot;wolf&quot;);
+string userAvatarURL = user.GetAvatarURL();
+string groupAvatarURL = group.GetAvatarURL();
+</code></pre>
+<h4 id="downloading-avatar">Downloading Avatar</h4>
+<p>The recommended way to download an avatar is to use a @System.Net.Http.HttpClient to download image from URL. It is also recommended that you either cache your @System.Net.Http.HttpClient or use @System.Net.Http.IHttpClientFactory to avoid issues explained by Microsoft in <a href="https://docs.microsoft.com/en-gb/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests#issues-with-the-original-httpclient-class-available-in-net-core">Use IHttpClientFactory to implement resilient HTTP requests</a> article.</p>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Utilities.AvatarUtilities.html">AvatarUtilities</a> also includes special extension method <code>DownloadAvatarAsync</code>. It'll do basic download of the avatar for you, but it is limited in functionality. This method automatically builds the URL and downloads the avatar bytes.<br>
+If avatar couldn't be found (for example, when the user/group does not have a custom avatar set), this method will return <code>null</code>. When any other error occurs when downloading the avatar, @System.Net.Http.HttpRequestException will be thrown.</p>
+<pre><code class="lang-csharp">// AvatarUtilities is included in Utilities namespace
+using TehGM.Wolfringo.Utilities;
+
+// you can get URL to user or group avatars
+WolfUser user = await _client.GetUserAsync(2644384);
+WolfGroup group = await _client.GetGroupAsync(&quot;wolf&quot;);
+byte[] userAvatar = await user.DownloadAvatarAsync();
+byte[] groupAvatar = await group.DownloadAvatarAsync();
+</code></pre>
+<p>Once the avatar bytes are downloaded, you can send it using <a class="xref" href="sender.html">Sender Utility</a>, save to a file, modify, or anything you want to do!</p>
+<h5 id="providing-a-httpclient">Providing a HttpClient</h5>
+<p><code>DownloadAvatarAsync</code> has an overload that takes a @System.Net.Http.HttpClient as one of parameters. This allows you to cache your client, or use @System.Net.Http.IHttpClientFactory. This means you can also set your headers, such as <code>User-Agent</code>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Note: when you provide your own @System.Net.Http.HttpClient, you need to dispose it yourself, as <a class="xref" href="../../api/TehGM.Wolfringo.Utilities.AvatarUtilities.html">AvatarUtilities</a> will not dispose it automatically to allow caching, re-use etc.</p>
+</div>
+<pre><code class="lang-csharp">// AvatarUtilities is included in Utilities namespace
+using TehGM.Wolfringo.Utilities;
+
+// download user avatar
+using (HttpClient myHttpClient = new HttpClient())
+{
+    myHttpClient.DefaultRequestHeaders.Add(&quot;User-Agent&quot;, &quot;MyBot v1.0.0&quot;);
+    byte[] userAvatar = await user.DownloadAvatarAsync(myHttpClient);
+}
+</code></pre>
+<h2 id="changing-avatar">Changing Avatar</h2>
+<p>Currently, you cannot change your bot's Avatar using Wolfringo. This is because WOLF protocol v3 does not seem to allow doing that at this time.</p>
+<p>Once WOLF protocol supports avatar changing, this feature will be added in one of Wolfringo updates.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>
