@@ -4,7 +4,7 @@ using System;
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>Event when a group member has been updated.</summary>
-    [Obsolete("WOLF protocol seems to no longer send this event. Use GroupMemberPrivilegedUpdateEvent instead.")]
+    [Obsolete("WOLF protocol seems to no longer send this event. Use GroupMemberPrivilegedUpdateEvent and GroupMemberPrivilegedDeleteEvent instead.")]
     public class GroupMemberUpdateEvent : IWolfMessage
     {
         /// <inheritdoc/>

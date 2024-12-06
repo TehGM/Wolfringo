@@ -41,6 +41,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.CharmSubscriberStatistics, new DefaultMessageSerializer<CharmStatisticsMessage>() },
                 { MessageEventNames.GroupMemberUpdate, new DefaultMessageSerializer<GroupMemberUpdateEvent>() },
                 { MessageEventNames.GroupMemberPrivilegedUpdate, new DefaultMessageSerializer<GroupMemberPrivilegedUpdateEvent>() },
+                { MessageEventNames.GroupMemberPrivilegedDelete, new DefaultMessageSerializer<GroupMemberPrivilegedDeleteEvent>() },
                 { MessageEventNames.GroupAdmin, new DefaultMessageSerializer<GroupAdminMessage>() },
                 { MessageEventNames.SubscriberUpdate, new DefaultMessageSerializer<UserUpdateEvent>() },
                 { MessageEventNames.NotificationListClear, new DefaultMessageSerializer<NotificationsClearMessage>() },

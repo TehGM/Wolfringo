@@ -338,6 +338,17 @@ namespace TehGM.Wolfringo.Caching.Internal
                     }
                     catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
+                else if (message is GroupMemberPrivilegedDeleteEvent groupMemberReset)
+                {
+                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberReset.GroupID);
+                    try
+                    {
+                        if (cachedGroup != null)
+                            EntityModificationHelper.SetGroupMember(cachedGroup,
+                                new WolfGroupMember(groupMemberReset.UserID, WolfGroupCapabilities.User));
+                    }
+                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                }
             }
         }
         #endregion
