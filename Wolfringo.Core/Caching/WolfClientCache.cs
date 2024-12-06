@@ -313,30 +313,28 @@ namespace TehGM.Wolfringo.Caching.Internal
                     }
                     catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                 }
-                else if (message is GroupActionChatEvent groupActionChatEvent)
+                else if (message is GroupActionChatEvent groupActionChatEvent && groupActionChatEvent.SenderID != null)
                 {
-                    // recipient ID = group
-                    // sender ID = silenced user
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupActionChatEvent.RecipientID);
+
                     if (cachedGroup != null)
                     {
-                        if (TryMapGroupActionToCapabilities(groupActionChatEvent.ActionType, out WolfGroupCapabilities capabilities))
+                        uint targetUserID = groupActionChatEvent.SenderID.Value;
+                        try
                         {
-                            try
+                            if (TryMapGroupActionToCapabilities(groupActionChatEvent.ActionType, out WolfGroupCapabilities capabilities))
+                                EntityModificationHelper.SetGroupMember(cachedGroup, new WolfGroupMember(targetUserID, capabilities));
+                            else if (groupActionChatEvent.ActionType == GroupActionType.Kick || groupActionChatEvent.ActionType == GroupActionType.UserLeft)
+                                EntityModificationHelper.RemoveGroupMember(cachedGroup, targetUserID);
+                            else if (groupActionChatEvent.ActionType == GroupActionType.OwnerChanged)
                             {
-                                EntityModificationHelper.SetGroupMember(cachedGroup,
-                                    new WolfGroupMember(groupActionChatEvent.SenderID.Value, capabilities));
+                                EntityModificationHelper.SetGroupMember(cachedGroup, new WolfGroupMember(targetUserID, WolfGroupCapabilities.Owner));
+
+                                if (groupActionChatEvent.ActionInvokerID != null && cachedGroup.Members?.ContainsKey(groupActionChatEvent.ActionInvokerID.Value) == true)
+                                    EntityModificationHelper.SetGroupMember(cachedGroup, new WolfGroupMember(groupActionChatEvent.ActionInvokerID.Value, WolfGroupCapabilities.User));
                             }
-                            catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                         }
-                        else if (groupActionChatEvent.ActionType == GroupActionType.Kick || groupActionChatEvent.ActionType == GroupActionType.UserLeft)
-                        {
-                            try
-                            {
-                                EntityModificationHelper.RemoveGroupMember(cachedGroup, groupActionChatEvent.SenderID.Value);
-                            }
-                            catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
-                        }
+                        catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                     }
                 }
             }
