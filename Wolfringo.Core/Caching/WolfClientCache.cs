@@ -317,7 +317,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                 {
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupActionChatEvent.RecipientID);
 
-                    if (cachedGroup != null)
+                    if (cachedGroup != null && groupActionChatEvent.SenderID != null)
                     {
                         uint targetUserID = groupActionChatEvent.SenderID.Value;
                         try
