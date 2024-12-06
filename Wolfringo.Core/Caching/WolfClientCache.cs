@@ -302,7 +302,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                 }
 
                 // update group member capabilities if member was updated
-                else if (message is GroupMemberPrivilegedUpdateEvent groupMemberUpdated)
+                else if (message is IGroupMemberPrivilegedEvent groupMemberUpdated)
                 {
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberUpdated.GroupID);
                     try
@@ -310,17 +310,6 @@ namespace TehGM.Wolfringo.Caching.Internal
                         if (cachedGroup != null)
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-                else if (message is GroupMemberPrivilegedDeleteEvent groupMemberReset)
-                {
-                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberReset.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberReset.UserID, WolfGroupCapabilities.User));
                     }
                     catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }

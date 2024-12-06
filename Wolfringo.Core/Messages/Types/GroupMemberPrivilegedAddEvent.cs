@@ -3,12 +3,12 @@
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>Event when a group member has been updated.</summary>
-    public class GroupMemberPrivilegedUpdateEvent : IWolfMessage, IGroupMemberPrivilegedEvent
+    public class GroupMemberPrivilegedAddEvent : IWolfMessage, IGroupMemberPrivilegedEvent
     {
         /// <inheritdoc/>
-        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberPrivilegedUpdate"/>.</remarks>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberPrivilegedAdd"/>.</remarks>
         [JsonIgnore]
-        public string EventName => MessageEventNames.GroupMemberPrivilegedUpdate;
+        public string EventName => MessageEventNames.GroupMemberPrivilegedAdd;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("groupId")]
@@ -22,6 +22,6 @@ namespace TehGM.Wolfringo.Messages
 
         /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
-        protected GroupMemberPrivilegedUpdateEvent() { }
+        protected GroupMemberPrivilegedAddEvent() { }
     }
 }

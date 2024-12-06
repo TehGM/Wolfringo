@@ -40,6 +40,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.CharmList, new DefaultMessageSerializer<CharmListMessage>() },
                 { MessageEventNames.CharmSubscriberStatistics, new DefaultMessageSerializer<CharmStatisticsMessage>() },
                 { MessageEventNames.GroupMemberUpdate, new DefaultMessageSerializer<GroupMemberUpdateEvent>() },
+                { MessageEventNames.GroupMemberPrivilegedAdd, new DefaultMessageSerializer<GroupMemberPrivilegedAddEvent>() },
                 { MessageEventNames.GroupMemberPrivilegedUpdate, new DefaultMessageSerializer<GroupMemberPrivilegedUpdateEvent>() },
                 { MessageEventNames.GroupMemberPrivilegedDelete, new DefaultMessageSerializer<GroupMemberPrivilegedDeleteEvent>() },
                 { MessageEventNames.GroupAdmin, new DefaultMessageSerializer<GroupAdminMessage>() },

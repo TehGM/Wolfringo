@@ -46,6 +46,8 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>WOLF Protocol Event name for <see cref="GroupMemberUpdateEvent"/>.</summary>
         [Obsolete("WOLF protocol seems to no longer send this event. Use GroupMemberPrivilegedUpdate and GroupMemberPrivilegedDelete instead.")]
         public const string GroupMemberUpdate = "group member update";
+        /// <summary>WOLF Protocol Event name for <see cref="GroupMemberPrivilegedAddEvent"/>.</summary>
+        public const string GroupMemberPrivilegedAdd = "group member privileged add";
         /// <summary>WOLF Protocol Event name for <see cref="GroupMemberPrivilegedUpdateEvent"/>.</summary>
         public const string GroupMemberPrivilegedUpdate = "group member privileged update";
         /// <summary>WOLF Protocol Event name for <see cref="GroupMemberPrivilegedDeleteEvent"/>.</summary>
