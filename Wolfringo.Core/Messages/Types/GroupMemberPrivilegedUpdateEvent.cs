@@ -1,16 +1,14 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace TehGM.Wolfringo.Messages
 {
     /// <summary>Event when a group member has been updated.</summary>
-    [Obsolete("WOLF protocol seems to no longer send this event. Use GroupMemberPrivilegedUpdateEvent instead.")]
-    public class GroupMemberUpdateEvent : IWolfMessage
+    public class GroupMemberPrivilegedUpdateEvent : IWolfMessage
     {
         /// <inheritdoc/>
-        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberUpdate"/>.</remarks>
+        /// <remarks>Equals to <see cref="MessageEventNames.GroupMemberPrivilegedUpdate"/>.</remarks>
         [JsonIgnore]
-        public string EventName => MessageEventNames.GroupMemberUpdate;
+        public string EventName => MessageEventNames.GroupMemberPrivilegedUpdate;
 
         /// <summary>ID of the group.</summary>
         [JsonProperty("groupId")]
@@ -24,6 +22,6 @@ namespace TehGM.Wolfringo.Messages
 
         /// <summary>Creates a message instance.</summary>
         [JsonConstructor]
-        protected GroupMemberUpdateEvent() { }
+        protected GroupMemberPrivilegedUpdateEvent() { }
     }
 }

@@ -327,7 +327,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                 }
 
                 // update group member capabilities if member was updated
-                else if (message is GroupMemberUpdateEvent groupMemberUpdated)
+                else if (message is GroupMemberPrivilegedUpdateEvent groupMemberUpdated)
                 {
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberUpdated.GroupID);
                     try
