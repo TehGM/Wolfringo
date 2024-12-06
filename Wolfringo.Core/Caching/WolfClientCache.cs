@@ -301,31 +301,6 @@ namespace TehGM.Wolfringo.Caching.Internal
                     }
                 }
 
-                // update group member list when one joined
-                else if (message is GroupJoinMessage groupMemberJoined)
-                {
-                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
-                // update group member list if one left
-                else if (message is GroupLeaveMessage groupMemberLeft)
-                {
-                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberLeft.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
                 // update group member capabilities if member was updated
                 else if (message is GroupMemberPrivilegedUpdateEvent groupMemberUpdated)
                 {
@@ -349,6 +324,59 @@ namespace TehGM.Wolfringo.Caching.Internal
                     }
                     catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
                 }
+                else if (message is GroupActionChatEvent groupActionChatEvent)
+                {
+                    // recipient ID = group
+                    // sender ID = silenced user
+                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupActionChatEvent.RecipientID);
+                    if (cachedGroup != null)
+                    {
+                        if (TryMapGroupActionToCapabilities(groupActionChatEvent.ActionType, out WolfGroupCapabilities capabilities))
+                        {
+                            try
+                            {
+                                EntityModificationHelper.SetGroupMember(cachedGroup,
+                                    new WolfGroupMember(groupActionChatEvent.SenderID.Value, capabilities));
+                            }
+                            catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                        }
+                        else if (groupActionChatEvent.ActionType == GroupActionType.Kick || groupActionChatEvent.ActionType == GroupActionType.UserLeft)
+                        {
+                            try
+                            {
+                                EntityModificationHelper.RemoveGroupMember(cachedGroup, groupActionChatEvent.SenderID.Value);
+                            }
+                            catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static bool TryMapGroupActionToCapabilities(GroupActionType? actionType, out WolfGroupCapabilities capabilities)
+        {
+            if (actionType is null)
+            {
+                capabilities = default;
+                return false;
+            }
+
+            switch (actionType.Value)
+            {
+                case GroupActionType.Silence:
+                    capabilities = WolfGroupCapabilities.Silenced;
+                    return true;
+                case GroupActionType.Ban:
+                    capabilities = WolfGroupCapabilities.Banned;
+                    return true;
+                case GroupActionType.UserJoined:
+                    capabilities = WolfGroupCapabilities.User;
+                    return true;
+
+                // we purposefully omit other action types for now, as they might need special handling
+                default:
+                    capabilities = default;
+                    return false;
             }
         }
         #endregion
