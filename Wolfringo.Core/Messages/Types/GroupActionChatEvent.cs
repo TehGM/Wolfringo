@@ -102,11 +102,11 @@ namespace TehGM.Wolfringo.Messages
             {
                 case "join":
                     return GroupActionType.UserJoined;
-                case "leave" when this.ActionInvokerID == null:
+                case "leave" when this._invokerID == null:
                     return GroupActionType.UserLeft;
                 case "ban":
                     return GroupActionType.Ban;
-                case "kick" when this.ActionInvokerID != null:
+                case "kick" when this._invokerID != null:
                     return GroupActionType.Kick;
                 case "silence":
                     return GroupActionType.Silence;

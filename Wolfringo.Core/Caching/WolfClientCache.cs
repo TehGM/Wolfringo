@@ -301,33 +301,8 @@ namespace TehGM.Wolfringo.Caching.Internal
                     }
                 }
 
-                // update group member list when one joined
-                else if (message is GroupJoinMessage groupMemberJoined)
-                {
-                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberJoined.GroupID.Value);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.SetGroupMember(cachedGroup,
-                                new WolfGroupMember(groupMemberJoined.UserID.Value, groupMemberJoined.Capabilities.Value));
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
-                // update group member list if one left
-                else if (message is GroupLeaveMessage groupMemberLeft)
-                {
-                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberLeft.GroupID);
-                    try
-                    {
-                        if (cachedGroup != null)
-                            EntityModificationHelper.RemoveGroupMember(cachedGroup, groupMemberLeft.UserID.Value);
-                    }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
-                }
-
                 // update group member capabilities if member was updated
-                else if (message is GroupMemberUpdateEvent groupMemberUpdated)
+                else if (message is IGroupMemberPrivilegedEvent groupMemberUpdated)
                 {
                     WolfGroup cachedGroup = this.GroupsCache?.Get(groupMemberUpdated.GroupID);
                     try
@@ -336,8 +311,64 @@ namespace TehGM.Wolfringo.Caching.Internal
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
                     }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                    catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                 }
+                else if (message is GroupActionChatEvent groupActionChatEvent && groupActionChatEvent.SenderID != null)
+                {
+                    WolfGroup cachedGroup = this.GroupsCache?.Get(groupActionChatEvent.RecipientID);
+
+                    if (cachedGroup != null && groupActionChatEvent.SenderID != null)
+                    {
+                        uint targetUserID = groupActionChatEvent.SenderID.Value;
+                        try
+                        {
+                            if (TryMapGroupActionToCapabilities(groupActionChatEvent.ActionType, out WolfGroupCapabilities capabilities))
+                                EntityModificationHelper.SetGroupMember(cachedGroup, new WolfGroupMember(targetUserID, capabilities));
+                            else if (groupActionChatEvent.ActionType == GroupActionType.Kick || groupActionChatEvent.ActionType == GroupActionType.UserLeft)
+                                EntityModificationHelper.RemoveGroupMember(cachedGroup, targetUserID);
+                            else if (groupActionChatEvent.ActionType == GroupActionType.OwnerChanged)
+                            {
+                                EntityModificationHelper.SetGroupMember(cachedGroup, new WolfGroupMember(targetUserID, WolfGroupCapabilities.Owner));
+
+                                if (groupActionChatEvent.ActionInvokerID != null && cachedGroup.Members?.ContainsKey(groupActionChatEvent.ActionInvokerID.Value) == true)
+                                    EntityModificationHelper.SetGroupMember(cachedGroup, new WolfGroupMember(groupActionChatEvent.ActionInvokerID.Value, WolfGroupCapabilities.User));
+                            }
+                        }
+                        catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
+                    }
+                }
+            }
+
+            bool LogGroupMemberUpdateWarning(uint groupID)
+            {
+                return this.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", groupID);
+            }
+        }
+
+        private static bool TryMapGroupActionToCapabilities(GroupActionType? actionType, out WolfGroupCapabilities capabilities)
+        {
+            if (actionType is null)
+            {
+                capabilities = default;
+                return false;
+            }
+
+            switch (actionType.Value)
+            {
+                case GroupActionType.Silence:
+                    capabilities = WolfGroupCapabilities.Silenced;
+                    return true;
+                case GroupActionType.Ban:
+                    capabilities = WolfGroupCapabilities.Banned;
+                    return true;
+                case GroupActionType.UserJoined:
+                    capabilities = WolfGroupCapabilities.User;
+                    return true;
+
+                // we purposefully omit other action types for now, as they might need special handling
+                default:
+                    capabilities = default;
+                    return false;
             }
         }
         #endregion
