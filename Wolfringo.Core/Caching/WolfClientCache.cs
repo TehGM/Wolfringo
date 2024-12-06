@@ -311,7 +311,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                             EntityModificationHelper.SetGroupMember(cachedGroup,
                                 new WolfGroupMember(groupMemberUpdated.UserID, groupMemberUpdated.Capabilities));
                     }
-                    catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                    catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                 }
                 else if (message is GroupActionChatEvent groupActionChatEvent)
                 {
@@ -327,7 +327,7 @@ namespace TehGM.Wolfringo.Caching.Internal
                                 EntityModificationHelper.SetGroupMember(cachedGroup,
                                     new WolfGroupMember(groupActionChatEvent.SenderID.Value, capabilities));
                             }
-                            catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                            catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                         }
                         else if (groupActionChatEvent.ActionType == GroupActionType.Kick || groupActionChatEvent.ActionType == GroupActionType.UserLeft)
                         {
@@ -335,10 +335,15 @@ namespace TehGM.Wolfringo.Caching.Internal
                             {
                                 EntityModificationHelper.RemoveGroupMember(cachedGroup, groupActionChatEvent.SenderID.Value);
                             }
-                            catch (NotSupportedException) when (LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", cachedGroup.ID)) { }
+                            catch (NotSupportedException) when (LogGroupMemberUpdateWarning(cachedGroup.ID)) { }
                         }
                     }
                 }
+            }
+
+            bool LogGroupMemberUpdateWarning(uint groupID)
+            {
+                return this.LogWarning("Cannot update group members for group {GroupID} as the Members collection is read only", groupID);
             }
         }
 
