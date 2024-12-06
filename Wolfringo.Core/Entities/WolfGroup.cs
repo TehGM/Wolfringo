@@ -29,6 +29,9 @@ namespace TehGM.Wolfringo
         [JsonIgnore]
         public IReadOnlyDictionary<uint, WolfGroupMember> Members { get; private set; } = new Dictionary<uint, WolfGroupMember>();
 
+        /// <summary>Group's reputation level.</summary>
+        [JsonProperty("reputation")]
+        public double Reputation { get; private set; }
         /// <summary>Is this group official?</summary>
         [JsonProperty("official")]
         public bool IsOfficial { get; private set; }
