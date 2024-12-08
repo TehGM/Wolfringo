@@ -22,7 +22,6 @@ namespace TehGM.Wolfringo.Messages
         /// <inheritdoc/>
         public string FlightID { get; private set; }
         /// <inheritdoc/>
-        [Obsolete("WOLF protocol now prefers to use Timestamp as a message ID.")]
         public Guid? ID { get; private set; }
         /// <inheritdoc/>
         public bool IsGroupMessage { get; private set; }
