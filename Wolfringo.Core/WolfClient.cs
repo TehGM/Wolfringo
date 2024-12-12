@@ -232,18 +232,18 @@ namespace TehGM.Wolfringo
 
             using (CancellationTokenSource sendingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._connectionCts?.Token ?? default))
             {
-                Log?.LogTrace("Sending {Command}", message.EventName);
+                this.Log?.LogTrace("Sending {Command}", message.EventName);
                 // select serializer
-                if (!MessageSerializers.TryFindSerializer(message.EventName, out IMessageSerializer serializer))
+                if (!this.MessageSerializers.TryFindSerializer(message.EventName, out IMessageSerializer serializer))
                 {
                     // try fallback simple serialization
-                    Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.EventName);
-                    serializer = MessageSerializers.FallbackSerializer;
+                    this.Log?.LogWarning("Serializer for command {Command} not found, using fallback one", message.EventName);
+                    serializer =this.MessageSerializers.FallbackSerializer;
                 }
                 // serialize and send message
                 SerializedMessageData data = serializer.Serialize(message);
-                uint msgID = await SocketClient.SendAsync(message.EventName, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
-                IWolfResponse response = await AwaitResponseAsync<TResponse>(msgID, message, sendingCts.Token).ConfigureAwait(false);
+                uint msgID = await this.SocketClient.SendAsync(message.EventName, data.Payload, data.BinaryMessages, sendingCts.Token).ConfigureAwait(false);
+                IWolfResponse response = await this.AwaitResponseAsync<TResponse>(msgID, message, sendingCts.Token).ConfigureAwait(false);
                 if (response.IsError())
                     throw new MessageSendingException(message, response);
                 this.MessageSent?.Invoke(this, new WolfMessageSentEventArgs(message, response));
@@ -279,17 +279,17 @@ namespace TehGM.Wolfringo
                 try
                 {
                     // parse response
-                    Type responseType = ResponseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
-                    if (!ResponseSerializers.TryFindSerializer(responseType, out IResponseSerializer serializer))
+                    Type responseType = this.ResponseTypeResolver?.GetMessageResponseType<TResponse>(sentMessage) ?? typeof(TResponse);
+                    if (!this.ResponseSerializers.TryFindSerializer(responseType, out IResponseSerializer serializer))
                     {
-                        Log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
-                        serializer = ResponseSerializers.FallbackSerializer;
+                        this.Log?.LogWarning("Serializer for response type {Type} not found, using fallback one", responseType.FullName);
+                        serializer = this.ResponseSerializers.FallbackSerializer;
                     }
 
                     SerializedMessageData responseData = new SerializedMessageData(e.Message.Payload, e.BinaryMessages);
                     if (responseData.IsError())
                     {
-                        serializer = ResponseSerializers.FallbackSerializer;
+                        serializer = this.ResponseSerializers.FallbackSerializer;
                     }
 
                     IWolfResponse response = serializer.Deserialize(responseType, responseData);
@@ -313,12 +313,12 @@ namespace TehGM.Wolfringo
                     }
 
                     // notify child classes
-                    await OnMessageSentAsync(sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
+                    await this.OnMessageSentAsync(sentMessage, response, responseData, cancellationToken).ConfigureAwait(false);
 
                     // set task result to finish it, and unhook the event to prevent memory leaks
                     tcs.TrySetResult(response);
                 }
-                catch (OperationCanceledException) when (LogWarning("Message sending aborted due to connection task being canceled")) { }
+                catch (OperationCanceledException) when (this.LogWarning("Message sending aborted due to connection task being canceled")) { }
                 catch (Exception ex) when (ex.LogAsError(this.Log, "Exception has occured when handling socket response"))
                 {
                     // don't rethrow exception here, as doing so will kill the socket client loop
@@ -330,7 +330,7 @@ namespace TehGM.Wolfringo
                     (sender as SocketClient).MessageReceived -= callback;
                 }
             };
-            SocketClient.MessageReceived += callback;
+            this.SocketClient.MessageReceived += callback;
             return tcs.Task;
         }
 
@@ -392,56 +392,53 @@ namespace TehGM.Wolfringo
 
             if (TryParseCommandEvent(e.Message, out string command, out JToken payload))
             {
-                IDisposable logScope = this.Log?.BeginScope(new Dictionary<string, object>()
+                using (this.Log?.BeginScope(new Dictionary<string, object>(2)
                 {
                     { "Command", command },
                     { "Payload", payload?.ToString(Formatting.None) }
-                });
-
-                try
+                }))
                 {
-                    // find serializer for command
-                    if (!this.MessageSerializers.TryFindSerializer(command, out IMessageSerializer serializer))
+                    try
                     {
-                        // don't throw exception here, as doing so will kill the socket client loop
-                        this.Log?.LogError("Serializer for command {Command} not found", command);
-                        return;
+                        // find serializer for command
+                        if (!this.MessageSerializers.TryFindSerializer(command, out IMessageSerializer serializer))
+                        {
+                            // don't throw exception here, as doing so will kill the socket client loop
+                            this.Log?.LogError("Serializer for command {Command} not found", command);
+                            return;
+                        }
+                        // deserialize message
+                        SerializedMessageData rawData = new SerializedMessageData(payload, e.BinaryMessages);
+                        IWolfMessage msg = serializer.Deserialize(command, rawData);
+                        if (msg == null)
+                            return;
+
+                        this.Log?.LogDebug("Message received: {Command}", command);
+
+                        // if welcome is already logged in, we can populate userID
+                        if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
+                            this.CurrentUserID = welcome.LoggedInUser.ID;
+
+                        // cache
+                        if (this.Cache != null)
+                            await this.Cache.OnMessageReceivedAsync(this, msg, rawData, cancellationToken).ConfigureAwait(false);
+
+                        // notify child classes
+                        await this.OnMessageReceivedAsync(msg, rawData, cancellationToken).ConfigureAwait(false);
+
+                        // invoke events, unless this message is a self-sent chat message
+                        if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages
+                            && this.CurrentUserID != null && chatMessage.SenderID == this.CurrentUserID)
+                            return;
+                        this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
+                        this.CallbackDispatcher.Invoke(msg);
                     }
-                    // deserialize message
-                    SerializedMessageData rawData = new SerializedMessageData(payload, e.BinaryMessages);
-                    IWolfMessage msg = serializer.Deserialize(command, rawData);
-                    if (msg == null)
-                        return;
-
-                    this.Log?.LogDebug("Message received: {Command}", command);
-
-                    // if welcome is already logged in, we can populate userID
-                    if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
-                        this.CurrentUserID = welcome.LoggedInUser.ID;
-
-                    // cache
-                    if (this.Cache != null)
-                        await this.Cache.OnMessageReceivedAsync(this, msg, rawData, cancellationToken).ConfigureAwait(false);
-
-                    // notify child classes
-                    await this.OnMessageReceivedAsync(msg, rawData, cancellationToken).ConfigureAwait(false);
-
-                    // invoke events, unless this message is a self-sent chat message
-                    if (msg is IChatMessage chatMessage && this.IgnoreOwnChatMessages 
-                        && this.CurrentUserID != null && chatMessage.SenderID == this.CurrentUserID)
-                        return;
-                    this.MessageReceived?.Invoke(this, new WolfMessageEventArgs(msg));
-                    this.CallbackDispatcher.Invoke(msg);
-                }
-                catch (OperationCanceledException) when (this.LogWarning("Message receiving aborted due to connection task being canceled")) { }
-                catch (Exception ex) when (ex.LogAsError(this.Log, "Exception occured when handling received message with command {Command}", command))
-                {
-                    // don't rethrow exception here, as doing so will kill the socket client loop
-                    this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
-                }
-                finally
-                {
-                    logScope?.Dispose();
+                    catch (OperationCanceledException) when (this.LogWarning("Message receiving aborted due to connection task being canceled")) { }
+                    catch (Exception ex) when (this.LogUnhandledException(ex, e, command))
+                    {
+                        // don't rethrow exception here, as doing so will kill the socket client loop
+                        this.ErrorRaised?.Invoke(this, new UnhandledExceptionEventArgs(ex, false));
+                    }
                 }
             }
         }
@@ -456,23 +453,23 @@ namespace TehGM.Wolfringo
 
         /// <inheritdoc/>
         public void AddMessageListener(IMessageCallback listener)
-            => CallbackDispatcher.Add(listener);
+            => this.CallbackDispatcher.Add(listener);
         /// <inheritdoc/>
         public void RemoveMessageListener(IMessageCallback listener)
-            => CallbackDispatcher.Remove(listener);
+            => this.CallbackDispatcher.Remove(listener);
 
         /// <summary>Logs sent message. Invoked when underlying client sends a message.</summary>
         private void OnClientMessageSent(object sender, SocketMessageEventArgs e)
         {
-            TryLogMessageTrace(e, "Sent");
+            this.TryLogMessageTrace(e, "Sent");
             if (TryParseCommandEvent(e.Message, out string command, out _))
-                Log?.LogDebug("Message sent: {Command}", command);
+                this.Log?.LogDebug("Message sent: {Command}", command);
         }
 
         /// <summary>Logs connected and raises event. Invoked when underlying client connects to the server.</summary>
         private void OnClientConnected(object sender, EventArgs e)
         {
-            Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
+            this.Log?.LogInformation("Connected to {URL} as {Device}", this.Url, this.Device);
             this.Connected?.Invoke(this, EventArgs.Empty);
         }
 
@@ -483,12 +480,12 @@ namespace TehGM.Wolfringo
             {
                 // don't log message for operation canceled exception
                 if (string.IsNullOrEmpty(e.CloseMessage) || (e.Exception is OperationCanceledException && e.CloseMessage == e.Exception?.Message))
-                    Log?.LogInformation("Disconnected");
+                    this.Log?.LogInformation("Disconnected");
                 else 
-                    Log?.LogInformation("Disconnected ({Description})", e.CloseMessage);
+                    this.Log?.LogInformation("Disconnected ({Description})", e.CloseMessage);
             }
             else
-                Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseMessage ?? "-");
+                this.Log?.LogWarning("Disconnected ungracefully ({Status}, {Description})", e.CloseStatus.ToString(), e.CloseMessage ?? "-");
 
             this.Clear();
             this.Cache?.OnDisconnected(this, e);
@@ -499,9 +496,9 @@ namespace TehGM.Wolfringo
         private void OnClientError(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
-                Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
+                this.Log?.LogError(ex, "Socket client error: {Error}", ex.Message);
             else
-                Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
+                this.Log?.LogError("Socket client error: {Error}", e.ExceptionObject?.ToString());
 
             this.ErrorRaised?.Invoke(this, e);
         }
@@ -535,22 +532,41 @@ namespace TehGM.Wolfringo
         /// <param name="keyword">Keyword to prepend in log message, for example "Sent" or "Received".</param>
         protected void TryLogMessageTrace(SocketMessageEventArgs e, string keyword)
         {
-            if (Log?.IsEnabled(LogLevel.Trace) == true)
-            {
-                if (e.BinaryMessages?.Any() == true)
-                {
-                    string binaryMessages = string.Join("\n", e.BinaryMessages.Where(msg => msg?.Any() == true).Select(msg => Encoding.UTF8.GetString(msg)));
-                    Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}\n{{BinaryMessages}}", e.Message.Type.ToString(), e.Message.ToString(), binaryMessages);
-                }
-                else
-                    Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
-            }
+            if (this.Log?.IsEnabled(LogLevel.Trace) != true)
+                return;
+
+            string binaryMessages = GetBinaryMessagesContents(e);
+            if (!string.IsNullOrEmpty(binaryMessages))
+                this.Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}\n{{BinaryMessages}}", e.Message.Type.ToString(), e.Message.ToString(), binaryMessages);
+            else
+                this.Log?.LogTrace($"{keyword} {{MessageType}}: {{Message}}", e.Message.Type.ToString(), e.Message.ToString());
         }
 
         private bool LogWarning(string message, params object[] args)
         {
-            Log?.LogWarning(message, args);
+            this.Log?.LogWarning(message, args);
             return true;
+        }
+
+        private bool LogUnhandledException(Exception ex, SocketMessageEventArgs e, string command)
+        {
+            if (!this.Log?.IsEnabled(LogLevel.Error) != true)
+                return true;
+
+            string binaryMessages = GetBinaryMessagesContents(e);
+            using (string.IsNullOrEmpty(binaryMessages) ? null : this.Log?.BeginScope(new Dictionary<string, object>(1) { ["BinaryMessages"] = binaryMessages }))
+            {
+                this.Log?.LogError(ex, "Exception occured when handling received message with command {Command}", command);
+                return true;
+            }
+        }
+
+        private static string GetBinaryMessagesContents(SocketMessageEventArgs e)
+        {
+            if (e.BinaryMessages?.Any() != true)
+                return null;
+
+            return string.Join("\n", e.BinaryMessages.Where(msg => msg?.Any() == true).Select(msg => Encoding.UTF8.GetString(msg)));
         }
         #endregion
     }
