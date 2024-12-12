@@ -60,8 +60,13 @@ namespace TehGM.Wolfringo.Socket
         {
             if (rawMessage[0] == '4')
                 length = 2;
-            else length = 1;
+            else 
+                length = 1;
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+            int msgType = int.Parse(rawMessage.AsSpan(0, length));
+#else
             int msgType = int.Parse(rawMessage.Substring(0, length));
+#endif
             return (SocketMessageType)msgType;
         }
 
@@ -72,7 +77,11 @@ namespace TehGM.Wolfringo.Socket
             int tackIndex = rawMessage.IndexOf('-', parserIndex, searchCount);
             if (tackIndex < 0)
                 return 0;
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+            int result = int.Parse(rawMessage.AsSpan(parserIndex, tackIndex - parserIndex));
+#else
             int result = int.Parse(rawMessage.Substring(parserIndex, tackIndex - parserIndex));
+#endif
             parserIndex = tackIndex + 1;
             return result;
         }
@@ -89,7 +98,11 @@ namespace TehGM.Wolfringo.Socket
             // if there's payload, id length is from index to payload, otherwise to end of the message
             int idLength = (payloadIndex > parserIndex ? payloadIndex : rawMessage.Length) - parserIndex;
 
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+            if (uint.TryParse(rawMessage.AsSpan(parserIndex, idLength), out uint result))
+#else
             if (uint.TryParse(rawMessage.Substring(parserIndex, idLength), out uint result))
+#endif
                 return result;
             return null;
         }
@@ -112,7 +125,7 @@ namespace TehGM.Wolfringo.Socket
         /// <inheritdoc/>
         public override string ToString()
         {
-            if (_rawMessage == null)
+            if (this._rawMessage == null)
             {
                 // if message is null, for example when not initialized by Parse method, build it first
                 StringBuilder builder = new StringBuilder();
@@ -126,9 +139,9 @@ namespace TehGM.Wolfringo.Socket
                     builder.Append(this.ID.Value);
                 if (this.Payload != null)
                     builder.Append(this.Payload.ToString(Newtonsoft.Json.Formatting.None));
-                _rawMessage = builder.ToString();
+                this._rawMessage = builder.ToString();
             }
-            return _rawMessage;
+            return this._rawMessage;
         }
     }
 
