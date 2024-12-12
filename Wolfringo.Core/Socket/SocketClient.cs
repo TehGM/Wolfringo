@@ -30,7 +30,11 @@ namespace TehGM.Wolfringo.Socket
 
         private static readonly SocketMessage _pingMessage = new SocketMessage(SocketMessageType.Ping, null, null);
         private static readonly ArraySegment<byte> _binaryPrepend = new ArraySegment<byte>(new byte[] { 4 });
+#if NET5_0_OR_GREATER
         private uint _lastMessageID = 7;
+#else
+        private int _lastMessageID = 7;
+#endif
 
         /// <inheritdoc/>
         public event EventHandler Connected;
@@ -53,7 +57,7 @@ namespace TehGM.Wolfringo.Socket
             _websocketClient = new ClientWebSocket();
             await _websocketClient.ConnectAsync(url, cancellationToken).ConfigureAwait(false);
             Connected?.Invoke(this, EventArgs.Empty);
-            _ = ConnectionLoopAsync();
+            _ = this.ConnectionLoopAsync();
         }
 
         /// <inheritdoc/>
@@ -69,9 +73,10 @@ namespace TehGM.Wolfringo.Socket
         public Task<uint> SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
         {
             int binaryCount = binaryMessages?.Count() ?? 0;
-            return SendInternalAsync(new SocketMessage(
+            Interlocked.Increment(ref _lastMessageID);
+            return this.SendInternalAsync(new SocketMessage(
                 binaryCount == 0 ? SocketMessageType.Event : SocketMessageType.BinaryEvent, 
-                ++_lastMessageID, 
+                (uint)_lastMessageID, 
                 payload, 
                 binaryCount),
                 binaryMessages, cancellationToken);
@@ -145,7 +150,7 @@ namespace TehGM.Wolfringo.Socket
                             binaryMessages.Add(receivedBinaryMessage.ContentBytes);
                         }
                         // raise event
-                        OnTextMessageReceived(msg, binaryMessages);
+                        this.OnTextMessageReceived(msg, binaryMessages);
                     }
                     else
                         throw new InvalidDataException("Received a binary message while a text message was expected");
@@ -199,7 +204,7 @@ namespace TehGM.Wolfringo.Socket
                 // store session
                 this.Session = msg.Payload.ToObject<SocketSession>();
                 // begin pinging loop
-                _ = PingLoopAsync(this.Session, _connectionCts.Token);
+                _ = this.PingLoopAsync(this.Session, _connectionCts.Token);
             }
             // raise the event to listeners
             MessageReceived?.Invoke(this, new SocketMessageEventArgs(msg, binaryMessages ?? Enumerable.Empty<byte[]>()));
@@ -210,7 +215,7 @@ namespace TehGM.Wolfringo.Socket
 
         private async Task<SocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken = default)
         {
-            await CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
+            await this.CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
 
             // read stream
             WebSocketReceiveResult result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
@@ -228,7 +233,7 @@ namespace TehGM.Wolfringo.Socket
                     stream.Write(buffer.Array, buffer.Offset, result.Count);
                     do
                     {
-                        await CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
+                        await this.CheckSocketStateAsync(cancellationToken).ConfigureAwait(false);
                         result = await _websocketClient.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
                         // cancel further execution if connection was closed
                         if (result?.MessageType == WebSocketMessageType.Close || !this.IsConnected)
@@ -260,7 +265,7 @@ namespace TehGM.Wolfringo.Socket
                 {
                     await Task.Delay(session.PingInterval, cancellationToken).ConfigureAwait(false);
                     if (!cancellationToken.IsCancellationRequested && this.IsConnected)
-                        await SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
+                        await this.SendInternalAsync(_pingMessage, null, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException) { }
