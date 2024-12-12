@@ -1,4 +1,4 @@
-﻿#if !NETCOREAPP3_0
+﻿#if !NETCOREAPP3_0_OR_GREATER
 using Microsoft.AspNetCore.Hosting;
 #endif
 using Microsoft.Extensions.Hosting;
@@ -39,12 +39,17 @@ namespace TehGM.Wolfringo.Hosting
         private readonly List<IMessageCallback> _callbacks;     // keep registered callbacks so they are reused when client recrestes
         private bool _manuallyDisconnected = false;             // set to false when reconnection was manual
         private bool _isStarted;                                // set to true of first hosted service start, to prevent multiple hosted services starting
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
+        private readonly object _lock = new object();
+#endif
 
         // services
         private readonly ILogger _log;
         private readonly IOptionsMonitor<HostedWolfClientOptions> _options;
         private readonly IServiceProvider _services;
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
         private readonly IHostApplicationLifetime _hostLifetime;
 #else
         private readonly IApplicationLifetime _hostLifetime;
@@ -76,7 +81,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <param name="services">Service provider that will be passed to underlying <see cref="WolfClient"/>.</param>
         /// <param name="hostLifetime">Host lifetime used to terminate application.</param>
         public HostedWolfClient(IOptionsMonitor<HostedWolfClientOptions> options, ILogger<HostedWolfClient> log, IServiceProvider services,
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
             IHostApplicationLifetime hostLifetime
 #else
             IApplicationLifetime hostLifetime
@@ -144,7 +149,7 @@ namespace TehGM.Wolfringo.Hosting
             this._client.MessageSent += OnClientMessageSent;
 
             // if there are any callbacks from previous client, reuse them as well
-            lock (this._callbacks)
+            lock (this._lock)
             {
                 for (int i = 0; i < _callbacks.Count; i++)
                     this._client.AddMessageListener(_callbacks[i]);
@@ -375,7 +380,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public void AddMessageListener(IMessageCallback listener)
         {
-            lock (this._callbacks)
+            lock (this._lock)
             {
                 this._callbacks.Add(listener);
                 this._client?.AddMessageListener(listener);
@@ -384,7 +389,7 @@ namespace TehGM.Wolfringo.Hosting
         /// <inheritdoc/>
         public void RemoveMessageListener(IMessageCallback listener)
         {
-            lock (this._callbacks)
+            lock (this._lock)
             {
                 this._callbacks.Remove(listener);
                 this._client?.RemoveMessageListener(listener);

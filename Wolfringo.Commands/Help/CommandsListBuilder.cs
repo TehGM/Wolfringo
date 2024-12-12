@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using TehGM.Wolfringo.Commands.Initialization;
 
 namespace TehGM.Wolfringo.Commands.Help
@@ -10,6 +11,11 @@ namespace TehGM.Wolfringo.Commands.Help
     {
         private readonly IEnumerable<ICommandInstanceDescriptor> _commands;
         private string _builtCommandsList;
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
+        private readonly object _lock = new object();
+#endif
 
         /// <summary>Prefix that should be prepended to each command. Set to null to not prepend any.</summary>
         public string PrependedPrefix
@@ -17,7 +23,7 @@ namespace TehGM.Wolfringo.Commands.Help
             get => this._prependPrefix;
             set
             {
-                lock (this._commands)
+                lock (this._lock)
                 {
                     if (this._prependPrefix == value)
                         return;
@@ -35,7 +41,7 @@ namespace TehGM.Wolfringo.Commands.Help
             get => this._summarySeparator;
             set
             {
-                lock (this._commands)
+                lock (this._lock)
                 {
                     if (this._summarySeparator == value)
                         return;
@@ -53,7 +59,7 @@ namespace TehGM.Wolfringo.Commands.Help
             get => this._spaceCategories;
             set
             {
-                lock (this._commands)
+                lock (this._lock)
                 {
                     if (this._spaceCategories == value)
                         return;
@@ -71,7 +77,7 @@ namespace TehGM.Wolfringo.Commands.Help
             get => this._withoutSummaries;
             set
             {
-                lock (this._commands)
+                lock (this._lock)
                 {
                     if (this._withoutSummaries == value)
                         return;
@@ -99,7 +105,7 @@ namespace TehGM.Wolfringo.Commands.Help
         /// <returns>String with commands list. Empty string if there's no commands.</returns>
         public string GetCommandsList()
         {
-            lock (this._commands)
+            lock (this._lock)
             {
                 if (this._builtCommandsList != null)
                     return this._builtCommandsList;

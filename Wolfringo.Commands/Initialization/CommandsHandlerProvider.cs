@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using TehGM.Wolfringo.Commands.Parsing;
 
 namespace TehGM.Wolfringo.Commands.Initialization
@@ -13,14 +14,17 @@ namespace TehGM.Wolfringo.Commands.Initialization
     {
         private readonly IDictionary<Type, ConstructorInfo> _knownConstructors;
         private readonly IDictionary<Type, CommandsHandlerProviderResult> _persistentHandlers;
-        private readonly object _lock;
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
+        private readonly object _lock = new object();
+#endif
 
         /// <summary>Creates a new provider instance.</summary>
         public CommandsHandlerProvider()
         {
             this._knownConstructors = new Dictionary<Type, ConstructorInfo>();
             this._persistentHandlers = new Dictionary<Type, CommandsHandlerProviderResult>();
-            this._lock = new object();
         }
 
         /// <inheritdoc/>
@@ -29,7 +33,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
             Type handlerType = descriptor.GetHandlerType();
             CommandHandlerDescriptor handlerDescriptor = null;
 
-            lock (_lock)
+            lock (this._lock)
             {
                 // check if persistent
                 if (_persistentHandlers.TryGetValue(handlerType, out CommandsHandlerProviderResult handler))
@@ -122,7 +126,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public void Dispose()
         {
             IEnumerable<object> disposableHandlers;
-            lock (_lock)
+            lock (this._lock)
             {
                 disposableHandlers = _persistentHandlers.Values.Where(handler => handler is IDisposable);
                 this._knownConstructors.Clear();
