@@ -73,10 +73,10 @@ namespace TehGM.Wolfringo.Socket
         public Task<uint> SendAsync(JToken payload, IEnumerable<byte[]> binaryMessages, CancellationToken cancellationToken = default)
         {
             int binaryCount = binaryMessages?.Count() ?? 0;
-            Interlocked.Increment(ref _lastMessageID);
+            uint messageID = (uint)Interlocked.Increment(ref _lastMessageID);
             return this.SendInternalAsync(new SocketMessage(
                 binaryCount == 0 ? SocketMessageType.Event : SocketMessageType.BinaryEvent, 
-                (uint)_lastMessageID, 
+                messageID, 
                 payload, 
                 binaryCount),
                 binaryMessages, cancellationToken);
