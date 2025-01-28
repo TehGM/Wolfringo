@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TehGM.Wolfringo.Caching;
 using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Messages.Embeds;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 using TehGM.Wolfringo.Utilities.Internal;
@@ -1013,27 +1014,47 @@ namespace TehGM.Wolfringo
         /// <param name="text">Content of the message.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
-        public static async Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
-        {
-            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
-            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
-            ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks));
-            return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
-        }
+        public static Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
+            => SendPrivateTextMessageAsync(client, userID, text, true, cancellationToken);
         /// <summary>Sends a group text message.</summary>
         /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
         /// <param name="text">Content of the message.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
-        public static async Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
+        public static Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
+            => SendGroupTextMessageAsync(client, groupID, text, true, cancellationToken);
+
+        /// <summary>Sends a private text message.</summary>
+        /// <param name="client">Client to send the message with.</param>
+        /// <param name="userID">ID of user to send the message to.</param>
+        /// <param name="text">Content of the message.</param>
+        /// <param name="enableEmbeds">Whether group preview embeds should be enabled.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
+        /// <returns>Message sending response.</returns>
+        public static async Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, bool enableEmbeds, CancellationToken cancellationToken = default)
         {
             IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
             IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
-            ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks));
+            IEnumerable<IChatEmbed> embeds = enableEmbeds && groupLinks.Any() ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) } : Enumerable.Empty<IChatEmbed>();
+            ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
-
+        /// <summary>Sends a group text message.</summary>
+        /// <param name="client">Client to send the message with.</param>
+        /// <param name="groupID">ID of group to send the message to.</param>
+        /// <param name="text">Content of the message.</param>
+        /// <param name="enableEmbeds">Whether group preview embeds should be enabled.</param>
+        /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
+        /// <returns>Message sending response.</returns>
+        public static async Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, bool enableEmbeds, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
+            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
+            IEnumerable<IChatEmbed> embeds = enableEmbeds && groupLinks.Any() ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) } : Enumerable.Empty<IChatEmbed>();
+            ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
+            return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
+        }
 
         /// <summary>Sends a private image message.</summary>
         /// <param name="client">Client to send the message with.</param>
