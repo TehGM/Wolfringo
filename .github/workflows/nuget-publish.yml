@@ -57,7 +57,7 @@ jobs:
       - name: Setup latest NuGet preview version
         uses: NuGet/setup-nuget@v1.0.5
         with:
-          nuget-version: 'preview'
+          nuget-version: '6.0.x'
       - name: Create output directory for packages
         run: |
           mkdir __out
