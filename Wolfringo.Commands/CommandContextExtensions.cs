@@ -92,6 +92,7 @@ namespace TehGM.Wolfringo.Commands
         /// <summary>Sends a text message response message to group or user.</summary>
         /// <param name="context">Command context.</param>
         /// <param name="text">Content of the message.</param>
+        /// <param name="enableEmbeds">Whether group preview embeds should be enabled.</param>
         /// <param name="cancellationToken">Token to cancel server request with.</param>
         /// <returns>Message sending response.</returns>
         public static async Task<ChatResponse> ReplyTextAsync(this ICommandContext context, string text, bool enableEmbeds, CancellationToken cancellationToken = default)
