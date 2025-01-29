@@ -34,7 +34,7 @@ env:
 
 jobs:
   nuget-publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       # Prepare environment
