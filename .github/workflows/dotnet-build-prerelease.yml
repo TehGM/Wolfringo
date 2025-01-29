@@ -6,16 +6,27 @@ on:
   pull_request:
     branches: [ beta, release, preview ]
 
+env:
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET Core 3.1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: '3.1.x'
+    - name: Setup .NET 5.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '5.0.x'
+    - name: Setup .NET 9.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
     - name: Exclude example projects
       run: dotnet sln remove Examples/**
     - name: Install dependencies
