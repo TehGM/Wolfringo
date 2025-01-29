@@ -58,50 +58,38 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
         with:
           nuget-version: 'preview'
+      - name: Create output directory for packages
+        run: |
+          mkdir __out
       
       # Publish each package
       - name: Publish Wolfringo.Core
         if: github.event.inputs.publishCore == 'Y'
         run: |
-          mkdir __out
           dotnet pack Wolfringo.Core -c Release -o __out --no-restore
-          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
-          rm -rf __out
       - name: Publish Wolfringo.Commands
         if: github.event.inputs.publishCommands == 'Y'
         run: |
-          mkdir __out
           dotnet pack Wolfringo.Commands -c Release -o __out --no-restore
-          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
-          rm -rf __out
       - name: Publish Wolfringo.Utilities
         if: github.event.inputs.publishUtilities == 'Y'
         run: |
-          mkdir __out
           dotnet pack Wolfringo.Utilities -c Release -o __out --no-restore
-          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
-          rm -rf __out
       - name: Publish Wolfringo.Utilities.Interactive
         if: github.event.inputs.publishUtilitiesInteractive == 'Y'
         run: |
-          mkdir __out
           dotnet pack Wolfringo.Utilities.Interactive -c Release -o __out --no-restore
-          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
-          rm -rf __out
       - name: Publish Wolfringo.Hosting
         if: github.event.inputs.publishHosting == 'Y'
         run: |
-          mkdir __out
           dotnet pack Wolfringo.Hosting -c Release -o __out --no-restore
-          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
-          rm -rf __out
       - name: Publish Wolfringo metapackage
         if: github.event.inputs.publishMetapackage == 'Y'
         run: |
-          mkdir __out
           nuget pack "Wolfringo/Wolfringo.nuspec" -Exclude "*.*" -BasePath "Wolfringo" -NonInteractive -OutputDirectory __out
+      - name: Push packages to NuGet
+        run: |
           dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
-          rm -rf __out
           
   generate-docs:
     runs-on: windows-latest
