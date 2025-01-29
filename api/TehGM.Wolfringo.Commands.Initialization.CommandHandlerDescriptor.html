@@ -1,0 +1,606 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class CommandHandlerDescriptor
+   | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class CommandHandlerDescriptor
+   | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../styles/colors.css">
+    <link rel="stylesheet" href="../styles/discord.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../index.html">
+              <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../index.html">
+                        <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor">
+  
+  
+  <h1 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor" class="text-break">Class CommandHandlerDescriptor
+  </h1>
+  <div class="markdown level0 summary"><p>Describes a command handler.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">CommandHandlerDescriptor</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor.html">ICommandHandlerDescriptor</a></div>
+    <div><span class="xref">System.IEquatable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor.html">ICommandHandlerDescriptor</a>&gt;</div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.html">TehGM.Wolfringo.Commands.Initialization</a></h6>
+  <h6><strong>Assembly</strong>: Wolfringo.Commands.dll</h6>
+  <h5 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CommandHandlerDescriptor : ICommandHandlerDescriptor, IEquatable&lt;ICommandHandlerDescriptor&gt;</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor__ctor_System_Reflection_ConstructorInfo_System_Collections_Generic_IEnumerable_System_Object__.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.%23ctor(System.Reflection.ConstructorInfo%2CSystem.Collections.Generic.IEnumerable%7BSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L23">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor__ctor_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.#ctor*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor__ctor_System_Reflection_ConstructorInfo_System_Collections_Generic_IEnumerable_System_Object__" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.#ctor(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Object})">CommandHandlerDescriptor(ConstructorInfo, IEnumerable&lt;Object&gt;)</h4>
+  <div class="markdown level1 summary"><p>creates a command handler descriptor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CommandHandlerDescriptor(ConstructorInfo ctor, IEnumerable&lt;object&gt; parameters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.ConstructorInfo</span></td>
+        <td><span class="parametername">ctor</span></td>
+        <td><p>Constructor picked for creating the handler instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Object</span>&gt;</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Dependencies resolved for constructor injection.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Attribute.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Attribute%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L16">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Attribute_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Attribute*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Attribute" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Attribute">Attribute</h4>
+  <div class="markdown level1 summary"><p>CommandHandler attribute the handler is decorated with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CommandsHandlerAttribute Attribute { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.CommandsHandlerAttribute.html">CommandsHandlerAttribute</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Attribute_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This value might be null if descriptor was force-loaded from a type that wasn't automatically discovered.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Constructor.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Constructor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L12">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Constructor_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Constructor*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Constructor" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Constructor">Constructor</h4>
+  <div class="markdown level1 summary"><p>Constructor picked for creating the handler instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConstructorInfo Constructor { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.ConstructorInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_ConstructorParams.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.ConstructorParams%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L14">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_ConstructorParams_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.ConstructorParams*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_ConstructorParams" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.ConstructorParams">ConstructorParams</h4>
+  <div class="markdown level1 summary"><p>Dependencies resolved for constructor injection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object[] ConstructorParams { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Type.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Type%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L18">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Type_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Type*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Type" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Type">Type</h4>
+  <div class="markdown level1 summary"><p>Command handler type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type Type { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_CreateInstance.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.CreateInstance%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L35">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_CreateInstance_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.CreateInstance*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_CreateInstance" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.CreateInstance">CreateInstance()</h4>
+  <div class="markdown level1 summary"><p>Creates a new instance of a handler.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object CreateInstance()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>New handler instance.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_CreateInstance_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method will call <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html#TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Constructor">Constructor</a>, injecting all <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html#TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_ConstructorParams">ConstructorParams</a>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Equals_System_Object_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L39">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Equals_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Equals_System_Object_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Object.Equals(System.Object)</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Equals_TehGM_Wolfringo_Commands_Initialization_ICommandHandlerDescriptor_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Equals(TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L45">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Equals_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_Equals_TehGM_Wolfringo_Commands_Initialization_ICommandHandlerDescriptor_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.Equals(TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor)">Equals(ICommandHandlerDescriptor)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(ICommandHandlerDescriptor other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor.html">ICommandHandlerDescriptor</a></td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_GetHashCode.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.GetHashCode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L53">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_GetHashCode_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.GetHashCode*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_GetHashCode" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Object.GetHashCode()</span></div>
+  <h3 id="operators">Operators
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_op_Equality_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.op_Equality(TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor%2CTehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L62">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_op_Equality_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.op_Equality*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_op_Equality_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.op_Equality(TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor,TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor)">Equality(CommandHandlerDescriptor, CommandHandlerDescriptor)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(CommandHandlerDescriptor left, CommandHandlerDescriptor right)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html">CommandHandlerDescriptor</a></td>
+        <td><span class="parametername">left</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html">CommandHandlerDescriptor</a></td>
+        <td><span class="parametername">right</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_op_Inequality_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.op_Inequality(TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor%2CTehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Descriptors/CommandHandlerDescriptor.cs/#L68">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_op_Inequality_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.op_Inequality*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_op_Inequality_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptor_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.op_Inequality(TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor,TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor)">Inequality(CommandHandlerDescriptor, CommandHandlerDescriptor)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(CommandHandlerDescriptor left, CommandHandlerDescriptor right)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html">CommandHandlerDescriptor</a></td>
+        <td><span class="parametername">left</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html">CommandHandlerDescriptor</a></td>
+        <td><span class="parametername">right</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor.html">ICommandHandlerDescriptor</a>
+  </div>
+  <div>
+      <span class="xref">System.IEquatable&lt;T&gt;</span>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptorExtensions.html#TehGM_Wolfringo_Commands_Initialization_CommandHandlerDescriptorExtensions_IsPersistent_TehGM_Wolfringo_Commands_Initialization_ICommandHandlerDescriptor_">CommandHandlerDescriptorExtensions.IsPersistent(ICommandHandlerDescriptor)</a>
+  </div>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../styles/docfx.js"></script>
+<script type="text/javascript" src="../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

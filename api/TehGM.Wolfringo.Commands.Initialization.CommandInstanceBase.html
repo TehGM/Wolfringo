@@ -1,0 +1,652 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class CommandInstanceBase
+   | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class CommandInstanceBase
+   | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../styles/colors.css">
+    <link rel="stylesheet" href="../styles/discord.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../index.html">
+              <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../index.html">
+                        <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase">
+  
+  
+  <h1 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase" class="text-break">Class CommandInstanceBase
+  </h1>
+  <div class="markdown level0 summary"><p>Base class with shared functionality for <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.RegexCommandInstance.html">RegexCommandInstance</a> and <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.StandardCommandInstance.html">StandardCommandInstance</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">CommandInstanceBase</span></div>
+      <div class="level2"><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.RegexCommandInstance.html">RegexCommandInstance</a></div>
+      <div class="level2"><a class="xref" href="TehGM.Wolfringo.Commands.Initialization.StandardCommandInstance.html">StandardCommandInstance</a></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.html">TehGM.Wolfringo.Commands.Initialization</a></h6>
+  <h6><strong>Assembly</strong>: Wolfringo.Commands.dll</h6>
+  <h5 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class CommandInstanceBase</code></pre>
+  </div>
+  <h5 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>This class was created for internal use.<br>
+Command instances might inherit from this class, but this is not required. If you want to use a shared abstraction for command instances, use <a class="xref" href="TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html">ICommandInstance</a> instead.</p>
+</div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase__ctor_System_Reflection_MethodInfo_System_Collections_Generic_IEnumerable_TehGM_Wolfringo_Commands_ICommandRequirement__System_String_System_Nullable_TehGM_Wolfringo_Commands_PrefixRequirement__System_Nullable_System_Boolean__System_Int32_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.%23ctor(System.Reflection.MethodInfo%2CSystem.Collections.Generic.IEnumerable%7BTehGM.Wolfringo.Commands.ICommandRequirement%7D%2CSystem.String%2CSystem.Nullable%7BTehGM.Wolfringo.Commands.PrefixRequirement%7D%2CSystem.Nullable%7BSystem.Boolean%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L42">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase__ctor_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.#ctor*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase__ctor_System_Reflection_MethodInfo_System_Collections_Generic_IEnumerable_TehGM_Wolfringo_Commands_ICommandRequirement__System_String_System_Nullable_TehGM_Wolfringo_Commands_PrefixRequirement__System_Nullable_System_Boolean__System_Int32_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.#ctor(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{TehGM.Wolfringo.Commands.ICommandRequirement},System.String,System.Nullable{TehGM.Wolfringo.Commands.PrefixRequirement},System.Nullable{System.Boolean},System.Int32)">CommandInstanceBase(MethodInfo, IEnumerable&lt;ICommandRequirement&gt;, String, Nullable&lt;PrefixRequirement&gt;, Nullable&lt;Boolean&gt;, Int32)</h4>
+  <div class="markdown level1 summary"><p>Creates a new command instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CommandInstanceBase(MethodInfo method, IEnumerable&lt;ICommandRequirement&gt; requirements, string prefixOverride, PrefixRequirement? prefixRequirementOverride, bool? caseSensitivityOverride, int timeout)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>Method that will be executed.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.ICommandRequirement.html">ICommandRequirement</a>&gt;</td>
+        <td><span class="parametername">requirements</span></td>
+        <td><p>Execution requirements.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">prefixOverride</span></td>
+        <td><p>Prefix override; null for no overriding.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.PrefixRequirement.html">PrefixRequirement</a>&gt;</td>
+        <td><span class="parametername">prefixRequirementOverride</span></td>
+        <td><p>Prefix requireent override; null for no overriding.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">caseSensitivityOverride</span></td>
+        <td><p>Case sensitivity override; null for no overriding.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">timeout</span></td>
+        <td><p>Timeout value for command execution. -1 for no timeout.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_CaseSensitivityOverride.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.CaseSensitivityOverride%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L27">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_CaseSensitivityOverride_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.CaseSensitivityOverride*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_CaseSensitivityOverride" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.CaseSensitivityOverride">CaseSensitivityOverride</h4>
+  <div class="markdown level1 summary"><p>Case sensitivity override; null for no overriding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? CaseSensitivityOverride { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_HandlerType.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.HandlerType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L31">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_HandlerType_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.HandlerType*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_HandlerType" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.HandlerType">HandlerType</h4>
+  <div class="markdown level1 summary"><p>Type of the handler containing the command.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type HandlerType { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Method.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Method%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L19">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Method_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Method*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Method" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Method">Method</h4>
+  <div class="markdown level1 summary"><p>Method that will be executed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MethodInfo Method { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Parameters.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Parameters%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L33">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Parameters_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Parameters*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Parameters" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Parameters">Parameters</h4>
+  <div class="markdown level1 summary"><p>All command method's parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ParameterInfo[] Parameters { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.ParameterInfo</span>[]</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_PrefixOverride.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.PrefixOverride%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L23">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_PrefixOverride_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.PrefixOverride*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_PrefixOverride" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.PrefixOverride">PrefixOverride</h4>
+  <div class="markdown level1 summary"><p>Prefix override; null for no overriding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string PrefixOverride { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_PrefixRequirementOverride.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.PrefixRequirementOverride%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L25">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_PrefixRequirementOverride_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.PrefixRequirementOverride*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_PrefixRequirementOverride" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.PrefixRequirementOverride">PrefixRequirementOverride</h4>
+  <div class="markdown level1 summary"><p>Prefix requireent override; null for no overriding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PrefixRequirement? PrefixRequirementOverride { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.PrefixRequirement.html">PrefixRequirement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Requirements.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Requirements%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L21">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Requirements_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Requirements*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Requirements" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Requirements">Requirements</h4>
+  <div class="markdown level1 summary"><p>Execution requirements.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ICommandRequirement&gt; Requirements { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.ICommandRequirement.html">ICommandRequirement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Timeout.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Timeout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L29">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Timeout_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Timeout*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_Timeout" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.Timeout">Timeout</h4>
+  <div class="markdown level1 summary"><p>Timeout value for command execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan Timeout { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.TimeSpan</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_CheckMatch_TehGM_Wolfringo_Commands_ICommandContext_System_Int32__TehGM_Wolfringo_Commands_Parsing_CommandContextOptions__.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.CheckMatch(TehGM.Wolfringo.Commands.ICommandContext%2CSystem.Int32%40%2CTehGM.Wolfringo.Commands.Parsing.CommandContextOptions%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L70">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_CheckMatch_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.CheckMatch*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_CheckMatch_TehGM_Wolfringo_Commands_ICommandContext_System_Int32__TehGM_Wolfringo_Commands_Parsing_CommandContextOptions__" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.CheckMatch(TehGM.Wolfringo.Commands.ICommandContext,System.Int32@,TehGM.Wolfringo.Commands.Parsing.CommandContextOptions@)">CheckMatch(ICommandContext, out Int32, out CommandContextOptions)</h4>
+  <div class="markdown level1 summary"><p>Performs shared match checks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected bool CheckMatch(ICommandContext context, out int startIndex, out CommandContextOptions options)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td><p>Command context to check.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">startIndex</span></td>
+        <td><p>The index of command start (after prefix).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Parsing.CommandContextOptions.html">CommandContextOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td><p>Options for command context, with command's overrides applied.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if all checks passed; otherwise false.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_GetOptionsForContext_TehGM_Wolfringo_Commands_ICommandContext_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.GetOptionsForContext(TehGM.Wolfringo.Commands.ICommandContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L57">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_GetOptionsForContext_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.GetOptionsForContext*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_GetOptionsForContext_TehGM_Wolfringo_Commands_ICommandContext_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.GetOptionsForContext(TehGM.Wolfringo.Commands.ICommandContext)">GetOptionsForContext(ICommandContext)</h4>
+  <div class="markdown level1 summary"><p>Returns options for command context, with command's overrides applied.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected CommandContextOptions GetOptionsForContext(ICommandContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td><p>Command context in execution.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Parsing.CommandContextOptions.html">CommandContextOptions</a></td>
+        <td><p>Options for command context, with command's overrides applied.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_InvokeCommandAsync_TehGM_Wolfringo_Commands_Parsing_ParameterBuilderValues_System_IServiceProvider_System_Object_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.InvokeCommandAsync(TehGM.Wolfringo.Commands.Parsing.ParameterBuilderValues%2CSystem.IServiceProvider%2CSystem.Object%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs/#L99">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_InvokeCommandAsync_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.InvokeCommandAsync*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Initialization_CommandInstanceBase_InvokeCommandAsync_TehGM_Wolfringo_Commands_Parsing_ParameterBuilderValues_System_IServiceProvider_System_Object_System_Threading_CancellationToken_" data-uid="TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.InvokeCommandAsync(TehGM.Wolfringo.Commands.Parsing.ParameterBuilderValues,System.IServiceProvider,System.Object,System.Threading.CancellationToken)">InvokeCommandAsync(ParameterBuilderValues, IServiceProvider, Object, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Builds command parameters and invokes the method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected async Task&lt;ICommandResult&gt; InvokeCommandAsync(ParameterBuilderValues parameterBuilderValues, IServiceProvider services, object handler, CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Parsing.ParameterBuilderValues.html">ParameterBuilderValues</a></td>
+        <td><span class="parametername">parameterBuilderValues</span></td>
+        <td><p>Values for parameter builder.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IServiceProvider</span></td>
+        <td><span class="parametername">services</span></td>
+        <td><p>Services provider for injecting parameters into command method.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">handler</span></td>
+        <td><p>Handler object to execute the command method in.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.CancellationToken</span></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token to cancel the execution.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.Tasks.Task</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>&gt;</td>
+        <td><p>Result of the execution.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../styles/docfx.js"></script>
+<script type="text/javascript" src="../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Upgrading Wolfringo v1.x to v2.x | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Upgrading Wolfringo v1.x to v2.x | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../styles/colors.css">
+    <link rel="stylesheet" href="../styles/discord.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../index.html">
+              <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../index.html">
+                        <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Upgrading.1_x-to-2_x">
+<h1 id="wolfringo-v20">Wolfringo v2.0</h1>
+
+<p>Wolfringo 2.0 brought some significant changes - most notably introduction of WolfClient and CommandsService builders, separation of cache and client logic, help commands support. Command requirements also got a little overhaul. And of course, it also includes numerous smaller changes.</p>
+<h2 id="wolfclient-and-commandsservice-builders">WolfClient and CommandsService builders</h2>
+<p>In previous versions of Wolfringo, creating <a class="xref" href="../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a> and <a class="xref" href="../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> could get a bit confusing due to the requirement of manual service collection populating. To address this, Wolfringo 2.0 introduces <a class="xref" href="../api/TehGM.Wolfringo.WolfClientBuilder.html">WolfClientBuilder</a> and <a class="xref" href="../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a>.</p>
+<blockquote>
+<p>Note: the most commonly used constructors for <a class="xref" href="../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a> and <a class="xref" href="../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> are now marked as obsolete, and will be removed in future versions.
+More complex constructors were removed completely, and need to be replaces with builders.</p>
+</blockquote>
+<h3 id="wolfclientbuilder">WolfClientBuilder</h3>
+<p>Creating WolfClient with logging enabled looked like this:</p>
+<pre><code class="lang-csharp">ILoggerFactory logFactory = CreateLoggerFactory();
+IServiceCollection services = new ServiceCollection()
+    .AddSingleton&lt;ILoggerFactory&gt;(logFactory);
+
+_client = new WolfClient(logFactory.CreateLogger&lt;WolfClient&gt;()); 
+_client.AddMessageListener&lt;WelcomeEvent&gt;(OnWelcome);
+</code></pre>
+<p>Now to do the same, create your WolfClient as follows:</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .Build();
+_client.AddMessageListener&lt;WelcomeEvent&gt;(OnWelcome);
+</code></pre>
+<h3 id="commandsservicebuilder">CommandsServiceBuilder</h3>
+<p>Creating Commands Service now works similar:</p>
+<pre><code class="lang-csharp">CommandsService commands = new CommandsServiceBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .WithWolfClient(_client)
+    .WithPrefix(&quot;!&quot;)
+    .Build();
+await commands.StartAsync();
+</code></pre>
+<p>Now you can also add commands directly to WolfClientBuilder - this way, client and its logging will be automatically added, and StartAsync() called for you!</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .WithCommands(commands =&gt;
+    {
+        commands.WithPrefix(&quot;!&quot;);
+    })
+    .Build();
+</code></pre>
+<h4 id="additional-services">Additional services</h4>
+<p>There are 2 ways of adding additional services for Dependency Injection purposes.</p>
+<ul>
+<li>The most common one is using <code>WithSingletonService</code> (on <a class="xref" href="../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a>) or <code>WithService</code> (on <a class="xref" href="../api/TehGM.Wolfringo.WolfClientBuilder.html">WolfClientBuilder</a>) methods that will register the service with the collection.</li>
+<li>Alternatively, both <a class="xref" href="../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a> and <a class="xref" href="../api/TehGM.Wolfringo.WolfClientBuilder.html">WolfClientBuilder</a> can optionally take <code>IServiceCollection</code> through their constructor.</li>
+</ul>
+<h2 id="commands-changes">Commands Changes</h2>
+<h3 id="building-help-command">Building Help Command</h3>
+<p>Help commands are a common need in bots, and Wolfringo now has features that make creating them much easier. See <a class="xref" href="../guides/commands/help-command.html">Help Command Guide</a> to learn more.</p>
+<p>If you already have a custom help command, you can upgrade it easily, but don't worry - it's not required! Help Command feature is opt-in, and your existing help command will work just fine!</p>
+<h3 id="getting-raw-arguments-text">Getting Raw Arguments Text</h3>
+<p>Previously, to get raw text of command arguments, you could use 2 approaches, both of which had issues:</p>
+<ul>
+<li>Get Message Text - required you to manually remove prefix and command name.</li>
+<li>Use <code>string[]</code> as argument - included all parsed arguments, but they were missing grouping characters, such as parentheses.</li>
+</ul>
+<p>Now there's a better way. You can simply mark a string argument with <a class="xref" href="../api/TehGM.Wolfringo.Commands.ArgumentsTextAttribute.html">[ArgumentsText]</a> attribute. See <a class="xref" href="../guides/commands/creating-commands.html#arguments-text">Arguments in Wolfringo Commands</a> for an example and more info.</p>
+<h3 id="recipient-info-in-error-messages">Recipient info in Error Messages</h3>
+<p><a class="xref" href="../api/TehGM.Wolfringo.Commands.MissingErrorAttribute.html">[MissingError]</a> attribute and <a class="xref" href="../api/TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html">[ConvertingError]</a> attribute now support <code>{{RecipientID}}</code> and <code>{{RecipientName}}</code> placeholders - they'll be replaced with bot's ID/nickname for private messages and group's ID/name for group messages.</p>
+<h3 id="getting-command-options">Getting Command Options</h3>
+<p>Previously getting command options for given command would require manually checking attributes and global options instance.</p>
+<p>Since Wolfringo 2.0, you can inject a new <a class="xref" href="../api/TehGM.Wolfringo.Commands.ICommandOptions.html">ICommandOptions</a> interface to your command method. This options instance will contain the actual prefix etc values for given command.</p>
+<h3 id="skipping-commands">Skipping Commands</h3>
+<p>Wolfringo Commands System no longer has a strict rule that one message received = only one command handler attempted. Command execution now can be skipped, making CommandsService attempt to try another command. This is opt-in, so unless you start using this feature, your commands will function just like they did before.</p>
+<p>To do so, either return <code>Task&lt;ICommandResult&gt;</code> or <code>ICommandResult</code> with status of <a class="xref" href="../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Skip">Skip</a> in your command, or tell the requirement attribute to skip on failure. See <a class="xref" href="../guides/commands/commands-requirements.html#skipping">Skipping using Requirements</a> and <a class="xref" href="../guides/commands/creating-commands.html#returning-icommandresult">Skipping using return value</a> for more information.</p>
+<h3 id="command-timeouts">Command Timeouts</h3>
+<p>Commands execution now times out after 1 day by default. This is a huge timeout, and isn't infinite only to help prevent any memory leaks. You can however specify timeout for both Standard and Regex commands by using <code>Timeout</code> property.</p>
+<p>In order to use the timeout, inject @System.Threading.CancellationToken into your command method, and use it in async calls. Alternatively you can also call <code>ThrowIfCancellationRequested</code> method.</p>
+<pre><code class="lang-csharp">[Command(&quot;timeout&quot;, Timeout = 1000)]
+public async Task CmdTimeoutAsync(CancellationToken cancellationToken)
+{
+    // simulate long running task
+    await Task.Delay(1500, cancellationToken);
+
+    // check timeout
+    cancellationToken.ThrowIfCancellationRequested();
+
+    // oops! This will time out!
+    Console.WriteLine(&quot;This will never be written to console, because long-running task takes longer than Timeout!&quot;);
+}
+</code></pre>
+<p>Regex commands also support a separate timeout value which is then provided to Regex Engine. This exists to prevent user attacks exploiting complex regexes in your commands. Default value is 1000ms which should be generous enough for most regexes, but if you wish to change it, you can use <code>RegexTimeout</code> property.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Note that values of both <code>Timeout</code> and <code>RegexTimeout</code> properties are specified in milliseconds. So for 1 second timeout, set the value to <code>1000</code>.</p>
+</div>
+<h3 id="command-requirement-changes">Command Requirement changes</h3>
+<p>If you created <a class="xref" href="../guides/commands/commands-requirements.html#custom-requirements">custom command requirements</a>, you'll need to change the return type of <a class="xref" href="../api/TehGM.Wolfringo.Commands.ICommandRequirement.html#TehGM_Wolfringo_Commands_ICommandRequirement_CheckAsync_TehGM_Wolfringo_Commands_ICommandContext_System_IServiceProvider_System_Threading_CancellationToken_">CheckAsync</a> method from <code>Task&lt;bool&gt;</code> to <code>Task&lt;ICommandResult&gt;</code>.</p>
+<h3 id="icommandresult-changes">ICommandResult changes</h3>
+<p>If you used <a class="xref" href="../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a> for any purpose in your bot, there are a few changes that you should be aware of:</p>
+<ul>
+<li><code>IsSuccess</code> is now obsolete and will be removed in later Wolfringo version.</li>
+<li><code>Status</code> property has been added instead.</li>
+<li><code>Exception</code> property has been removed. Wolfringo Commands System will simply throw exceptions now.</li>
+<li>To support above changes, previous constructors of built-in result implementations have been replaced with new ones.</li>
+<li>Built-in result implementations have been changed from <code>struct</code> to <code>class</code>.</li>
+</ul>
+<h2 id="achievement-changes">Achievement changes</h2>
+<h3 id="group-achievements">Group Achievements</h3>
+<p>Group achievements are now supported. Yay!</p>
+<p><a class="xref" href="../guides/features/sender.html">Sender</a> now has a <a class="xref" href="../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupAchievementsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_TehGM_Wolfringo_WolfLanguage_System_Threading_CancellationToken_">GetGroupAchievementsAsync</a> method for it. <code>UserAchievementListResponse</code> has also been replaced with <a class="xref" href="../api/TehGM.Wolfringo.Messages.Responses.EntityAchievementListResponse.html">EntityAchievementListResponse</a>.</p>
+<h3 id="nullable-received-times">Nullable received times</h3>
+<p>WOLF server now can report achievement with null receive date. For this reason <a class="xref" href="../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserAchievementsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_TehGM_Wolfringo_WolfLanguage_System_Threading_CancellationToken_">GetUserAchievementsAsync</a> return type has changed slightly, and you'll need to update your variable types.</p>
+<pre><code class="lang-csharp">// old way:
+IReadOnlyDictionary&lt;WolfAchievement, DateTime&gt; achievements = await _client.GetUserAchievementsAsync(2644384, WolfLanguage.English);
+// new way:
+IReadOnlyDictionary&lt;WolfAchievement, DateTime?&gt; achievements = await _client.GetUserAchievementsAsync(2644384, WolfLanguage.English);
+</code></pre>
+<h2 id="caching-configuration">Caching Configuration</h2>
+<p>Caching and WolfClient have been separated in Wolfringo 2.0. This means that you can implement your own cache and add it using Dependency Injection.</p>
+<p>If you didn't disable caching, you'll notice no change at all.<br>
+However, if you were disabling cache or its parts, you'll need to make a few adjustments.</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_upgrading-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_upgrading-normal-bot" data-tab="upgrading-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_upgrading-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_upgrading-hosted-bot" data-tab="upgrading-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_upgrading-normal-bot" role="tabpanel" data-tab="upgrading-normal-bot">
+
+<p>Properties for enabling and disabling caching have been removed from <a class="xref" href="../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a>. Instead, you can configure caching using <a class="xref" href="../api/TehGM.Wolfringo.WolfClientBuilder.html">WolfClientBuilder</a>:</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithDefaultCaching(new WolfCacheOptions()
+    {
+        // set to false to disable
+        options.UsersCachingEnabled = true;
+        options.GroupsCachingEnabled = true;
+        options.CharmsCachingEnabled = true;
+        options.AchievementsCachingEnabled = true;
+    })
+    .Build();
+</code></pre>
+<p><a class="xref" href="../api/TehGM.Wolfringo.Caching.WolfCacheOptions.html">WolfCacheOptions</a> is present in <code>TehGM.Wolfringo.Caching</code> namespace.</p>
+</section>
+<section id="tabpanel_bHGHmlrG6S_upgrading-hosted-bot" role="tabpanel" data-tab="upgrading-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<p>Properties for enabling and disabling caching have been removed from <a class="xref" href="../api/TehGM.Wolfringo.Hosting.HostedWolfClientOptions.html">HostedWolfClientOptions</a> and moved to a new @TehGM.Wolfringo.Utilities.WolfCacheOptions class.</p>
+<p>If you used providers configuration (like from appsettings.json file), you need to configure the new options type.</p>
+<pre><code class="lang-csharp">services.Configure&lt;HostedWolfClientOptions&gt;(context.Configuration.GetSection(&quot;WolfClient&quot;));
+services.Configure&lt;WolfCacheOptions&gt;(context.Configuration.GetSection(&quot;WolfClient&quot;));
+</code></pre>
+<p>Alternatively, you can use a new hosted client builder method <code>ConfigureCaching</code>:</p>
+<pre><code class="lang-csharp">services.AddWolfClient()
+    // ... other configuration ...
+    .ConfigureCaching(options =&gt;
+    {
+        // set to false to disable
+        options.UsersCachingEnabled = true;
+        options.GroupsCachingEnabled = true;
+        options.CharmsCachingEnabled = true;
+        options.AchievementsCachingEnabled = true;
+    });
+</code></pre>
+</section>
+</div>
+<h2 id="wolfclient-defaults">WolfClient defaults</h2>
+<p><code>DefaultServerURL</code>, <code>BetaServerURL</code> and <code>DefaultDevice</code> constants have been moved from <a class="xref" href="../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a> to <a class="xref" href="../api/TehGM.Wolfringo.WolfClientOptions.html">WolfClientOptions</a>.</p>
+<h2 id="ignoring-own-messages">Ignoring Own Messages</h2>
+<p>WolfClient will still ignore its own messages by default, but if you used to disable this feature, you'll find that <code>IgnoreOwnChatMessages</code> property is now read-only. To change it, you need to use <a class="xref" href="../api/TehGM.Wolfringo.WolfClientOptions.html">WolfClientOptions</a> class.</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .ConfigureOptions(options =&gt;
+    {
+        // set to false to disable
+        options.IgnoreOwnChatMessages = true;
+    })
+    .Build();
+</code></pre>
+<h2 id="removed-serviceprovider-classes">Removed ServiceProvider classes</h2>
+<p><code>SimpleServiceProvider</code> and <code>CombinedServiceProvider</code> classes were used internally to help with fallback when library user didn't provide some required services. This is now handled by builders which use framework-provided @Microsoft.Extensions.DependencyInjection.IServiceCollection and @System.IServiceProvider, so both <code>SimpleServiceProvider</code> and <code>CombinedServiceProvider</code> were removed.</p>
+<p>If you used these classes, you'll need to remove references to them, and replace either with framework-provided solutions, or create your own implementations.</p>
+<h2 id="other-changes">Other changes</h2>
+<p>There also has been a large number of smaller changes that shouldn't affect most people unless they're <a class="xref" href="../guides/customizing/introduction.html">Customizing Wolfringo</a>. Please refer to <a href="https://github.com/TehGM/Wolfringo/releases/tag/2.0.0">changelog</a> and <a href="https://github.com/TehGM/Wolfringo/pull/18/files">pull request</a> on GitHub for more details.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../styles/docfx.js"></script>
+<script type="text/javascript" src="../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

@@ -1,0 +1,928 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ArgumentErrorAttribute
+   | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ArgumentErrorAttribute
+   | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../styles/colors.css">
+    <link rel="stylesheet" href="../styles/discord.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../index.html">
+              <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../index.html">
+                        <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute">
+  
+  
+  <h1 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute" class="text-break">Class ArgumentErrorAttribute
+  </h1>
+  <div class="markdown level0 summary"><p>Base attribute for all argument error attributes.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">System.Attribute</span></div>
+    <div class="level2"><span class="xref">ArgumentErrorAttribute</span></div>
+      <div class="level3"><a class="xref" href="TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html">ConvertingErrorAttribute</a></div>
+      <div class="level3"><a class="xref" href="TehGM.Wolfringo.Commands.MissingErrorAttribute.html">MissingErrorAttribute</a></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IEquatable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html">ArgumentErrorAttribute</a>&gt;</div>
+    <div><span class="xref">System.IEquatable</span>&lt;<span class="xref">System.String</span>&gt;</div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.html">TehGM.Wolfringo.Commands.Attributes</a></h6>
+  <h6><strong>Assembly</strong>: Wolfringo.Commands.dll</h6>
+  <h5 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+public abstract class ArgumentErrorAttribute : Attribute, IEquatable&lt;ArgumentErrorAttribute&gt;, IEquatable&lt;string&gt;</code></pre>
+  </div>
+  <h5 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Decorating a method parameter with this argument will allow specifying message that will be sent to the user if there&apos;s any error when building the param.</p>
+<p><a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TextTemplate">TextTemplate</a> can have a few placeholders inside. On runtime, each of these placeholders will be replaced with an actual value. Currently supported placeholders are: <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ArgPlaceholder">ArgPlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TypePlaceholder">TypePlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_NamePlaceholder">NamePlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_MessagePlaceholder">MessagePlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_SenderNicknamePlaceholder">SenderNicknamePlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_SenderIdPlaceholder">SenderIdPlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_BotNicknamePlaceholder">BotNicknamePlaceholder</a>, <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_BotIdPlaceholder">BotIdPlaceholder</a>.<br>
+To add new placeholders, create new attributes inheriting from <a class="xref" href="TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html">ConvertingErrorAttribute</a> or <a class="xref" href="TehGM.Wolfringo.Commands.MissingErrorAttribute.html">MissingErrorAttribute</a>, and override <a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html#TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToStringAsync_TehGM_Wolfringo_Commands_ICommandContext_System_String_System_Reflection_ParameterInfo_System_Threading_CancellationToken_">ToStringAsync(ICommandContext, String, ParameterInfo, CancellationToken)</a> method. To preserve default placeholders, call <pre><code>base.ToStringAsync()</code></pre> BEFORE your custom placeholders handling.</p>
+</div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute__ctor_System_String_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.%23ctor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L62">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute__ctor_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.#ctor*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute__ctor_System_String_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.#ctor(System.String)">ArgumentErrorAttribute(String)</h4>
+  <div class="markdown level1 summary"><p>Attribute to specify message that will be sent as respone when argument error occurs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ArgumentErrorAttribute(string messageTemplate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">messageTemplate</span></td>
+        <td><p>Message that will be sent as response on error.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ArgPlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ArgPlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L25">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ArgPlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ArgPlaceholder">ArgPlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with argument value at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ArgPlaceholder = &quot;{{Arg}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_BotIdPlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.BotIdPlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L41">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_BotIdPlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.BotIdPlaceholder">BotIdPlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with ID of the bot at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string BotIdPlaceholder = &quot;{{BotID}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_BotNicknamePlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.BotNicknamePlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L39">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_BotNicknamePlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.BotNicknamePlaceholder">BotNicknamePlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with nickname of the bot at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string BotNicknamePlaceholder = &quot;{{BotNickname}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_MessagePlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.MessagePlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L33">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_MessagePlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.MessagePlaceholder">MessagePlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with received message contents at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MessagePlaceholder = &quot;{{Message}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_NamePlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.NamePlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L31">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_NamePlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.NamePlaceholder">NamePlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with parameter name at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string NamePlaceholder = &quot;{{Name}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_NamePlaceholder_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Can be changed by using <a class="xref" href="TehGM.Wolfringo.Commands.ArgumentNameAttribute.html">ArgumentNameAttribute</a>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_RecipientIdPlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.RecipientIdPlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L43">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_RecipientIdPlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.RecipientIdPlaceholder">RecipientIdPlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with ID of the message recipient (bot ID for PMs, group ID for group messages).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string RecipientIdPlaceholder = &quot;{{RecipientID}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_RecipientNamePlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.RecipientNamePlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L45">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_RecipientNamePlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.RecipientNamePlaceholder">RecipientNamePlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with name of the message recipient (bot nickname for PMs, group name for group messages).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string RecipientNamePlaceholder = &quot;{{RecipientName}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_SenderIdPlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.SenderIdPlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L37">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_SenderIdPlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.SenderIdPlaceholder">SenderIdPlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with ID of the user that sent the command at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SenderIdPlaceholder = &quot;{{SenderID}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_SenderNicknamePlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.SenderNicknamePlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L35">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_SenderNicknamePlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.SenderNicknamePlaceholder">SenderNicknamePlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with nickname of the user that sent the command at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SenderNicknamePlaceholder = &quot;{{SenderNickname}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TypePlaceholder.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.TypePlaceholder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L28">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TypePlaceholder" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.TypePlaceholder">TypePlaceholder</h4>
+  <div class="markdown level1 summary"><p>This placeholder will be replaced with parameter type at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string TypePlaceholder = &quot;{{Type}}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TypePlaceholder_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Can be changed by using <a class="xref" href="TehGM.Wolfringo.Commands.ArgumentTypeNameAttribute.html">ArgumentTypeNameAttribute</a>.</p>
+</div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TextTemplate.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.TextTemplate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L21">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TextTemplate_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.TextTemplate*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TextTemplate" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.TextTemplate">TextTemplate</h4>
+  <div class="markdown level1 summary"><p>Error message that will be sent as response on error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string TextTemplate { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_System_Object_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L103">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_System_Object_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Attribute.Equals(System.Object)</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_System_String_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L117">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_System_String_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals(System.String)">Equals(String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(string other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals(TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L113">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_Equals_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.Equals(TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute)">Equals(ArgumentErrorAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(ArgumentErrorAttribute other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html">ArgumentErrorAttribute</a></td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_GetHashCode.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.GetHashCode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L121">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_GetHashCode_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.GetHashCode*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_GetHashCode" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Attribute.GetHashCode()</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToString.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L68">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToString_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ToString*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToString" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ToString">ToString()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Object.ToString()</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToStringAsync_TehGM_Wolfringo_Commands_ICommandContext_System_String_System_Reflection_ParameterInfo_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ToStringAsync(TehGM.Wolfringo.Commands.ICommandContext%2CSystem.String%2CSystem.Reflection.ParameterInfo%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L76">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToStringAsync_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ToStringAsync*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_ToStringAsync_TehGM_Wolfringo_Commands_ICommandContext_System_String_System_Reflection_ParameterInfo_System_Threading_CancellationToken_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.ToStringAsync(TehGM.Wolfringo.Commands.ICommandContext,System.String,System.Reflection.ParameterInfo,System.Threading.CancellationToken)">ToStringAsync(ICommandContext, String, ParameterInfo, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Builds error response for the sent message and arg.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual async Task&lt;string&gt; ToStringAsync(ICommandContext context, string arg, ParameterInfo parameter, CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td><p>Message context that contains the argument.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">arg</span></td>
+        <td><p>Value of argument that failed converting.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.ParameterInfo</span></td>
+        <td><span class="parametername">parameter</span></td>
+        <td><p>Parameter the error is for.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.CancellationToken</span></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Token to cancel any required server requests with.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.Tasks.Task</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_op_Equality_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.op_Equality(TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute%2CTehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L129">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_op_Equality_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.op_Equality*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_op_Equality_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.op_Equality(TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute,TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute)">Equality(ArgumentErrorAttribute, ArgumentErrorAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(ArgumentErrorAttribute left, ArgumentErrorAttribute right)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html">ArgumentErrorAttribute</a></td>
+        <td><span class="parametername">left</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html">ArgumentErrorAttribute</a></td>
+        <td><span class="parametername">right</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_op_Inequality_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.op_Inequality(TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute%2CTehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Arguments/ArgumentErrorAttribute.cs/#L133">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_op_Inequality_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.op_Inequality*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_op_Inequality_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_TehGM_Wolfringo_Commands_Attributes_ArgumentErrorAttribute_" data-uid="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.op_Inequality(TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute,TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute)">Inequality(ArgumentErrorAttribute, ArgumentErrorAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(ArgumentErrorAttribute left, ArgumentErrorAttribute right)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html">ArgumentErrorAttribute</a></td>
+        <td><span class="parametername">left</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html">ArgumentErrorAttribute</a></td>
+        <td><span class="parametername">right</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IEquatable&lt;T&gt;</span>
+  </div>
+  <div>
+      <span class="xref">System.IEquatable&lt;T&gt;</span>
+  </div>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../styles/docfx.js"></script>
+<script type="text/javascript" src="../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>
