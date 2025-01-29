@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>2.1.4</version>
+    <version>2.1.5</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -16,19 +16,22 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <releaseNotes>
-- Fix cache handling of group member updates;
-- Add Reputation property to WolfGroup;
-- Add support for GroupMemberPrivilegedAdd, GroupMemberPrivilegedUpdate and GroupMemberPrivilegedDelete events;
-- Add IGroupMemberPrivilegedEvent interface for unified cache handling of new event types;
-- Fix stack overflow when parsing certain group actions;
-- GroupMemberUpdateEvent is now obsolete, as WOLF protocol seems to no longer use it;
+- Add possibility for the caller to decide whether to pre-process group and website links when sending a message;
+- Fix odd cases of errors when WOLF protocol wrongly sends member kicked notification as "leave" message;
+- Fix group links not generating preview due to WOLF protocol settings requiring embeds as separate list of IDs;
+- ChatMessage ID is no longer obsolete;
+- SlowModeRate added to chat responses;
+- Structured logs will now include binary message values;
+- Minor thread safety improvements in socket client implementation;
+- Minor performance in socket client on .NET 5 and later;
+- System.Threading.Lock will now be used instead of old lock objects on .NET 9;
 	</releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="2.1.4" />
+        <dependency id="Wolfringo.Core" version="2.1.5" />
         <dependency id="Wolfringo.Utilities" version="2.1.1" />
         <dependency id="Wolfringo.Utilities.Interactive" version="2.0.0" />
-        <dependency id="Wolfringo.Commands" version="2.1.1"/>
+        <dependency id="Wolfringo.Commands" version="2.1.5"/>
       </group>
     </dependencies>
   </metadata>
