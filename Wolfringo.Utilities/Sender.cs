@@ -10,6 +10,7 @@ using TehGM.Wolfringo.Messages;
 using TehGM.Wolfringo.Messages.Embeds;
 using TehGM.Wolfringo.Messages.Responses;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
+using TehGM.Wolfringo.Utilities;
 using TehGM.Wolfringo.Utilities.Internal;
 
 namespace TehGM.Wolfringo
@@ -1015,7 +1016,7 @@ namespace TehGM.Wolfringo
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, CancellationToken cancellationToken = default)
-            => SendPrivateTextMessageAsync(client, userID, text, true, cancellationToken);
+            => SendPrivateTextMessageAsync(client, userID, text, ChatMessageSendingOptions.Default, cancellationToken);
         /// <summary>Sends a group text message.</summary>
         /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
@@ -1023,20 +1024,27 @@ namespace TehGM.Wolfringo
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
         public static Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, CancellationToken cancellationToken = default)
-            => SendGroupTextMessageAsync(client, groupID, text, true, cancellationToken);
+            => SendGroupTextMessageAsync(client, groupID, text, ChatMessageSendingOptions.Default, cancellationToken);
 
         /// <summary>Sends a private text message.</summary>
         /// <param name="client">Client to send the message with.</param>
         /// <param name="userID">ID of user to send the message to.</param>
         /// <param name="text">Content of the message.</param>
-        /// <param name="enableEmbeds">Whether group preview embeds should be enabled.</param>
+        /// <param name="options">Options configuring how the message should get pre-processed.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
-        public static async Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, bool enableEmbeds, CancellationToken cancellationToken = default)
+        public static async Task<ChatResponse> SendPrivateTextMessageAsync(this IWolfClient client, uint userID, string text, ChatMessageSendingOptions options, CancellationToken cancellationToken = default)
         {
-            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
-            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
-            IEnumerable<IChatEmbed> embeds = enableEmbeds && groupLinks.Any() ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) } : Enumerable.Empty<IChatEmbed>();
+            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = options.AutoDetectGroupLinks
+                ? await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false)
+                : Enumerable.Empty<ChatMessageFormatting.GroupLinkData>();
+            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = options.AutoDetectWebsiteLinks
+                ? UrlLinkDetectionHelper.FindLinks(text)
+                : Enumerable.Empty<ChatMessageFormatting.LinkData>();
+            IEnumerable<IChatEmbed> embeds = options.EnableGroupLinkPreview && groupLinks.Any()
+                ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) }
+                : Enumerable.Empty<IChatEmbed>();
+
             ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
@@ -1044,14 +1052,21 @@ namespace TehGM.Wolfringo
         /// <param name="client">Client to send the message with.</param>
         /// <param name="groupID">ID of group to send the message to.</param>
         /// <param name="text">Content of the message.</param>
-        /// <param name="enableEmbeds">Whether group preview embeds should be enabled.</param>
+        /// <param name="options">Options configuring how the message should get pre-processed.</param>
         /// <param name="cancellationToken">Cancellation token that can cancel the task.</param>
         /// <returns>Message sending response.</returns>
-        public static async Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, bool enableEmbeds, CancellationToken cancellationToken = default)
+        public static async Task<ChatResponse> SendGroupTextMessageAsync(this IWolfClient client, uint groupID, string text, ChatMessageSendingOptions options, CancellationToken cancellationToken = default)
         {
-            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false);
-            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = UrlLinkDetectionHelper.FindLinks(text);
-            IEnumerable<IChatEmbed> embeds = enableEmbeds && groupLinks.Any() ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) } : Enumerable.Empty<IChatEmbed>();
+            IEnumerable<ChatMessageFormatting.GroupLinkData> groupLinks = options.AutoDetectGroupLinks
+                ? await GroupLinkDetectionHelper.FindGroupLinksAsync(client, text, cancellationToken).ConfigureAwait(false)
+                : Enumerable.Empty<ChatMessageFormatting.GroupLinkData>();
+            IEnumerable<ChatMessageFormatting.LinkData> urlLinks = options.AutoDetectWebsiteLinks
+                ? UrlLinkDetectionHelper.FindLinks(text)
+                : Enumerable.Empty<ChatMessageFormatting.LinkData>();
+            IEnumerable<IChatEmbed> embeds = options.EnableGroupLinkPreview && groupLinks.Any()
+                ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) }
+                : Enumerable.Empty<IChatEmbed>();
+
             ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
