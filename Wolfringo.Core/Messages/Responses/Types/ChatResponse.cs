@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using TehGM.Wolfringo.Messages.Serialization.Internal;
 
 namespace TehGM.Wolfringo.Messages.Responses
 {
@@ -15,6 +16,11 @@ namespace TehGM.Wolfringo.Messages.Responses
         /// <summary>Was the message spam filtered?</summary>
         [JsonProperty("isSpam")]
         public bool SpamFiltered { get; private set; }
+
+        /// <summary>Slow mode rate.</summary>
+        [JsonProperty("slowModeRateInSeconds")]
+        [JsonConverter(typeof(SecondsTimespanConverter))]
+        public TimeSpan SlowModeRate { get; private set; }
 
         /// <summary>Creates a response instance.</summary>
         [JsonConstructor]

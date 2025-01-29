@@ -63,6 +63,14 @@ namespace TehGM.Wolfringo.Messages.Serialization
             if (metadata.HasValues)
                 body.Add(new JProperty("metadata", metadata));
 
+            // embeds
+            if (body.ContainsKey("embeds"))
+            {
+                JArray embedsArray = body["embeds"] as JArray;
+                if (embedsArray == null || embedsArray.Count == 0)
+                    body.Remove("embeds");
+            }
+
             // raw data
             if (msg.RawData?.Any() == true)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace TehGM.Wolfringo.Messages.Serialization
 {
@@ -12,6 +13,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
         public IResponseSerializer FallbackSerializer => this.Options.FallbackSerializer;
         /// <summary>Instance of options used by this provider.</summary>
         protected ResponseSerializerProviderOptions Options { get; }
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
+        private readonly object _lock = new object();
+#endif
 
         /// <summary>Creates default response serializer map.</summary>
         /// <param name="options">Instance of options to use with this provider.</param>
@@ -26,7 +32,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <inheritdoc/>
         public IResponseSerializer GetSerializer(Type key)
         {
-            lock (this.Options)
+            lock (this._lock)
             {
                 this.Options.Serializers.TryGetValue(key, out IResponseSerializer result);
                 return result;

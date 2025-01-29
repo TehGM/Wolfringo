@@ -6,7 +6,7 @@
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
-    <Version>2.1.1</Version>
+    <Version>2.1.5</Version>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <FileVersion>2.1.0.0</FileVersion>
@@ -22,8 +22,8 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageReleaseNotes>
-- AvatarUtilities is now obsolete.
-- Automatically build metadata for http and https links when sending a message.
+- Add possibility for the caller to decide whether to pre-process group and website links when sending a message;
+- Fix group links not generating preview due to WOLF protocol settings requiring embeds as separate list of IDs;
 	</PackageReleaseNotes>
   </PropertyGroup>
 

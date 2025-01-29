@@ -22,7 +22,6 @@ namespace TehGM.Wolfringo.Messages
         /// <inheritdoc/>
         public string FlightID { get; private set; }
         /// <inheritdoc/>
-        [Obsolete("WOLF protocol now prefers to use Timestamp as a message ID.")]
         public Guid? ID { get; private set; }
         /// <inheritdoc/>
         public bool IsGroupMessage { get; private set; }
@@ -46,6 +45,9 @@ namespace TehGM.Wolfringo.Messages
         /// <summary>The metadata for formatting of links in the message text.</summary>
         [JsonProperty("formatting", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public ChatMessageFormatting FormattingMetadata { get; private set; }
+        /// <summary>Visual embeds attached to this chat message.</summary>
+        [JsonProperty("embeds", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<IChatEmbed> Embeds { get; private set; }
 
         // binary data
         /// <inheritdoc/>
@@ -90,13 +92,25 @@ namespace TehGM.Wolfringo.Messages
         /// <param name="type">Mime type of the message.</param>
         /// <param name="data">Raw byte data of the message.</param>
         /// <param name="formattingMetadata">Metadata for message formatting, such as group links.</param>
-        public ChatMessage(uint recipientID, bool groupMessage, string type, IEnumerable<byte> data, ChatMessageFormatting formattingMetadata) : this()
+        public ChatMessage(uint recipientID, bool groupMessage, string type, IEnumerable<byte> data, ChatMessageFormatting formattingMetadata)
+            : this(recipientID, groupMessage, type, data, formattingMetadata, null) { }
+
+
+        /// <summary>Creates a message instance.</summary>
+        /// <param name="recipientID">User or group ID to send the message to.</param>
+        /// <param name="groupMessage">Is recipient a group?</param>
+        /// <param name="type">Mime type of the message.</param>
+        /// <param name="data">Raw byte data of the message.</param>
+        /// <param name="formattingMetadata">Metadata for message formatting, such as group links.</param>
+        /// <param name="embeds">Visual embeds attached to this chat message.</param>
+        public ChatMessage(uint recipientID, bool groupMessage, string type, IEnumerable<byte> data, ChatMessageFormatting formattingMetadata, IEnumerable<IChatEmbed> embeds) : this()
         {
             this.RecipientID = recipientID;
             this.MimeType = type;
             this.IsGroupMessage = groupMessage;
             this.FlightID = Guid.NewGuid().ToString();
             this.FormattingMetadata = formattingMetadata;
+            this.Embeds = embeds ?? Enumerable.Empty<IChatEmbed>();
             this.RawData = (data as IReadOnlyCollection<byte>) ?? new List<byte>(data);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TehGM.Wolfringo.Utilities.Internal
@@ -11,7 +12,11 @@ namespace TehGM.Wolfringo.Utilities.Internal
     {
         private readonly HashSet<Type> _markedForDisposal = new HashSet<Type>();
         private readonly List<IDisposable> _disposableServices = new List<IDisposable>();
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
         private readonly object _lock = new object();
+#endif
 
         /// <summary>Marks service type to be disposed.</summary>
         /// <param name="type">Type of the service.</param>

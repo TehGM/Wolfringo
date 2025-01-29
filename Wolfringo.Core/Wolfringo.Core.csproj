@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net9.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>2.1.4</Version>
+    <Version>2.1.5</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -19,12 +19,15 @@
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
     <PackageReleaseNotes>
-- Fix cache handling of group member updates;
-- Add Reputation property to WolfGroup;
-- Add support for GroupMemberPrivilegedAdd, GroupMemberPrivilegedUpdate and GroupMemberPrivilegedDelete events;
-- Add IGroupMemberPrivilegedEvent interface for unified cache handling of new event types;
-- Fix stack overflow when parsing certain group actions;
-- GroupMemberUpdateEvent is now obsolete, as WOLF protocol seems to no longer use it;
+- Add ChatMessageSendingOptions class which is used by the supporting packages;
+- Fix odd cases of errors when WOLF protocol wrongly sends member kicked notification as "leave" message;
+- Support group preview message embeds;
+- ChatMessage ID is no longer obsolete;
+- SlowModeRate added to chat responses;
+- Structured logs will now include binary message values;
+- Minor thread safety improvements in socket client implementation;
+- Minor performance in socket client on .NET 5 and later;
+- System.Threading.Lock will now be used instead of old lock objects on .NET 9;
 	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>

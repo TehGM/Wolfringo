@@ -106,7 +106,8 @@ namespace TehGM.Wolfringo.Messages
                     return GroupActionType.UserLeft;
                 case "ban":
                     return GroupActionType.Ban;
-                case "kick" when this._invokerID != null:
+                case "kick":
+                case "leave" when this._invokerID != null:
                     return GroupActionType.Kick;
                 case "silence":
                     return GroupActionType.Silence;

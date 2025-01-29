@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-#if !NETCOREAPP3_0
+#if !NETCOREAPP3_0_OR_GREATER
 using Microsoft.AspNetCore.Hosting;
 #endif
 using Microsoft.Extensions.Hosting;
@@ -22,7 +22,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
     /// <seealso cref="ICommandsService"/>
     public class HostedCommandsService : ICommandsService, IHostedService, IDisposable
     {
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
         private readonly IHostApplicationLifetime _hostLifetime;
 #else
         private readonly IApplicationLifetime _hostLifetime;
@@ -48,7 +48,7 @@ namespace TehGM.Wolfringo.Hosting.Commands
         /// <param name="hostLifetime">Host lifetime that will be used to dispose service when application is exiting.</param>
         /// <param name="log">Logger used by hosted commands service.</param>
         public HostedCommandsService(IOptionsMonitor<CommandsOptions> options, IServiceProvider services, ILogger<HostedCommandsService> log,
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
             IHostApplicationLifetime hostLifetime
 #else
             IApplicationLifetime hostLifetime

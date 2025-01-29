@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using TehGM.Wolfringo.Commands.Attributes;
 
 namespace TehGM.Wolfringo.Commands.Initialization
@@ -15,6 +16,11 @@ namespace TehGM.Wolfringo.Commands.Initialization
         /// <remarks><para>This will be set to true if <see cref="Options"/> weren't provided to the constructor.</para>
         /// <para>Disposing will happen when <see cref="Dispose"/> is called.</para></remarks>
         protected bool DisposeInitializers { get; }
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
+        private readonly object _lock = new object();
+#endif
 
         /// <summary>Creates default command initializer map.</summary>
         public CommandInitializerProvider(CommandInitializerProviderOptions options) : this(options, false) { }
@@ -36,7 +42,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
         public virtual ICommandInitializer GetInitializer(Type commandAttributeType)
         {
             ThrowIfInvalidCommandType(commandAttributeType);
-            lock (this.Options)
+            lock (this._lock)
             {
                 this.Options.Initializers.TryGetValue(commandAttributeType, out ICommandInitializer result);
                 return result;
@@ -60,7 +66,7 @@ namespace TehGM.Wolfringo.Commands.Initialization
                 return;
 
             IEnumerable<object> disposables;
-            lock (this.Options)
+            lock (this._lock)
             {
                 disposables = this.Options.Initializers.Values.Where(c => c is IDisposable);
                 this.Options.Initializers.Clear();

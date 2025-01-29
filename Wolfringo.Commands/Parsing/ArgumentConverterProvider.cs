@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace TehGM.Wolfringo.Commands.Parsing
 {
@@ -16,6 +17,11 @@ namespace TehGM.Wolfringo.Commands.Parsing
         /// <remarks><para>This will be set to true if <see cref="Options"/> weren't provided to the constructor.</para>
         /// <para>Disposing will happen when <see cref="Dispose"/> is called.</para></remarks>
         protected bool DisposeConverters { get; }
+#if NET9_0_OR_GREATER
+        private readonly Lock _lock = new Lock();
+#else
+        private readonly object _lock = new object();
+#endif
 
         /// <summary>Creates default converter provider.</summary>
         public ArgumentConverterProvider(ArgumentConverterProviderOptions options) : this(options, false) { }
@@ -47,7 +53,7 @@ namespace TehGM.Wolfringo.Commands.Parsing
                 return;
 
             IEnumerable<IDisposable> disposables;
-            lock (this.Options)
+            lock (this._lock)
             {
                 disposables = this.Options.Converters.Values.Where(c => c is IDisposable).Select(c => c as IDisposable);
                 if (this.Options.EnumConverter is IDisposable disposableEnumConverter)
