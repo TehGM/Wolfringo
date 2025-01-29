@@ -57,7 +57,7 @@ jobs:
       - name: Setup latest NuGet preview version
         uses: NuGet/setup-nuget@v1.0.5
         with:
-          nuget-version: '6.0.x'
+          nuget-version: '6.1.x'
       - name: Create output directory for packages
         run: |
           mkdir __out
@@ -89,7 +89,7 @@ jobs:
           nuget pack "Wolfringo/Wolfringo.nuspec" -Exclude "*.*" -BasePath "Wolfringo" -NonInteractive -OutputDirectory __out
       - name: Push packages to NuGet
         run: |
-          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols true --api-key ${{secrets.NUGET_TOKEN}}
+          dotnet nuget push "./__out/*.nupkg" --skip-duplicate --no-symbols --api-key ${{secrets.NUGET_TOKEN}}
           
   generate-docs:
     runs-on: windows-latest
