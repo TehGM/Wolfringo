@@ -29,7 +29,7 @@
     <dependencies>
       <group>
         <dependency id="Wolfringo.Core" version="2.1.5" />
-        <dependency id="Wolfringo.Utilities" version="2.1.1" />
+        <dependency id="Wolfringo.Utilities" version="2.1.5" />
         <dependency id="Wolfringo.Utilities.Interactive" version="2.0.0" />
         <dependency id="Wolfringo.Commands" version="2.1.5"/>
       </group>
