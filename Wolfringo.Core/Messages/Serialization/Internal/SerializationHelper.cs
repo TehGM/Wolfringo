@@ -174,5 +174,31 @@ namespace TehGM.Wolfringo.Messages.Serialization.Internal
                     byteCollection.Add(b);
             }
         }
+
+        /// <summary>Populates chat message's embeds.</summary>
+        /// <typeparam name="T">Type of chat message.</typeparam>
+        /// <param name="message">Chat message.</param>
+        /// <param name="embeds">Deserialized embeds.</param>
+        public static void PopulateMessageEmbeds<T>(ref T message, IEnumerable<IChatEmbed> embeds) where T : IChatEmbedContainer
+        {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+            if (embeds?.Any() != true)
+                return;
+
+            if (message.Embeds == null || !(message.Embeds is ICollection<IChatEmbed> embedCollection) || embedCollection.IsReadOnly)
+                throw new InvalidOperationException($"Cannot populate embeds in {message.GetType().Name} as the collection is read only or null");
+            embedCollection.Clear();
+
+            // if it's a list, we can do it in a more performant way
+            if (message.Embeds is List<IChatEmbed> embedList)
+                embedList.AddRange(embeds);
+            // otherwise do it one by one
+            else
+            {
+                foreach (IChatEmbed e in embeds)
+                    embedCollection.Add(e);
+            }
+        }
     }
 }
