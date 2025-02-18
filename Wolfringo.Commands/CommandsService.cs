@@ -103,6 +103,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="options">Options for commands service.</param>
         /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
         /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
+        [Obsolete]
         protected static IServiceProvider BuildDefaultServiceProvider(IWolfClient client, CommandsOptions options, ILogger log = null)
         {
             if (client == null)

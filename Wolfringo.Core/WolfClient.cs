@@ -142,6 +142,7 @@ namespace TehGM.Wolfringo
         /// <summary>Builds default service provider. Used to temporarily support obsolete non-builder constructors.</summary>
         /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
         /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
+        [Obsolete]
         protected static IServiceProvider BuildDefaultServiceProvider(ILogger log = null)
         {
             // add all required services
