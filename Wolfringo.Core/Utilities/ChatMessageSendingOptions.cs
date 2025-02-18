@@ -6,6 +6,12 @@
         /// <summary>Default options.</summary>
         /// <remarks>These options will automatically detect everything - group and website links, and enable all preview embeds.</remarks>
         public static ChatMessageSendingOptions Default { get; } = new ChatMessageSendingOptions();
+        /// <summary>Options that enable detection but disable embeds.</summary>
+        /// <remarks>These options will automatically detect group and website links, but disable all preview embeds.</remarks>
+        public static ChatMessageSendingOptions DisableEmbeds { get; } = new ChatMessageSendingOptions() { EnableGroupLinkPreview = false, EnableImageLinkPreview = false, EnableWebsiteLinkPreview = false };
+        /// <summary>Options that will disable all automatic detection.</summary>
+        /// <remarks>These options will not detect group and website links.</remarks>
+        public static ChatMessageSendingOptions DisableLinkDetection { get; } = new ChatMessageSendingOptions() { AutoDetectGroupLinks = false, AutoDetectWebsiteLinks = false, EnableGroupLinkPreview = false, EnableImageLinkPreview = false, EnableWebsiteLinkPreview = false };
 
 #if NET5_0_OR_GREATER
         /// <summary>Whether group links should be automatically detected.</summary>
