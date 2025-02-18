@@ -1041,9 +1041,8 @@ namespace TehGM.Wolfringo
             IEnumerable<ChatMessageFormatting.LinkData> urlLinks = options.AutoDetectWebsiteLinks
                 ? UrlLinkDetectionHelper.FindLinks(text)
                 : Enumerable.Empty<ChatMessageFormatting.LinkData>();
-            IEnumerable<IChatEmbed> embeds = options.EnableGroupLinkPreview && groupLinks.Any()
-                ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) }
-                : Enumerable.Empty<IChatEmbed>();
+
+            IEnumerable<IChatEmbed> embeds = await ChatEmbedBuilder.BuildEmbedsAsync(client, groupLinks, urlLinks, options, cancellationToken).ConfigureAwait(false);
 
             ChatMessage message = new ChatMessage(userID, false, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
@@ -1063,13 +1062,14 @@ namespace TehGM.Wolfringo
             IEnumerable<ChatMessageFormatting.LinkData> urlLinks = options.AutoDetectWebsiteLinks
                 ? UrlLinkDetectionHelper.FindLinks(text)
                 : Enumerable.Empty<ChatMessageFormatting.LinkData>();
-            IEnumerable<IChatEmbed> embeds = options.EnableGroupLinkPreview && groupLinks.Any()
-                ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) }
-                : Enumerable.Empty<IChatEmbed>();
+
+            IEnumerable<IChatEmbed> embeds = await ChatEmbedBuilder.BuildEmbedsAsync(client, groupLinks, urlLinks, options, cancellationToken).ConfigureAwait(false);
 
             ChatMessage message = new ChatMessage(groupID, true, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
             return await client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
+
+        
 
         /// <summary>Sends a private image message.</summary>
         /// <param name="client">Client to send the message with.</param>

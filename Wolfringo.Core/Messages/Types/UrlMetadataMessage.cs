@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using TehGM.Wolfringo.Messages.Responses;
 
@@ -7,8 +8,15 @@ namespace TehGM.Wolfringo.Messages
     /// <summary>A message for requesting metadata about a link as seen by WOLF servers.</summary>
     /// <remarks>Uses <see cref="TipDetailsResponse"/> as response type.</remarks>
     [ResponseType(typeof(UrlMetadataResponse))]
-    public class UrlMetadataMessage : IWolfMessage
+    public class UrlMetadataMessage : IWolfMessage, IHeadersWolfMessage
     {
+        /// <inheritdoc/>
+        [JsonIgnore]
+        public IDictionary<string, object> Headers { get; } = new Dictionary<string, object>()
+        {
+            { "version", 2 }
+        };
+
         /// <inheritdoc/>
         /// <remarks>Equals to <see cref="MessageEventNames.MetadataUrl"/>.</remarks>
         [JsonIgnore]

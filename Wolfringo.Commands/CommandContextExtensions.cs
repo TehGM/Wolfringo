@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,11 +105,16 @@ namespace TehGM.Wolfringo.Commands
             IEnumerable<ChatMessageFormatting.LinkData> urlLinks = options.AutoDetectWebsiteLinks 
                 ? UrlLinkDetectionHelper.FindLinks(text)
                 : Enumerable.Empty<ChatMessageFormatting.LinkData>();
-            IEnumerable<IChatEmbed> embeds = options.EnableGroupLinkPreview && groupLinks.Any() 
-                ? new IChatEmbed[] { new GroupPreviewChatEmbed(groupLinks.First().GroupID) } 
-                : Enumerable.Empty<IChatEmbed>();
 
-            ChatMessage message = new ChatMessage(context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, context.Message.IsGroupMessage, ChatMessageTypes.Text, Encoding.UTF8.GetBytes(text), new ChatMessageFormatting(groupLinks, urlLinks), embeds);
+            IEnumerable<IChatEmbed> embeds = await ChatEmbedBuilder.BuildEmbedsAsync(context.Client, groupLinks, urlLinks, options, cancellationToken).ConfigureAwait(false);
+
+            ChatMessage message = new ChatMessage(
+                context.Message.IsGroupMessage ? context.Message.RecipientID : context.Message.SenderID.Value, 
+                context.Message.IsGroupMessage, 
+                ChatMessageTypes.Text, 
+                Encoding.UTF8.GetBytes(text), 
+                new ChatMessageFormatting(groupLinks, urlLinks), 
+                embeds);
             return await context.Client.SendAsync<ChatResponse>(message, cancellationToken).ConfigureAwait(false);
         }
 
