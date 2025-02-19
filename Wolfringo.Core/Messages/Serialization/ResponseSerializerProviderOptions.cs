@@ -8,14 +8,15 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// <seealso cref="ResponseSerializerProvider"/>
     public class ResponseSerializerProviderOptions
     {
+        /// <summary>Deserializer of chat embeds that will be used by serializers.</summary>
+        public static IChatEmbedDeserializer ChatEmbedDeserializer { get; } = Serialization.ChatEmbedDeserializer.Instance;
+
         /// <summary>Default serializer.</summary>
         /// <remarks>This serializer is used for multiple mappings in default <see cref="Serializers"/>.</remarks>
         protected static IResponseSerializer DefaultSerializer { get; } = new DefaultResponseSerializer();
         /// <summary>Default chat history serializer.</summary>
         /// <remarks>This serializer is used for multiple mappings in default <see cref="Serializers"/>.</remarks>
         protected static IResponseSerializer DefaultHistorySerializer { get; }
-        /// <summary>Deserializer of chat embeds that will be used by serializers.</summary>
-        protected static IChatEmbedDeserializer ChatEmbedDeserializer { get; } = new ChatEmbedDeserializer();
 
         /// <summary>Fallback serializer that can be used if key has no mapped serializer.</summary>
         /// <remarks><para>Note that this serializer cannot be used for deserialization, and will be used only for serialization.</para>

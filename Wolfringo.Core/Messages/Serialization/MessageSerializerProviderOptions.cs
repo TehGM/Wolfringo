@@ -7,12 +7,13 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// <seealso cref="MessageSerializerProvider"/>
     public class MessageSerializerProviderOptions
     {
+        /// <summary>Deserializer of chat embeds that will be used by serializers.</summary>
+        public IChatEmbedDeserializer ChatEmbedDeserializer { get; } = Serialization.ChatEmbedDeserializer.Instance;
+
         /// <summary>Fallback serializer that can be used if key has no mapped serializer.</summary>
         /// <remarks><para>Note that this serializer cannot be used for deserialization, and will be used only for serialization.</para>
         /// <para>Defaults to <see cref="DefaultMessageSerializer{T}"/>, where T is <see cref="IWolfMessage"/>.</para></remarks>
         public IMessageSerializer FallbackSerializer { get; set; } = new DefaultMessageSerializer<IWolfMessage>();
-        /// <summary>Deserializer of chat embeds that will be used by serializers.</summary>
-        public IChatEmbedDeserializer ChatEmbedDeserializer { get; } = new ChatEmbedDeserializer();
 
         /// <summary>Map for event type and assigned message serializer.</summary>
         // TODO: 3.0: refactor to work on System.Type so it can be used with IServiceProvider instead
@@ -77,7 +78,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.SubscriberContactAdd, new ContactAddDeleteMessageSerializer<ContactAddMessage>() },
                 { MessageEventNames.SubscriberContactDelete, new ContactAddDeleteMessageSerializer<ContactDeleteMessage>() },
                 // chat message
-                { MessageEventNames.MessageSend, new ChatMessageSerializer(this.ChatEmbedDeserializer) },
+                { MessageEventNames.MessageSend, new ChatMessageSerializer(ChatEmbedDeserializer) },
                 // tip add
                 { MessageEventNames.TipAdd, new TipAddMessageSerializer() },
                 // entity updates

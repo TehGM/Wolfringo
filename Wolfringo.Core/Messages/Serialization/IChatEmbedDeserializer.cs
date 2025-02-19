@@ -33,6 +33,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// <inheritdoc/>
     public class ChatEmbedDeserializer : IChatEmbedDeserializer
     {
+        internal static ChatEmbedDeserializer Instance { get; } = new ChatEmbedDeserializer();
+
         private readonly Dictionary<string, Type> _registeredEmbedTypes = new Dictionary<string, Type>()
         {
             ["linkPreview"] = typeof(LinkPreviewChatEmbed),
