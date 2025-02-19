@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Wolfringo</id>
-    <version>2.1.5</version>
+    <version>2.2.0</version>
     <title>Wolfringo</title>
     <authors>TehGM</authors>
     <owners>TehGM</owners>
@@ -16,22 +16,24 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <copyright>Copyright (c) 2020 TehGM</copyright>
     <releaseNotes>
-- Add possibility for the caller to decide whether to pre-process group and website links when sending a message;
-- Fix odd cases of errors when WOLF protocol wrongly sends member kicked notification as "leave" message;
-- Fix group links not generating preview due to WOLF protocol settings requiring embeds as separate list of IDs;
-- ChatMessage ID is no longer obsolete;
-- SlowModeRate added to chat responses;
-- Structured logs will now include binary message values;
-- Minor thread safety improvements in socket client implementation;
-- Minor performance in socket client on .NET 5 and later;
-- System.Threading.Lock will now be used instead of old lock objects on .NET 9;
+		- Add IChatEmbedDeserializer to allow deserialization of chat embeds;
+		- Add support for Link and Image preview embeds;
+		- Chat Messages and retrieved chat histories will now have Embeds property properly populated;
+		- ChatMessageSendingOptions provide 2 predefined statics: DisableEmbeds and DisableLinkDetection;
+		- Update UrlMetadataMessage to use headers with version 2;
+		- Fix an error when a message containing an embed is received;
+		- Fix link metadata message not having a serializer registered with the provider;
+		- ChatMessageSerializer now has a constructor that takes a IChatEmbedDeserializer;
+		- ChatHistoryResponseSerializer now has a constructor that takes a IChatEmbedDeserializer;
+		- Removed unnecessary locks in CommandsSystem, MessageSerializerProvider and ResponseSerializerProvider;
+		- BuildDefaultServiceProvider protected methods are marked as obsolete in WolfClient and CommandsSystem;
 	</releaseNotes>
     <dependencies>
       <group>
-        <dependency id="Wolfringo.Core" version="2.1.5" />
-        <dependency id="Wolfringo.Utilities" version="2.1.5" />
+        <dependency id="Wolfringo.Core" version="2.2.0" />
+        <dependency id="Wolfringo.Utilities" version="2.2.0" />
         <dependency id="Wolfringo.Utilities.Interactive" version="2.0.0" />
-        <dependency id="Wolfringo.Commands" version="2.1.5"/>
+        <dependency id="Wolfringo.Commands" version="2.2.0"/>
       </group>
     </dependencies>
   </metadata>
