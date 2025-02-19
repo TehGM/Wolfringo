@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TehGM.Wolfringo.Messages.Serialization.Internal;
 
@@ -10,17 +11,38 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// it inserts data placeholders into payload body object, and adds it to serialized message's binary data.</remarks>
     public class ChatMessageSerializer : IMessageSerializer
     {
+        private readonly IChatEmbedDeserializer _embedDeserializer;
+
+        /// <summary>Initializes a new serializer for chat messages.</summary>
+        /// <param name="chatEmbedDeserializer">Deserializer of chat embeds to use.</param>
+        public ChatMessageSerializer(IChatEmbedDeserializer chatEmbedDeserializer)
+        {
+            this._embedDeserializer = chatEmbedDeserializer;
+        }
+
+        /// <summary>Initializes a new serializer for chat messages.</summary>
+        /// <remarks>This uses default <see cref="ChatEmbedDeserializer"/> for deserializing embeds.</remarks>
+        public ChatMessageSerializer()
+            : this(ChatEmbedDeserializer.Instance) { }
+
         /// <inheritdoc/>
         public IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)
         {
-            // deserialize message
-            Type msgType = GetMessageType(messageData.Payload["body"]);
+            JObject body = messageData.Payload["body"] as JObject;
+
+            // extracting separate deserialization of embeds is anything but ideal
+            // however we do it instead of using a custom converter so when new embed types are added by the (really unstable, may I add) Wolf protocol, it won't start throwing left and right
+            IEnumerable<IChatEmbed> embeds = this._embedDeserializer.DeserializeEmbeds(body).ToList();
+            body.Remove("embeds");
+
+            Type msgType = GetMessageType(body);
             IChatMessage result = (IChatMessage)messageData.Payload.ToObject(msgType, SerializationHelper.DefaultSerializer);
             messageData.Payload.FlattenCommonProperties(result, SerializationHelper.DefaultSerializer);
 
-            // parse and populate binary data
             if (messageData.BinaryMessages?.Any() == true)
                 SerializationHelper.PopulateMessageRawData(ref result, messageData.BinaryMessages.First());
+            if (result is ChatMessage container)
+                this._embedDeserializer.PopulateMessageEmbeds(ref container, embeds);
 
             return result;
         }

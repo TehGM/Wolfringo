@@ -50,4 +50,12 @@ namespace TehGM.Wolfringo.Messages
         [JsonIgnore]
         IReadOnlyCollection<byte> RawData { get; }
     }
+
+    /// <summary>Represents a message containing embeds.</summary>
+    public interface IChatEmbedContainer
+    {
+        /// <summary>Visual embeds attached to this chat message.</summary>
+        [JsonProperty("embeds", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        IEnumerable<IChatEmbed> Embeds { get; }
+    }
 }

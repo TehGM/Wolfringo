@@ -7,14 +7,23 @@ namespace TehGM.Wolfringo.Messages.Serialization
     /// <seealso cref="MessageSerializerProvider"/>
     public class MessageSerializerProviderOptions
     {
+        /// <summary>Deserializer of chat embeds that will be used by serializers.</summary>
+        public IChatEmbedDeserializer ChatEmbedDeserializer { get; } = Serialization.ChatEmbedDeserializer.Instance;
+
         /// <summary>Fallback serializer that can be used if key has no mapped serializer.</summary>
         /// <remarks><para>Note that this serializer cannot be used for deserialization, and will be used only for serialization.</para>
         /// <para>Defaults to <see cref="DefaultMessageSerializer{T}"/>, where T is <see cref="IWolfMessage"/>.</para></remarks>
         public IMessageSerializer FallbackSerializer { get; set; } = new DefaultMessageSerializer<IWolfMessage>();
 
         /// <summary>Map for event type and assigned message serializer.</summary>
+        // TODO: 3.0: refactor to work on System.Type so it can be used with IServiceProvider instead
+        public IDictionary<string, IMessageSerializer> Serializers { get; set; }
+
+        /// <summary>Initializes a new instance of options using default values.</summary>
+        public MessageSerializerProviderOptions()
+        {
 #pragma warning disable CS0618 // Type or member is obsolete
-        public IDictionary<string, IMessageSerializer> Serializers { get; set; } = new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
+            this.Serializers = new Dictionary<string, IMessageSerializer>(StringComparer.OrdinalIgnoreCase)
             {
                 // default ones
                 { MessageEventNames.Welcome, new DefaultMessageSerializer<WelcomeEvent>() },
@@ -61,6 +70,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.TipGroupSubscribe, new DefaultMessageSerializer<SubscribeToGroupTipsMessage>() },
                 { MessageEventNames.TipSummary, new DefaultMessageSerializer<TipSummaryMessage>() },
                 { MessageEventNames.TipDetail, new DefaultMessageSerializer<TipDetailsMessage>() },
+                { MessageEventNames.MetadataUrl, new DefaultMessageSerializer<UrlMetadataMessage>() },
                 // group join and leave
                 { MessageEventNames.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageEventNames.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },
@@ -68,7 +78,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.SubscriberContactAdd, new ContactAddDeleteMessageSerializer<ContactAddMessage>() },
                 { MessageEventNames.SubscriberContactDelete, new ContactAddDeleteMessageSerializer<ContactDeleteMessage>() },
                 // chat message
-                { MessageEventNames.MessageSend, new ChatMessageSerializer() },
+                { MessageEventNames.MessageSend, new ChatMessageSerializer(ChatEmbedDeserializer) },
                 // tip add
                 { MessageEventNames.TipAdd, new TipAddMessageSerializer() },
                 // entity updates
@@ -77,6 +87,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.GroupProfileUpdate, new GroupEditMessageSerializer<GroupUpdateMessage>() },
                 { MessageEventNames.MessageUpdate, new ChatUpdateMessageSerializer() }
             };
-    }
 #pragma warning restore CS0618 // Type or member is obsolete
+        }
+    }
 }

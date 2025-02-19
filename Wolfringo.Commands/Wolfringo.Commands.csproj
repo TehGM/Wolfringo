@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo.Commands</RootNamespace>
-    <Version>2.1.5</Version>
+    <Version>2.2.0</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <Description>Commands System for Wolfringo library.</Description>
@@ -15,12 +15,11 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>wolf palringo wolfringo pal bot client commands</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
     <PackageReleaseNotes>
-- Add possibility for the caller to decide whether to pre-process group and website links when sending a message;
-- System.Threading.Lock will now be used instead of old lock objects on .NET 9;
-- Fix group links not generating preview due to WOLF protocol settings requiring embeds as separate list of IDs;
+		- Add support for Link and Image preview embeds;
+		- Chat Messages and retrieved chat histories will now have Embeds property properly populated;
 	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>

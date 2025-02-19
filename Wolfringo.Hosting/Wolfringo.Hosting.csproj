@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.0;net9.0</TargetFrameworks>
-    <Version>2.1.5</Version>
+    <Version>2.2.0</Version>
     <Authors>TehGM</Authors>
     <Copyright>Copyright (c) 2020 TehGM</Copyright>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
@@ -17,7 +17,7 @@
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <PackageReleaseNotes>
-- System.Threading.Lock will now be used instead of old lock objects on .NET 9;
+Compatibility patch for Wolfringo 2.2.0.
 	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>

@@ -11,7 +11,7 @@ namespace TehGM.Wolfringo.Messages
     /// <remarks>Uses <see cref="ChatResponse"/> as response type.</remarks>
     /// <seealso cref="GroupActionChatEvent"/>
     [ResponseType(typeof(ChatResponse))]
-    public class ChatMessage : IChatMessage, IWolfMessage, IRawDataMessage
+    public class ChatMessage : IChatMessage, IWolfMessage, IRawDataMessage, IChatEmbedContainer
     {
         /// <inheritdoc/>
         /// <remarks>Equals to <see cref="MessageEventNames.MessageSend"/>.</remarks>
@@ -76,6 +76,7 @@ namespace TehGM.Wolfringo.Messages
         protected ChatMessage()
         {
             this.RawData = new List<byte>();
+            this.Embeds = new List<IChatEmbed>(0);
         }
 
         /// <summary>Creates a message instance.</summary>

@@ -12,11 +12,6 @@ namespace TehGM.Wolfringo.Messages.Serialization
         public IMessageSerializer FallbackSerializer => this.Options.FallbackSerializer;
         /// <summary>Instance of options used by this provider.</summary>
         protected MessageSerializerProviderOptions Options { get; }
-#if NET9_0_OR_GREATER
-        private readonly Lock _lock = new Lock();
-#else
-        private readonly object _lock = new object();
-#endif
 
         /// <summary>Create a new instance of default provider.</summary>
         /// <param name="options">Options to use with this provider.</param>
@@ -31,11 +26,8 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <inheritdoc/>
         public IMessageSerializer GetSerializer(string key)
         {
-            lock (this._lock)
-            {
-                this.Options.Serializers.TryGetValue(key, out IMessageSerializer result);
-                return result;
-            }
+            this.Options.Serializers.TryGetValue(key, out IMessageSerializer result);
+            return result;
         }
     }
 }

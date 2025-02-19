@@ -103,6 +103,7 @@ namespace TehGM.Wolfringo.Commands
         /// <param name="options">Options for commands service.</param>
         /// <param name="log">A logger to add to the services. If null, logging will be disabled.</param>
         /// <returns>A <see cref="IServiceProvider"/> with default services added.</returns>
+        [Obsolete]
         protected static IServiceProvider BuildDefaultServiceProvider(IWolfClient client, CommandsOptions options, ILogger log = null)
         {
             if (client == null)
@@ -234,25 +235,11 @@ namespace TehGM.Wolfringo.Commands
                 throw new InvalidOperationException($"This {this.GetType().Name} is not started yet");
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._cts.Token))
             {
-                IEnumerable<KeyValuePair<ICommandInstanceDescriptor, ICommandInstance>> commandsCopy;
-                // copying might not be the fastest thing to do, but it'll ensure that commands won't be changed out of the lock
-                // locking only copying to prevent hangs if user is not careful with their commands, while still preventing race conditions with StartAsync
-                await this._lock.WaitAsync(cts.Token).ConfigureAwait(false);
-                try
-                {
-                    // order commands by priority
-                    commandsCopy = this._commands.OrderByDescending(kvp => kvp.Key.GetPriority());
-                }
-                finally
-                {
-                    this._lock.Release();
-                }
-
                 using (IServiceScope serviceScope = this._services.CreateScope())
                 {
                     IServiceProvider services = serviceScope.ServiceProvider;
 
-                    foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in commandsCopy)
+                    foreach (KeyValuePair<ICommandInstanceDescriptor, ICommandInstance> commandKvp in this._commands.OrderByDescending(kvp => kvp.Key.GetPriority()))
                     {
                         ICommandInstanceDescriptor command = commandKvp.Key;
                         ICommandInstance instance = commandKvp.Value;
