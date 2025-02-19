@@ -23,7 +23,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
         /// <summary>Initializes a new serializer for chat messages.</summary>
         /// <remarks>This uses default <see cref="ChatEmbedDeserializer"/> for deserializing embeds.</remarks>
         public ChatMessageSerializer()
-            : this(new ChatEmbedDeserializer()) { }
+            : this(ChatEmbedDeserializer.Instance) { }
 
         /// <inheritdoc/>
         public IWolfMessage Deserialize(string eventName, SerializedMessageData messageData)

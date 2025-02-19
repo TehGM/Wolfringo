@@ -22,6 +22,11 @@ namespace TehGM.Wolfringo.Messages.Serialization
             this._chatEmbedDeserializer = chatEmbedDeserializer;
         }
 
+        /// <summary>Initializes a new serializer for chat history responses.</summary>
+        /// <remarks>This uses default <see cref="ChatEmbedDeserializer"/> for deserializing embeds.</remarks>
+        public ChatHistoryResponseSerializer()
+            : this(ChatEmbedDeserializer.Instance) { }
+
         /// <inheritdoc/>
         public override IWolfResponse Deserialize(Type responseType, SerializedMessageData responseData)
         {
