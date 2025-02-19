@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Wolfringo Commands System | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Wolfringo Commands System | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Commands.Intro">
+<h1 id="wolfringo-commands-system">Wolfringo Commands System</h1>
+
+<p>Using <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html#TehGM_Wolfringo_IWolfClient_AddMessageListener_TehGM_Wolfringo_Utilities_Internal_IMessageCallback_">AddMessageListener</a> works well for testing, or for events that aren't <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">Chat Messages</a>. However having a bot written using just the message listeners would mean that you manually need to handle errors logging, prefix checking, checking if user is admin, etc - that's A LOT of repetitive boilerplate code.</p>
+<p>To address this, Wolfringo has an extensible Commands System. This System is attribute-based, and supports <a class="xref" href="dependency-injection.html">Dependency Injection</a> out of the box.</p>
+<h2 id="enable-commands-system-in-your-bot">Enable Commands System in your bot</h2>
+<p>Commands System is included in both <a href="https://www.nuget.org/packages/Wolfringo">Wolfringo metapackage</a> and <a href="https://www.nuget.org/packages/Wolfringo.Hosting">Wolfringo.Hosting</a>. If you're not using either (for example when using <a href="https://www.nuget.org/packages/Wolfringo.Core">Wolfringo.Core</a> directly), it can be installed with <a href="https://www.nuget.org/packages/Wolfringo.Commands">Wolfringo.Commands</a> package. See <a class="xref" href="../getting-started/installation.html">Installation instructions</a> for guide how to install Wolfringo components.</p>
+<p>Like with the <a class="xref" href="../getting-started/connecting-bot.html">Bot itself</a>, enabling Commands System depends on whether you're using Wolfringo.Hosting or not.</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_connecting-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_connecting-normal-bot" data-tab="connecting-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_connecting-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_connecting-hosted-bot" data-tab="connecting-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_connecting-normal-bot" role="tabpanel" data-tab="connecting-normal-bot">
+
+<p>First add following using directive to your Program.cs:</p>
+<pre><code class="lang-csharp">using Wolfringo.Commands;
+</code></pre>
+<p>Since Wolfringo v2.0, commands can be really easily enabled by calling <code>WithCommands</code> method on the client builder. This method expects a delegate, where you can build commands service.</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    // .. other client configuration ...
+    .WithLogging(CreateLoggerFactory())
+    .WithCommands(commands =&gt; 
+    {
+        // determines what all the commands should start with - for example &quot;!&quot;, &quot;!mybot&quot; etc. Default value is &quot;!&quot;.
+        commands.WithPrefix(&quot;!&quot;);
+        // determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to PrefixRequirement.Group.
+        commands.WithPrefixRequirement(PrefixRequirement.Always);
+        // determines whether commands are case-sensitive. By default, all commands are case-insensitive.
+        commands.WithCaseSensitivity(false);
+
+        // you can also register any custom service by using
+        // commands.WithService&lt;T&gt;();
+    })
+    .Build();
+
+// connect bot here with &quot;_client.ConnectAsync();&quot;
+</code></pre>
+<p>Commands enable this way will automatically inherit all services and settings, such as logging and Wolf Client itself provided to <code>WolfClientBuilder</code> itself. Services set inside of <code>WithCommands</code> delegate will be available only to Commands System.</p>
+<p>If you wish, you can create CommandsService separately to get more control. Please note that in such case, you need to manually provide <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> instance, call <code>StartAsync()</code>, and that services and logging will NOT be automatically shared.</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .Build();
+CommandsService commands = new CommandsServiceBuilder()
+    .WithWolfClient(_client)            // required when creating separately
+    .WithLogging(CreateLoggerFactory()) // when created separately, client and commands don't share logging
+    .ConfigureOptions(options =&gt; 
+    {
+        // do configuration here
+    })
+    .Build();
+
+await services.StartAsync();
+// connect bot here with &quot;_client.ConnectAsync();&quot;
+</code></pre>
+<h3 id="choose-where-commands-are-loaded-from">Choose where commands are loaded from</h3>
+<p>By default, all commands in the project that starts your bot process are loaded. You can change that using <code>.ConfigureOptions</code> method and the <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> it provides in the delegate.</p>
+<h4 id="load-commands-from-other-assemblies">Load commands from other assemblies</h4>
+<p>You can load commands from other projects, or even different libraries. To do so, simply add assembly to <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html#TehGM_Wolfringo_Commands_CommandsOptions_Assemblies">Assemblies</a> property:</p>
+<pre><code class="lang-csharp">.ConfigureOptions(options =&gt;
+{
+    options.Assemblies.Add(typeof(HandlerInAnotherProject).Assembly));
+})
+</code></pre>
+<h4 id="add-commands-individually">Add commands individually</h4>
+<p>You can also add individual <a class="xref" href="creating-commands.html">Handler</a> to be loaded. Simply add its type to <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html#TehGM_Wolfringo_Commands_CommandsOptions_Classes">Classes</a> property:</p>
+<pre><code class="lang-csharp">.ConfigureOptions(options =&gt;
+{
+    options.Classes.Add(typeof(Handler));
+})
+</code></pre>
+<p>If you're adding handlers individually, you might want to disable behaviour of loading all commands from bot entry assembly.</p>
+<pre><code class="lang-csharp">.ConfigureOptions(options =&gt;
+{
+    options.Assemblies.Clear();
+})
+</code></pre>
+<h3 id="logging">Logging</h3>
+<p>When using <code>WolfClientBuilder.WithCommands()</code> to add commands, Commands Service will automatically inherit logging configuration from the client.</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithLogging(CreateLoggerFactory())
+    .WithCommands(commands =&gt; 
+    {
+        // do other config. Logging will automatically be inherited.
+    })
+    .Build();
+</code></pre>
+<p>If you're creating CommandsService separately using <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a>, CommandsServiceBuilder also has <code>WithLogging</code> method which functions the same way.</p>
+<p>Check <a class="xref" href="../features/logging.html">Logging guide</a> for more information.</p>
+</section>
+<section id="tabpanel_bHGHmlrG6S_connecting-hosted-bot" role="tabpanel" data-tab="connecting-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<p>When using Wolfringo.Hosting, enabling Commands System is done inside ConfigureServices, just like <a class="xref" href="../getting-started/connecting-bot.html">the bot itself</a>. Simply add this code:</p>
+<pre><code class="lang-csharp">services.AddWolfringoCommands()
+    .SetPrefix(&quot;!&quot;)           
+    .SetPrefixRequirement(PrefixRequirement.Always)
+    .SetCaseSensitive(false);
+</code></pre>
+<p>Basic Commands configuration is pretty straightforward:</p>
+<ul>
+<li><a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_SetPrefix_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_System_String_TehGM_Wolfringo_Commands_PrefixRequirement_">SetPrefix</a> determines what all the commands should start with - for example &quot;!&quot;, &quot;!mybot&quot; etc. Default value is &quot;!&quot;.</li>
+<li><a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_SetPrefixRequirement_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_TehGM_Wolfringo_Commands_PrefixRequirement_">SetPrefixRequirement</a> determines when the prefix is required. By default it's always required, but you can for example make prefix optional by setting this value to <a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrefixRequirement.html#TehGM_Wolfringo_Commands_PrefixRequirement_Group">PrefixRequirement.Group</a>.</li>
+<li><a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_SetCaseSensitive_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_System_Boolean_">SetCaseSensitive</a> determines whether commands are case-sensitive. By default, all commands are case-insensitive (the value is set to &quot;false&quot;).</li>
+</ul>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Using application settings file is recommended instead of hardcoding the settings. See <a href="https://github.com/TehGM/Wolfringo/blob/master/Examples/HostedCommandsBot/appsettings.json">appsettings.json example</a>, and add following method call to your ConfigureServices:</p>
+<pre><code class="lang-csharp"> services.Configure&lt;CommandsOptions&gt;(context.Configuration.GetSection(&quot;Commands&quot;));
+</code></pre>
+</div>
+<h3 id="choose-where-commands-are-loaded-from-1">Choose where commands are loaded from</h3>
+<p>By default, all commands in the project that starts your bot process are loaded. You can change that with method calls straight after AddWolfringoCommands().</p>
+<h4 id="load-commands-from-other-assemblies-1">Load commands from other assemblies</h4>
+<p>You can load commands from other projects, or even different libraries. To do so, simply call <a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_AddHandlers_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_System_Reflection_Assembly___">AddHandlers()</a>:</p>
+<pre><code class="lang-csharp">services.AddWolfringoCommands()
+    .AddHandlers(typeof(HandlerInAnotherProject).Assembly));
+</code></pre>
+<h4 id="add-commands-individually-1">Add commands individually</h4>
+<p>You can also add individual <a class="xref" href="creating-commands.html">Handler</a> to be loaded. Simply call <a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_AddHandler__1_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_">AddHandler<t>()</t></a>:</p>
+<pre><code class="lang-csharp">services.AddWolfringoCommands()
+    .AddHandler&lt;Handler&gt;();
+</code></pre>
+<p>If you're adding handlers individually, you might want to disable behaviour of loading all commands from bot entry assembly.</p>
+<pre><code class="lang-csharp">services.AddWolfringoCommands()
+    .RemoveDefaultHandlers();
+</code></pre>
+<h3 id="logging-1">Logging</h3>
+<p>One of purposes of the Commands System is to reduce amount of boilerplate code for logging etc. @TehGM.Wolfringo.Hosting.Commands.HostedCommandsHandler will automatically use logging as <a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/logging/?view=aspnetcore-3.0">configured for your Host</a>.</p>
+<p>Check <a class="xref" href="../features/logging.html">Logging guide</a> for more information.</p>
+</section>
+</div>
+<h2 id="next-steps">Next steps</h2>
+<p>Now that you enabled Commands System in your bot, you can start adding Commands Handlers and commands themselves. See <a class="xref" href="creating-commands.html">Creating Commands guide</a>!</p>
+<p>You can also check <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot">SimpleCommandsBot Example</a> (Normal Bot) or <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/HostedCommandsBot">HostedCommandsBot Example</a> (.NET Generic Host/ASP.NET Core) for full example on Wolfringo usage with Commands System. Feel free to also check <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples">other example projects</a>!</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

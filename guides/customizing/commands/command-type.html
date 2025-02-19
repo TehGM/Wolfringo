@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Customizing Wolfringo - Command Types | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Customizing Wolfringo - Command Types | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../../styles/colors.css">
+    <link rel="stylesheet" href="../../../styles/discord.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../../index.html">
+              <img src="../../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../../index.html">
+                        <img src="../../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Customizing.Commands.CommandType">
+<h1 id="creating-new-command-types">Creating new Command Types</h1>
+
+<p>Wolfringo comes with <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandAttribute.html">standard [Command]</a> and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html">[RegexCommand]</a> command types, which should provide coverage for nearly all use cases. However, to keep true to the extensibility spirit, Wolfringo commands are abstracted enough to allow you to create your own Command Type if you wish to do so!</p>
+<p>Creating a new Command Type requires a few steps to create a few components.</p>
+<h2 id="creating-an-attribute">Creating an attribute</h2>
+<p>Wolfringo recognizes a method as a command if it's marked by any attribute that inherits from <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html">CommandAttributeBase</a>. <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html">CommandAttributeBase</a> itself is empty, but it serves as a &quot;marker&quot; that a given method is a command, so you need to create a custom attribute for your custom command type.</p>
+<pre><code class="lang-csharp">[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
+public class MyCustomCommandAttribute : CommandAttributeBase
+{
+    // any properties that you need
+    // constructors probably too?
+}
+</code></pre>
+<p>For reference, check <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/CommandAttribute.cs">standard CommandAttribute.cs</a> and <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/RegexCommandAttribute.cs">RegexCommandAttribute.cs</a> on GitHub.</p>
+<h2 id="creating-a-command-instance">Creating a Command Instance</h2>
+<p>Once Wolfringo scans for command handlers and methods marked with <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html">CommandAttributeBase</a>, it creates an instance class for each of found methods. These instances are kept in memory for as long as <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> is loaded to prevent constant rebuilding of commands whenever a message is received. These instances are what actually handles the logic of command execution.
+Wolfringo comes with <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.StandardCommandInstance.html">StandardCommandInstance</a> and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.RegexCommandInstance.html">RegexCommandInstance</a> classes built-in - but if you're building your own Command Type, chances are that you want to create your own Instance class to customize the command execution logic.</p>
+<p>Command Instance needs to implement <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html">ICommandInstance</a> interface. This interface has 2 methods, both of which need to be implemented.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>For reference, you can view source code of both <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/StandardCommandInstance.cs">StandardCommandInstance.cs</a> and <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/RegexCommandInstance.cs">RegexCommandInstance.cs</a> on GitHub.</p>
+</div>
+<h4 id="checkmatchasync">CheckMatchAsync</h4>
+<p><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html#TehGM_Wolfringo_Commands_Initialization_ICommandInstance_CheckMatchAsync_TehGM_Wolfringo_Commands_ICommandContext_System_IServiceProvider_System_Threading_CancellationToken_">CheckMatchAsync</a> method parses the message text and determines whether the command matches, for example whether message text should is a command. This is the place responsible for checking things like prefixes, message text etc.</p>
+<p>The method is provided 3 parameters:</p>
+<ul>
+<li><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a> - Most important thing for running the checks, context of the command that includes the received <a class="xref" href="../../../api/TehGM.Wolfringo.Messages.IChatMessage.html">IChatMessage</a>, the <a class="xref" href="../../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a>, and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> with information like prefix etc.</li>
+<li>@System.IServiceProvider - The services used by the Commands Service. Can be used to resolve any registered service as needed.</li>
+<li>@System.Threading.CancellationToken - Cancellation Token that can be used to abort the checks, if any is asynchronous.</li>
+</ul>
+<p>The method needs to return an <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>. Commands Service will check its <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html#TehGM_Wolfringo_Commands_ICommandResult_Status">Status</a> property to determine the course of action - if it's <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Success">Success</a>, the command will be executed, <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Skip">Skip</a> will tell the service to skip this command and check another, while <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Failure">Failure</a> will cause service to abort processing message altogether. You most likely want to return either <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Success">Success</a> on match or <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Skip">Skip</a> when there's no match.<br>
+Wolfringo includes <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.StandardCommandMatchResult.html">StandardCommandMatchResult</a> and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.RegexCommandMatchResult.html">RegexCommandMatchResult</a> classes, but you can create your own <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a> if you need or want to.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>It is recommended that the parsing result is included in successful <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>, so it can be reused in <a class="xref" href="command-type.html#executeasync">ExecuteAsync method</a>.</p>
+</div>
+<h4 id="executeasync">ExecuteAsync</h4>
+<p><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html#TehGM_Wolfringo_Commands_Initialization_ICommandInstance_ExecuteAsync_TehGM_Wolfringo_Commands_ICommandContext_System_IServiceProvider_TehGM_Wolfringo_Commands_ICommandResult_System_Object_System_Threading_CancellationToken_">ExecuteAsync</a> method deals with the execution of the command itself. As of current version of Wolfringo, it should also run <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandRequirement.html">ICommandRequirement</a> checks.<br>
+Built-in command instances make use of <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Parsing.IParameterBuilder.html">IParameterBuilder</a>. While this is recommended to use it in your custom command instance (especially since it can be <a class="xref" href="parameter-builder.html">customized as well</a>!), it is not a strict requirement if you need a different behaviour in your command instance.</p>
+<p>The method is provided 5 parameters:</p>
+<ul>
+<li><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a> - Context of the command that includes the received <a class="xref" href="../../../api/TehGM.Wolfringo.Messages.IChatMessage.html">IChatMessage</a>, the <a class="xref" href="../../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a>, and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> with information like prefix etc.</li>
+<li>@System.IServiceProvider - The services used by the Commands Service. Can be used to resolve any registered service as needed, and used to inject services into command method.</li>
+<li><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a> - the result of <a class="xref" href="command-type.html#checkmatchasync">CheckMatchAsync method</a>. If it includes the parsing results, it can be reused now to save computation costs.</li>
+<li>@System.Object - the actual instance of a command handler to run the method in.</li>
+<li>@System.Threading.CancellationToken - Cancellation Token that can be used to abort the checks, if any is asynchronous.</li>
+</ul>
+<p>Like <a class="xref" href="command-type.html#checkmatchasync">CheckMatchAsync method</a>, this method also needs to return <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>, which will tell Commands Service whether command execution was successful, failed or skipped. Built-in command instances check if the command method returned @System.Threading.Tasks.Task or <a href="xref:System.Threading.Tasks.Task%601">Task&lt;TResult&gt;</a>, and will await if so. They also check if the method returns <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>, which they can use. Both options are however optional in your custom instance.</p>
+<h3 id="commandinstancebase">CommandInstanceBase</h3>
+<p>Both <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.StandardCommandInstance.html">StandardCommandInstance</a> and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.RegexCommandInstance.html">RegexCommandInstance</a> inherit from an abstract class called <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.html">CommandInstanceBase</a>. Your custom command instance doesn't need to do so (implementing <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html">ICommandInstance</a> interface is enough), but it contains 2 shared methods used by both built-in command types that you might find useful when implementing your own. Check <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Instances/CommandInstanceBase.cs">CommandInstanceBase.cs</a> on GitHub to determine if this base class will be useful for you or not.</p>
+<h4 id="getoptionsforcontext">GetOptionsForContext</h4>
+<p>Since Wolfringo v2.0, it is now possible to retrieve <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandOptions.html">ICommandOptions</a> in a command method. Thexe options then contain information about command prefix etc, respecting any overrides such as <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.PrefixAttribute.html">[Prefix]</a> attribute.</p>
+<p>This method simply does the computes and returns a new <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Parsing.CommandContextOptions.html">CommandContextOptions</a> for this purpose.</p>
+<h4 id="checkmatch">CheckMatch</h4>
+<p>This simple method will check <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a> to see if:</p>
+<ul>
+<li>the message is <a class="xref" href="../../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a>;</li>
+<li>the message is a text message;</li>
+<li>the message is not deleted;</li>
+<li>the message wasn't sent by the bot itself (WOLF server sends you the messages you send to it);</li>
+<li>the prefix requirement according to <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> as well as overrides (such as <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.PrefixAttribute.html">[Prefix]</a> attribute).</li>
+</ul>
+<p>If any of these checks fail, it'll return false. Otherwise it'll return true, and will provide start index of the command text (after prefix) and the computed options (generated by <a href="#getoptionsforcontext">GetOptionsForContext</a> method) through <code>out</code> parameters.</p>
+<h4 id="invokecommandasync">InvokeCommandAsync</h4>
+<p>This is the shared helper for both built-in instances to actually invoke the command method. It takes <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Parsing.ParameterBuilderValues.html">ParameterBuilderValues</a>, @System.IServiceProvider, the handler object, and a @System.Threading.CancellationToken as paremeters, and uses them to run <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Parsing.IParameterBuilder.html">IParameterBuilder</a> and then invoke the command method itself.</p>
+<p>Once the method is invoked, this method will check if it was a @System.Threading.Tasks.Task or <a href="xref:System.Threading.Tasks.Task%601">Task&lt;TResult&gt;</a>, and if so, it'll await it.<br>
+It'll also check if the invoked method returned <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a> - if so, it'll return it to the caller; otherwise it'll return a <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandExecutionResult.html">CommandExecutionResult</a> with a <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Success">Success</a> status.</p>
+<h2 id="command-initializer">Command Initializer</h2>
+<p>Now that you have both your command attribute and instance ready, there's one more component required - custom <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.html">ICommandInitializer</a>.<br>
+Because Wolfringo is completely agnostic to how your custom command works (besides the <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html">CommandAttributeBase</a> and <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html">ICommandInstance</a> required components), it has no knowledge how to create your command instance. For this reason it depends on a <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.html">ICommandInitializer</a> to create the instance - so you will need to implement your own.</p>
+<p><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.html">ICommandInitializer</a> only has one method - <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.html#TehGM_Wolfringo_Commands_Initialization_ICommandInitializer_InitializeCommand_TehGM_Wolfringo_Commands_Initialization_ICommandInstanceDescriptor_TehGM_Wolfringo_Commands_CommandsOptions_">InitializeCommand</a> which just needs to return a new command instance. The creation part is up to you.</p>
+<p>The method is provided with a few parameters that you can use when building your command instance:</p>
+<ul>
+<li><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor.html">ICommandInstanceDescriptor</a> - a descriptor of the command, which includes the <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html">CommandAttributeBase</a> (which you can cast to your custom attribute type) and @System.Reflection.MethodInfo which is the reflection of the method this command will execute. Default <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandsLoader.html">CommandsLoader</a> will always create a concrete <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInstanceDescriptor.html">CommandInstanceDescriptor</a>, so if you don't use a custom <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandsLoader.html">ICommandsLoader</a>, you can safely cast the descriptor for additional members (such as <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsHandlerAttribute.html">CommandsHandlerAttribute</a>).</li>
+<li><a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> - the commands options instance.</li>
+</ul>
+<p>For reference, you can check <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Initializers/StandardCommandInitializer.cs">StandardCommandInitializer.cs</a> and <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Initializers/RegexCommandInitializer.cs">RegexCommandInitializer.cs</a> on GitHub.</p>
+<h3 id="registering-custom-commandinitializer">Registering custom CommandInitializer</h3>
+<p>If you create a custom <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.html">ICommandInitializer</a>, you need to let Wolfringo Commands System know about it. It is done by adding it to <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializerProvider.html">ICommandInitializerProvider</a>, which maps specific command attribute to an instance of command initializer. You can create a custom one, but the default <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProvider.html">CommandInitializerProvider</a> instance uses <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.html">CommandInitializerProviderOptions</a> with a dictionary map, so for most use cases, you won't need to do that.</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_configuring-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_configuring-normal-bot" data-tab="configuring-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_configuring-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_configuring-hosted-bot" data-tab="configuring-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_configuring-normal-bot" role="tabpanel" data-tab="configuring-normal-bot">
+
+<p>Note: instructions skip logger setup. See <a class="xref" href="../../features/logging.html">Logging guide</a> for details.</p>
+<ol>
+<li>Manually create an instance of <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.html">CommandInitializerProviderOptions</a>.</li>
+<li>Add your initializer to <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.html#TehGM_Wolfringo_Commands_Initialization_CommandInitializerProviderOptions_Initializers">Initializers</a> dictionary.</li>
+<li>Use <code>WithDefaultCommandInitializerProvider</code> method of <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a> and pass your options as argument.</li>
+</ol>
+<pre><code class="lang-csharp">CommandInitializerProviderOptions options = new CommandInitializerProviderOptions();
+options.Initializers[typeof(MyCustomCommandAttribute)] = new MyCustomCommandInitializer();
+_client = new WolfClientBuilder()
+    .WithCommands(commands =&gt; 
+    {
+        commands.WithDefaultCommandInitializerProvider(options);
+    })
+    .Build();
+</code></pre>
+</section>
+<section id="tabpanel_bHGHmlrG6S_configuring-hosted-bot" role="tabpanel" data-tab="configuring-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<ol>
+<li>Configure <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.html">CommandInitializerProviderOptions</a>.</li>
+<li>Add your initializer to <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.html#TehGM_Wolfringo_Commands_Initialization_CommandInitializerProviderOptions_Initializers">Initializers</a> dictionary.</li>
+</ol>
+<pre><code class="lang-csharp">services.Configure&lt;CommandInitializerProviderOptions&gt;(options =&gt;
+{
+    options.Initializers[typeof(MyCustomCommandAttribute)] = new MyCustomCommandInitializer();
+});
+</code></pre>
+</section>
+</div>
+<h3 id="custom-icommandinitializerprovider">Custom ICommandInitializerProvider</h3>
+<p>If the default <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProvider.html">CommandInitializerProvider</a> doesn't meet your needs (check <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Initialization/Initializers/CommandInitializerProvider.cs">source code on GitHub</a>), you can create your own implementation. To do so, create a new class implementing <a class="xref" href="../../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializerProvider.html">ICommandInitializerProvider</a> and register it with Commands Service as described in <a class="xref" href="../introduction.html">Introduction</a>.</p>
+<h2 id="and-thats-it">And... that's it!</h2>
+<p>You can now mark any of methods in your command handlers with <code>[MyCustomCommand]</code>, and Commands Service will fully support executing that method.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

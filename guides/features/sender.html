@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Sender | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Sender | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Features.Sender">
+<h1 id="sender-utility">Sender Utility</h1>
+
+<p>This documentation mentions &quot;Sender Utilitility&quot; multiple times. This 'utility' is actually a set of extension classes for any <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> that handle common sending functionalities, and abstract concerns like <a class="xref" href="../../api/TehGM.Wolfringo.Messages.html">Message classes</a> or <a class="xref" href="caching.html#accessing-caches">using cache</a>.</p>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">Sender</a> class itself is included in <a href="https://www.nuget.org/packages/Wolfringo.Utilities">Wolfringo.Utilities</a> package (which is automatically included if you install <a href="https://www.nuget.org/packages/Wolfringo">Wolfringo</a> metapackage), and is in <em>TehGM.Wolfringo</em> namespace so it's always easy to access when using any <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a>.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>All of the methods in <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">Sender</a> class support optional @System.Threading.CancellationToken.</p>
+</div>
+<h2 id="logging-in-and-out">Logging in and out</h2>
+<p>Logging in is one of the most important steps your bot will need to take in order to work. This can be done using <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_LoginAsync_TehGM_Wolfringo_IWolfClient_System_String_System_String_TehGM_Wolfringo_WolfLoginType_System_Threading_CancellationToken_">LoginAsync</a>. This method returns a <a class="xref" href="../../api/TehGM.Wolfringo.Messages.Responses.LoginResponse.html">LoginResponse</a>, which includes profile of the user that logged in with <a class="xref" href="../../api/TehGM.Wolfringo.Messages.Responses.LoginResponse.html#TehGM_Wolfringo_Messages_Responses_LoginResponse_User">User</a> property.<br>
+Once logged in, you most likely want to subscribe to incoming messages - otherwise, your client won't get any of them. You can do it using <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SubscribeAllMessagesAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">SubscribeAllMessagesAsync</a> method.<br>
+After logging in, you can set your <a class="xref" href="../../api/TehGM.Wolfringo.WolfOnlineState.html">online state</a> (such as Online/Busy/Invisible etc) after logging in using <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SetOnlineStateAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfOnlineState_System_Threading_CancellationToken_">SetOnlineStateAsync</a> method.</p>
+<pre><code class="lang-csharp">private static async void OnWelcome(WelcomeEvent message)
+{
+    // if reusing the token, user might be already logged in, so check that before requesting login
+    if (message.LoggedInUser == null)
+    {
+        // note: it is recommended to not hardcode username and password, and use .gitignore-d config file instead
+        await _client.LoginAsync(&quot;BotEmail&quot;, &quot;BotPassword&quot;, WolfLoginType.Email);
+    }
+    await _client.SubscribeAllMessagesAsync();      // without this, bot will not receive any messages
+    await _client.SetOnlineStateAsync(WolfOnlineState.Busy);    // this is optional - if you don't do this, you'll login as online
+}
+</code></pre>
+<p>Logging out is also simple - just use <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_LogoutAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">LogoutAsync</a> method!</p>
+<pre><code class="lang-csharp">await _client.LogoutAsync();
+</code></pre>
+<h2 id="sending-messages">Sending messages</h2>
+<p>Sending messages is 2nd most important task almost any bot will perform, so naturally Sender Utility has methods for that as well.<br>
+There are numerous methods for this in <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">Sender</a> class:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateTextMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_System_Threading_CancellationToken_">SendPrivateTextMessageAsync</a> - sends a private message to a user, with text content.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupTextMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_System_Threading_CancellationToken_">SendGroupTextMessageAsync</a> - sends a message to a group, with text content.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateImageMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">SendPrivateImageMessageAsync</a> - sends a private message to a user, with image content.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupImageMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">SendGroupImageMessageAsync</a> - sends a message to a group, with image content.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateVoiceMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">SendPrivateVoiceMessageAsync</a> - sends a private message to a user, with voice content.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupVoiceMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">SendGroupVoiceMessageAsync</a> - sends a message to a group, with voice content.</li>
+</ul>
+<pre><code class="lang-csharp">byte[] myImageBytes = ...
+
+await _client.SendPrivateTextMessageAsync(1234, &quot;I will send an image in group ID 4321!&quot;);
+await _client.SendGroupImageMessageAsync(4321, myImageBytes);
+</code></pre>
+<p>There also are methods that take a <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a> as a parameter - these will send a message to pm or group, depending on the type of incoming message:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ReplyTextAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_String_System_Threading_CancellationToken_">ReplyTextAsync</a> - replies with a text message.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ReplyImageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">ReplyImageAsync</a> - replies with an image.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ReplyVoiceAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">ReplyVoiceAsync</a> - replies with a voice message.</li>
+</ul>
+<pre><code class="lang-csharp">private async void OnChatMessage(ChatMessage message)
+{
+    await _client.ReplyTextAsync(message, &quot;Okay, will do!&quot;);
+}
+</code></pre>
+<p>All of these tasks return <a class="xref" href="../../api/TehGM.Wolfringo.Messages.Responses.ChatResponse.html">ChatResponse</a> - you can use it to get the server-assigned <a class="xref" href="../../api/TehGM.Wolfringo.Messages.Responses.ChatResponse.html#TehGM_Wolfringo_Messages_Responses_ChatResponse_Timestamp">Timestamp</a>, or check if a private message was <a class="xref" href="../../api/TehGM.Wolfringo.Messages.Responses.ChatResponse.html#TehGM_Wolfringo_Messages_Responses_ChatResponse_SpamFiltered">SpamFiltered</a>.</p>
+<h2 id="retrieving-entities">Retrieving entities</h2>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">Sender</a> class has multiple methods to retrieve entites. Most of these methods will check <a class="xref" href="caching.html">cache</a> first - if the entity is cached, it won't be requested from the server.</p>
+<h4 id="wolfuser">WolfUser</h4>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">GetUserAsync</a> is the primary method to retrieve a <a class="xref" href="../../api/TehGM.Wolfringo.WolfUser.html">WolfUser</a>. The user will be retrieved by their ID.<br>
+If you want to retrieve multiple users at once, it is recommended to use <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUsersAsync_TehGM_Wolfringo_IWolfClient_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">GetUsersAsync</a> instead.</p>
+<pre><code class="lang-csharp">WolfUser oneUser = await _client.GetUserAsync(2644384);
+IEnumerable&lt;WolfUser&gt; multipleUsers = await _client.GetUsersAsync(new uint[] { 2644384, 39404842 });
+</code></pre>
+<p>You can also retrieve bot's profile using <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetCurrentUserAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">GetCurrentUserAsync</a>, or bot's contacts using <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetContactListAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">GetContactListAsync</a>.</p>
+<h4 id="wolfgroup">WolfGroup</h4>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">GetGroupAsync</a> is the primary method to retrieve a <a class="xref" href="../../api/TehGM.Wolfringo.WolfGroup.html">WolfGroup</a>. The group can be retrieved by its ID or name.<br>
+If you want to retrieve multiple groups at once, it is recommended to use <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupsAsync_TehGM_Wolfringo_IWolfClient_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">GetGroupsAsync</a> instead.</p>
+<pre><code class="lang-csharp">WolfGroup oneGroup = await _client.GetGroupAsync(&quot;wolf&quot;);
+IEnumerable&lt;WolfGroup&gt; multipleGroups = await _client.GetGroupsAsync(new uint[] { 2, 1234 });
+</code></pre>
+<p>You can also retrieve all groups that the bot is in using <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetCurrentUserGroupsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">GetCurrentUserGroupsAsync</a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Sender Utility will make an attempt to automatically retrieve all group's members when retrieving a group. Unfortunately there is a bug in WOLF protocol, which sometimes causes server to not send group members even when requested.<br>
+If you need to access <a class="xref" href="../../api/TehGM.Wolfringo.WolfGroup.html">WolfGroup</a>'s <a class="xref" href="../../api/TehGM.Wolfringo.WolfGroup.html#TehGM_Wolfringo_WolfGroup_Members">Members</a> but the dictionary is empty, you can try requesting the group again - Sender Utility will notice that cached Members list is empty, and will attempt to retrieve it again.</p>
+</div>
+<h2 id="admin-actions">Admin Actions</h2>
+<p>If the user has sufficent privileges in a group, it can use Sender Utility to perform admin actions:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_AdminUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">AdminUserAsync</a> - gives an another user Admin privileges in a group.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ModUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">ModUserAsync</a> - gives an another user Mod privileges in a group.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ResetUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">ResetUserAsync</a> - resets an another user in a group.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_AdminUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">SilenceUserAsync</a> - silences an another user in a group.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_AdminUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">KickUserAsync</a> - kicks an another user from a group.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_AdminUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">BanUserAsync</a> - bans an another user from a group.</li>
+</ul>
+<pre><code class="lang-csharp">[Command(&quot;kick&quot;)]
+[GroupOnly]
+[RequireBotGroupMod]
+private async Task KickAsync(CommandContext context, uint userID)
+{
+    await context.Client.KickUserAsync(userID, context.Message.RecipientID);
+}
+</code></pre>
+<h2 id="updating-profiles">Updating Profiles</h2>
+<p>Updating bot's nickname (display name) and status is really easy - just use <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateNicknameAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">UpdateNicknameAsync</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateStatusAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">UpdateStatusAsync</a>.</p>
+<pre><code class="lang-csharp">await _client.UpdateNicknameAsync(&quot;MyBot&quot;);
+await _client.UpdateStatusAsync(&quot;Hi! Send \&quot;!mybot help\&quot; to check what I can do!&quot;);
+</code></pre>
+<p>If you want to update bot's (or any groups' that the bot has admin privileges in) profiles, you can use special <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">Sender</a>'s methods that take action as their parameter. These actions provide a special builder instance, that will be executed to construct an update message.<br>
+Sender Utility uses this approach to construct an update message that includes even data that will not be changed - this is required, as nulls would make WOLF server simply erase that data.</p>
+<pre><code class="lang-csharp">await _client.UpdateProfileAsync(profile =&gt;
+{
+    profile.About = &quot;Hello, I am a bot! Feel free to send me \&quot;!mybot help\&quot; to check what I can do!&quot;.
+    profile.Language = WolfLanguage.English;
+});
+</code></pre>
+<p>Group updates function in a similar manner - but you need to also provide ID of the group that you want to update:</p>
+<pre><code class="lang-csharp">await _client.UpdateGroupAsync(1234, group =&gt;
+{
+    profile.Description = &quot;Group for testing MyBot!&quot;;
+    profile.Language = WolfLanguage.English;
+});
+</code></pre>
+<h2 id="other-functionalities">Other functionalities</h2>
+<p>I listed just the most common usages of the Sender Utility. <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">Sender</a> class contains many more methods that you can use - check them in <a class="xref" href="../../api/TehGM.Wolfringo.Sender.html">API Reference</a>!</p>
+<h3 id="next-steps">Next Steps</h3>
+<p>Now you know how to send messages using Wolfringo. However the server might return an error sometimes - for example when your bot has no admin privileges when it tries to perform an admin action. Check <a class="xref" href="errors-handling.html">Errors Handling guide</a> to see how to deal with them.</p>
+<p>An another important feature that can improve your work with Wolfringo is <a class="xref" href="../commands/enabling-commands.html">Commands System</a>, so make sure you check it out!</p>
+<p><a href="https://www.nuget.org/packages/Wolfringo.Utilities">Wolfringo.Utilities</a> also includes support for interactive commands - check <a class="xref" href="interactive.html">Interactive Commands guide</a> for a tutorial.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Commands Requirements | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Commands Requirements | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Commands.Requirements">
+<h1 id="commands-requirements">Commands Requirements</h1>
+
+<p>Very often a bot's command is designed to work only in groups, require that user is a mod or admin, or even that the bot itself is a mod or admin. While it is possible to implement the checks in command's method, these tasks are quite common, so a fair bit of boilerplate code would be required - especially if you create multiple bots.</p>
+<p>Wolfringo Commands System aims to reduce the amount of boilerplate code, and that includes code required for such checks. For that reason, <a href="https://www.nuget.org/packages/Wolfringo.Commands">Wolfringo.Commands</a> includes some of the most common checks in form of easy to use attributes. Wolfringo Commands System also allows easy implementation of own attributes for checks - see <a class="xref" href="commands-requirements.html#custom-requirements">Custom Requirements</a> to see how to create one.</p>
+<h2 id="how-command-requirements-work">How Command Requirements work</h2>
+<p>After selecting a <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html">CommandAttributeBase</a>, such as <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandAttribute.html">[Command]</a> or <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html">[RegexCommand]</a>, it'll run <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandRequirement.html#TehGM_Wolfringo_Commands_ICommandRequirement_CheckAsync_TehGM_Wolfringo_Commands_ICommandContext_System_IServiceProvider_System_Threading_CancellationToken_">CheckAsync</a> method on each of the requirements, which will return an <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>. If any of the requirements return <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Failure">Failure</a>, execution of a command will be aborted. If any returns <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Skip">Skip</a>, execution of command will be skipped.</p>
+<p>If command execution is aborted, Commands System will stop processing the current message. If it's skipped, it'll attempt to run an another command.</p>
+<h4 id="error-messages">Error Messages</h4>
+<p>Requirements support error messages - if any is specified, in case of command execution being aborted, the message will be sent back to the user that invoked the command.<br>
+Most of built-in requirements (with exception of <a class="xref" href="../../api/TehGM.Wolfringo.Commands.IgnoreBotsAttribute.html">[IgnoreBots]</a>) have a default message specified. You can change that message freely by changing value of <a href="xref:TehGM.Wolfringo.Commands.ICommandRequirement.ErrorMessage">ErrorMessage</a> property.<br>
+You can also set ErrorMessage to <code>null</code> or empty string - in such case, no error response will be sent back by the bot.</p>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+[GroupOnly(ErrorMessage = &quot;(n) Please try in a group instead!&quot;)]
+private async Task ExampleAsync() { }
+</code></pre>
+<h4 id="skipping">Skipping</h4>
+<p>Skipping means that when requirement fails, the commands system will attempt to find next matching command instead of aborting completely.</p>
+<p>By default, all built-in requirements return <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Failure">Failure</a> if check fails. If for some reason you want fail to cause skipping, you can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.html#TehGM_Wolfringo_Commands_Attributes_CommandRequirementAttribute_AbortOnFail">AbortOnFail</a> property to <code>false</code>.</p>
+<p>By default, <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.html#TehGM_Wolfringo_Commands_Attributes_CommandRequirementAttribute_ErrorMessage">ErrorMessage</a> will be NOT sent when skipping. You can change that as well, by setting <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.html#TehGM_Wolfringo_Commands_Attributes_CommandRequirementAttribute_SendMessageWhenSkipping">SendMessageWhenSkipping</a> property to <code>true</code>.</p>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+[GroupOnly(ErrorMessage = &quot;(n) Please try in a group instead!&quot;, AbortOnFail = false, SendMessageWhenSkipping = true)]
+private async Task ExampleAsync() { }
+</code></pre>
+<h4 id="requirements-on-handlers">Requirements on Handlers</h4>
+<p>Command Requirements can be specified on the handler as well. When a handler is marked with a requirement, ALL of the commands in that handler will have that requirement. In the following example, ExampleAsync will only be run for messages that called this command from a group.</p>
+<pre><code class="lang-csharp">[CommandsHandler]
+[GroupOnly]
+private class ExampleHandler
+{
+    [Command(&quot;example&quot;)]
+    private async Task ExampleAsync()
+    {
+        // command code here will only be ran for commands called from group chats
+    }
+}
+</code></pre>
+<h4 id="multiple-requirements">Multiple Requirements</h4>
+<p>Multiple requirements can be specified on the same method or handler. When there are requirements on both, method and handler, they're automatically combined.<br>
+When there is more than one requirement for a command, they all need to pass. If at least one is not passed, the command execution is aborted.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Be cautious when mixing requirements. Some requirements, like <a class="xref" href="../../api/TehGM.Wolfringo.Commands.GroupOnlyAttribute.html">[GroupOnly]</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrivateOnlyAttribute.html">[PrivateOnly]</a> for example, are mutually exclusive - if you set them both for the same command, that command will always be aborted!</p>
+</div>
+<h2 id="built-in-requirements">Built-in Requirements</h2>
+<p>Wolfringo Commands System has some requirements built-in for convenience.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Requirement</th>
+<th>Behaviour</th>
+<th>Default Error Message</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.IgnoreBotsAttribute.html">[IgnoreBots]</a></td>
+<td>Prevents official bots (with BOT tag) from executing the command.</td>
+<td><code>null</code></td>
+<td><em>User-made bots don't have the tag, so can still use the command.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.GroupOnlyAttribute.html">[GroupOnly]</a></td>
+<td>Makes the command only usable in group chats.</td>
+<td>&quot;(n) This command can be used in groups only.&quot;</td>
+<td><em>Mutually exclusive with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrivateOnlyAttribute.html">[PrivateOnly]</a>.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrivateOnlyAttribute.html">[PrivateOnly]</a></td>
+<td>Makes the command only usable in private messages.</td>
+<td>&quot;(n) This command can be used in PM only.&quot;</td>
+<td><em>Mutually exclusive with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.GroupOnlyAttribute.html">[GroupOnly]</a>.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireGroupModAttribute.html">[RequireGroupMod]</a></td>
+<td>Requires the user invoking the command to have Mod, Admin or Owner role.</td>
+<td>&quot;(n) You need to be at least a mod to execute this command.&quot;</td>
+<td><em>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireGroupAdminAttribute.html">[RequireGroupAdmin]</a></td>
+<td>Requires the user invoking the command to have Admin or Owner role.</td>
+<td>&quot;(n) You need to be at least an admin to execute this command.&quot;</td>
+<td><em>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireGroupOwnerAttribute.html">[RequireGroupOwner]</a></td>
+<td>Requires the user invoking the command to have Owner role.</td>
+<td>&quot;(n) You need to be an owner to execute this command.&quot;</td>
+<td><em>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireBotGroupModAttribute.html">[RequireBotGroupMod]</a></td>
+<td>Requires the bot to have Mod, Admin or Owner role.</td>
+<td>&quot;(n) I need to be at least a mod to execute this command.&quot;</td>
+<td><em>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireBotGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireBotGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireBotGroupAdminAttribute.html">[RequireBotGroupAdmin]</a></td>
+<td>Requires the bot to have Admin or Owner role.</td>
+<td>&quot;(n) I need to be at least an admin to execute this command.&quot;</td>
+<td><em>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireBotGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireBotGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireBotGroupOwnerAttribute.html">[RequireBotGroupOwner]</a></td>
+<td>Requires the bot to have Owner role.</td>
+<td>&quot;(n) I need to be an owner to execute this command.&quot;</td>
+<td><em>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireBotGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireBotGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireUserEntertainerAttribute.html">[RequireUserEntertainer]</a></td>
+<td>Allows only Entertainer users (with ENTERTAINER tag) to run the command.</td>
+<td>&quot;(n) You need to be an Entertainer to execute this command.&quot;</td>
+<td><em>Some users might be entertainers even if they have a different tag - such as STAFF tag.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireUserStaffAttribute.html">[RequireUserStaff]</a></td>
+<td>Allows only Staff users (with STAFF tag) to run the command.</td>
+<td>&quot;(n) You need to be a Staff to execute this command.&quot;</td>
+<td>-</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireUserStaffAttribute.html">[RequireUserVolunteer]</a></td>
+<td>Allows only Volunteer users (with VOLUNTEER tag) to run the command.</td>
+<td>&quot;(n) You need to be a Volunteer to execute this command.&quot;</td>
+<td><em>Some users might be volunteers even if they have a different tag - such as STAFF tag.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireMaximumReputationAttribute.html">[RequireMaximumReputation(double)]</a></td>
+<td>Ensures that user calling the command has reputation level equal to or smaller than specified.</td>
+<td>&quot;(n) Your reputation is too high to execute this command.&quot;</td>
+<td><em>Care needed if used with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireMinimumReputationAttribute.html">[RequireMinimumReputation(double)]</a>.</em></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireMinimumReputationAttribute.html">[RequireMinimumReputation(double)]</a></td>
+<td>Ensures that user calling the command has reputation level equal to or greater than specified.</td>
+<td>&quot;(n) Your reputation is too low to execute this command.&quot;</td>
+<td><em>Care needed if used with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireMaximumReputationAttribute.html">[RequireMaximumReputation(double)]</a>.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="custom-requirements">Custom Requirements</h2>
+<p>You can also create your own requirements easily. All you need to do is create a new class that inherits from <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.html">CommandRequirementAttribute</a> (from <em>TehGM.Wolfringo.Commands.Attributes</em> namespace), and attach the new attribute to your command.</p>
+<p>Command Requirement's <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandRequirement.html#TehGM_Wolfringo_Commands_ICommandRequirement_CheckAsync_TehGM_Wolfringo_Commands_ICommandContext_System_IServiceProvider_System_Threading_CancellationToken_">CheckAsync</a> method has @System.IServiceProvider as one of its parameters. Whenever <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> runs checks, its services will be provided via this parameter. You can use it to gain access to your own services - for example your Database class, or whatever else you might need! To check how to add your services to the provider, see <a class="xref" href="dependency-injection.html">Dependency Injection guide</a>!</p>
+<p>The example below is taken directly from my Size Bot. It uses dependency injection to access one of database services (<em>IUserDataStore</em>), and then checks if user has administrative privileges within the bot - which allows to prevent unauthorized users from changing bot's settings, restarting it, etc:</p>
+<pre><code class="lang-csharp">using TehGM.Wolfringo.Commands.Attributes;
+
+public class RequireBotAdminAttribute : CommandRequirementAttribute
+{
+    public RequireBotAdminAttribute() : base()
+    {
+        ErrorMessage = &quot;(n) You are not permitted to do this!&quot;;
+    }
+
+    public override async Task&lt;ICommandResult&gt; CheckAsync(ICommandContext context, IServiceProvider services, CancellationToken cancellationToken = default)
+    {
+        IUserDataStore userDataStore = services.GetRequiredService&lt;IUserDataStore&gt;();
+        // check if user is bot admin
+        UserData userData = await userDataStore.GetUserDataAsync(context.Message.SenderID.Value, cancellationToken).ConfigureAwait(false);
+        return base.ResultFromBoolean(userData.IsBotAdmin);
+    }
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>You can also view this example on GitHub: <a href="https://github.com/TehGM/WolfBot-Size/blob/master/PicSizeCheckBot/CommandsExtensions/RequireBotAdminAttribute.cs">https://github.com/TehGM/WolfBot-Size/blob/master/PicSizeCheckBot/CommandsExtensions/RequireBotAdminAttribute.cs</a></p>
+</div>
+<h4 id="specialized-base-classes">Specialized base classes</h4>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.html">CommandRequirementAttribute</a> is the default base class for commands requirements, and will be used for custom requirements most of the time.<br>
+But <em>TehGM.Wolfringo.Commands.Attributes</em> namespace has a few other base attributes as well. These attributes can be used directly, or extended (by using inheritance) to make creating your own requirements easier.</p>
+<h5 id="requiregroupprivilegeattribute">RequireGroupPrivilegeAttribute</h5>
+<p>This attribute ensures that the user invoking the command has at least one of the specified group privileges. Its constructor takes <a class="xref" href="../../api/TehGM.Wolfringo.WolfGroupCapabilities.html">WolfGroupCapabilities</a>. You can provide multiple flags, for example <code>WolfGroupCapabilities.Admin | WolfGroupCapabilities.Owner</code> - this will allow either Admin OR Owner to run the command.</p>
+<p>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</p>
+<p>Default error message is &quot;(n) You don't have enough group privileges to execute this command.&quot;.</p>
+<p>This attribute is a base class for <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireGroupModAttribute.html">[RequireGroupMod]</a>, <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireGroupAdminAttribute.html">[RequireGroupAdmin]</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireGroupOwnerAttribute.html">[RequireGroupOwner]</a>.</p>
+<h5 id="requirebotgroupprivilegeattribute">RequireBotGroupPrivilegeAttribute</h5>
+<p>This attribute ensures that the bot has at least one of the specified group privileges. Its constructor takes <a class="xref" href="../../api/TehGM.Wolfringo.WolfGroupCapabilities.html">WolfGroupCapabilities</a>. You can provide multiple flags, for example <code>WolfGroupCapabilities.Admin | WolfGroupCapabilities.Owner</code> - this will allow command to be ran if the bot is either Admin OR Owner.</p>
+<p>By default, this also makes the command group-only. You can set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Attributes.RequireBotGroupPrivilegeAttribute.html#TehGM_Wolfringo_Commands_Attributes_RequireBotGroupPrivilegeAttribute_IgnoreInPrivate">IgnoreInPrivate</a> to true to make it work in PM for everyone.</p>
+<p>Default error message is &quot;(n) I don't have enough group privileges to execute this command.&quot;.</p>
+<p>This attribute is a base class for <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireBotGroupModAttribute.html">[RequireBotGroupMod]</a>, <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireBotGroupAdminAttribute.html">[RequireBotGroupAdmin]</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireBotGroupOwnerAttribute.html">[RequireBotGroupOwner]</a>.</p>
+<h5 id="requireuserprivilegeattribute">RequireUserPrivilegeAttribute</h5>
+<p>This attribute ensures that the user invoking the command has at least one of the specified account privileges. Its constructor takes <a class="xref" href="../../api/TehGM.Wolfringo.WolfPrivilege.html">WolfPrivilege</a>. You can provide multiple flags, for example <code>WolfPrivilege.Volunteer | WolfPrivilege.Staff</code> - this will allow either Volunteer OR Staff to run the command.</p>
+<p>Default error message is &quot;(n) You don't have enough user privileges to execute this command.&quot;.</p>
+<p>This attribute is a base class for <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireUserEntertainerAttribute.html">[RequireUserEntertainer]</a>, <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireUserStaffAttribute.html">[RequireUserVolunteer]</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RequireUserStaffAttribute.html">[RequireUserStaff]</a>.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

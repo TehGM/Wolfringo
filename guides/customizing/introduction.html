@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Customizing Wolfringo - Intro | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Customizing Wolfringo - Intro | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Customizing.Intro">
+<h1 id="customizing-wolfringo">Customizing Wolfringo</h1>
+
+<p>Wolfringo is designed with customizability from ground up. It achieves it mainly thanks to heavy use of Abstractions and Dependency Injection. Constructors of both <a class="xref" href="../../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> take an <a href="xref:System.IServiceProvider">IServiceProvider</a> to resolve their dependencies, and <a class="xref" href="../../api/TehGM.Wolfringo.WolfClientBuilder.html">WolfClientBuilder</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a> have special methods for registering/overwriting services. This allows you to replace most components of Wolfringo without having to clone and recompile it yourself!</p>
+<p>Check navigation menu for guides how to customize specific parts of Wolfringo.</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_configuring-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_configuring-normal-bot" data-tab="configuring-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_configuring-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_configuring-hosted-bot" data-tab="configuring-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_configuring-normal-bot" role="tabpanel" data-tab="configuring-normal-bot">
+<h4 id="replacing-wolfclient-dependencies">Replacing WolfClient dependencies</h4>
+<p>To replace any of <a class="xref" href="../../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a> dependencies, use <code>With...</code> commands on the builder.</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithResponseTypeResolver&lt;MyResponseTypeResolver&gt;()
+    // alternatively, factory and instance patterns are also allowed
+    //.WithResponseTypeResolver(provider =&gt; new MyResponseTypeResolver())
+    //.WithResponseTypeResolver(_responseTypeResolver)
+    .Build();
+</code></pre>
+<h4 id="replacing-commandsservice-dependencies">Replacing CommandsService dependencies</h4>
+<p>To replace any of <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> dependencies, use <code>With...</code> commands on the builder.</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    // ... client config ...
+    .WithCommands(commands =&gt;
+    {
+        commands
+            .WithArgumentsParser&lt;MyArgumentsParser&gt;()
+            // alternatively, factory and instance patterns are also allowed
+            //.WithArgumentsParser(provider =&gt; new MyArgumentsParser())
+            //.WithArgumentsParser(precreatedCustomResolver)
+    })
+    .Build();
+</code></pre>
+</section>
+<section id="tabpanel_bHGHmlrG6S_configuring-hosted-bot" role="tabpanel" data-tab="configuring-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<p>To replace any interface of Wolfringo, simply register it as you would register any other service. Wolfringo should automatically pick it up.</p>
+<pre><code class="lang-csharp">services.AddTransient&lt;IResponseTypeResolver, MyResponseTypeResolver&gt;();
+services.AddTransient&lt;IArgumentsParser, MyArgumentsParser&gt;();
+</code></pre>
+<p>Refer to <a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection">Dependency injection in .NET</a> and <a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.0">Dependency injection in ASP.NET Core</a> for more information about Dependency Injection in <a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0">.NET Generic Host</a>/<a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.0">ASP.NET Core</a>.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Check <a href="https://github.com/TehGM/Wolfringo/tree/master/Wolfringo.Hosting/WolfClientServiceCollectionExtensions.cs">WolfClientServiceCollectionExtensions</a> and <a href="https://github.com/TehGM/Wolfringo/tree/master/Wolfringo.Hosting/Commands/CommandsServiceCollectionExtensions.cs">CommandsServiceCollectionExtensions</a> to check what lifetimes the services are registered with by default.</p>
+</div>
+</section>
+</div>
+<h2 id="idisposable-services">IDisposable services</h2>
+<p>Your custom service can implement @System.IDisposable - both <a class="xref" href="../../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> handle disposable services depending on how they were registered.</p>
+<p>Service will be automatically disposed for you when <a class="xref" href="../../api/TehGM.Wolfringo.WolfClient.html">WolfClient</a>/<a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> is disposing service was registered by either:</p>
+<ul>
+<li>using generic method (<code>WithResponseTypeResolver&lt;MyResponseTypeResolver&gt;()</code>;</li>
+<li>using factory method (<code>WithResponseTypeResolver(provider =&gt; new MyResponseTypeResolver())</code>;</li>
+<li>using Wolfringo.Hosting.</li>
+</ul>
+<p>If service was registered using concrete type, or you didn't use <a class="xref" href="../../api/TehGM.Wolfringo.WolfClientBuilder.html">WolfClientBuilder</a> or <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html">CommandsServiceBuilder</a> and opted to use constructors directly, you'll need to dispose these services manually.<br>
+This is because Wolfringo has no way to know whether you're using these services in other places - disposing them in such case would break your code.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

@@ -1,0 +1,479 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating Commands | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating Commands | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Commands.Handlers">
+<h1 id="creating-commands">Creating Commands</h1>
+
+<h2 id="handlers">Handlers</h2>
+<p>Wolfringo Commands System works using &quot;Handlers&quot;. Commands Handlers are classes where all command methods reside. Commands System will automatically create instances of these classes.</p>
+<p>Commands Handlers have a few requirements:</p>
+<ul>
+<li>They <strong>cannot</strong> be static.</li>
+<li>They <strong>cannot</strong> be abstract.</li>
+<li>If they have a custom constructor, all of its parameters must be possible to resolve using <a class="xref" href="dependency-injection.html">Dependency Injection</a>.</li>
+<li>Are marked with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsHandlerAttribute.html">[CommandsHandler] attribute</a>.
+<blockquote>
+<p>An exception to this rule are handlers that are added individually to <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html#TehGM_Wolfringo_Commands_CommandsOptions_Classes_">CommandsOptions.Classes</a>.</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="lang-csharp">[CommandsHandler]
+private class MyCommandsHandler
+{
+    // any code goes here
+}
+</code></pre>
+<h3 id="handlers-lifetime">Handlers lifetime</h3>
+<p>By default, all handlers are <strong>non-persistent</strong> (aka <strong>transient</strong>), and are stateless. A new instance is created just before a command is executed, and discarded as soon as the command execution finishes.</p>
+<p>For majority of use cases, transient handlers are perfectly fine. There are 2 exceptions to this:</p>
+<ul>
+<li>Your handler needs to listen to any events - be it of <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> or any other object.</li>
+<li>Your handler needs to store some state in its properties or variables.</li>
+</ul>
+<p>If your handler meets either of these criteria, you can mark handler as <strong>persistent</strong> (aka <strong>singleton</strong>). These handlers are created as soon as <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html#TehGM_Wolfringo_Commands_CommandsService_StartAsync_System_Threading_CancellationToken_">CommandService.StartAsync()</a> is called, and will be kept in memory until Commands Service is disposed or application terminates.<br>
+To mark handler as persistent, set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsHandlerAttribute.html#TehGM_Wolfringo_Commands_CommandsHandlerAttribute_IsPersistent">IsPersistent</a> to true:</p>
+<pre><code class="lang-csharp">[CommandsHandler(IsPersistent = true)]
+private class MyPersistentCommandsHandler
+{
+    // use any properties or event listeners here
+}
+</code></pre>
+<h3 id="disposable-handlers">Disposable Handlers</h3>
+<p>Sometimes Commands Handlers use unmanaged resources or other disposable classes inside. If your handler needs to be disposed, just make it implement @System.IDisposable interface.</p>
+<pre><code class="lang-csharp">[CommandsHandler]
+private class MyDisposableCommandsHandler : IDisposable
+{
+    public void Dispose()
+    {
+        // your disposing logic here
+    }
+}
+</code></pre>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> will automatically call Dispose() on these handlers. Non-persistent handlers will be disposed as soon as command execution finishes. Persistent handlers will be disposed when <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html#TehGM_Wolfringo_Commands_CommandsService_Dispose">CommandsService.Dispose()</a> is called, or application is exiting.</p>
+<h3 id="multiple-constructors">Multiple constructors</h3>
+<p>If your handler has multiple constructors, the commands system will attempt to use the one that it can resolve the most parameters for. If it can't resolve any of the parameters, <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> will log an error, and fail to execute any command from that handler.</p>
+<p>By default, all non-static constructors in the handler will be taken into account. If you have a constructor (or multiple constructors) that you want to be used by Commands System, you can give it a <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute.html">[CommandsHandlerConstructor] attribute</a>. If any of the constructors has this attribute, Commands System will ignore all constructors without this attribute.</p>
+<p>If multiple constructors are marked with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute.html">[CommandsHandlerConstructor] attribute</a>, by default Commands System will try to find the constructor that it can resolve most attributes for - just like when none of the constructors have the attribute. You can override this by giving <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute.html">[CommandsHandlerConstructor]</a> a priority value.</p>
+<pre><code class="lang-csharp">[CommandsHandler]
+private class ExampleCommandsHandler
+{
+    // constructor with priority of 10
+    [CommandsHandlerConstructor(10)]
+    public ExampleCommandsHandler(IWolfClient client)
+    {
+        // ...
+    }
+}
+</code></pre>
+<p>Commands System will attempt to use constructors with higher priority before constructors with lower priority. If you don't specify priority, the constructor will have default priority of 0.</p>
+<h2 id="commands-methods">Commands methods</h2>
+<p>Commands methods are the methods that are executed when command is invoked. Commands methods:</p>
+<ul>
+<li><strong>Cannot</strong> be static</li>
+<li>Should <strong>not</strong> be &quot;async void&quot;. If you need &quot;async&quot; in your command, return a @System.Threading.Tasks.Task or a @System.Threading.Tasks.Task`1 instead.</li>
+<li>If needed, can return <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a> or <a href="xref:System.Threading.Tasks.Task%601">Task&lt;ICommandResult&gt;</a></li>
+<li>Need to be marked as a command.</li>
+</ul>
+<h3 id="marking-method-as-a-command">Marking method as a command</h3>
+<p>Wolfringo Commands System includes support for 2 types of commands - Standard and Regex.</p>
+<p>Standard Commands are marked with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandAttribute.html">[Command] attribute</a>. They are most basic commands, and you might be accomodated with them if you used other bot libraries.<br>
+Regex Commands are marked with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html">[RegexCommand] attribute</a>. They utilize power of <a href="https://docs.microsoft.com/en-gb/dotnet/standard/base-types/regular-expressions">Regular Expressions</a> to allow advanced text processing and matching.</p>
+<pre><code class="lang-csharp">[Command(&quot;standard&quot;)]
+private async Task StandardCommandExampleAsync()
+{
+    // command code
+}
+
+[RegexCommand(&quot;^regex&quot;)]
+private async Task RegexCommandExampleAsync()
+{
+    // command code
+}
+
+</code></pre>
+<h3 id="command-parameters">Command parameters</h3>
+<p>A command would be useless if it had no knowledge on what the message is, or how to reply to the user. This information is provided to commands methods by Commands System via parameters.<br>
+Commands can have following types of parameters:</p>
+<h4 id="commandcontext">CommandContext</h4>
+<p>Command context represents fundamental information about the command being executed, such as the message or wolf client instance. To use the context, use <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html">CommandContext</a> or <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandContext.html">ICommandContext</a> as parameter type.</p>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+private async Task ExampleAsync(CommandContext context)
+{
+    // command code here
+}
+</code></pre>
+<p>Command context provides following properties:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Message">Message</a> - a <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a> that triggered the command. Using this property, you can also ID of the user that sent the command, whether it was a group or private message, or ID of the recipient.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Client">Client</a> - a <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> that received the message. You can use this client to request profiles, send messages, or communicate with WOLF server.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Options">Options</a> - an instance of <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a>. This will be the same options as the ones that were configured when <a class="xref" href="enabling-commands.html">Enabling Commands</a> in your bot.</li>
+</ul>
+<p>Command context also has a few extension methods that make building commands easier:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_GetSenderAsync_TehGM_Wolfringo_Commands_ICommandContext_System_Threading_CancellationToken_">GetSenderAsync()</a> - retrieves the <a class="xref" href="../../api/TehGM.Wolfringo.WolfUser.html">WolfUser</a> that sent the command.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_GetBotProfileAsync_TehGM_Wolfringo_Commands_ICommandContext_System_Threading_CancellationToken_">GetBotProfileAsync()</a> - retrieves the profile (<a class="xref" href="../../api/TehGM.Wolfringo.WolfUser.html">WolfUser</a>) of the client that received the message (so, profile of the bot).</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_GetRecipientAsync__1_TehGM_Wolfringo_Commands_ICommandContext_System_Threading_CancellationToken_">GetRecipientAsync&lt;T&gt;()</a> - retrieves the recipient of the message.<br>
+If <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Message">CommandContext.Message</a> is a group message, <code>T</code> should be <a class="xref" href="../../api/TehGM.Wolfringo.WolfGroup.html">WolfGroup</a>.<br>
+If <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Message">CommandContext.Message</a> is a private message, <code>T</code> should <a class="xref" href="../../api/TehGM.Wolfringo.WolfUser.html">WolfUser</a>, and will work the same as <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_GetBotProfileAsync_TehGM_Wolfringo_Commands_ICommandContext_System_Threading_CancellationToken_">GetBotProfileAsync()</a>.<br>
+If you provide wrong generic type, this method will return <code>null</code>.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_ReplyTextAsync_TehGM_Wolfringo_Commands_ICommandContext_System_String_System_Threading_CancellationToken_">ReplyTextAsync(text)</a> - sends a text response.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_ReplyImageAsync_TehGM_Wolfringo_Commands_ICommandContext_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">ReplyImageAsync(text)</a> - sends an image response.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContextExtensions.html#TehGM_Wolfringo_Commands_CommandContextExtensions_ReplyVoiceAsync_TehGM_Wolfringo_Commands_ICommandContext_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">ReplyVoiceAsync(text)</a> - sends a voice response.</li>
+</ul>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+private async Task ExampleAsync(CommandContext context)
+{
+    await context.ReplyTextAsync(&quot;Test passed!&quot;);
+}
+</code></pre>
+<h4 id="iwolfclient">IWolfClient</h4>
+<p>You can pass <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a> as parameter. It'll be the same client as <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Client">CommandContext.Client</a> property.</p>
+<h4 id="chatmessage">ChatMessage</h4>
+<p>You can pass <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a> as parameter. It'll be the same message as <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandContext.html#TehGM_Wolfringo_Commands_CommandContext_Message">CommandContext.Message</a> property.</p>
+<h4 id="command-arguments">Command Arguments</h4>
+<p>Any text from message after the command itself is treated as arguments. A parameter will be treated as an argument if its type isn't any of the types mentioned above, and an <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Parsing.IArgumentConverter.html">IArgumentConverter</a> is registered in <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Parsing.IArgumentConverterProvider.html">IArgumentConverterProvider</a>. Types supported by default:</p>
+<ul>
+<li>@System.String</li>
+<li>@System.Boolean</li>
+<li>@System.Char</li>
+<li>@System.DateTime</li>
+<li>@System.DateTimeOffset</li>
+<li>@System.TimeSpan</li>
+<li>@System.Int16, @System.UInt16</li>
+<li>@System.Int32, @System.UInt32</li>
+<li>@System.Int64, @System.UInt64</li>
+<li>@System.Byte, @System.SByte</li>
+<li>@System.Single</li>
+<li>@System.Double</li>
+<li>@System.Decimal</li>
+<li>@System.Numerics.BigInteger</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.WolfTimestamp.html">WolfTimestamp</a></li>
+<li>Any enum type</li>
+</ul>
+<h5 id="arguments-splitting">Arguments splitting</h5>
+<p>The way arguments are split varies between Standard and Regex commands.</p>
+<p>In Standard commands, arguments are split by space, unless they're grouped. Commands are grouped if they're wrapped into <code>&quot; &quot;</code>, <code>[ ]</code> or <code>( )</code>.<br>
+Example: assume that you have a command <code>[Command(&quot;test&quot;)]</code>, and prefix is <code>!</code>.<br>
+If user sends &quot;!test foo bar 2 my group&quot;, there will be 5 arguments: <code>foo</code>, <code>bar</code>, <code>2</code>, <code>my</code> and <code>group</code>.<br>
+If user sends &quot;!test foo (bar 2) [my group]&quot;, there will be 3 arguments: <code>foo</code>, <code>bar 2</code> and <code>my group</code>.</p>
+<p>In Regex commands, arguments will represent value of each of <a href="https://docs.microsoft.com/en-gb/dotnet/standard/base-types/grouping-constructs-in-regular-expressions">regex groups</a>.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>The markers (<code>&quot; &quot;</code>, <code>[ ]</code> and <code>( )</code>) can be modified by changing <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Parsing.ArgumentsParserOptions.html">ArgumentsParserOptions</a>.<br>
+In normal bots, manual creation of <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Parsing.ArgumentsParser.html">ArgumentsParser</a> and providing it to Commands Service using <a class="xref" href="dependency-injection.html">Dependency Injection</a>.<br>
+In bots using Wolfringo.Hosting, you can use methods like <a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_AddArgumentBlockMarker_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_System_Char_System_Char_">AddArgumentBlockMarker(char, char)</a> or <a class="xref" href="../../api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html#Microsoft_Extensions_DependencyInjection_CommandsServiceCollectionExtensions_RemoveArgumentBlockMarker_Microsoft_Extensions_DependencyInjection_IHostedCommandsServiceBuilder_System_Char_">RemoveArgumentBlockMarker(char)</a>, or use <a href="https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.0">Options Pattern</a>.</p>
+</div>
+<h5 id="arguments-order">Arguments order</h5>
+<p>Arguments are ordered as they appear in message. They'll be attempted to be converted and inserted into the method in the same order.</p>
+<p>Assume that you have a command <code>[Command(&quot;test&quot;)]</code>, and prefix is <code>!</code>.<br>
+User sends &quot;!test foo bar&quot;.</p>
+<pre><code class="lang-csharp">[Command(&quot;test&quot;)]
+private async Task TestAsync(string argument1, string argument2)
+{
+    Console.WriteLine(argument1);	// will print &quot;foo&quot;
+    Console.WriteLine(argument2);	// will print &quot;bar&quot;
+}
+</code></pre>
+<h5 id="customizing-error-messages">Customizing error messages</h5>
+<p>When user invokes a command and argument is missing or cannot be converted, Commands System will automatically reply with a default error message. You can customize these errors using attributes:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.MissingErrorAttribute.html">[MissingError(text)]</a> to customize error when user didn't provide the argument at all;</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html">[ConvertingError(text)]</a> to customize error when converting of an argument failed.</li>
+</ul>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+private async Task ExampleAsync(
+    [ConvertingError(&quot;(n) '{{Arg}}' is not a valid number!&quot;)]
+    [MissingError(&quot;(n) You need to provide delay value!&quot;)] int number)
+{
+    // command code here
+}
+</code></pre>
+<p>As example above shows, these custom messages can also have placeholders inside of them. These placeholders will be automatically replaced with corresponding values:</p>
+<ul>
+<li><code>{{Arg}}</code> - value of the argument as provided by user sending the message. Will be replaced with empty string when used with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.MissingErrorAttribute.html">[MissingError(text)] attribute</a>.</li>
+<li><code>{{Type}}</code> - parameter type.</li>
+<li><code>{{Name}}</code> - parameter name.</li>
+<li><code>{{Message}}</code> - all text of the message sent by the user when invoking the command.</li>
+<li><code>{{SenderNickname}}</code> - nickname (display name) of the user that invoked the command.</li>
+<li><code>{{SenderID}}</code> - ID of the user that invoked the command.</li>
+<li><code>{{BotNickname}}</code> - nickname (display name) of the bot.</li>
+<li><code>{{BotID}}</code> - ID of the bot.</li>
+<li><code>{{RecipientID}}</code> - ID of the message recipient (bot ID for private messages, group ID for group messages).</li>
+<li><code>{{RecipientName}}</code> - name of the message recipient (bot nickname for private messages, group name for group messages).</li>
+</ul>
+<p>You can also set text to <code>null</code> or empty string - in such case, error response will be disabled for that command.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html">[ConvertingError(text)]</a> will never be triggered if parameter type is @System.String, as arguments are handled as strings internally.</p>
+</div>
+<h5 id="optional-arguments">Optional arguments</h5>
+<p>To mark argument as optional, set a default value for that parameter:</p>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+private async Task ExampleAsync(string optionalArgument = null)
+{
+    // command code here
+}
+</code></pre>
+<p>Optional arguments will not cause an error if they're missing - command will still run, and parameter will simply use the default value.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Optional values disable <a class="xref" href="../../api/TehGM.Wolfringo.Commands.MissingErrorAttribute.html">[MissingError(text)]</a>, but they do <strong>not</strong> disable <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html">[ConvertingError(text)]</a> - bot will still reply with an error if optional argument was provided, but converting has failed.</p>
+</div>
+<h5 id="catch-all">Catch-all</h5>
+<p>If you use an array of <a href="xref:System.String">strings</a> (<code>string[]</code>) as a parameter type, all arguments will be inserted into it.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><a class="xref" href="creating-commands.html#arguments-splitting">Argument Group</a> markers will not be included, only the values themselves. If you want to grab raw text of the arguments, use see <a href="#arguments-text">Arguments Text</a> below.</p>
+</div>
+<h4 id="arguments-text">Arguments Text</h4>
+<p>If you want to see all arguments as single string before they're <a href="#command-arguments">split up</a>, you can add a new string parameter and mark it with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ArgumentsTextAttribute.html">[ArgumentsText] attribute</a>.</p>
+<p>Assume that in following example, the user sends <code>!say Hello, this is some text (with parentheses!)</code>:</p>
+<pre><code class="lang-csharp">[Prefix(&quot;!&quot;)]
+[Command(&quot;say&quot;)]
+private async Task ExampleAsync([ArgumentsText] string text)
+{
+    Console.WriteLine(text);	// will print &quot;Hello, this is some text (with parentheses!)&quot;
+}
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>When used with Regex command, this will return entire regex match text. This is because with Regex commands, Wolfringo has no way to separate command name from the arguments.
+You can instead use <a href="https://docs.microsoft.com/en-gb/dotnet/standard/base-types/grouping-constructs-in-regular-expressions">groups</a> in your regex, and inject Regex @System.Text.RegularExpressions.Match into your command.</p>
+</div>
+<h4 id="icommandoptions">ICommandOptions</h4>
+<p>By using <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandOptions.html">ICommandOptions</a> you can get the values of prefix, prefix requirement and case sensitivity for this command. These options will automatically use overrides from command's arguments (such as <a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrefixAttribute.html">[Prefix]</a>) if there are any.</p>
+<h4 id="cancellationtoken">CancellationToken</h4>
+<p>You can pass @System.Threading.CancellationToken as paremeter. You can then use this cancellation token in your other asynchronous calls. This cancellation token will be set to cancelled when <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> is being disposed - for example when the application is exiting.</p>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+private async Task ExampleAsync(CommandContext context, CancellationToken cancellationToken)
+{
+    string fileContents = await File.ReadAllTextAsync(&quot;myfile.txt&quot;, cancellationToken);
+}
+</code></pre>
+<h4 id="regex-match">Regex Match</h4>
+<p>For Regex commands, you can use Regex @System.Text.RegularExpressions.Match as one of the arguments. This will output the exact regex match for your regex command (therefore won't include prefix).</p>
+<pre><code class="lang-csharp">[RegexCommand(&quot;^log (.+)$&quot;)]
+public void CmdLog(Match match, ILogger log)
+{
+    log.LogInformation(match.Groups[1].Value);
+}
+</code></pre>
+<h4 id="ilogger">ILogger</h4>
+<p>If you enabled logging when you were creating <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> (by passing a logger into constructor, or using .NET Generic Host/ASP.NET Core), you can pass in an instance of @Microsoft.Extensions.Logging.ILogger. You can then use that in your command code to log anything you want.</p>
+<h4 id="dependency-injection-services">Dependency Injection services</h4>
+<p>Any services registered with <a class="xref" href="dependency-injection.html">Dependency Injection</a> can also be used as a parameter. Please check <a class="xref" href="dependency-injection.html">Dependency Injection guide</a> for more information.</p>
+<h4 id="icommandinstance">ICommandInstance</h4>
+<p>Internally, all <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandAttribute.html">[Command]</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html">[RegexCommand]</a> are converted into command instance objects. For most scenarios this just a fun-fact, but sometimes (for example, when using <a class="xref" href="creating-commands.html#aliases">Aliases</a>) you may want to get access to the instance of the class. To do so, simply add a parameter of type <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html">ICommandInstance</a>.</p>
+<h3 id="commands-priorities">Commands Priorities</h3>
+<p>Unless you use <a class="xref" href="creating-commands.html#returning-icommandresult">ICommandResult</a>, Commands System will execute maximum of <strong>one</strong> command method, even if multiple commands could be triggered by user's text. For example: <code>[Command(&quot;test&quot;)]</code> and <code>[Command(&quot;test2&quot;)]</code>.<br>
+If you want to control which command gets attempted first, use <a class="xref" href="../../api/TehGM.Wolfringo.Commands.PriorityAttribute.html">[Priority(value)] attribute</a>. Commands with highest priority value will be checked first.</p>
+<pre><code class="lang-csharp">[Command(&quot;example&quot;)]
+[Priority(5)]
+public async Task Example1()
+{
+    // command code here
+}
+[Command(&quot;example&quot;)]
+[Priority(15)]
+public async Task Example2()
+{
+    // command code here
+}
+</code></pre>
+<p>In the example above, command Example1 will never be executed, because Example2 has the same text, but higher priority.</p>
+<h3 id="overriding-options">Overriding Options</h3>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> class holds default settings for commands - you can customize them when <a class="xref" href="enabling-commands.html">enabling Commands System</a>. On top of that, you can also change these settings using attributes.<br>
+These attributes can be put on the command method or on the entire handler. Commands options are checked in the following order:</p>
+<ol>
+<li>Attributes on the method.</li>
+<li>Attributes on the handler.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a> instance.</li>
+</ol>
+<p>For example, in following example, Prefix for ExampleCommand1 will be <code>!</code>, but for ExampleCommand2 it will be <code>?</code>:</p>
+<pre><code class="lang-csharp">[CommandsHandler]
+[Prefix(&quot;!&quot;)]
+private class ExampleCommandsHandler
+{
+    [Command(&quot;example1&quot;)]
+    private void ExampleCommand1() { }
+
+    [Command(&quot;example2&quot;)]
+    [Prefix(&quot;?&quot;)]
+    private void ExampleCommand2() { }
+}
+</code></pre>
+<p>Following attributes are available for use:</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrefixAttribute.html">[Prefix(string)]</a> - overrides command's prefix.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrefixAttribute.html">[Prefix(PrefixRequirement)]</a> - overrides command's prefix requirement.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.PrefixAttribute.html">[Prefix(string, PrefixRequirement)]</a> - overrides both command's prefix and prefix requirement.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.CaseSensitivityAttribute.html">[CaseSensitivity(bool)]</a> - overrides command's case sensitivity.</li>
+</ul>
+<h3 id="aliases">Aliases</h3>
+<p>Wolfringo does not have <code>[Alias]</code> attribute. Instead, the same method can have multiple attributes. Internally they're completely separate command instances, but because Commands System only ever runs one command at once, they'll work as if they were aliases.</p>
+<pre><code class="lang-csharp">[Command(&quot;alias 1&quot;)]
+[Command(&quot;alias 2&quot;)]
+public Task ExampleAsync()
+{
+    // command code
+}
+</code></pre>
+<h3 id="returning-icommandresult">Returning ICommandResult</h3>
+<p>By default, Wolfringo's <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsService.html">CommandsService</a> will consider command successful if it ran fully, or failed if any exception was thrown. In either of these cases, the Commands System will stop processing the received message, so no further <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandAttribute.html">[Command] attribute</a> or <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html">[RegexCommand] attribute</a> will be attempted.</p>
+<p>However if you wish, you can mark the command as skipped instead - in such case, Wolfringo will attempt to execute other commands if they match. To do so, you can return <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a> or <a href="xref:System.Threading.Tasks.Task%601">Task&lt;ICommandResult&gt;</a> and set the <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandResult.html#TehGM_Wolfringo_Commands_ICommandResult_Status">Status</a> property to <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html#TehGM_Wolfringo_Commands_Results_CommandResultStatus_Skip">Skip</a>. You can return any type of <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandResult.html">ICommandResult</a>, but the built-in <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Results.CommandExecutionResult.html">CommandExecutionResult</a> is sufficient for most use cases.</p>
+<pre><code class="lang-csharp">using TehGM.Wolfringo.Commands.Results;
+
+[Command(&quot;example&quot;)]
+[Priority(5)]
+public async Task&lt;ICommandResult&gt; Example1()
+{
+    // command code here
+    return CommandExecutionResult.Skip;
+}
+[Command(&quot;example&quot;)]
+[Priority(15)]
+public async Task Example2()
+{
+    // because Example1 returned result CommandResultStatus.Skip, this method will run as well!
+    // command code here
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>For internal purposes, <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Results.CommandExecutionResult.html">CommandExecutionResult</a> can have Exception property. However it is recommended to not use it for that purpose - simply throw the exception instead!</p>
+</div>
+<h2 id="whats-next">What's next?</h2>
+<h3 id="examples">Examples</h3>
+<p>Example projects include example Commands Handlers:</p>
+<ul>
+<li>Check <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/ExampleTransientCommandsHandler.cs">ExampleTransientCommandsHandler.cs</a> for more examples on creating commands methods.</li>
+<li>Check <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/ExamplePersistentCommandsHandler.cs">ExamplePersistentCommandsHandler.cs</a> for example on Persistent (singleton) handler.</li>
+</ul>
+<h3 id="moving-further">Moving further</h3>
+<p>Now you are able to create new commands using Wolfringo Commands System, but the system's possibilities do not end here.</p>
+<p>If you want to check how to avoid repetitive code even further, check out <a class="xref" href="commands-requirements.html">Commands Requirements guide</a>.<br>
+Make sure to also check out <a class="xref" href="dependency-injection.html">Dependency Injection guide</a> to learn how to let commands use other systems in your bot!</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

@@ -1,0 +1,894 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IWolfClient
+   | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IWolfClient
+   | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../styles/colors.css">
+    <link rel="stylesheet" href="../styles/discord.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../index.html">
+              <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../index.html">
+                        <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="TehGM.Wolfringo.IWolfClient">
+  
+  
+  <h1 id="TehGM_Wolfringo_IWolfClient" data-uid="TehGM.Wolfringo.IWolfClient" class="text-break">Interface IWolfClient
+  </h1>
+  <div class="markdown level0 summary"><p>A Wolf client.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TehGM.Wolfringo.html">TehGM.Wolfringo</a></h6>
+  <h6><strong>Assembly</strong>: Wolfringo.Core.dll</h6>
+  <h5 id="TehGM_Wolfringo_IWolfClient_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IWolfClient</code></pre>
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_CurrentUserID.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.CurrentUserID%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L13">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_IWolfClient_CurrentUserID_" data-uid="TehGM.Wolfringo.IWolfClient.CurrentUserID*"></a>
+  <h4 id="TehGM_Wolfringo_IWolfClient_CurrentUserID" data-uid="TehGM.Wolfringo.IWolfClient.CurrentUserID">CurrentUserID</h4>
+  <div class="markdown level1 summary"><p>Currently logged in user. Null if not connected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">uint? CurrentUserID { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt32</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_AddMessageListener_TehGM_Wolfringo_Utilities_Internal_IMessageCallback_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.AddMessageListener(TehGM.Wolfringo.Utilities.Internal.IMessageCallback)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L45">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_IWolfClient_AddMessageListener_" data-uid="TehGM.Wolfringo.IWolfClient.AddMessageListener*"></a>
+  <h4 id="TehGM_Wolfringo_IWolfClient_AddMessageListener_TehGM_Wolfringo_Utilities_Internal_IMessageCallback_" data-uid="TehGM.Wolfringo.IWolfClient.AddMessageListener(TehGM.Wolfringo.Utilities.Internal.IMessageCallback)">AddMessageListener(IMessageCallback)</h4>
+  <div class="markdown level1 summary"><p>Adds event listener.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void AddMessageListener(IMessageCallback listener)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Utilities.Internal.IMessageCallback.html">IMessageCallback</a></td>
+        <td><span class="parametername">listener</span></td>
+        <td><p>Callback to invoke on event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_ConnectAsync_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.ConnectAsync(System.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L17">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_IWolfClient_ConnectAsync_" data-uid="TehGM.Wolfringo.IWolfClient.ConnectAsync*"></a>
+  <h4 id="TehGM_Wolfringo_IWolfClient_ConnectAsync_System_Threading_CancellationToken_" data-uid="TehGM.Wolfringo.IWolfClient.ConnectAsync(System.Threading.CancellationToken)">ConnectAsync(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Connects to the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task ConnectAsync(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.CancellationToken</span></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Token to abort entire connection.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.Tasks.Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_DisconnectAsync_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.DisconnectAsync(System.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L19">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_IWolfClient_DisconnectAsync_" data-uid="TehGM.Wolfringo.IWolfClient.DisconnectAsync*"></a>
+  <h4 id="TehGM_Wolfringo_IWolfClient_DisconnectAsync_System_Threading_CancellationToken_" data-uid="TehGM.Wolfringo.IWolfClient.DisconnectAsync(System.Threading.CancellationToken)">DisconnectAsync(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Disconnects from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DisconnectAsync(CancellationToken cancellationToken = default(CancellationToken))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.CancellationToken</span></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.Tasks.Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_RemoveMessageListener_TehGM_Wolfringo_Utilities_Internal_IMessageCallback_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.RemoveMessageListener(TehGM.Wolfringo.Utilities.Internal.IMessageCallback)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L48">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_IWolfClient_RemoveMessageListener_" data-uid="TehGM.Wolfringo.IWolfClient.RemoveMessageListener*"></a>
+  <h4 id="TehGM_Wolfringo_IWolfClient_RemoveMessageListener_TehGM_Wolfringo_Utilities_Internal_IMessageCallback_" data-uid="TehGM.Wolfringo.IWolfClient.RemoveMessageListener(TehGM.Wolfringo.Utilities.Internal.IMessageCallback)">RemoveMessageListener(IMessageCallback)</h4>
+  <div class="markdown level1 summary"><p>Removes event listener.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void RemoveMessageListener(IMessageCallback listener)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Utilities.Internal.IMessageCallback.html">IMessageCallback</a></td>
+        <td><span class="parametername">listener</span></td>
+        <td><p>Callback to remove.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_SendAsync__1_TehGM_Wolfringo_IWolfMessage_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.SendAsync%60%601(TehGM.Wolfringo.IWolfMessage%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L30">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_IWolfClient_SendAsync_" data-uid="TehGM.Wolfringo.IWolfClient.SendAsync*"></a>
+  <h4 id="TehGM_Wolfringo_IWolfClient_SendAsync__1_TehGM_Wolfringo_IWolfMessage_System_Threading_CancellationToken_" data-uid="TehGM.Wolfringo.IWolfClient.SendAsync``1(TehGM.Wolfringo.IWolfMessage,System.Threading.CancellationToken)">SendAsync&lt;TResponse&gt;(IWolfMessage, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Sends message, and waits for response from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;TResponse&gt; SendAsync&lt;TResponse&gt;(IWolfMessage message, CancellationToken cancellationToken = default(CancellationToken))
+    where TResponse : IWolfResponse</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.IWolfMessage.html">IWolfMessage</a></td>
+        <td><span class="parametername">message</span></td>
+        <td><p>Message to send.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.CancellationToken</span></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token that can be used for Task cancellation.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.Tasks.Task</span>&lt;TResponse&gt;</td>
+        <td><p>Sending response.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>Response type to use for casting of response.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_IWolfClient_SendAsync__1_TehGM_Wolfringo_IWolfMessage_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If client uses <a class="xref" href="TehGM.Wolfringo.Messages.Responses.ResponseTypeResolver.html">ResponseTypeResolver</a>, the type of response provided with 
+<a class="xref" href="TehGM.Wolfringo.Messages.Responses.ResponseTypeAttribute.html">ResponseTypeAttribute</a> on <code data-dev-comment-type="paramref" class="paramref">message</code> will be used for deserialization, 
+and <code data-dev-comment-type="typeparamref" class="typeparamref">TResponse</code> will be used only for casting. If <a class="xref" href="TehGM.Wolfringo.Messages.Responses.ResponseTypeAttribute.html">ResponseTypeAttribute</a> is not set on
+<code data-dev-comment-type="paramref" class="paramref">message</code>, <code data-dev-comment-type="typeparamref" class="typeparamref">TResponse</code> will be used for deserialization as normal.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.MessageSendingException.html">MessageSendingException</a></td>
+        <td><p>Server responded with error.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_Connected.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.Connected%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L33">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_IWolfClient_Connected" data-uid="TehGM.Wolfringo.IWolfClient.Connected">Connected</h4>
+  <div class="markdown level1 summary"><p>Rasied when the client connects to the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler Connected</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_Disconnected.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.Disconnected%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L35">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_IWolfClient_Disconnected" data-uid="TehGM.Wolfringo.IWolfClient.Disconnected">Disconnected</h4>
+  <div class="markdown level1 summary"><p>Raised when the client disconnects from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler Disconnected</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_ErrorRaised.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.ErrorRaised%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L41">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_IWolfClient_ErrorRaised" data-uid="TehGM.Wolfringo.IWolfClient.ErrorRaised">ErrorRaised</h4>
+  <div class="markdown level1 summary"><p>Raised when an error has occured.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler&lt;UnhandledExceptionEventArgs&gt; ErrorRaised</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;<span class="xref">System.UnhandledExceptionEventArgs</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_MessageReceived.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.MessageReceived%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L37">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_IWolfClient_MessageReceived" data-uid="TehGM.Wolfringo.IWolfClient.MessageReceived">MessageReceived</h4>
+  <div class="markdown level1 summary"><p>Raised when the client receives an event from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler&lt;WolfMessageEventArgs&gt; MessageReceived</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;<a class="xref" href="TehGM.Wolfringo.WolfMessageEventArgs.html">WolfMessageEventArgs</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_IWolfClient_MessageSent.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.IWolfClient.MessageSent%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Core/IWolfClient.cs/#L39">View Source</a>
+  </span>
+  <h4 id="TehGM_Wolfringo_IWolfClient_MessageSent" data-uid="TehGM.Wolfringo.IWolfClient.MessageSent">MessageSent</h4>
+  <div class="markdown level1 summary"><p>Raised when the client sends a message to the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler&lt;WolfMessageSentEventArgs&gt; MessageSent</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;<a class="xref" href="TehGM.Wolfringo.WolfMessageSentEventArgs.html">WolfMessageSentEventArgs</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextAsync__1_TehGM_Wolfringo_IWolfClient_System_Func___0_System_Boolean__System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextAsync&lt;T&gt;(IWolfClient, Func&lt;T, Boolean&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextPrivateByUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextPrivateByUserAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextGroupByUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextGroupByUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextInGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextInGroupAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextAsync__1_TehGM_Wolfringo_IWolfClient_System_Func___0_System_Boolean__System_TimeSpan_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextAsync&lt;T&gt;(IWolfClient, Func&lt;T, Boolean&gt;, TimeSpan, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextPrivateByUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_TimeSpan_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextPrivateByUserAsync(IWolfClient, UInt32, TimeSpan, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextGroupByUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_TimeSpan_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextGroupByUserAsync(IWolfClient, UInt32, UInt32, TimeSpan, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextInGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_TimeSpan_System_Threading_CancellationToken_">InteractiveExtensions.AwaitNextInGroupAsync(IWolfClient, UInt32, TimeSpan, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_LoginAsync_TehGM_Wolfringo_IWolfClient_System_String_System_String_TehGM_Wolfringo_WolfLoginType_System_Threading_CancellationToken_">Sender.LoginAsync(IWolfClient, String, String, WolfLoginType, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_LoginAsync_TehGM_Wolfringo_IWolfClient_System_String_System_String_System_Threading_CancellationToken_">Sender.LoginAsync(IWolfClient, String, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_LogoutAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.LogoutAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SubscribeAllMessagesAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.SubscribeAllMessagesAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SubscribePrivateMessagesAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.SubscribePrivateMessagesAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SubscribeGroupMessagesAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.SubscribeGroupMessagesAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SubscribeGroupTipsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.SubscribeGroupTipsAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SetOnlineStateAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfOnlineState_System_Threading_CancellationToken_">Sender.SetOnlineStateAsync(IWolfClient, WolfOnlineState, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetNotificationsAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfLanguage_TehGM_Wolfringo_WolfDevice_System_Threading_CancellationToken_">Sender.GetNotificationsAsync(IWolfClient, WolfLanguage, WolfDevice, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetNotificationsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetNotificationsAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ClearNotificationsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.ClearNotificationsAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUsersAsync_TehGM_Wolfringo_IWolfClient_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">Sender.GetUsersAsync(IWolfClient, IEnumerable&lt;UInt32&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetCurrentUserAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetCurrentUserAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetUserAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetContactListAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetContactListAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_AddContactAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.AddContactAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_DeleteContactAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.DeleteContactAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetBlockedUsersAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetBlockedUsersAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_BlockUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.BlockUserAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UnblockUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.UnblockUserAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateProfileAsync_TehGM_Wolfringo_IWolfClient_System_Action_TehGM_Wolfringo_Messages_UserUpdateMessage_Builder__System_Threading_CancellationToken_">Sender.UpdateProfileAsync(IWolfClient, Action&lt;UserUpdateMessage.Builder&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateNicknameAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">Sender.UpdateNicknameAsync(IWolfClient, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateStatusAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">Sender.UpdateStatusAsync(IWolfClient, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetPrivateMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Nullable_TehGM_Wolfringo_WolfTimestamp__System_Boolean_System_Threading_CancellationToken_">Sender.GetPrivateMessageHistoryAsync(IWolfClient, UInt32, Nullable&lt;WolfTimestamp&gt;, Boolean, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetPrivateMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Nullable_TehGM_Wolfringo_WolfTimestamp__System_Threading_CancellationToken_">Sender.GetPrivateMessageHistoryAsync(IWolfClient, UInt32, Nullable&lt;WolfTimestamp&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetPrivateMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Boolean_System_Threading_CancellationToken_">Sender.GetPrivateMessageHistoryAsync(IWolfClient, UInt32, Boolean, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetPrivateMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetPrivateMessageHistoryAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Nullable_TehGM_Wolfringo_WolfTimestamp__System_Boolean_System_Threading_CancellationToken_">Sender.GetGroupMessageHistoryAsync(IWolfClient, UInt32, Nullable&lt;WolfTimestamp&gt;, Boolean, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Nullable_TehGM_Wolfringo_WolfTimestamp__System_Threading_CancellationToken_">Sender.GetGroupMessageHistoryAsync(IWolfClient, UInt32, Nullable&lt;WolfTimestamp&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Boolean_System_Threading_CancellationToken_">Sender.GetGroupMessageHistoryAsync(IWolfClient, UInt32, Boolean, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupMessageHistoryAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetGroupMessageHistoryAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetRecentConversationsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetRecentConversationsAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_JoinGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_System_Threading_CancellationToken_">Sender.JoinGroupAsync(IWolfClient, UInt32, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_JoinGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.JoinGroupAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_JoinGroupAsync_TehGM_Wolfringo_IWolfClient_System_String_System_String_System_Threading_CancellationToken_">Sender.JoinGroupAsync(IWolfClient, String, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_JoinGroupAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">Sender.JoinGroupAsync(IWolfClient, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_LeaveGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.LeaveGroupAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupsAsync_TehGM_Wolfringo_IWolfClient_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">Sender.GetGroupsAsync(IWolfClient, IEnumerable&lt;UInt32&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetGroupAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">Sender.GetGroupAsync(IWolfClient, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetCurrentUserGroupsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetCurrentUserGroupsAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupStatisticsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetGroupStatisticsAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_CreateGroupAsync_TehGM_Wolfringo_IWolfClient_System_String_System_String_System_Action_TehGM_Wolfringo_Messages_GroupCreateMessage_Builder__System_Threading_CancellationToken_">Sender.CreateGroupAsync(IWolfClient, String, String, Action&lt;GroupCreateMessage.Builder&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_CreateGroupAsync_TehGM_Wolfringo_IWolfClient_System_String_System_String_System_Threading_CancellationToken_">Sender.CreateGroupAsync(IWolfClient, String, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Action_TehGM_Wolfringo_Messages_GroupUpdateMessage_Builder__System_Threading_CancellationToken_">Sender.UpdateGroupAsync(IWolfClient, UInt32, Action&lt;GroupUpdateMessage.Builder&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_UpdateGroupAudioConfigAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Action_TehGM_Wolfringo_Messages_GroupAudioUpdateMessage_Builder__System_Threading_CancellationToken_">Sender.UpdateGroupAudioConfigAsync(IWolfClient, UInt32, Action&lt;GroupAudioUpdateMessage.Builder&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetCharmsAsync_TehGM_Wolfringo_IWolfClient_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">Sender.GetCharmsAsync(IWolfClient, IEnumerable&lt;UInt32&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetAllCharmsAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.GetAllCharmsAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetCharmAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetCharmAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserCharmStatsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetUserCharmStatsAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserCurrentCharmAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetUserCurrentCharmAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserActiveCharmsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetUserActiveCharmsAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserExpiredCharmsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.GetUserExpiredCharmsAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SetActiveCharmAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Threading_CancellationToken_">Sender.SetActiveCharmAsync(IWolfClient, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_RemoveActiveCharmAsync_TehGM_Wolfringo_IWolfClient_System_Threading_CancellationToken_">Sender.RemoveActiveCharmAsync(IWolfClient, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetAchievementsAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfLanguage_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">Sender.GetAchievementsAsync(IWolfClient, WolfLanguage, IEnumerable&lt;UInt32&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetAchievementAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfLanguage_System_UInt32_System_Threading_CancellationToken_">Sender.GetAchievementAsync(IWolfClient, WolfLanguage, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetAllAchievementsAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfLanguage_System_Threading_CancellationToken_">Sender.GetAllAchievementsAsync(IWolfClient, WolfLanguage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetUserAchievementsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_TehGM_Wolfringo_WolfLanguage_System_Threading_CancellationToken_">Sender.GetUserAchievementsAsync(IWolfClient, UInt32, WolfLanguage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetGroupAchievementsAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_TehGM_Wolfringo_WolfLanguage_System_Threading_CancellationToken_">Sender.GetGroupAchievementsAsync(IWolfClient, UInt32, WolfLanguage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_AdminUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">Sender.AdminUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ModUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">Sender.ModUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ResetUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">Sender.ResetUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SilenceUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">Sender.SilenceUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_KickUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">Sender.KickUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_BanUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_Threading_CancellationToken_">Sender.BanUserAsync(IWolfClient, UInt32, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateTextMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_System_Threading_CancellationToken_">Sender.SendPrivateTextMessageAsync(IWolfClient, UInt32, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupTextMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_System_Threading_CancellationToken_">Sender.SendGroupTextMessageAsync(IWolfClient, UInt32, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateTextMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_TehGM_Wolfringo_Utilities_ChatMessageSendingOptions_System_Threading_CancellationToken_">Sender.SendPrivateTextMessageAsync(IWolfClient, UInt32, String, ChatMessageSendingOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupTextMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_String_TehGM_Wolfringo_Utilities_ChatMessageSendingOptions_System_Threading_CancellationToken_">Sender.SendGroupTextMessageAsync(IWolfClient, UInt32, String, ChatMessageSendingOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateImageMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">Sender.SendPrivateImageMessageAsync(IWolfClient, UInt32, IEnumerable&lt;Byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupImageMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">Sender.SendGroupImageMessageAsync(IWolfClient, UInt32, IEnumerable&lt;Byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendPrivateVoiceMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">Sender.SendPrivateVoiceMessageAsync(IWolfClient, UInt32, IEnumerable&lt;Byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_SendGroupVoiceMessageAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">Sender.SendGroupVoiceMessageAsync(IWolfClient, UInt32, IEnumerable&lt;Byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ReplyTextAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_String_System_Threading_CancellationToken_">Sender.ReplyTextAsync(IWolfClient, ChatMessage, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ReplyImageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">Sender.ReplyImageAsync(IWolfClient, ChatMessage, IEnumerable&lt;Byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_ReplyVoiceAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Collections_Generic_IEnumerable_System_Byte__System_Threading_CancellationToken_">Sender.ReplyVoiceAsync(IWolfClient, ChatMessage, IEnumerable&lt;Byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_DeleteChatMessageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Threading_CancellationToken_">Sender.DeleteChatMessageAsync(IWolfClient, ChatMessage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_RestoreChatMessageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Threading_CancellationToken_">Sender.RestoreChatMessageAsync(IWolfClient, ChatMessage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetLinkMetadataAsync_TehGM_Wolfringo_IWolfClient_System_String_System_Threading_CancellationToken_">Sender.GetLinkMetadataAsync(IWolfClient, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetMessageTipsSummaryAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfTimestamp_System_UInt32_System_Threading_CancellationToken_">Sender.GetMessageTipsSummaryAsync(IWolfClient, WolfTimestamp, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetMessageTipsSummaryAsync_TehGM_Wolfringo_IWolfClient_System_Collections_Generic_IEnumerable_TehGM_Wolfringo_Messages_ChatMessage__System_Threading_CancellationToken_">Sender.GetMessageTipsSummaryAsync(IWolfClient, IEnumerable&lt;ChatMessage&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetMessageTipsSummaryAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Threading_CancellationToken_">Sender.GetMessageTipsSummaryAsync(IWolfClient, ChatMessage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_GetMessageTipsDetailsAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Threading_CancellationToken_">Sender.GetMessageTipsDetailsAsync(IWolfClient, ChatMessage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_TipMessageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_UInt32_System_Threading_CancellationToken_">Sender.TipMessageAsync(IWolfClient, ChatMessage, UInt32, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_TipMessageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Collections_Generic_IEnumerable_System_UInt32__System_Threading_CancellationToken_">Sender.TipMessageAsync(IWolfClient, ChatMessage, IEnumerable&lt;UInt32&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_TipMessageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_TehGM_Wolfringo_WolfTip_System_Threading_CancellationToken_">Sender.TipMessageAsync(IWolfClient, ChatMessage, WolfTip, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Sender.html#TehGM_Wolfringo_Sender_TipMessageAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_Messages_ChatMessage_System_Collections_Generic_IEnumerable_TehGM_Wolfringo_WolfTip__System_Threading_CancellationToken_">Sender.TipMessageAsync(IWolfClient, ChatMessage, IEnumerable&lt;WolfTip&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.WolfClientExtensions.html#TehGM_Wolfringo_WolfClientExtensions_SendAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_IWolfMessage_System_Threading_CancellationToken_">WolfClientExtensions.SendAsync(IWolfClient, IWolfMessage, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.WolfClientExtensions.html#TehGM_Wolfringo_WolfClientExtensions_AddMessageListener__1_TehGM_Wolfringo_IWolfClient_System_Action___0__">WolfClientExtensions.AddMessageListener&lt;T&gt;(IWolfClient, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.WolfClientExtensions.html#TehGM_Wolfringo_WolfClientExtensions_AddMessageListener__1_TehGM_Wolfringo_IWolfClient_System_String_System_Action___0__">WolfClientExtensions.AddMessageListener&lt;T&gt;(IWolfClient, String, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.WolfClientExtensions.html#TehGM_Wolfringo_WolfClientExtensions_RemoveMessageListener__1_TehGM_Wolfringo_IWolfClient_System_Action___0__">WolfClientExtensions.RemoveMessageListener&lt;T&gt;(IWolfClient, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="TehGM.Wolfringo.Utilities.Internal.WolfGroupMembersHelper.html#TehGM_Wolfringo_Utilities_Internal_WolfGroupMembersHelper_RevalidateGroupMembersAsync_TehGM_Wolfringo_IWolfClient_TehGM_Wolfringo_WolfGroup_System_Threading_CancellationToken_">WolfGroupMembersHelper.RevalidateGroupMembersAsync(IWolfClient, WolfGroup, CancellationToken)</a>
+  </div>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../styles/docfx.js"></script>
+<script type="text/javascript" src="../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

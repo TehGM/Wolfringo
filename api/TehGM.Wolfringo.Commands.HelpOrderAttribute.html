@@ -1,0 +1,525 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class HelpOrderAttribute
+   | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class HelpOrderAttribute
+   | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../styles/colors.css">
+    <link rel="stylesheet" href="../styles/discord.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../index.html">
+              <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../index.html">
+                        <img src="../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute">
+  
+  
+  <h1 id="TehGM_Wolfringo_Commands_HelpOrderAttribute" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute" class="text-break">Class HelpOrderAttribute
+  </h1>
+  <div class="markdown level0 summary"><p>Specifies command's help order.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">System.Attribute</span></div>
+    <div class="level2"><span class="xref">HelpOrderAttribute</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IEquatable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a>&gt;</div>
+    <div><span class="xref">System.IComparable</span>&lt;<a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a>&gt;</div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TehGM.Wolfringo.Commands.html">TehGM.Wolfringo.Commands</a></h6>
+  <h6><strong>Assembly</strong>: Wolfringo.Commands.dll</h6>
+  <h5 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+public class HelpOrderAttribute : Attribute, IEquatable&lt;HelpOrderAttribute&gt;, IComparable&lt;HelpOrderAttribute&gt;</code></pre>
+  </div>
+  <h5 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Commands with higher order value will appear in help command earlier than commands with lower value.</p>
+<p>This attribute takes precedence over <a class="xref" href="TehGM.Wolfringo.Commands.PriorityAttribute.html">PriorityAttribute</a> when constructing help command output.</p>
+<p>Command help order will be taken from <a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a> present on the method. If the method doesn&apos;t have the attribute, it&apos;ll be taken from <a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a> present on the handler type. If the handler type also doesn&apos;t specify the help order, <a class="xref" href="TehGM.Wolfringo.Commands.PriorityAttribute.html">PriorityAttribute</a> will be checked. If <a class="xref" href="TehGM.Wolfringo.Commands.PriorityAttribute.html">PriorityAttribute</a> is also not specified, default value of 0 will be used.</p>
+</div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute__ctor_System_Int32_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.%23ctor(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L20">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute__ctor_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.#ctor*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute__ctor_System_Int32_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.#ctor(System.Int32)">HelpOrderAttribute(Int32)</h4>
+  <div class="markdown level1 summary"><p>Creates a new help order attribute.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HelpOrderAttribute(int order)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">order</span></td>
+        <td><p>Command's help order.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_Commands_HelpOrderAttribute__ctor_System_Int32__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>See <a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a> for more information about command help order.</p>
+</div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_Order.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.Order%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L15">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Order_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.Order*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Order" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.Order">Order</h4>
+  <div class="markdown level1 summary"><p>Order at which the command will be listed in help command.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Order { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Order_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>See <a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a> for more information about command help order.</p>
+</div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_CompareTo_TehGM_Wolfringo_Commands_HelpOrderAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.CompareTo(TehGM.Wolfringo.Commands.HelpOrderAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L38">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_CompareTo_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.CompareTo*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_CompareTo_TehGM_Wolfringo_Commands_HelpOrderAttribute_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.CompareTo(TehGM.Wolfringo.Commands.HelpOrderAttribute)">CompareTo(HelpOrderAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(HelpOrderAttribute other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a></td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_Equals_System_Object_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L26">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Equals_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Equals_System_Object_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Attribute.Equals(System.Object)</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_Equals_TehGM_Wolfringo_Commands_HelpOrderAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.Equals(TehGM.Wolfringo.Commands.HelpOrderAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L30">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Equals_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.Equals*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_Equals_TehGM_Wolfringo_Commands_HelpOrderAttribute_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.Equals(TehGM.Wolfringo.Commands.HelpOrderAttribute)">Equals(HelpOrderAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(HelpOrderAttribute other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a></td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_GetHashCode.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.GetHashCode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L34">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_GetHashCode_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.GetHashCode*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_GetHashCode" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Attribute.GetHashCode()</span></div>
+  <h3 id="operators">Operators
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_op_Equality_TehGM_Wolfringo_Commands_HelpOrderAttribute_TehGM_Wolfringo_Commands_HelpOrderAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.op_Equality(TehGM.Wolfringo.Commands.HelpOrderAttribute%2CTehGM.Wolfringo.Commands.HelpOrderAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L42">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_op_Equality_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.op_Equality*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_op_Equality_TehGM_Wolfringo_Commands_HelpOrderAttribute_TehGM_Wolfringo_Commands_HelpOrderAttribute_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.op_Equality(TehGM.Wolfringo.Commands.HelpOrderAttribute,TehGM.Wolfringo.Commands.HelpOrderAttribute)">Equality(HelpOrderAttribute, HelpOrderAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(HelpOrderAttribute left, HelpOrderAttribute right)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a></td>
+        <td><span class="parametername">left</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a></td>
+        <td><span class="parametername">right</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/TehGM/Wolfringo/new/master/apiSpec/new?filename=TehGM_Wolfringo_Commands_HelpOrderAttribute_op_Inequality_TehGM_Wolfringo_Commands_HelpOrderAttribute_TehGM_Wolfringo_Commands_HelpOrderAttribute_.md&amp;value=---%0Auid%3A%20TehGM.Wolfringo.Commands.HelpOrderAttribute.op_Inequality(TehGM.Wolfringo.Commands.HelpOrderAttribute%2CTehGM.Wolfringo.Commands.HelpOrderAttribute)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Attributes/Help/HelpOrderAttribute.cs/#L46">View Source</a>
+  </span>
+  <a id="TehGM_Wolfringo_Commands_HelpOrderAttribute_op_Inequality_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.op_Inequality*"></a>
+  <h4 id="TehGM_Wolfringo_Commands_HelpOrderAttribute_op_Inequality_TehGM_Wolfringo_Commands_HelpOrderAttribute_TehGM_Wolfringo_Commands_HelpOrderAttribute_" data-uid="TehGM.Wolfringo.Commands.HelpOrderAttribute.op_Inequality(TehGM.Wolfringo.Commands.HelpOrderAttribute,TehGM.Wolfringo.Commands.HelpOrderAttribute)">Inequality(HelpOrderAttribute, HelpOrderAttribute)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(HelpOrderAttribute left, HelpOrderAttribute right)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a></td>
+        <td><span class="parametername">left</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TehGM.Wolfringo.Commands.HelpOrderAttribute.html">HelpOrderAttribute</a></td>
+        <td><span class="parametername">right</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IEquatable&lt;T&gt;</span>
+  </div>
+  <div>
+      <span class="xref">System.IComparable&lt;T&gt;</span>
+  </div>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../styles/docfx.js"></script>
+<script type="text/javascript" src="../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

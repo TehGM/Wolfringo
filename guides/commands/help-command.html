@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Help Command | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Help Command | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Commands.HelpCommand">
+<h1 id="help-command">Help Command</h1>
+
+<p>Since version 2.0.0, Wolfringo Commands System has new features that allow building a help command really easily. These features include special attributes for commands, as well as helper utility to create commands list, and even a default <code>help</code> command that can be enabled with a single line of code!</p>
+<h3 id="attributes">Attributes</h3>
+<p>Wolfringo has a few built-in attributes that are automatically supported by both default help command and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a>. They should cover most common use cases.</p>
+<ul>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.DisplayNameAttribute.html">[DisplayName]</a> - allows you to set how the command is displayed. If you don't add this attribute, the command will displayed as the pattern you set with <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandAttribute.html">[Command] attribute</a> or <a class="xref" href="../../api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html">[RegexCommand] attribute</a>.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.SummaryAttribute.html">[Summary]</a> - a short description of what the command does. If you don't add this, the command will be listed without any description.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.HiddenAttribute.html">[Hidden]</a> - commands marked as hidden will not be listed by default help command or <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a>. This attribute can also be put on the handler class - this will hide all commands in the handler.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.HelpCategoryAttribute.html">[HelpCategory]</a> - allows you to group the commands together. You can also provide the priority - categories with higher priority will appear before commands with lower priority. Can also be put on the handler class to make all commands in the handler share this category. Please note that commands without any category will be listed BEFORE the categories.</li>
+<li><a class="xref" href="../../api/TehGM.Wolfringo.Commands.HelpOrderAttribute.html">[HelpOrder]</a> - by default, commands will be ordered according to their <a class="xref" href="creating-commands.html#commands-priorities">priorities</a>. If you want to change the order without affecting the priority, you can use <a class="xref" href="../../api/TehGM.Wolfringo.Commands.HelpOrderAttribute.html">[HelpOrder] attribute</a>.</li>
+</ul>
+<p>You can see examples of how to use these attributes in <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/SimpleCommandsBot/ExampleTransientCommandsHandler.cs">ExampleTransientCommandsHandler.cs</a> example.</p>
+<h2 id="default-help-command">Default Help Command</h2>
+<p>Wolfringo Commands package comes with a default help command. This command:</p>
+<ul>
+<li>is triggered with prefix + &quot;help&quot; - for example <code>!help</code>;</li>
+<li>is transient;</li>
+<li>is hidden;</li>
+<li>has priority of <a href="xref:System.Int32.MinValue">int.MinValue</a>;</li>
+<li>will list commands even if they have no summary set;</li>
+<li>will group commands by category;</li>
+<li>will list commands without category first;</li>
+<li>will order commands based on <a class="xref" href="../../api/TehGM.Wolfringo.Commands.HelpOrderAttribute.html">help order</a>, or <a class="xref" href="creating-commands.html#commands-priorities">priority</a> if order not specified;</li>
+<li>will respond with &quot;No commands found!&quot; if it finds no commands to list.</li>
+</ul>
+<p>This command is disabled by default, but don't worry - enabling it is just a single line change in Commands Options!</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_connecting-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_connecting-normal-bot" data-tab="connecting-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_connecting-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_connecting-hosted-bot" data-tab="connecting-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_connecting-normal-bot" role="tabpanel" data-tab="connecting-normal-bot">
+
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithCommands(commands =&gt;
+    {
+        commands.WithPrefix(&quot;!&quot;);
+        commands.WithPrefixRequirement(PrefixRequirement.Always);
+        commands.WithCaseSensitivity(false);
+        commands.WithDefaultHelpCommand();      // &lt;---- call this method!
+    })
+    .Build();
+</code></pre>
+</section>
+<section id="tabpanel_bHGHmlrG6S_connecting-hosted-bot" role="tabpanel" data-tab="connecting-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-csharp">services.AddWolfringoCommands()
+    .SetPrefix(&quot;!&quot;)           
+    .SetPrefixRequirement(PrefixRequirement.Always)
+    .SetCaseSensitive(false)
+    .EnableDefaultHelpCommand();        // &lt;---- call this method!
+</code></pre>
+</section>
+</div>
+
+<p>Once enabled, using this command will automatically create a list of your commands by using the attributes you set. Neat!</p>
+<p><img src="/_images/guides/help-command-1.png" alt=""></p>
+<h2 id="customizing-the-commands-list">Customizing the Commands List</h2>
+<p>If you want to add something to your help command, or change the command word, you can do it without much effort. Wolfringo includes <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a> utility that will do all the heavy work for you, so all you need to do is create a new command.</p>
+<p>Start off by disabling the default help command if you have it enabled. Then create a new command handler, with your help command inside - this can be done in the same way as <a class="xref" href="creating-commands.html">creating any other command</a>.<br>
+Then creating the commands itself is just a few simple steps:</p>
+<ol>
+<li>Inject <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandsService.html">ICommandsService</a> and <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandsOptions.html">CommandsOptions</a>, either via constructor or to the command method itself;</li>
+<li>Create <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a> in your command method. Provide <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandsService.html">ICommandsService</a>.<a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandsService.html#TehGM_Wolfringo_Commands_ICommandsService_Commands">Commands</a> via the constructor;</li>
+<li>Set <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a> properties to your liking;</li>
+<li>Call <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html#TehGM_Wolfringo_Commands_Help_CommandsListBuilder_GetCommandsList">GetCommandsList()</a> to get the string with your commands;</li>
+<li>Send the response!</li>
+</ol>
+<p>If you want, you can also add other text before or after the list - completely up to you!</p>
+<p>Here is an example how it could look like:</p>
+<pre><code class="lang-csharp">using TehGM.Wolfringo.Commands.Help;    // CommandsListBuilder is in this namespace
+
+[CommandsHandler]
+public class MyHelpCommandHandler
+{
+    private readonly ICommandsService _service;
+    private readonly CommandsOptions _options;
+
+    // injecting CommandsOptions and CommandsService via constructor
+    public MyHelpCommandHandler(CommandsOptions options, ICommandsService service)
+    {
+        this._options = options;
+        this._service = service;
+    }
+
+    [Command(&quot;help&quot;)]
+    [Hidden]
+    private async Task CmdHelpAsync(CommandContext context)
+    {
+        CommandsListBuilder builder = new CommandsListBuilder(this._service.Commands);   // create builder
+        builder.PrependedPrefix = this._options.Prefix;     // set your prefix - here using the value from CommandsOptions
+        builder.SpaceCategories = true;                     // set whether there should be additional spaces between categories
+        builder.SummarySeparator = &quot; == &quot;;                  // string that separates command name and summary. Default is &quot;    - &quot; (4 spaces, dash, and one more space).
+        builder.ListCommandsWithoutSummaries = true;        // if set to false, commands without [Summary] set will not be listed
+
+        string result = builder.GetCommandsList();          // build the list
+        if (string.IsNullOrWhiteSpace(result))              // if no commands found, the result will be empty
+        {
+            await context.ReplyTextAsync(&quot;Sorry, I found no commands to list! :( &quot;);
+            return;
+        }
+
+        // now you can edit your response if you want to!
+        string response = result + &quot;\n\nThank you for using my super bot!&quot;;
+
+        // finally, send your response
+        await context.ReplyTextAsync(response);
+    }
+}
+</code></pre>
+<p>This wasn't so scary, right? As you can see on the screenshot below, the help command is now customized - separator is different, and then there's a thank you line, too!</p>
+<p><img src="/_images/guides/help-command-2.png" alt=""></p>
+<p>Of course you can do much more than this - this help command is now like any other command, so you can do anything that you can do in &quot;normal&quot; commands!</p>
+<h2 id="without-commandslistbuilder">Without CommandsListBuilder</h2>
+<p>If you need even more customizability, you don't need to use <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a> at all. Instead you can use <a class="xref" href="../../api/TehGM.Wolfringo.Commands.ICommandsService.html#TehGM_Wolfringo_Commands_ICommandsService_Commands">CommandsService.Commands</a> enumerable to get all loaded <a class="xref" href="../../api/TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor.html">ICommandInstanceDescriptor</a>, and then use extension methods in <code>TehGM.Wolfringo.Commands</code> namespace to get values from the attributes by yourself. This allows you to effectively build your own &quot;CommandsListBuilder&quot;.</p>
+<p>An example (and very simple) help command could look like this:</p>
+<pre><code class="lang-csharp">[Command(&quot;help&quot;)]
+[Hidden]
+private async Task CmdHelpAsync(CommandContext context)
+{
+    string prefix = this._options.Prefix;
+    StringBuilder builder = new StringBuilder();
+    foreach (ICommandInstanceDescriptor command in this._service.Commands)
+    {
+        bool isHidden = command.IsHidden();
+        if (isHidden)
+            continue;       // skip hidden commands
+
+        string displayName = command.GetDisplayName();
+        string summary = command.GetSummary();
+        HelpCategoryAttribute category = command.GetHelpCategory(); // note - will return null if attribute is not present
+
+        builder.AppendLine($&quot;{prefix}{displayName} - {summary} - {category?.Name}&quot;);
+    }
+
+    await context.ReplyTextAsync(builder.ToString());
+}
+</code></pre>
+<p>Of course the implementation above is very primitive, but it shows how you can easily get any help command you want.</p>
+<p>You can even create your custom attributes - there's a special <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandInstanceDescriptorExtensions.html#TehGM_Wolfringo_Commands_CommandInstanceDescriptorExtensions_GetAttribute__1_TehGM_Wolfringo_Commands_Initialization_ICommandInstanceDescriptor_System_Boolean_">GetAttribute&lt;T&gt;</a> extension method that will allow you to get any other attribute on your command. You can also set <code>includeHandlerAttributes</code> parameter to true - if you do this, the method will check attributes on the handler as well (this is how for example how <a class="xref" href="../../api/TehGM.Wolfringo.Commands.HiddenAttribute.html">[Hidden] attribute</a> works when it's set on either method or the class)!<br>
+If the attribute is not found, the method will return <code>null</code>.</p>
+<pre><code class="lang-csharp">MyCustomAttribute customValue;
+customValue = command.GetAttribute&lt;MyCustomAttribute&gt;();        // checks method only
+customValue = command.GetAttribute&lt;MyCustomAttribute&gt;(true);    // checks method, and if not found, then handler class
+if (customValue != null)    // if attribute was not found, null will be returned
+    DoSomething();
+</code></pre>
+<p>All attributes retrieved when using <a class="xref" href="../../api/TehGM.Wolfringo.Commands.CommandInstanceDescriptorExtensions.html">CommandInstanceDescriptorExtensions</a> are lazy loaded, and are cached internally. This means that they'll be really fast after first use, but will not use memory if never used!</p>
+<p><a class="xref" href="../../api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html">CommandsListBuilder</a> of course uses a fairly more complex logic, so if you want to use it as reference, check <a href="https://github.com/TehGM/Wolfringo/blob/master/Wolfringo.Commands/Help/CommandsListBuilder.cs">CommandsListBuilder.cs</a> on GitHub.</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

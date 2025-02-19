@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interactive | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interactive | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.Features.Interactive">
+<h1 id="interactive-commands-in-wolfringo">Interactive Commands in Wolfringo</h1>
+
+<p><a href="https://www.nuget.org/packages/Wolfringo.Utilities.Interactive">Wolfringo.Utilities.Interactive</a> provides helper methods to easily await next message by user, in group, or custom conditions by providing own Func delegate.</p>
+<p>Interactive Utilities function by listening to <a class="xref" href="../../api/TehGM.Wolfringo.IWolfClient.html">IWolfClient</a>'s events, and completing the Task when a received message matches criteria. This can be useful if for example user is using a command that has multiple steps.</p>
+<p>Interactive Utilities by default can await a private message from user, a message from user in a specified group, or any message in a specified group. To do this, use <a class="xref" href="../../api/TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextPrivateByUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_TimeSpan_System_Threading_CancellationToken_">AwaitNextPrivateByUserAsync</a>, <a class="xref" href="../../api/TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextGroupByUserAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_UInt32_System_TimeSpan_System_Threading_CancellationToken_">AwaitNextGroupByUserAsync</a> and <a class="xref" href="../../api/TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextInGroupAsync_TehGM_Wolfringo_IWolfClient_System_UInt32_System_TimeSpan_System_Threading_CancellationToken_">AwaitNextInGroupAsync</a>, respectively.<br>
+You can also provide custom criteria - check <a class="xref" href="interactive.html#custom-criteria">Custom Criteria</a> below for details.</p>
+<pre><code class="lang-csharp">private async void OnChatMessage(ChatMessage message)
+{
+    if (!message.IsPrivateMessage) 
+        return;
+
+    await _client.ReplyTextAsync(message, &quot;Ready? Set? Go!&quot;);
+    DateTime startTime = DateTime.UtcNow;
+    ChatMessage response = await _client.AwaitNextPrivateByUserAsync(message.SenderID.Value);
+
+    double userSpeed = (DateTime.UtcNow - startTime).TotalSeconds;
+    await _client.ReplyTextAsync(response, $&quot;Congrats, you replied within {userSpeed}!&quot;);
+}
+</code></pre>
+<blockquote>
+<p>This feature was inspired by the same feature in <a href="https://dsharpplus.github.io/articles/interactivity.html">DSharpPlus</a> library for Discord.<br>
+This is a neat idea that I directly borrowed, so figured a credit is due. :)</p>
+</blockquote>
+<h3 id="timeouts">Timeouts</h3>
+<p>You most likely do not want to keep waiting for user's response forever - this could cause memory leaks, groups being blocked, etc. For this reason, you can add a timeout to your interactive commands.</p>
+<p>Interactive extension methods take @System.TimeSpan as one of the parameters. If no received message matches criteria within that time, the interactive method will simply return <code>null</code>.</p>
+<pre><code class="lang-csharp">private async void OnChatMessage(ChatMessage message)
+{
+    // ...
+    ChatMessage response = await _client.AwaitNextPrivateByUserAsync(message.SenderID.Value, TimeSpan.FromSeconds(30));
+
+    if (response == null) // if response message is null, it timed out
+        await _client.ReplyTextAsync(message, &quot;Aww, too slow. :(&quot;);
+    else
+    {
+        // proceed as normal
+    }
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Like most of async methods in Wolfringo, Interactive Utilities support @System.Threading.CancellationToken - combined with @System.Threading.CancellationTokenSource, you can implement custom timeouts if simple @System.TimeSpan does not suit your needs.<br>
+Fun-fact: internally, that's exactly what Wolfringo does with the provided @System.TimeSpan.</p>
+</div>
+<h3 id="custom-criteria">Custom Criteria</h3>
+<p>If the built-in simple criteria do not match your needs, you can use <a class="xref" href="../../api/TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextAsync__1_TehGM_Wolfringo_IWolfClient_System_Func___0_System_Boolean__System_TimeSpan_System_Threading_CancellationToken_">AwaitNextAsync&lt;T&gt;</a> which takes <code>Func&lt;T, bool&gt;</code> as one of parameters. That delegate should return true if message matches your custom criteria, otherwise it should return false.</p>
+<p>The example below will await next image sent by the same user that sent the first message - regardless if the message is sent in private, or any of the groups.</p>
+<pre><code class="lang-csharp">private async void OnChatMessage(ChatMessage message)
+{
+    // ...
+    ChatMessage response = await _client.AwaitNextAsync&lt;ChatMessage&gt;((msg) =&gt;
+    {
+        if (msg.SenderID.Value != message.SenderID.Value)
+            return false;
+        if (!msg.IsImage)
+            return false;
+        return true;
+    });
+    
+    // proceed as normal
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p><code>T</code> in <a class="xref" href="../../api/TehGM.Wolfringo.InteractiveExtensions.html#TehGM_Wolfringo_InteractiveExtensions_AwaitNextAsync__1_TehGM_Wolfringo_IWolfClient_System_Func___0_System_Boolean__System_TimeSpan_System_Threading_CancellationToken_">AwaitNextAsync&lt;T&gt;</a> can be any <a class="xref" href="../../api/TehGM.Wolfringo.Messages.IChatMessage.html">IChatMessage</a>. This enables usage of interactivity for other scenarios than just receiving a <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a>.</p>
+</div>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>

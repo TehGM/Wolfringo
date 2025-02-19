@@ -1,0 +1,354 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Connecting the bot | Wolfringo Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Connecting the bot | Wolfringo Documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../wolfringo_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/night-owl.min.css">
+    <link rel="stylesheet" href="../../styles/colors.css">
+    <link rel="stylesheet" href="../../styles/discord.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+
+  <body>
+        <div class="top-navbar">
+
+            <a href="javascript:void(0);" class="burger-icon" onclick="toggleMenu()">
+                <svg name="Hamburger" style="vertical-align: middle;" width="24" height="24" viewbox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M20 6H4V9H20V6ZM4 10.999H20V13.999H4V10.999ZM4 15.999H20V18.999H4V15.999Z"></path></svg>
+            </a>
+
+            
+            <a class="brand" href="../../index.html">
+              <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+              <span class="brand-title">Wolfringo</span>
+            </a>
+        </div>
+
+        <div class="body-content">
+
+            <div id="blackout" class="blackout" onclick="toggleMenu()"></div>
+
+            <nav id="sidebar" role="navigation">
+
+                <div class="sidebar">
+                    
+                    
+                    
+                    
+                    <div>
+                      
+                      <a class="brand" href="../../index.html">
+                        <img src="../../wolfringo_logo.png" alt="Wolfringo" class="logomark">
+                        <span class="brand-title">Wolfringo</span>
+                      </a>
+                      <div id="navbar">
+                    
+                      </div>
+                    
+                    </div>
+                    
+
+                    <div class="sidebar-item-separator"></div>
+
+                        
+                        <div id="sidetoggle">
+                          <div id="sidetoc"></div>
+                        </div>
+
+                </div>
+
+                <div class="footer">
+                  Wolfringo (c) 2020 <a href='https://tehgm.net'>TehGM</a><br>DocFX, <a href='https://github.com/jbltx/DiscordFX/'>DiscordFX</a> theme.
+                  
+                </div>
+            </nav>
+
+            <main class="main-panel">
+
+                <div>
+                  
+                  <div id="search-results">
+                    <div class="search-list">Search Results for <span></span></div>
+                    <div class="sr-items">
+                      <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+                    </div>
+                    <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+                  </div>
+                </div>
+
+                <div role="main" class="hide-when-search">
+
+                        
+                        <div class="subnav navbar navbar-default">
+                          <div class="container hide-when-search" id="breadcrumb">
+                            <ul class="breadcrumb">
+                              <li></li>
+                            </ul>
+                          </div>
+                        </div>
+
+                    <article class="content wrap" id="_content" data-uid="Guides.GettingStarted.Connecting">
+<h1 id="connecting-the-bot">Connecting the bot</h1>
+
+<p>Once Wolfringo is <a class="xref" href="installation.html">installed</a>, it's time to get your bot connected. The way to do it varies whether you're using Wolfringo.Hosting package or not.</p>
+<div class="tabGroup" id="tabgroup_bHGHmlrG6S">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_connecting-normal-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_connecting-normal-bot" data-tab="connecting-normal-bot" tabindex="0" aria-selected="true">Without Wolfringo.Hosting (Normal Bot)</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_bHGHmlrG6S_connecting-hosted-bot" role="tab" aria-controls="tabpanel_bHGHmlrG6S_connecting-hosted-bot" data-tab="connecting-hosted-bot" tabindex="-1">With Wolfringo.Hosting (.NET Generic Host/ASP.NET Core)</a>
+</li>
+</ul>
+<section id="tabpanel_bHGHmlrG6S_connecting-normal-bot" role="tabpanel" data-tab="connecting-normal-bot">
+
+<p>First, add following using directives to your Program.cs:</p>
+<pre><code class="lang-csharp">using TehGM.Wolfringo;
+using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Utilities;
+</code></pre>
+<h3 id="create-client">Create Client</h3>
+<p>Inside of Program class, add a new variable to store your bot client in:</p>
+<pre><code class="lang-csharp">class Program
+{
+    private static IWolfClient _client;
+}
+</code></pre>
+<p>Modify your Main method and add a new MainAsync method:</p>
+<blockquote>
+<p>Note: this step can be skipped if you're using C# 7.1 or later - in such case, simply <a href="https://docs.microsoft.com/en-gb/dotnet/csharp/whats-new/csharp-7#async-main">change return type of Main from <code>void</code> to <code>Task</code></a>.</p>
+</blockquote>
+<pre><code class="lang-csharp">static void Main(string[] args)
+{
+    MainAsync(args).GetAwaiter().GetResult();
+}
+
+static async Task MainAsync(string[] args)
+{
+    // other startup code will go here!
+}
+
+</code></pre>
+<p>Now we need to do a few things - create a WolfClient instance using a builder, register event listeners, connect the bot, and prevent application from exiting. To do this, you can use following code inside of your MainAsync method:</p>
+<pre><code class="lang-csharp">// create client and listen to events we're interested in
+_client = new WolfClientBuilder().Build();
+// these will show error for now - don't worry, we'll handle that in a moment!
+_client.AddMessageListener&lt;WelcomeEvent&gt;(OnWelcome);
+_client.AddMessageListener&lt;ChatMessage&gt;(OnChatMessage);
+
+// start connection and prevent the application from closing
+await _client.ConnectAsync();
+await Task.Delay(-1);
+</code></pre>
+<p>AddMessageListener is a method to add event listener for receiving messages and events. It takes a generic parameter and a callback as normal parameter. It'll call callback when a received message is of type specified by generic parameter - for example, in the code above, OnWelcome will be called when <a class="xref" href="../../api/TehGM.Wolfringo.Messages.WelcomeEvent.html">WelcomeEvent</a> is received, and OnChatMessage when <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a> is received.<br>
+Wolfringo contains many message types - check <a class="xref" href="../../api/TehGM.Wolfringo.Messages.html">TehGM.Wolfringo.Messages</a> to check out others!</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>It is recommended that you enable logging as well - check <a class="xref" href="../features/logging.html">Logging guide</a> to see how!</p>
+</div>
+<h4 id="make-the-bot-reconnect-automatically">Make the bot reconnect automatically</h4>
+<p>We already have all code to get bot started, but it won't reconnect automatically - and WOLF protocol forces disconnection eveyr hour. Not good!<br>
+But don't worry - there's an easy way to enable automatic reconnection.</p>
+<p><a href="https://www.nuget.org/packages/Wolfringo.Utilities">Wolfringo.Utilities</a> package (installed by default when you install <a href="https://www.nuget.org/packages/Wolfringo">Wolfringo</a> metapackage) has an utility class called <a class="xref" href="../../api/TehGM.Wolfringo.Utilities.WolfClientReconnector.html">WolfClientReconnector</a>. This class is 'outside' of WolfClient because that makes this class implementation independent.</p>
+<p>To enable <a class="xref" href="../../api/TehGM.Wolfringo.Utilities.WolfClientReconnector.html">WolfClientReconnector</a> the easy way, you can simply add it to the builder:</p>
+<pre><code class="lang-csharp">_client = new WolfClientBuilder()
+    .WithAutoReconnection(reconnector =&gt;
+    {
+        // by default, ReconnectorConfig will retry 5 times - here we change it to -1, which makes it infinite
+        reconnector.ReconnectAttempts = -1;
+    })
+    .Build();
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Pro tip: Check out <a class="xref" href="../features/reconnection.html">Reconnecting guide</a> for more details.</p>
+</div>
+<h3 id="add-event-listeners">Add event listeners</h3>
+<p>There are numerous events that can come from WolfClient, but the most important are when server sends &quot;Welcome&quot; (which is the place to login the bot) and when bot receives a chat message. To handle them, let's add 2 new event listener methods to Program class.</p>
+<pre><code class="lang-csharp">// this method will be called when &quot;Server&quot; welcomes the bot - this is where we login!
+private static async void OnWelcome(WelcomeEvent message)
+{
+    // if reusing the token, user might be already logged in, so check that before requesting login
+    if (message.LoggedInUser == null)
+    {
+        // note: it is recommended to not hardcode username and password, and use .gitignore-d config file instead
+        // see exaple project linked below for a full example!
+        await _client.LoginAsync(&quot;BotEmail&quot;, &quot;BotPassword&quot;, WolfLoginType.Email);
+    }
+    await _client.SubscribeAllMessagesAsync();      // without this, bot will not receive any messages
+}
+
+// this method will be called whenever the bot receives a message in chat
+// see Commands System guides to check how implement proper commands, without using this listener at all
+private static async void OnChatMessage(ChatMessage message)
+{
+    // reply only to private text messages that start with &quot;!mybot hello&quot;
+    if (message.IsText &amp;&amp; message.Text.StartsWith(&quot;!mybot hello&quot;, StringComparison.OrdinalIgnoreCase))
+    {
+        await _client.ReplyTextAsync(message, &quot;Hello there!!!&quot;);
+    }
+}
+</code></pre>
+</section>
+<section id="tabpanel_bHGHmlrG6S_connecting-hosted-bot" role="tabpanel" data-tab="connecting-hosted-bot" aria-hidden="true" hidden="hidden">
+
+<p>Adding WolfClient is done in ConfigureServices method. The way it's done depends on whether you created an ASP.NET Core project or not.</p>
+<h4 id="aspnet-core---with-startupcs">ASP.NET Core - with Startup.cs</h4>
+<p>If your project used some of ASP.NET Core templates, most likely it'll already have a generated Startup.cs file. Let's add following using directives on top of Startup.cs:</p>
+<pre><code class="lang-csharp">using Microsoft.Extensions.DependencyInjection;
+using TehGM.Wolfringo.Hosting;
+</code></pre>
+<p>Now just add following code to <code>ConfigureServices</code> method that should already exist in your Startup.cs:</p>
+<pre><code class="lang-csharp">// load configuration
+services.Configure&lt;HostedWolfClientOptions&gt;(context.Configuration.GetSection(&quot;WolfClient&quot;));
+
+// add client
+// note: it is recommended to not hardcode username and password, and use .gitignore-d config file instead
+// see exaple project linked below for a full example!
+services.AddWolfClient()
+    .SetCredentials(&quot;BotEmail&quot;, &quot;BotPassword&quot;, WolfLoginType.Email);
+
+// add our HostedMessageHandler
+services.AddHostedService&lt;HostedMessageHandler&gt;();
+</code></pre>
+<h4 id="net-generic-host---without-startupcs">.NET Generic Host - without Startup.cs</h4>
+<p>If your project didn't generate Startup.cs, you most likely are not making a web application using ASP.NET Core - but don't worry, that's okay, you can still use Wolfringo.Hosting!</p>
+<p>First, install <a href="https://www.nuget.org/packages/Microsoft.Extensions.Hosting">Microsoft.Extensions.Hosting</a> NuGet package in your project. Once it's installed, add following using directives to your Program.cs:</p>
+<pre><code class="lang-csharp">using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using TehGM.Wolfringo.Hosting;
+</code></pre>
+<p>Now, we need to create, configure and start the host. To do so, add this to your Main method:</p>
+<pre><code class="lang-csharp">// this is an example showing configuration for .NET Core 3.0+
+// for host configuration instructions in .NET Core 2.1 and 2.2, 
+// see https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-2.1
+IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((context, services) =&gt;
+    {
+        // load configuration
+        services.Configure&lt;HostedWolfClientOptions&gt;(context.Configuration.GetSection(&quot;WolfClient&quot;));
+        services.AddWolfClient()
+            // add client
+            // note: it is recommended to not hardcode username and password, and use .gitignore-d config file instead
+            // see exaple project linked below for a full example!
+            .SetCredentials(&quot;BotEmail&quot;, &quot;BotPassword&quot;, WolfLoginType.Email);
+            
+        // add our HostedMessageHandler
+        services.AddHostedService&lt;HostedMessageHandler&gt;();
+    })
+    .ConfigureLogging((context, config) =&gt;
+    {
+        // configure logging here
+        // see your logging library configuration instructions
+        config.SetMinimumLevel(LogLevel.Debug);
+    })
+    .Build();
+// run the host
+host.RunAsync().GetAwaiter().GetResult();
+</code></pre>
+<h3 id="make-the-bot-reconnect-automatically-1">Make the bot reconnect automatically</h3>
+<p>Unlike bots without .NET Generic Host, <a class="xref" href="../../api/TehGM.Wolfringo.Hosting.HostedWolfClient.html">HostedWolfClient</a> automatically handles reconnection internally. By default it'll attempt to reconnect 5 times. You can change that by either changing &quot;AutoReconnectAttempts&quot; in <a href="https://github.com/TehGM/Wolfringo/blob/master/Examples/HostedPingBot/appsettings.json">settings</a>, or using following method:</p>
+<pre><code class="lang-csharp">services.AddWolfClient()
+    .SetCredentials(&quot;BotEmail&quot;, &quot;BotPassword&quot;, WolfLoginType.Email)
+    .SetAutoReconnectAttempts(-1);  // by default, bot will try to reconnect 5 times - here we change it to -1, which makes it infinite
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Pro tip: Check out <a class="xref" href="../features/reconnection.html">Reconnecting guide</a> for more details.</p>
+</div>
+<h3 id="add-event-listeners-1">Add event listeners</h3>
+<p>To handle WolfClient events, we need a handler class. Let's create add a new class called <code>HostedMessageHandler</code> to our project. Once the class is created, add following using directives:</p>
+<pre><code class="lang-csharp">using TehGM.Wolfringo;
+using TehGM.Wolfringo.Messages;
+using TehGM.Wolfringo.Utilities;
+</code></pre>
+<p>There are numerous events that can come from WolfClient, but the most important are when server sends &quot;Welcome&quot; (which is the place to login the bot) and when bot receives a chat message. Handling Welcome is handled by <a class="xref" href="../../api/TehGM.Wolfringo.Hosting.HostedWolfClient.html">HostedWolfClient</a> automatically by default, but we still need to handle received message to determine what to do. To do so, let's add a simple event listener to our <code>HostedMessageHandler</code>:</p>
+<pre><code class="lang-csharp">// this method will be called whenever the bot receives a message in chat
+// see Commands System guides to check how implement proper commands, without using this listener at all
+private async void OnChatMessage(ChatMessage message)
+{
+    // reply only to private text messages that start with &quot;!mybot hello&quot;
+    if (message.IsText &amp;&amp; message.Text.StartsWith(&quot;!mybot hello&quot;, StringComparison.OrdinalIgnoreCase))
+    {
+        await _client.ReplyTextAsync(message, &quot;Hello there!!!&quot;);
+    }
+}
+</code></pre>
+<p>Now we need to grab our client instance, and register the listener. To do it in .NET Generic Host, we'll use <a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection">Constructor Dependency Injection</a>. Add following variable and constructor for your <code>HostedMessageHandler</code>:</p>
+<pre><code class="lang-csharp">private readonly IWolfClient _client;
+
+// can also be IWolfClient
+public HostedMessageHandler(IWolfClient client)
+{
+    this._client = client;
+    this._client.AddMessageListener&lt;ChatMessage&gt;(OnChatMessage);
+}
+</code></pre>
+<p>AddMessageListener is a method to add event listener for receiving messages and events. It takes a generic parameter and a callback as normal parameter. It'll call callback when a received message is of type specified by generic parameter - for example, in the code above, OnChatMessage when <a class="xref" href="../../api/TehGM.Wolfringo.Messages.ChatMessage.html">ChatMessage</a> is received.<br>
+Wolfringo contains many message types - check <a class="xref" href="../../api/TehGM.Wolfringo.Messages.html">TehGM.Wolfringo.Messages</a> to check out others!</p>
+<p>With this in place, IDE should stop complaining, and class should be functional. However, it's never started. To get it to start on application startup, we need to implement @Microsoft.Extensions.Hosting.IHostedService:</p>
+<pre><code class="lang-csharp">public class HostedMessageHandler : IHostedService
+{
+    // .. 
+    // ... all other code here ...
+    // ..
+
+    // Implementing IHostedService ensures this class is created on start
+    Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        =&gt; Task.CompletedTask;
+    Task IHostedService.StopAsync(CancellationToken cancellationToken)
+        =&gt; Task.CompletedTask;
+}
+</code></pre>
+<p>Now we can add this to ConfigureServices method:</p>
+<pre><code class="lang-csharp">services.AddHostedService&lt;HostedMessageHandler&gt;();
+</code></pre>
+</section>
+</div>
+<h3 id="testing-the-bot">Testing the bot</h3>
+<p>You're now ready to run the project. Go ahead, and send &quot;!mybot hello&quot; to your bot's account. It should reply!<br>
+<img src="/_images/guides/connect-bot-1.png" alt=""></p>
+<h2 id="moving-forward">Moving forward</h2>
+<p>While using <code>_client.AddMessageListener&lt;ChatMessage&gt;(OnChatMessage);</code> and <code>async void OnChatMessage(ChatMessage message)</code> works fine for testing, you probably want to develop fully fledged commands with your bot. Check <a class="xref" href="../commands/enabling-commands.html">Commands System</a> guides to see how!</p>
+<p>Bot is a background program by nature, and as with any background program, knowing what is going on can be useful. For this reason Wolfringo has full logging support - check <a class="xref" href="../features/logging.html">Logging Guide</a> to see how to enable it.</p>
+<p>You can also check <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/SimplePingBot">SimplePingBot Example</a> (Normal Bot) or <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples/HostedPingBot">HostedPingBot Example</a> (.NET Generic Host/ASP.NET Core) for full example on basic Wolfringo usage. Feel free to also check <a href="https://github.com/TehGM/Wolfringo/tree/master/Examples">other example projects</a>!</p>
+</article>
+              
+                </div>
+            </main>
+        </div>
+
+        
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<script type="text/javascript" src="../../styles/jquery.twbsPagination.js"></script>
+<script type="text/javascript" src="../../styles/url.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript">
+	anchors.options.visible = 'touch';
+	anchors.options.placement = 'left';
+	anchors.add('h2, h3, h4, h5');
+</script>
+    </body>
+
+</html>
