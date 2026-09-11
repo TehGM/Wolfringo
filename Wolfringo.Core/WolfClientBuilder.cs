@@ -126,6 +126,17 @@ namespace TehGM.Wolfringo
         public WolfClientBuilder WithDevice(WolfDevice device)
             => this.ConfigureOptions(options => options.Device = device);
 
+        // API KEY
+        /// <summary>Sets API Key to connect with.</summary>
+        /// <param name="apiKey">API Key to connect with.</param>
+        /// <returns>Current builder instance.</returns>
+        public WolfClientBuilder WithApiKey(string apiKey)
+        {
+            if (string.IsNullOrWhiteSpace(apiKey)) 
+                throw new ArgumentNullException(nameof(apiKey));
+            return this.ConfigureOptions(options => options.ApiKey = apiKey);
+        }
+
         /// <summary>Allows configuring options for Wolf Client.</summary>
         /// <param name="configure">Delegate that can be used for options configuration.</param>
         /// <returns>Current builder instance.</returns>

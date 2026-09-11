@@ -12,6 +12,8 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
         public string Username { get; private set; }
         [JsonProperty("password")]
         public string Password { get; private set; }
+        [JsonProperty("apiKey")]
+        public string ApiKey { get; private set; }
 
         public static Config Load()
             => JsonConvert.DeserializeObject<Config>(File.ReadAllText("appsecrets.json"));

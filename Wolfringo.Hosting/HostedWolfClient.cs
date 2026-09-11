@@ -137,7 +137,8 @@ namespace TehGM.Wolfringo.Hosting
             {
                 IgnoreOwnChatMessages = options.IgnoreOwnChatMessages,
                 Device = options.Device,
-                ServerURL = options.ServerURL
+                ServerURL = options.ServerURL,
+                ApiKey = options.ApiKey
             });
 
             // sub to events
