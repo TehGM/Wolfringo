@@ -113,7 +113,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Setup DocFX
-        run: dotnet tool install -g docfx
+        run: dotnet tool install -g docfx --version 2.60.2
       - name: DocFX Build
         working-directory: docs
         run: docfx docfx.json
