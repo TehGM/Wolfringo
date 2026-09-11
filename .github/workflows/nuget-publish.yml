@@ -115,7 +115,7 @@ jobs:
       - name: Setup DocFX
         uses: crazy-max/ghaction-chocolatey@v1
         with:
-          args: install docfx --version=2.60.2 -y
+          args: install docfx --version=2.59.4 -y
       - name: DocFX Build
         working-directory: docs
         run: docfx docfx.json
