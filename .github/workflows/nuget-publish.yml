@@ -110,6 +110,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
+      - name: Exclude example projects
+        run: dotnet sln remove Examples/**
       - name: Install dependencies
         run: dotnet restore
       - name: Setup DocFX
