@@ -71,6 +71,7 @@ namespace TehGM.Wolfringo.Messages.Serialization
                 { MessageEventNames.TipSummary, new DefaultMessageSerializer<TipSummaryMessage>() },
                 { MessageEventNames.TipDetail, new DefaultMessageSerializer<TipDetailsMessage>() },
                 { MessageEventNames.MetadataUrl, new DefaultMessageSerializer<UrlMetadataMessage>() },
+                { MessageEventNames.Objection, new DefaultMessageSerializer<ObjectionEvent>() },
                 // group join and leave
                 { MessageEventNames.GroupMemberAdd, new GroupJoinLeaveMessageSerializer<GroupJoinMessage>() },
                 { MessageEventNames.GroupMemberDelete, new GroupJoinLeaveMessageSerializer<GroupLeaveMessage>() },

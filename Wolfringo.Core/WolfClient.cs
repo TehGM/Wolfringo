@@ -419,6 +419,8 @@ namespace TehGM.Wolfringo
                         // if welcome is already logged in, we can populate userID
                         if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
                             this.CurrentUserID = welcome.LoggedInUser.ID;
+                        else if (msg is ObjectionEvent objection)
+                            this.Log?.LogError("Server objected: {Message}", objection.Message);
 
                         // cache
                         if (this.Cache != null)

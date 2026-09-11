@@ -120,5 +120,7 @@ namespace TehGM.Wolfringo.Messages
         public const string TipAdd = "tip add";
         /// <summary>WOLF Protocol Event name for <see cref="UrlMetadataMessage"/>.</summary>
         public const string MetadataUrl = "metadata url";
+        /// <summary>WOLF Protocol Event name for <see cref="ObjectionEvent"/>.</summary>
+        public const string Objection = "objection";
     }
 }
