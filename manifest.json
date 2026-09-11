@@ -1,0 +1,5522 @@
+{
+  "sitemap": {
+    "fileOptions": {
+      "**/guides/**": {
+        "baseUrl": "https://wolfringo.tehgm.net/guides/",
+        "changefreq": "monthly",
+        "priority": 0.9,
+        "lastmod": "2021-01-09T18:10:00+00:00"
+      },
+      "**/faq/**": {
+        "baseUrl": "https://wolfringo.tehgm.net/faq/",
+        "changefreq": "monthly",
+        "priority": 0.6,
+        "lastmod": "2021-01-09T18:10:00+00:00"
+      },
+      "**/api/**": {
+        "baseUrl": "https://wolfringo.tehgm.net/api/",
+        "changefreq": "monthly",
+        "priority": 0.3,
+        "lastmod": "2021-01-09T18:10:00+00:00"
+      }
+    },
+    "baseUrl": "https://wolfringo.tehgm.net/",
+    "changefreq": "monthly",
+    "lastmod": "2021-01-09T18:10:00+00:00"
+  },
+  "homepages": [],
+  "source_base_path": "D:/a/Wolfringo/Wolfringo/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "source_relative_path": "../wolfringo_logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "wolfringo_logo.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/connect-bot-1.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/connect-bot-1.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/help-command-1.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/help-command-1.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/help-command-2.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/help-command-2.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-1.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-1.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-2.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-2.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-3.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-3.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-4.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-4.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-5.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-5.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-6.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-6.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-7.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-7.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-8.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-8.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/install-vs-9.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/install-vs-9.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/logging-microsoft-1.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/logging-microsoft-1.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/logging-serilog-1.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/logging-serilog-1.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "_images/guides/logging-serilog-2.png",
+      "output": {
+        "resource": {
+          "relative_path": "_images/guides/logging-serilog-2.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.CommandsServiceCollectionExtensions.html",
+          "hash": "xc1DhbDQp8RMdmjs4DB/+pmQ44DQGi5Hg3O704JSoNg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IHostedCommandsServiceBuilder.html",
+          "hash": "RDkEBehbF3HYHHDWXAYuqzj5oVeUVgDaaOdqFcwEwqw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IHostedWolfClientServiceBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IHostedWolfClientServiceBuilder.html",
+          "hash": "GKbjun60F0tBylPFC2tt4JkIhjOsbrnK8xqUneOKh7g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.WolfClientServiceCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.WolfClientServiceCollectionExtensions.html",
+          "hash": "PC1Nn5qP80+6obtEec8oYmNPWPAGSFkTXbODKeYltb4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.html",
+          "hash": "yj+xhOZQZXu3O2wsMLkfafO5zaVnFSF6GHAIEDd9APk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.IWolfClientCache.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.IWolfClientCache.html",
+          "hash": "BQS2hIuLXLMeINcBcGwbQrrXkeUyA6lhXfn/XHadX20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.IWolfClientCacheAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.IWolfClientCacheAccessor.html",
+          "hash": "9LnDnpj4UIQIBzMlSThTpGd/O9dmnTSOsWV0B995WPA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.IWolfCachedEntityCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.IWolfCachedEntityCollection-1.html",
+          "hash": "xWKP0yFfbVC8zNf+QsIyYh/3kmHF8CH4yfVI1xSQr2U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.IWolfCachedEntityCollection-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.IWolfCachedEntityCollection-2.html",
+          "hash": "O9Xkv70aMrh0hrq2BXOEXWK2UQvXbfC6SlHCYm0p+6c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfCachedEntityCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfCachedEntityCollection-1.html",
+          "hash": "EC3nEN83oh0KuJyDstqBzBjs5u8T1cXeGOsROJwDfOo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfCachedEntityCollection-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfCachedEntityCollection-2.html",
+          "hash": "pHF3nu3dIU2PIm3GYW8wPBIj3fbfg1dxuS4mdH+iyX4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfCachedEntityCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfCachedEntityCollectionExtensions.html",
+          "hash": "gLcWMgFXnN1eKP6bXv0+r3bFGDrRwa3RWpeIpGB+s+U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfClientCache.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.WolfClientCache.html",
+          "hash": "w4PjxUwR4y8Onj8pooEWM4Hs6aMGeP9HzAZwysYjwcw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.Internal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.Internal.html",
+          "hash": "KNOc2q0Dwlg0lFroBCZd0VLFBSH06CQIlSefCjicet0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.WolfCacheOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.WolfCacheOptions.html",
+          "hash": "1Xh2fGY/h0xH4P3RhrTBHeF/HVtNQr023Crr7vf6qcw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Caching.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Caching.html",
+          "hash": "9cthL1jdnxXKj4L5XtRf4Ttv7fe25QTQMzy4XtFRfGo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ArgumentNameAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ArgumentNameAttribute.html",
+          "hash": "DDFcRi6tSnppL+FAhOuF8rHFl18WEVfVLUh2YpTSZTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ArgumentTypeNameAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ArgumentTypeNameAttribute.html",
+          "hash": "QesxBS7er8e18IDddeez2qThYFW98Xs8Eoq/aQot+J0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ArgumentsTextAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ArgumentsTextAttribute.html",
+          "hash": "CW56rdkH235TCID/nzDzAbaMaARx0fAxBbw4gEWphm0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.ArgumentErrorAttribute.html",
+          "hash": "22b5bYVAF6lvsq839mx2ZUI4wgQUHghfx3cNv9iln5w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.CommandAttributeBase.html",
+          "hash": "S7GAd+S+O1VOQjK9jypsz/ulKlQ7yl3GWnShaOR6V4c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.CommandRequirementAttribute.html",
+          "hash": "Grv6ZaeLA09cuFJyi/kpbhtcw7czcsle9nnGtcOIoMM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireBotGroupPrivilegeAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireBotGroupPrivilegeAttribute.html",
+          "hash": "4c+RAmg+mpaGc4Sgb0xkiD1U2MNbfNjUDI/d/Gbb9lg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireBotUserPrivilegeAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireBotUserPrivilegeAttribute.html",
+          "hash": "O23Jo7X6de7kG0SBzsgRNFozyfQvt2J9nWIQ8GEqRpA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireGroupPrivilegeAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireGroupPrivilegeAttribute.html",
+          "hash": "VnUVQ5nRYwDzgl3cAs0fxOfOaL98yqQL34g62PoEsLY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireUserPrivilegeAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.RequireUserPrivilegeAttribute.html",
+          "hash": "jjffdxleCgOiPrPeQ6kOa3t5pO2TwMqW9prni6QcTgg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Attributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Attributes.html",
+          "hash": "x7nvdPWkgnONyj1SUWDbPqQlDCl0OBElj7r8vbZ6iIo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CaseSensitivityAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CaseSensitivityAttribute.html",
+          "hash": "obKPuLpjfPmjR4muQN3u1bhI4vsjKQ109By+bWu4vGw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ChatMessageExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ChatMessageExtensions.html",
+          "hash": "71o8nzOY/I6FiZ8HLrMr7jggdIPFl3piGyu/dbyHmSc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandAttribute.html",
+          "hash": "FRvcwL+rEY9TPkOLgZMOnZhb6/k3LAf49VEARqRYIrc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandContext.html",
+          "hash": "bGE7pWVY1lB1LVZ+T7rZkVHF+i3uvNrwYwNJepdRTLg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandContextExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandContextExtensions.html",
+          "hash": "rP1FWVZQvzumGkrAreRgZrWotJJXT4cLagM3+2SAHXo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandInstanceDescriptorExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandInstanceDescriptorExtensions.html",
+          "hash": "74WL/xcgwftWyC2mlnUf01tAtni/+maOOiH5kdvxAEA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandLoggingExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandLoggingExtensions.html",
+          "hash": "ps4KA13+yKTWobJldnHg6VBCXi/3aHCfoB9dCj/GlRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandsHandlerAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandsHandlerAttribute.html",
+          "hash": "2/a9Wn346Ss+XconkxyeA5YWjEZv8v9UK+cfGJUo3ls="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandsHandlerConstructorAttribute.html",
+          "hash": "7jEgdQ9WQmcZ5di/RfHblDru+3JzpxEY55tryhpWWrY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandsOptions.html",
+          "hash": "jqVDL2h0zoAe/rHo6xNkZaCCAHSBJhms7t0bXsk6ou0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandsService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandsService.html",
+          "hash": "zckGDT97fZsiKpKup9KYN22pVSdNsHmq67eASAOLjh0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.CommandsServiceBuilder.html",
+          "hash": "28/JRxG/nhEXrYcAs2QZo4TJLCZkBy/She17Yb0zVJE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ConvertingErrorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ConvertingErrorAttribute.html",
+          "hash": "hbRiVDZ7NOS3susmRfQJWxy7fMaRG2wwyXwlm/zKZTo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.DisplayNameAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.DisplayNameAttribute.html",
+          "hash": "uHsxn75YK88khTuDvMJ+WS6qUWeD1Ey5uEFPgIwpFEw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.GroupOnlyAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.GroupOnlyAttribute.html",
+          "hash": "0cy4g5zooTRtRLN0IkAfXDL2YNL2G8YHJ6uUM4Nmf4A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Help.CommandsListBuilder.html",
+          "hash": "T7N12vdXm5gqRJi1TMLvIqslBWL924sA5FjM+dH8s8E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Help.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Help.html",
+          "hash": "mr2IpaC6bhuE+yTL04Svq7Lb+CX46yzaglP3LtytalE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.HelpCategoryAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.HelpCategoryAttribute.html",
+          "hash": "skFiRwcgB0TS7AxtJVMXLRPEXwVRk+x7ZkkGFj6twek="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.HelpOrderAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.HelpOrderAttribute.html",
+          "hash": "EU6tg1yx7sAd3fgV3hlDfA85ZujHkJdvdiAlu953oA8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.HiddenAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.HiddenAttribute.html",
+          "hash": "jGAExPP94oUTbHWKNu0bajnY5v3dE9sxprf1txdFlbI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ICommandContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ICommandContext.html",
+          "hash": "rMUukFleT3fi09jxR4QTT92Hw+6P/kNEFY/UUqdoCYY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ICommandOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ICommandOptions.html",
+          "hash": "HhAhMSRCS3RAO8I3bOdEEYCM29J8KBsvYbMl6CGD9UE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ICommandRequirement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ICommandRequirement.html",
+          "hash": "Fv0MRrQwznQLbbBQW1GHqagdSa6KnuNKANjkvDOONok="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ICommandResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ICommandResult.html",
+          "hash": "GhAX2/9usHyOjBNIcfwuMkovwqYJz0VfU/WgSUSzBxE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.ICommandsService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.ICommandsService.html",
+          "hash": "IVb8aIGawnctCGodh3lCc0O/4VIU/YKWrUKuwTvswXg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.IgnoreBotsAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.IgnoreBotsAttribute.html",
+          "hash": "QgxJXfMAcuRWH5x1Fosb5EECDGUEYle5fbofZwn5TTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptor.html",
+          "hash": "PnxD/ZlcFqNSnqCLC7djEETQJef1tCr/NDKIRw5x4uY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptorExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandHandlerDescriptorExtensions.html",
+          "hash": "kjkOGPZzlq5TgeLP6fjBSHr/THHBLQ7lnK9vVt63T/o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProvider.html",
+          "hash": "xnjDnO8u9GdlsJGoSZnqCvd/MzZyi0gsD1+KSjbX5+Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderExtensions.html",
+          "hash": "+ngxPrJSmkHj7p0saAApg2oeswjGHAssyzl1ATAJWtU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInitializerProviderOptions.html",
+          "hash": "AIkDdOLzlMnDPbglAcs5cVfZJvvBU1mCUVIuFcPqywQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInstanceBase.html",
+          "hash": "waDzx3eKWH/o+Ik0u8jp09rLLO9/JuoGQH8prLnH5dM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInstanceDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandInstanceDescriptor.html",
+          "hash": "I2hGe+p6flNoUXW5DIeo8zzzer5cYDboQRxQM0ypsxw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsHandlerProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsHandlerProvider.html",
+          "hash": "CfQNL0YtQDUKOFs2HDxylBs2ouPDyvF68MH5F5mHBD4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsHandlerProviderResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsHandlerProviderResult.html",
+          "hash": "qTeLj+SNLCxXE2scPUqXUYjfr+sDs0wn+qMyM+Mfr7I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsLoader.html",
+          "hash": "Cfm4Q999WeFma+s8xZm/o5LI+7uue+ORx8uJV6Qe+8M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsLoaderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.CommandsLoaderExtensions.html",
+          "hash": "wH+UpX7ly0/KiTFtFktRtQJ6icitKAtw+YZxGHGxlVM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandHandlerDescriptor.html",
+          "hash": "llNaQTZPfI/WSltiaA5FC/N8FaTHuQG6DCIAhBrkWhQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializer.html",
+          "hash": "bg1Z3OtOn6mPRvCkg1ezWdiQqlG4O+20rOKczKzBDhI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializerProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInitializerProvider.html",
+          "hash": "8rrGpTiUp1UWwKbahkEL+GSgmk84iW5KGNyiI5T83Yg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInstance.html",
+          "hash": "d2hb3j1GTbwl57iFx2oPwGwTL3sK6PKfpGaS0TFEqDg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandInstanceDescriptor.html",
+          "hash": "JcDFUgIDv4k567qYIBpYLxETCifCaiPtMRzO9FqRCWc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandsHandlerProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandsHandlerProvider.html",
+          "hash": "w69IVc85d5OML98wcbOvX6nTkzfs0cTya+UbwGcwd00="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandsHandlerProviderResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandsHandlerProviderResult.html",
+          "hash": "fApumGdwVB6gj1mYnLe/CiZhOEBGqhLXrVAyqbJTCTg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandsLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.ICommandsLoader.html",
+          "hash": "3SS2qzgYuTqmuYgyINKS7DmlNGQogd+wBujKCMo/HL4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.RegexCommandInitializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.RegexCommandInitializer.html",
+          "hash": "FKt0mZbtDzjzP2Sw+XFaQKUuGNUGK98S+3nu1FSpRsk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.RegexCommandInstance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.RegexCommandInstance.html",
+          "hash": "AE2IjnOB4+giA0qWjmCKoffu4uwYTNS4+2yTAe00s+U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.StandardCommandInitializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.StandardCommandInitializer.html",
+          "hash": "Am32F+uhxvuLj+Kp/2RNP5oKlC9s+B3FZpOmL7nQ3Mo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.StandardCommandInstance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.StandardCommandInstance.html",
+          "hash": "qH2QkKLQtCypdww6p+jgs5Ww7Uf+JWwp/lQ3l3LIVa8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Initialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Initialization.html",
+          "hash": "9qmSXjJ40RUKjugl+LO275Yc2+CBVxoqQFAFiuY9GtQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.MissingErrorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.MissingErrorAttribute.html",
+          "hash": "UCY2kgu1cxL79rxFiJx4yYeKezKhoUxSCDwPpuMtHIs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverterProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverterProvider.html",
+          "hash": "9IrPwcYxVUr67jjj52COI+rjAj81RirPy5hVdcMISf0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverterProviderOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverterProviderOptions.html",
+          "hash": "7ym4uV+fb5zXwa4ePBAQ3Ql+IWNhjJT/Ub5mZt1nUlo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.BigIntegerConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.BigIntegerConverter.html",
+          "hash": "uuKG6XPXpjll29fqAufMcilUfgoF+kHsbpjQW1z+Z64="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.BooleanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.BooleanConverter.html",
+          "hash": "UXTGxpMDtshH1u5xtDZZO5MV+Pqk52Ch+2xnGWx1cvo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.ByteConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.ByteConverter.html",
+          "hash": "p8j4N/ggTU0geJRM5UdxA5NijUFS3bzInIMnIIvAv3s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.CharConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.CharConverter.html",
+          "hash": "0t72+JvmjaPc0VX5m51x3mPF+VdKJmrd5wDSmapWN7s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DateTimeConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DateTimeConverter.html",
+          "hash": "RakzJLjD9ynlkIlGwZRjl/qXQI5Kf3CN6CAeJjSqQ28="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DateTimeOffsetConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DateTimeOffsetConverter.html",
+          "hash": "dF241uCzgUvVBGfskE+Gu3+EUeD5lzH18eATIcG7N90="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DecimalConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DecimalConverter.html",
+          "hash": "BesgyGWtiLr37slbNoyCc02SRClqPHHWuONmNxCROas="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DoubleConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.DoubleConverter.html",
+          "hash": "g2I6q7otSHXsyBPMoKKTjWQwEGPSHLDfaiFzZkEhrjk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.EnumConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.EnumConverter.html",
+          "hash": "pJe/aiVNkYDewgeINvNfPWYNTHxR6BWi71EioCMNQHo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.Int16Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.Int16Converter.html",
+          "hash": "RejB3ueSGIg7UpytpYamZ4DzdpZe0/i1/g80FhEZAJE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.Int32Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.Int32Converter.html",
+          "hash": "aqBoEKUmYvuaawr199XZuHGQrA+WW2joqjRsyFq3wBw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.Int64Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.Int64Converter.html",
+          "hash": "CYJLqjqYuu6Qk0kZtwWe7h3gnuzf87DnAhEykbSoWOE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.SByteConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.SByteConverter.html",
+          "hash": "cocWCRnIHnN9a1wYWeWBnVg137wZUhlXEdmih/yC1EE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.SingleConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.SingleConverter.html",
+          "hash": "3kFJk2qJ7Ec+mE7T60raoYpHOJ3KTJiby3f799+6sNo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.StringConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.StringConverter.html",
+          "hash": "rQo+CDz3q6uts9B3GqG8DfpHOSuWAKcCCZY2YvKfYxM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.TimeSpanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.TimeSpanConverter.html",
+          "hash": "D6UPSF99WX+tks9Z2ijJp2Ou9YaDG1y3oB4ZF2qJ24A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.UInt16Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.UInt16Converter.html",
+          "hash": "/8K3rufdPMo3opSh8fOQtoXwIdr+Afz9gCPQ9mQ6b+g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.UInt32Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.UInt32Converter.html",
+          "hash": "6VBT636mF2kJB+gGpCiWg0tHMkwcUN/uPsLH8eZZBGE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.UInt64Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.UInt64Converter.html",
+          "hash": "KVeqSkUmGsOc18fHjrVGR7LGX3W0dDzSsfytQzZAxqw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.WolfTimestampConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.WolfTimestampConverter.html",
+          "hash": "qjcg5t3Kv9OoukGYX+YGjOQjeXxirgyuZXQiOV+ro2o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentConverters.html",
+          "hash": "ZrvaVDBfvJZqycfzSDSRUwKNmX2C/vsBiVsCTWWw600="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentsParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentsParser.html",
+          "hash": "xeIWAsPrz0BKmVIW/fwQiVX9s0gjRurf2xClFcmFPEI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentsParserOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ArgumentsParserOptions.html",
+          "hash": "OHCi6PKWayKDo097G7aPNrw9X4qcHwoU0x2BHdkVqGI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.CommandArgumentExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.CommandArgumentExtensions.html",
+          "hash": "Jcp6ql/5u5B5zlEqvsNSEChV2J4RliGMI/P9vsSNn1w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.CommandContextOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.CommandContextOptions.html",
+          "hash": "GjhCpiBu+RXpngykekl8YxcK6NIYqo4mPeAvNjQ4t/s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IArgumentConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IArgumentConverter.html",
+          "hash": "SdIUdViiA3gjV7wQ6BRY+AdQESPpq6ebw6MOVDuXH00="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IArgumentConverterProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IArgumentConverterProvider.html",
+          "hash": "PqJsed69Izq5S9b+WpfIjKm1m3tKMQoGt4ujZzIYtLs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IArgumentsParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IArgumentsParser.html",
+          "hash": "pyC9fxM7nd+WtukKVz6ZshyfN/MvwdJ4D+5kO1GQktA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IParameterBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.IParameterBuilder.html",
+          "hash": "g5znQrfwGXFMrdQLvQmKe+RXDH+veB8Jq9+x4u/x1VA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ParameterBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ParameterBuilder.html",
+          "hash": "EEGq7M9xn+m+/Pzt51pG81TCSvuz5hqyrUHWrqNKDuQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ParameterBuilderValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.ParameterBuilderValues.html",
+          "hash": "GLOIghj6vU/5DUO75QtobdDfoVNWqvA0EckKfVRiRu8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Parsing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Parsing.html",
+          "hash": "i5V9R+C0DvNAa0iyZie1+VGe1cUjiTyd/J6oh7PHu10="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.PrefixAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.PrefixAttribute.html",
+          "hash": "SnbpzI4wsLS7R866qT03n20OTnqSENcXdxGz/0zA6ys="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.PrefixRequirement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.PrefixRequirement.html",
+          "hash": "ipiN5NLo1+E/i4RX2ZRVf/whnq54pMVu6mfsNs8RvCw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.PrefixRequirementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.PrefixRequirementAttribute.html",
+          "hash": "n7vsT1o3s4kmb/gKC98/ymDkxm+74h2f54qGWmKI68w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.PriorityAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.PriorityAttribute.html",
+          "hash": "Qb06tPeeIp9uZhOV1KKWpBmbKtobNCA8N8K/mpGpmvI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.PrivateOnlyAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.PrivateOnlyAttribute.html",
+          "hash": "FMjEwWlb2foiTlpBR3rmu32EMGDgmr3qzh0LVbV4GnU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RegexCommandAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RegexCommandAttribute.html",
+          "hash": "qeObIJQSmtfMVN4mchYKJTqHE+xhXZogBdW8GAzsv+g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireBotGroupAdminAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireBotGroupAdminAttribute.html",
+          "hash": "RW89io+thg5ADb8NQYbJyNhYvQGg2z+cPFd6dwTBFPA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireBotGroupModAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireBotGroupModAttribute.html",
+          "hash": "qt/bh9nU0nxp9GMm64X+OtYnue45qFhR0ovtaqEsO/g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireBotGroupOwnerAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireBotGroupOwnerAttribute.html",
+          "hash": "Pui4LLFwp/b2v2lz6ieiz4r6D/Yng0bpRvgEBDJNvKw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireGroupAdminAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireGroupAdminAttribute.html",
+          "hash": "CRS9gqqfXgFkgxJ5VCXoll/vpqpqkACThAcl2U/km9o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireGroupModAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireGroupModAttribute.html",
+          "hash": "gTS5lqkYfJHESvxBJ45TKY47aLIcjLgvsyG2iK1ImTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireGroupOwnerAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireGroupOwnerAttribute.html",
+          "hash": "eTZ33t8odIrF2//ZUsTkUoJWaS1GJtL/dJcQO5pMU4I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireMaximumReputationAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireMaximumReputationAttribute.html",
+          "hash": "LE946CpNDQ7QYEF3KAkKt4dDNu/li0uDgRQmZ3q/Hn8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireMinimumReputationAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireMinimumReputationAttribute.html",
+          "hash": "CFxHq4qHKHhOXkKUWRmaXsoGqghqNIf4XD/LjSlk+uM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireUserEntertainerAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireUserEntertainerAttribute.html",
+          "hash": "HkPPE+4yxJrsJzjwDaXvEUFpXa48XFaSKzWU3igjeoA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireUserStaffAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireUserStaffAttribute.html",
+          "hash": "fG7eDwVdD3kXDO66Tx4aYQgV9TW6bt9sbPbkzY507+w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.RequireUserVolunteerAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.RequireUserVolunteerAttribute.html",
+          "hash": "pUYitDAxEVpIh9NVDw9Z0KHunvVgIpGiI5FDqM4TVhQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.CommandExecutionResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.CommandExecutionResult.html",
+          "hash": "nAaZEMWOkm4Ot1KDLBDIW5JupGTDqyYnkaN/D0cWdy0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.CommandRequirementsResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.CommandRequirementsResult.html",
+          "hash": "gkcG01+2uBITCslQoAXIV3R22lmYcCucCQpIJ73fbU8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.CommandResultStatus.html",
+          "hash": "uXSdrEsvBgXeo7vvR1RqpekheNoFKPQZ2nhoDGmEHYQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.IMessagesCommandResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.IMessagesCommandResult.html",
+          "hash": "X6qTmwRav2yKpg5X0ZRVj3sPGyUja7BY9FxYtcofIJE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.ParameterBuildingResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.ParameterBuildingResult.html",
+          "hash": "x7pwQkBPYtHeNSoKaKGw9akCGpq46FUoSdt1ym1MW1w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.RegexCommandMatchResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.RegexCommandMatchResult.html",
+          "hash": "ASWSQw0m5sflFuvB5l03Ga5RdHM9la1lJmcC1+DSwGA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.StandardCommandMatchResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.StandardCommandMatchResult.html",
+          "hash": "yGdOj+FW0QxXPjo7ms3aXGMIlUN8zaoVF9pBgWf0oWg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.Results.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.Results.html",
+          "hash": "T74tvc8FK8EQ13IhaS0OwU6xHqS4MBnzLfQFfT4qFz8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.SummaryAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.SummaryAttribute.html",
+          "hash": "VVarl3r9ncZQeizallBa6kbQTuHtWHbJ0QhiBiBhQ3U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Commands.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Commands.html",
+          "hash": "bGLBhjWetPmFYb0lT9oZqDBBXOdvahrefri/Mlv5W3w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.Commands.HostedCommandsService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.Commands.HostedCommandsService.html",
+          "hash": "CVvRGeq0i9f6M/2ZZEF/nZmVpNMctJn0nOC6GFe1SnA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.Commands.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.Commands.html",
+          "hash": "5kbjCvkDtZbwRXXX/7Xk96jzsCpllAoI7lCjyBs+lHE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.HostedWolfClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.HostedWolfClient.html",
+          "hash": "otxttQtShLT6DvyqZvJ1BGTQs59CzpZbcNoz/2f+pBc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.HostedWolfClientOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.HostedWolfClientOptions.html",
+          "hash": "HAMfO+p4lucfcMVSRXHllD6aQB8oEnBY3U8Z6V6L9CI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.Services.HostedWolfTokenProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.Services.HostedWolfTokenProvider.html",
+          "hash": "LFb47p4Nuww0LZ0XP/RygV/hoQMiZUJVOhmZRWBAECQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.Services.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.Services.html",
+          "hash": "bguWi2kBEjDrzhzBTTv+Gk+wQBjNRoXu37fZofGwA7w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Hosting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Hosting.html",
+          "hash": "dzUL9/WroAxLlqujlXyeMX+inYiqUOjefotbGw9YK48="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.IGroupEditMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.IGroupEditMessage.html",
+          "hash": "PzYzH1Eb6Xbuw2nOjqvwPez5puM8w4I2C33n7mVLskM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.IHeadersWolfMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.IHeadersWolfMessage.html",
+          "hash": "LqwSsi9YJMPDlzw1eduTbjjfmDT47Tio5H5Psz+e034="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.IWolfClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.IWolfClient.html",
+          "hash": "mImoSaEeE5ln+EcTPnZi8hoNyLulHrUE62GTOJeFTxw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.IWolfEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.IWolfEntity.html",
+          "hash": "JTRNyICXdseuCPWJlK0DvWQVj9AiMOTLWMd9gpRgpT4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.IWolfMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.IWolfMessage.html",
+          "hash": "aRR2ZfULd8PzMxUTBdaOGFZOuzd+br2wYLCDsLy8Fsg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.InteractiveExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.InteractiveExtensions.html",
+          "hash": "8nqr0Vz6YxMLIfjB1ZXAGz2Xw4UrnFo/Ye8nHQPsQ08="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.MessageSendingException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.MessageSendingException.html",
+          "hash": "qrtPeYHbu0cBb3AFX+YU7dWjGuk7awoDymMH4ESlCbU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.AchievementListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.AchievementListMessage.html",
+          "hash": "fDXurrN8e2MxheJwp43otZLAdlVmhjwqlQVO268/qFI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.AchievementMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.AchievementMessage.html",
+          "hash": "N229oXTO4qBhQoDqjbZh/5MBNhgwiGXrm+CWPz3942s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.BlockAddMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.BlockAddMessage.html",
+          "hash": "eAt5zsIc6ggYLmDrOnZMRpHfsElzhgKx1O+/AenTTQU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.BlockDeleteMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.BlockDeleteMessage.html",
+          "hash": "NEphAepLL0WWdLY+nrf3q6jZMkIgrk4dFpE02QAkmQ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.BlockListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.BlockListMessage.html",
+          "hash": "wW7P8fNZ38gsPw4R60v/Ev03hQDLlspknUcxpmyxmAk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.CharmListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.CharmListMessage.html",
+          "hash": "u/cdjw6ZNgRXwEW5NwTkzeQ940Xfwrpj2sfdOs25glQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.CharmStatisticsMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.CharmStatisticsMessage.html",
+          "hash": "ZMjWqiw0DsHk6EhcaD2I2i8E5djykY3AXmg/T3qgAYk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatMessage.EditMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatMessage.EditMetadata.html",
+          "hash": "eP22310HcQw7FG9Pl/v6ozGO2z7vgzpWaktO4wwekuU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatMessage.html",
+          "hash": "4ES/r1ZPPNNqVVgke7mq8//8nKrwhrIxtGrlrgdecmA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageFormatting.GroupLinkData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageFormatting.GroupLinkData.html",
+          "hash": "b775gW6NSpR+siEKHS92TT++k894hpkOLSRXjUP4KTk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageFormatting.LinkData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageFormatting.LinkData.html",
+          "hash": "bzOTrsfOnqG0NbJPso5wPMaYZPVwQ+wtHfEREhHfjOc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageFormatting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageFormatting.html",
+          "hash": "amnJyXVCRxJq8t59Rzurz3LYp8HzDoa8Jg30TrdeEzM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageTypes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatMessageTypes.html",
+          "hash": "y4YcMux1eEMfJjvos6rdGZE7iPPshcU6P1HgzY33kX8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatUpdateMessage.Builder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatUpdateMessage.Builder.html",
+          "hash": "cO2YFBkW9LvvB4kmkXOCBbvGfAZCLJFl+8nnYM3qgGw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ChatUpdateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ChatUpdateMessage.html",
+          "hash": "iw/SHqY5+cRCmfA8nOjIM8IJAtjj93Cx1N89x3RGwpQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ContactAddMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ContactAddMessage.html",
+          "hash": "DCdgC1x8bJrb/lAw2jN9FbT1JwYzL9xfqFYUB+67Rqs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ContactDeleteMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ContactDeleteMessage.html",
+          "hash": "/ucgN8k+1VjNtb3yDE5uY7zrU08uRMbEnScOSt+RGTY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ContactListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ContactListMessage.html",
+          "hash": "vqLlezNxx51whnSRiO4gZXuoWIWJKkdezI6EePDg/Fo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Embeds.GroupPreviewChatEmbed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Embeds.GroupPreviewChatEmbed.html",
+          "hash": "yx+oJWpaVoFVZ9o6jdBBTDqcOqrkK1M3oydmsS4UmfI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Embeds.ImagePreviewChatEmbed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Embeds.ImagePreviewChatEmbed.html",
+          "hash": "JwWKXjKFgi7EPrUKLPgoO3k9z2VjqUbXH3lQReeKQuQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Embeds.LinkPreviewChatEmbed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Embeds.LinkPreviewChatEmbed.html",
+          "hash": "btd8yL57581D4PiDepcRmFpJot5tF54lvHJrIXLjvx0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Embeds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Embeds.html",
+          "hash": "V58GV91oYxWAHlmUWjGkDG4sC1JIgYrv4LVzN2iGLZI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupAchievementListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupAchievementListMessage.html",
+          "hash": "Vv8D719mz4ZDUZJY+BxMYZQBtV98iGm3XMS/Z2JDaAE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupActionChatEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupActionChatEvent.html",
+          "hash": "NKu2nuY/Ma8klxdqqLXm8xI3NH+oQpSUYp7zS2bUQ3U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupActionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupActionType.html",
+          "hash": "Dvo2++IdTN3gayxP74AVRCy7uK/oATOgdktQagtXsjE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupAdminMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupAdminMessage.html",
+          "hash": "VQn5mTxS2GFybP+KkgdyfERuRrpY8oTEwSj1pp5GIrc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupAudioCountUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupAudioCountUpdateEvent.html",
+          "hash": "0SeK/Gj2G7dUjtCgzoSB45FIXwe5W+YoOSdudv0SFjk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupAudioUpdateMessage.Builder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupAudioUpdateMessage.Builder.html",
+          "hash": "0eeU0Ah3rmeC1qGoWnFkmK6PY6yZC87m3qb2Ax7OXHI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupAudioUpdateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupAudioUpdateMessage.html",
+          "hash": "/dmEsmqf82ylRXqQ90wO5SXgQ0tf9wXu4u9wsyBWBEo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupChatHistoryMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupChatHistoryMessage.html",
+          "hash": "pN5dTN6We5bvVaB2jzP7f5PMd3dxdFv5Y+aMg9nx7g8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupCreateMessage.Builder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupCreateMessage.Builder.html",
+          "hash": "wtOcgGUtFwKAFmYm9Cxf0FpUkcX+Du0Adh1D4q4sIAk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupCreateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupCreateMessage.html",
+          "hash": "RGtTN9TMhHbVX9mePBqPALfYx6bzfSs+XfAON+EzqME="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupJoinMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupJoinMessage.html",
+          "hash": "CAnx/tQrMPgwUFcWTWd1GEooKywCTtv/rQZFqVaFud0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupLeaveMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupLeaveMessage.html",
+          "hash": "7KMIU8/2T5OTF5BNqHWUZ0EepcUvpYJ+4GwEWaDpHwI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupListMessage.html",
+          "hash": "aSjt7gbOAiG56ZUafobpuAnphRqycwCHxPNrGMoKAUw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedAddEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedAddEvent.html",
+          "hash": "4fLKNKbnTd19RQ6wxtvvCJ26I2hw69+gPwgUEE9966U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedDeleteEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedDeleteEvent.html",
+          "hash": "mY/mizopqU4hnDtOqZHov6lS3U4QhWq6BTTTTSmfPKQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedListMessage.html",
+          "hash": "ReYUQlpQAys9PchN7VLCou1CxIVpjWcOsW8D/o7OmsE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberPrivilegedUpdateEvent.html",
+          "hash": "e6v8Mr0uq25kd0qS7du6GJZ9XM+JXuyKr6+gp4YwtZw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberRegularListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberRegularListMessage.html",
+          "hash": "fIAs491BdG0tyzHFHPCxi5RnJJuXjTQKOHyjxbPBvdI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMemberUpdateEvent.html",
+          "hash": "es+PFNoxZdkw0x6hnuQYkEXWqjhzFzDoSIVW1Je8v/c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupMembersListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupMembersListMessage.html",
+          "hash": "PAmCZZUYH1xwiu12u7n7CkE7ijA+4J5KT80Dbj5tpOI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupProfileMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupProfileMessage.html",
+          "hash": "3uwSVcxRMvs74sL6F8PZZCQ0/KeBgfCkaf1AXCbCWlY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupStatisticsMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupStatisticsMessage.html",
+          "hash": "/3hfA9sRGyYvpZr1ZUu+kti5E4qJDeYXfxdxeYa0lIg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupUpdateEvent.html",
+          "hash": "AxQlriFPjqrdXJHHqYQThCsM4ueWbYy3vDj6aAprrMM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupUpdateMessage.Builder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupUpdateMessage.Builder.html",
+          "hash": "+AO3VDdXgcRGsZTxEvKHabcqcRcW0jsZbKOMS/tarxk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.GroupUpdateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.GroupUpdateMessage.html",
+          "hash": "0KFLZmmkIaqxKB091S2eFT8q2pN0MXl+p3FjnSI/28o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.IChatEmbed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.IChatEmbed.html",
+          "hash": "3biShJH0A5J8Si1axkn+AGeYSYLTOAtiZhMYrVqw6HY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.IChatEmbedContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.IChatEmbedContainer.html",
+          "hash": "Qe67aNT+Ha4pstIyn9qps3b+eita3zq9MLi+raDb2TQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.IChatMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.IChatMessage.html",
+          "hash": "6txkXQzLClkyWJqm9YFMyBPYL7jCamCYL6qC96vgdLg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.IGroupMemberPrivilegedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.IGroupMemberPrivilegedEvent.html",
+          "hash": "jcn0oquSfwG0l8aCaUVCjHQmkPWPybOU13DJiBFM/sE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.IRawDataMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.IRawDataMessage.html",
+          "hash": "oT5LDJOXLHovlMeP49DDI56pPZmI9vtnT+t6cEUS5pU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.LoginMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.LoginMessage.html",
+          "hash": "hQT68JX+VpOpGu7geL7X249qBKfk+MK6vVcBaFxqqaw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.LogoutMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.LogoutMessage.html",
+          "hash": "7qhyBm2xGt8/4mfgQF3/wUOmwsbRtKyEVaiwruaE3xs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.MessageEventNames.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.MessageEventNames.html",
+          "hash": "7bImk4faIDRlQKq8P1xa7nGTvmDBYb/oKvc3AVucQ+Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.NotificationsClearMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.NotificationsClearMessage.html",
+          "hash": "zUm8p5C/OD2r8DKu60geUhFio7ikqSWI5k71cYnyoSk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.NotificationsListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.NotificationsListMessage.html",
+          "hash": "oSB8uvUy6+NVHmmt2FyWiVJIMT/7LyS32voILPmCBaQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.ObjectionEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.ObjectionEvent.html",
+          "hash": "TuAfu9wHgGj1xKYg5eIjgMHB4zngq4Wh2PrCY5ACkSU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.OnlineStateUpdateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.OnlineStateUpdateMessage.html",
+          "hash": "O0dXP2U51GXb2R2wrLOURdx9XhZizd8Y7hP/k3cMfy4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.PresenceUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.PresenceUpdateEvent.html",
+          "hash": "hLTIWmujgptP2hm04m8oEq0NehEVweMJFsJBfZcQghQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.PrivateChatHistoryMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.PrivateChatHistoryMessage.html",
+          "hash": "Mw8TBfluooETK6+rQijEU5IZN2Du9QDxIKIrORmBpy8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.RecentConversationsMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.RecentConversationsMessage.html",
+          "hash": "IYzyFfKtE2oPGs5TR/DwCzPIEmsh8qqBHjQJPvABvCo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.AchievementListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.AchievementListResponse.html",
+          "hash": "lmooh+YnVhSgFHnMqenIfgSVJO7Yjo0iy3F/6e8eonc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.AchievementResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.AchievementResponse.html",
+          "hash": "hnq1U1s4MUcxzvxIT4fld50bsCkaoKQheky+izS5/eI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.BlockListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.BlockListResponse.html",
+          "hash": "MRH5Q38Q3DC1MGCjoYhpirVKaV9TGe3PdmOBgmufNE0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.CharmListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.CharmListResponse.html",
+          "hash": "07HXFTjraiVdSl1uUFNr6JmsAtlNFi4FutjX3Gn3bwI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.CharmStatisticsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.CharmStatisticsResponse.html",
+          "hash": "UIudLWH9TKojL6UCqrwKf0gwiQc8yYUvHA0DmPh3Stc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ChatHistoryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ChatHistoryResponse.html",
+          "hash": "SQR5gcMQZ1TlOjdFDmWHoJbCUoTWsmqU//qzcmOZCHU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ChatResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ChatResponse.html",
+          "hash": "aCj+KhOCVAHWKdGJ0LXmuENJku7ewLASaJ1T5W/NV/4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ChatUpdateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ChatUpdateResponse.html",
+          "hash": "h/DAAkvaDc3g1j9IYaGRm29PBPkssulkZWEUxKPfhkQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ContactListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ContactListResponse.html",
+          "hash": "UgRGtVIYo3WlUl6SLKUfV6d6ODbOMzfExvmu5H89gV4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.EntitiesSubscribeResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.EntitiesSubscribeResponse.html",
+          "hash": "d2NPqz2T1a2mAzYZSJp1bf4C8mT1SgYk9XElDMyRlgw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.EntityAchievementListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.EntityAchievementListResponse.html",
+          "hash": "HVKugO3hCXJgKc23ZN+zAz5HDTCX/Vg//f8Zc3Rq1yM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupAudioUpdateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupAudioUpdateResponse.html",
+          "hash": "6h3QeF3kK7ZYZyXjBUbpjMFGWi1kDdYlizP3HegKZTM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupEditResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupEditResponse.html",
+          "hash": "LttOFfOi4bXkSGBgrvWzE5oWYVhVHENHPLWhYS2LmpE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupListResponse.html",
+          "hash": "/GrMYFNRojVCDIn9AFc1YqCdiGGTMZj8R6lx5rZGD9A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupMembersListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupMembersListResponse.html",
+          "hash": "M3GpZ2cGBv6PsHtTEK7zh2Be2+Y8dbdiQDYHFH6DO/8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupProfileResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupProfileResponse.html",
+          "hash": "a0YsUbGQSYbE08Kqfq30GAiYuYke4DhlyMtwoCGfpag="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupStatisticsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.GroupStatisticsResponse.html",
+          "hash": "KT1zI5hTuMft/z571suNLAkvU1eyFPGfAJFfut9ikq8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.IResponseTypeResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.IResponseTypeResolver.html",
+          "hash": "9sKGsmiCsM/cNfydv/bthAy6lTwXMM1iE2C5eGRlNoQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.IWolfResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.IWolfResponse.html",
+          "hash": "tc8Q+KWhqCbNf8Kxz+70+8AfkvzpDfTPUo0kBv3Zh0s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.LoginResponse.AwsCognitoIdentity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.LoginResponse.AwsCognitoIdentity.html",
+          "hash": "gAIEvKJk1BcajIoky3el+FgDKRRQJa/FNi74qig0h/s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.LoginResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.LoginResponse.html",
+          "hash": "yzErnj468m5Es5gBFI4O1Ue0LaZerZlxBp8nPcBk5Sg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.NotificationsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.NotificationsListResponse.html",
+          "hash": "sz6luy7D80NSdY0AWtQR3GWZOIDXUiW3YRAWczmjOko="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.OnlineStateUpdateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.OnlineStateUpdateResponse.html",
+          "hash": "Tx1Epank3xy4l9aR5P27NwtOZGmF5wmomeq7nbjmhz4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.RecentConversationsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.RecentConversationsResponse.html",
+          "hash": "rfdAvSgrzgv/qPiv4TItCy0s+V9+3uWOLRDeM2yMQfI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ResponseTypeAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ResponseTypeAttribute.html",
+          "hash": "vgYyWpwsgJa/kB+EGcYrCIbYV+qQIhRuxeAM4bu0zhE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ResponseTypeResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ResponseTypeResolver.html",
+          "hash": "TzBKe54Baf9/4bKVCrvfYkQVjxLQrmFVYkZw8CdgmOM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.ResponseTypeResolverExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.ResponseTypeResolverExtensions.html",
+          "hash": "ysu8PnY8J2vkQGQnXWC2IDkflZjQ3a4sz4RHYEMcX5w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.TipDetailsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.TipDetailsResponse.html",
+          "hash": "nvbLrmmZj5mvrtOh5096qwCmWZF4XzWDfLtytS5BAqE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.TipSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.TipSummaryResponse.html",
+          "hash": "jpJxNyaLhwznK3uG9yAxnhkymJHNLoWgBAVe7Yq//6Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.UrlMetadataResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.UrlMetadataResponse.html",
+          "hash": "ugqqMmg7v4XwOwqFLQym4P5Hc4YNESBe6801dUK5t3Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.UserCharmsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.UserCharmsListResponse.html",
+          "hash": "yjBqFUaYCNkQaEUbe7gDn0nr5t2L0F+2qMPNRRam/sU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.UserProfileResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.UserProfileResponse.html",
+          "hash": "o0LFyFcL4JmnqIZpS0Oxa1e6Qr/Jbv+qdRXECgtuixg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.UserUpdateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.UserUpdateResponse.html",
+          "hash": "iqSChx9HkveaccKvLlB+FLblYAwlkLjidYb03SYPEMU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfErrorCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfErrorCode.html",
+          "hash": "YZDimCOLSDJX+NPNnbz6upGdybIoROIssKgJuvbMrFs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfErrorCodeExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfErrorCodeExtensions.html",
+          "hash": "f8nVekIe25xwkhM4OfpPq84MmSIPEd4OQ+7tUQ0Kgfk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfResponse.html",
+          "hash": "j6W3BGMuwOeVOvjSB96jsrbjU80990Wels6WSnUlQQQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfResponseExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.WolfResponseExtensions.html",
+          "hash": "XpOve1/gBzhPTto4poSlh1MpM3m1TcgnqaSXwSqGfH4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Responses.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Responses.html",
+          "hash": "b6zG2UtuXVIRyLLJ0dwAwVEc3Aoo/pExH4JFlWsG2yc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatEmbedDeserializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatEmbedDeserializer.html",
+          "hash": "I3rmUQ18q5hpMFKrONZJ2nQmGCgQhOlHGQ296cNTGPg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatHistoryResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatHistoryResponseSerializer.html",
+          "hash": "0ZML/+6OGSVARQD3FRxJIy8w0l3b9oBJhDadud/jvs0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatMessageSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatMessageSerializer.html",
+          "hash": "CgZR7tWJiOLDHiPCv9v3pigee6R4Ggg7dzf99cSRrrc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatUpdateMessageSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatUpdateMessageSerializer.html",
+          "hash": "lkmYFuccIsz9CYg2oDpvTp+bK1hWL83knyMjMmPA9gs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatUpdateResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ChatUpdateResponseSerializer.html",
+          "hash": "NpynpxjY3YuKTqHN7bWD3jkk7POTwzgXI0YutZ4rZUg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ContactAddDeleteMessageSerializer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ContactAddDeleteMessageSerializer-1.html",
+          "hash": "GoWD7E8FAyFBKaMauL3C5dXdTzmKwtcMV3IajPOuasE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.DefaultMessageSerializer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.DefaultMessageSerializer-1.html",
+          "hash": "JcEa4phW03IF7XI2ifGFCui3n1k91fb1FNtgOjlHMRw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.DefaultResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.DefaultResponseSerializer.html",
+          "hash": "fCOEKksBfWuzUgCEQsw1kklA/VVUT0wj64aw109en/w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupEditMessageSerializer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupEditMessageSerializer-1.html",
+          "hash": "l2iSNf4ptJT5PjiuYMFP5w8cERknGH9Im91erO9d6Pw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupEditResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupEditResponseSerializer.html",
+          "hash": "vEa4iQ7fF2/2vxP+wv3sj10oWiNN3LhxbWz/enhQzKs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupJoinLeaveMessageSerializer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupJoinLeaveMessageSerializer-1.html",
+          "hash": "ghwIfu4rewGbBl/r/ARqZBiLxTYP/wagt2vqfGOYUn8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupProfileResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupProfileResponseSerializer.html",
+          "hash": "ICr+BPppU5ZOB5UICrXpOrj5DQG2KdxUMOr1m/IKmtU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupStatisticsResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.GroupStatisticsResponseSerializer.html",
+          "hash": "HeXfY15Wnq7HJDv6z8clpcmgaNImDRhUkMDrS0YAsqA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.IChatEmbedDeserializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.IChatEmbedDeserializer.html",
+          "hash": "9SVR9cCUN/YyvmJ/A0JKcyaunHcmZOcFyU+WjeH6l4A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.IMessageSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.IMessageSerializer.html",
+          "hash": "6l/o70vCO2niga5WPL6ZcwC4O/0KuyW4qmvJP7h+qjg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.IResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.IResponseSerializer.html",
+          "hash": "FhoH5pDSBxgrTtVqeC3m+EJ+BwnJ1UzKBEXLhN+oELo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ISerializerProvider-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ISerializerProvider-2.html",
+          "hash": "4wZdsDpX6VxtcmL8G9Viw3rmjJAJ0L0vhHcUzbACzsM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ChatMessageConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ChatMessageConverter.html",
+          "hash": "x5X8XjAukBl497nWt0Wql25qy7rzDi549piEgOdutyA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.EntityIdConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.EntityIdConverter.html",
+          "hash": "Mql7gHmVS2r7icndwxYRbXVGpBIHHAOVEDdwAJ5jVlY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.EntityModificationHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.EntityModificationHelper.html",
+          "hash": "JOCVk7MNTM2YG3rBrxgiRpb9m0xoJqVihus8Nbj2UYo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.EpochConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.EpochConverter.html",
+          "hash": "uFAb+ySiUlvd9FbaouwgkjdFMz2Xq8pn6TSRrwYNbrI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ExtractValuesOnlyConverter-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ExtractValuesOnlyConverter-1.html",
+          "hash": "ZHF45kfZLCkX4yniP0K9fCS5E6lfhSKrVVhFWrzXa6s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.IPAddressConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.IPAddressConverter.html",
+          "hash": "2x6E2xRn0I7J9/7iUkpcjyr1+kStUfiLAo0Xit9UIf0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.IPEndPointConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.IPEndPointConverter.html",
+          "hash": "PSK59a+JNjOlhBjzeDMie0zUqeR6T7UM8rkZQ0IgTpA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.KeyAndValueDictionaryConverter-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.KeyAndValueDictionaryConverter-2.html",
+          "hash": "bDS4anxtXUkLE94UORaFjWl0Bg3qIvx9tFD1oNDJxjc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.MinutesTimespanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.MinutesTimespanConverter.html",
+          "hash": "qH9X+DYIzS5T6ubpM/MUFyzWva33NB89vnoocRqY5MU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.NestedEntitiesHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.NestedEntitiesHelper.html",
+          "hash": "pV4NsKmrtkPZWSqglthebJu+O3B+VrbR3OzxiOmpEzo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ObjectDictionaryConverter-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ObjectDictionaryConverter-2.html",
+          "hash": "pSezc4Mm/Zvob/wOu55Sc64kyHL1jl7nSAeDNwD++0E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ObjectPropertiesDictionaryConverter-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ObjectPropertiesDictionaryConverter-2.html",
+          "hash": "Hai0PEM73e7a6Ywa1CNqDVeibyHt8WYipVnL97wF3rE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ObjectPropertyConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ObjectPropertyConverter.html",
+          "hash": "H12qnV6ZZUujCMyGzIr6zYUz7tDEh/VgLiAEuVLp+rY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.SecondsTimespanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.SecondsTimespanConverter.html",
+          "hash": "ve8ldBMMRNb4nwwJzfIcyTm2LujG+a7x+TBCdza0F/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.SerializationHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.SerializationHelper.html",
+          "hash": "KEe+uAS+E3vKU94ev7N7NQN1ejpF2rB1UUsrI/NOZds="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ValueOrPropertyConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.ValueOrPropertyConverter.html",
+          "hash": "mBOVYyN8zX5fwxj5V2zlnzB1pthzWJVOJ1B6MJcN9M4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.WolfTimestampConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.WolfTimestampConverter.html",
+          "hash": "HEF+zDWNXXsaUF7GV0O+TuMFZ+rXI+sQBPLoEquyk+0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.WolfTimestampTypeConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.WolfTimestampTypeConverter.html",
+          "hash": "+tJQCzTMUByaS/1oOX9adGa+6CrI7GQnn5PID7TwhW4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.Internal.html",
+          "hash": "PxKS+KCAW96BhyxvTmV5tyqBf56fKUKmRpzvaM4ijyQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.MessageSerializerProvider.html",
+          "hash": "prfUd7VjTMjNV/j3zv6VQzuFuDmuF2rYiED+ERxCyiY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.MessageSerializerProviderOptions.html",
+          "hash": "7t+UwknlNiWENqaAl9h4zR/AqaCEqKsQk2LPstnIDno="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProvider.html",
+          "hash": "ej1vODDgHCUkpPSGvzHzyYIjrnniC4jb38WU7O2LmzU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.ResponseSerializerProviderOptions.html",
+          "hash": "ginsn2y8JdHWA7dv+bvDNVMAoMeG2W3RSlfQz3INJN0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.SerializedMessageData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.SerializedMessageData.html",
+          "hash": "Joli0ozRE+rajYOW7vp0USo1tI0XLdCzsDzeMB0JE1Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.SerializerProviderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.SerializerProviderExtensions.html",
+          "hash": "dZyOtit7ERdJjZSTwqiNuk4BI48/mTInGQ085ZJVUZQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.TipAddMessageSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.TipAddMessageSerializer.html",
+          "hash": "OiWxox8C0DG2ToiMcDFX9L0L9pvJgmLw+UCzCDjea68="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.TipDetailsResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.TipDetailsResponseSerializer.html",
+          "hash": "865Rlf5scZo8hdi1plWTeABrq4lH6JKD7y8w9ci1QOE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.UserUpdateMessageSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.UserUpdateMessageSerializer.html",
+          "hash": "AO1F2HRT6NdKzStiljSANsthSmKgGiH5Jl6mtBPiRDk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.UserUpdateResponseSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.UserUpdateResponseSerializer.html",
+          "hash": "ul8U4qBCRn+/ajRyia9G8w4erXtI3wiSsiymdz3DhEg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.Serialization.html",
+          "hash": "tiVbA0KIHs1nj2423Uq14nLWBPKJHvFF/NkX5M2FY7c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.SubscribeToGroupMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.SubscribeToGroupMessage.html",
+          "hash": "RLUleeN25PtR5ghiMBaHoRCjAqGABRm7mABQ+rpHq74="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.SubscribeToGroupTipsMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.SubscribeToGroupTipsMessage.html",
+          "hash": "UpOhZBE2Gpsk85OQrZPYs/jZGPMu3vBQCO2VheIBrNk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.SubscribeToPmMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.SubscribeToPmMessage.html",
+          "hash": "XQFaarLMxrs3tMUa5dyWUucj5L2azWqdttTNstv8bdw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.TipAddMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.TipAddMessage.html",
+          "hash": "Wrm8LUp4jHOm86t2sYbcGA53uUi7w5qY7se5sZJJ30E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.TipDetailsMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.TipDetailsMessage.html",
+          "hash": "YR25P5GCSe1tK1N2EWxoKmMUhI5ybnmHm0/sqBpoieo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.TipSummaryMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.TipSummaryMessage.html",
+          "hash": "9yPWI8/raGI5lud1SgEVvsTcy6t6LatHiJpLCf8Gpxk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UnsubscribeFromGroupMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UnsubscribeFromGroupMessage.html",
+          "hash": "CXiFadzlbLkYvWkL7zoZyA3DaAtMNKh0ZxNfwKZ1IMI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UnsubscribeFromPrivateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UnsubscribeFromPrivateMessage.html",
+          "hash": "nAh4QJVXaiQzh/qORKb0cZmYGW/qcs18Q4EnzHqErMc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UrlMetadataMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UrlMetadataMessage.html",
+          "hash": "fVdPasnRe3dQzB4XuZc0Hmz4q1BLCmo0Tz85t0dMBL4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserAchievementListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserAchievementListMessage.html",
+          "hash": "i1G1/FYmZvP2c9Ol6To6fq7ibav4KCq+0Xii7cf7S3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserActiveCharmsListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserActiveCharmsListMessage.html",
+          "hash": "OqielJ9pk1kIWMYDlCyXQ8dPAYUIBtKQo/rZa6dPq2w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserCharmsSelectMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserCharmsSelectMessage.html",
+          "hash": "X4jeA7jqBpLS0bQPoVqeo5QIVbdIu9rHtMvpsJ/MhBE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserExpiredCharmsListMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserExpiredCharmsListMessage.html",
+          "hash": "9hgiKuSi/ob2kKELKLQYfi0A8FhrHObd0Z8D+AQWiys="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserProfileMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserProfileMessage.html",
+          "hash": "kX/ZFzXBi9BV1y2YpcnXaOPTOhj/dx4oCIX52q1RAwY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserUpdateEvent.html",
+          "hash": "cUFqn2Qb2jUX8Z3UB2RUyFYn6wNnRoW2J6dlWcGZ2IQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserUpdateMessage.Builder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserUpdateMessage.Builder.html",
+          "hash": "sfNiIl8nHdG8CjM0hArJfeV8UsYk1Tz6vSuWN3Fotig="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.UserUpdateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.UserUpdateMessage.html",
+          "hash": "c6g8nTqV7JgaIg91dprggJUCTPYuEUYy5hMj32atuWY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.WelcomeEvent.BannerEndpointConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.WelcomeEvent.BannerEndpointConfig.html",
+          "hash": "ERn7qh8wN0O+axrsHSwQtR0Lw8sO4h7EYcbwxtae9Ws="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.WelcomeEvent.EndpointConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.WelcomeEvent.EndpointConfig.html",
+          "hash": "bK+Ss29c4miQ3p/4faVi6IJFbD2M97usmUHqKSTUO94="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.WelcomeEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.WelcomeEvent.html",
+          "hash": "wXNEcW+MbLBGMkDzlGh91gNjHr/VDRpfILOdEUcfTas="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Messages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Messages.html",
+          "hash": "UOUeINvOOw6/iJxo92OUkNfOPARZh7yBFMMPpgG/WEM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Sender.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Sender.html",
+          "hash": "uBHfUSsXAAs6YRN6Ooj4cOrb/6PDvyz8iyuJHSQ+cp0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.ISocketClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.ISocketClient.html",
+          "hash": "GcAHJd8cFDQ3H8kvmUOdVh8gwU8amFWXdv8q+cMPF/g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketClient.html",
+          "hash": "mNDHOwHMWwCmJw8ETVbHDcyAIoWp1/EraFc7fzW0so8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketClientExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketClientExtensions.html",
+          "hash": "5cBkKFc5CWtXOy9Nk67KItjpeDG5ECNpyCZ2EDTXisk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketClosedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketClosedEventArgs.html",
+          "hash": "R6Vvx1Ol7AaZs1iO7OM3nFKgAq9M0mdcHoJxzqPMpus="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketMessage.html",
+          "hash": "1KwSbzm5a8XLoMvWSENOZDHuYSLRfhcW5LgGSC4WO3U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketMessageEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketMessageEventArgs.html",
+          "hash": "cGYUnj5+Y3yx3j7yppPP3sI1brCLafEJhZoSBW8iAic="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketMessageType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketMessageType.html",
+          "hash": "dM59vuBi4R+d+33CIXG8lB6gJvyTsjuboDFetCiIKBg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.SocketSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.SocketSession.html",
+          "hash": "oHFkJEB3fKrGZ5HKKKEBkHt6l1oZwTMlDWCOZETVvu4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Socket.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Socket.html",
+          "hash": "Nouwn3XbgpwP2dBadzI5pup5r+vmru2yBkt/BuNt9n8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.AvatarUtilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.AvatarUtilities.html",
+          "hash": "wtHow8lUG8G06TOhkqrmyaEI7HD4i4wCFBjpNBcMFuE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.ChatMessageSendingOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.ChatMessageSendingOptions.html",
+          "hash": "7nN+dc9D15oJpe5ftvTjwhivF9MSU2w8sMMopVcge24="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.ConstantWolfTokenProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.ConstantWolfTokenProvider.html",
+          "hash": "GRrfP3BPPXq1YQ39oH/EtyjcgW1PfVEZlWANT49EEY8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.ExceptionLoggingHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.ExceptionLoggingHelper.html",
+          "hash": "KtRChToUQxv0vdcN9KiW5TtyaaShhoA2y7T7igXeXGE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.IWolfTokenProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.IWolfTokenProvider.html",
+          "hash": "jG93DVIS1cA2vVg7qu41EV5NByshgM/9WUeDmT3eXRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Interactive.IInteractiveListener-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Interactive.IInteractiveListener-1.html",
+          "hash": "QYtf7fz+n/dKxlV4C3N+qEV+x11xa61smB8xRtqUQ0g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Interactive.InteractiveListener-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Interactive.InteractiveListener-1.html",
+          "hash": "GD2Sm0JamlA/vGRrlGsdjVLLRoa+aES6ZmqQjX3N8Tw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Interactive.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Interactive.html",
+          "hash": "T4qKFJpvwe1f9xMTgMmjXj48v9wfRfORpKzrlbNpzb0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.BuilderServicesExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.BuilderServicesExtensions.html",
+          "hash": "NvFC7Hbkuf6hFFOWBFm2FRpNbWqo+kCvfBQ7rD4XNcs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.CommandMessageCallback-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.CommandMessageCallback-1.html",
+          "hash": "ETHYVKw5tjRkpiZoyAf/JRyr4URvke1XtMjsGgZuObg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.DisposableServicesHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.DisposableServicesHandler.html",
+          "hash": "RZsRhlLL7E5wKWq3BGJHrjuveemjaepV268QirW5dx4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.GroupLinkDetectionHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.GroupLinkDetectionHelper.html",
+          "hash": "rYtK2iuUog7FjsRJC7nbBg+xOL6UsANqAagW5konbIQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.GroupLinkPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.GroupLinkPosition.html",
+          "hash": "w26/BKe9w0V917KaNTN85dTVzr0m8rMrMkGd0gM9mSk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.IMessageCallback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.IMessageCallback.html",
+          "hash": "A57d57Cusn0DDQup695hz5Z1re3K0WNzm0+zGiJyg+Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.MessageCallbackDispatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.MessageCallbackDispatcher.html",
+          "hash": "2FKYQ6LGdOdWtiJQ31enJ3u7tinboA9UTbeA3cKk/SU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.TypedMessageCallback-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.TypedMessageCallback-1.html",
+          "hash": "iZnRoWqDcgEfKH81atlVJggcdd6ayNi+BPEQ2vg82lo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.UrlLinkDetectionHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.UrlLinkDetectionHelper.html",
+          "hash": "+6xnEyhryU+FxZNsb8nluZlkGsKGOcRF1BHiH0LBSQM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.WolfGroupMembersHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.WolfGroupMembersHelper.html",
+          "hash": "+Y2cCtLIvavDGk5Jrx38Unqgu6QGDBX9v0W+5rnlt0o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.Internal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.Internal.html",
+          "hash": "XYDX0t5wqTs51UayaKQ8Y4xp6x3CcesYRj24E31w7a8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.RandomizedWolfTokenProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.RandomizedWolfTokenProvider.html",
+          "hash": "IkZsvxMsitlY3CMpSo3xfmizep4SgihMAroFzPi7kak="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.ReconnectorConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.ReconnectorConfig.html",
+          "hash": "VuvrtgzbYOQFaN2MGYU3hHKQTVOIt7lva26tfPfRm/4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.WolfClientReconnector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.WolfClientReconnector.html",
+          "hash": "uIB05eOfDP7QNi81yDmZtDhR3QolntqcXIDjhTRmADQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.Utilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.Utilities.html",
+          "hash": "HXycde229RI8e7DzkMwKCTDkY4BkS8MuLP1tWiJFl5w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfAchievement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfAchievement.html",
+          "hash": "PIaV/vcdiz/jqYBf/SpC7GV7nVBTpApcl0DEJjHRyX8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfCharm.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfCharm.html",
+          "hash": "0dbrin06bCWdZhi4RZ3rlXT1OMebgaGjlSIXSH2OSOk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfCharmSubscription.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfCharmSubscription.html",
+          "hash": "JhrT0J/gXQJfJLpAIX05ojLJofFhc6YkJzbXSPuO1kA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfClient.html",
+          "hash": "d2PYr6LgyJg4oBGUNZ5b1wuGEl2QPjYWxcvWJchZJpk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfClientBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfClientBuilder.html",
+          "hash": "HjLRCCMK0eQKPNPi812TWdC/sMFjZYTP8mRsdlBX4xU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfClientBuilderCommandsExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfClientBuilderCommandsExtensions.html",
+          "hash": "27AF6ieHlBeEzdXcVHJb0Z2FYR4JSiw8zI3oyvYCbWQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfClientBuilderUtilitiesExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfClientBuilderUtilitiesExtensions.html",
+          "hash": "ZvcBffZMZDN/vjqqpGuT0een6xbh/FwecKw+iqtHoxA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfClientExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfClientExtensions.html",
+          "hash": "QtbDzepmm5VEK8vA6W3q3oSNhlqCZKhCY8LtzF3jaF0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfClientOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfClientOptions.html",
+          "hash": "+JF3Rgcv/j20myrzGU+iVcrjTHUk/1fiSK0oBjh1dQI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfDevice.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfDevice.html",
+          "hash": "nDj611KrvC2E+Qh7HEDBdKbWgDeHeE4vGv3wi3lsXGo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGender.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGender.html",
+          "hash": "7nNDpDI7GU9GaS1AC6Nlm5O+4muDYLE/HdIqz7+C/E0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroup.WolfGroupAudioConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroup.WolfGroupAudioConfig.html",
+          "hash": "kfLQhgJagXF2UfBhcPwP/V0Q3Ac3E9pKZ3gbQJdXgRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroup.WolfGroupAudioCounts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroup.WolfGroupAudioCounts.html",
+          "hash": "9RHCDftU1fcfh4BvhPCfrW1qGpLnD1AjdZ70eflW5b4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroup.html",
+          "hash": "kkPq4/bd4B+IwpdIgB98Ft5iegEhKnYIlBZUuvC39WU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupCapabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupCapabilities.html",
+          "hash": "dhijnyUWcXzVsYzjR4Bx4rbVTazLdMcZxtQ0izXhnF4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupMember.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupMember.html",
+          "hash": "rnp1fXjyFQ9u4mWGsrnOhdtONtyQz1pmap/cyuAF0pM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.DailyTrend.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.DailyTrend.html",
+          "hash": "BAZmIwjx5lShXW7cxnAm9GgnDZP8mMEZcFPTA1w3jX0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.HourlyTrend.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.HourlyTrend.html",
+          "hash": "JSXuNiVtJHdbc8pZLmyEcqYA3TlBL4EXHe6atyB+Z+g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.IMemberStat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.IMemberStat.html",
+          "hash": "TRz4Zen5S8PjzMYZr/uOEjuM8N4803VyKDc3sdR6Hb4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.ITrend.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.ITrend.html",
+          "hash": "MgqfunPownlM3HQfO9+f9DVx+fYv7Z8vem4aZxYCmpQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.MemberStats.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.MemberStats.html",
+          "hash": "OMAivJLW9L4XMJYECSQ+aeJRUSQiGi5oV01HsPSPHqA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.MessageStat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.MessageStat.html",
+          "hash": "vgq0YD32P4ELSnDt6t+0F3+jn/8oj/RXRJCrZUrjriM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.TextMessageStat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.TextMessageStat.html",
+          "hash": "/XiUqM/Gl3GDsBIO4CaCxnVAYW3bV6X+9gg4KQgh5Q4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.WordPerLineStat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.WordPerLineStat.html",
+          "hash": "r9iG5ZiXsFlvRSTvrATnhb+8mKPGk0MOVqFHXctG0yw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfGroupStatistics.html",
+          "hash": "op39j7ODqUfC4oqRvorgy529ur2C/LU6VVczfjeOUE0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfLanguage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfLanguage.html",
+          "hash": "JQv/LJY+itnIduZ68u/qHvY50xrOlDB7jAfG04Ycs7M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfLoginType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfLoginType.html",
+          "hash": "n0k1M/WdrybQamie27SEZ3Ltq710tNkLFF2t2ViGI1E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfLookingFor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfLookingFor.html",
+          "hash": "/S/A33Zn2VhRNgP0IRnVQzT7a/O2OUp22cbu6WqGMR8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfMessageEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfMessageEventArgs.html",
+          "hash": "aAf16ZLNlstHY1PuXNuYtrtwuyBedXU9B2OFq9vH5+I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfMessageSentEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfMessageSentEventArgs.html",
+          "hash": "mKyzP1BqhvoSTNz3WJ0bEQg1YXchHTC+9+ykaY2Y9V8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfNotification.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfNotification.html",
+          "hash": "kdKOaq/U244pDTXKbg4/r1OY50leLbohWz3084HQELo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfOnlineState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfOnlineState.html",
+          "hash": "i+U3pGE7uquforPNyFYsiATdCtyUswnSJLiDODTu3d4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfPrivilege.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfPrivilege.html",
+          "hash": "D13OCBjulzf/d2KMAJRRWUVvCiMYZPNLbQGd6WrWJoA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfRelationship.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfRelationship.html",
+          "hash": "p7jkDtNIyUCjY2wVxdElvrFEDNnvA7TN4MmBkmgrjxY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfStageType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfStageType.html",
+          "hash": "oGkNHHbmq3/L+thIYix5OZ/S2MB/7SFdqXfbtlpzPHI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfTimestamp.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfTimestamp.html",
+          "hash": "SbhyO0qgiyPRkSkBbYtLaMVfBEvIigNf5r/8TsqxVAM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfTip.ContextType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfTip.ContextType.html",
+          "hash": "JDQn9Y0h16qrRFLLTT0CuHcott3/6pTvlNQKUqVzNWQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfTip.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfTip.html",
+          "hash": "+zvXeFPfTJh9OJBHUFIWzYwrYQcQMC5kfZuwZAoSPZQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.WolfUser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.WolfUser.html",
+          "hash": "YG8o3ZTyrPfAw82yB5OJRl8xM1bvplQlo+beRHjJO9o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/TehGM.Wolfringo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TehGM.Wolfringo.html",
+          "hash": "d+sESi2wvlVk8c6/d9RM+L5HFLJkhRyBXgBb3EjJmMY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "wjOrBtD+vSyISFtKJH9ifED2KEqHfZUocmAyDK7QB40="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "1VF6KsuNq54xuldU0BBGjIzAwknx93bpA6p6bxTbiPY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "faq/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "faq/index.html",
+          "hash": "zDusiZSzFGk4/JmRxwntXq8WFAnKPtgZcb2sTM+ILX4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "faq/other-libraries/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "faq/other-libraries/index.html",
+          "hash": "ylLYU/BbLlPuZsSXZbO0cQUQzcbmxW020dAungM4CDM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "faq/other-libraries/wolfapi-ts.md",
+      "output": {
+        ".html": {
+          "relative_path": "faq/other-libraries/wolfapi-ts.html",
+          "hash": "CopdvI0+YsD+aVMC9HNH12uK7VM9TPT7++0Rc9BqGIQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "faq/other-libraries/wolfliveapi.md",
+      "output": {
+        ".html": {
+          "relative_path": "faq/other-libraries/wolfliveapi.html",
+          "hash": "u55XBetxDCPQ8JNS35PCeEEGaGkcgT0aZirRMwH8J/Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "faq/other-libraries/wolfnet.md",
+      "output": {
+        ".html": {
+          "relative_path": "faq/other-libraries/wolfnet.html",
+          "hash": "7prn6TLQNbdRgG10vjAutGy3dC/QP5K2OpuEslaCGvY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "faq/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "faq/toc.html",
+          "hash": "KkCATwGmpdRJwc6bb/B0GF4jU+1ZW71tWF5X4UyVF/0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "UidNotFound"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "guides/commands/commands-requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/commands/commands-requirements.html",
+          "hash": "7+jCqIkzayciFqXOGoEUs2fpQNtcavEgkOpm70su+OY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/commands/creating-commands.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/commands/creating-commands.html",
+          "hash": "+zzKxuhCWGQ3zdE7O+RLFlNuYUJIQHEmlya1fmk5AgE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/commands/dependency-injection.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/commands/dependency-injection.html",
+          "hash": "scLfLtkFjoHsTBSKtyGFNa9qcSQPEr0b17/353t4e8A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/commands/enabling-commands.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/commands/enabling-commands.html",
+          "hash": "Chl1zEGsTpZOcG0bpq96PFSe7wrox+J6s3W1neJP2Yk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "UidNotFound"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "guides/commands/help-command.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/commands/help-command.html",
+          "hash": "p4lDyXyJ3Av70dLLSnwIG3D439bQQuWmphI1wDLzJtg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/client/client-cache.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/client/client-cache.html",
+          "hash": "sDZtF0VRQXMg5/N111IjTUypsOJFc+k157TP4GKf+ww="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/client/messages.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/client/messages.html",
+          "hash": "Y+/7i22flKAOSglA50JwqizfW0d4H40FxUsyc1xWzT0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/client/responses.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/client/responses.html",
+          "hash": "bGxhMsMmBgkobPpT9ENiQLLdulUMhrmsAHgafy3Jx0I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "UidNotFound"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/client/socket-client.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/client/socket-client.html",
+          "hash": "HcQMkLh5AwA79C44sSRnATVL6+su40iW+c3daOxr3QM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/commands/argument-converters.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/commands/argument-converters.html",
+          "hash": "yev6T0VGNUfcuFHhB8y+LkQhkLU5rZf5AzrRkxNVwUw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/commands/arguments-parser.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/commands/arguments-parser.html",
+          "hash": "LhZ+byYVfeoxLbsETMk0fuaeDOsJixl/JkNbC7ss77E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/commands/command-handler-provider.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/commands/command-handler-provider.html",
+          "hash": "ZVe/e5ra0UkcFINQ2wSjeueU5W8LcMN5/ApYzsKgEts="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/commands/command-type.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/commands/command-type.html",
+          "hash": "aIlYtt8L2xmmR2NTTIwgzKf4fY+Jmxm5/3//SGPkHn4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/commands/commands-loader.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/commands/commands-loader.html",
+          "hash": "JEgDH2d5OJsAEAQIKALVyfdizIT6qirx5PYS8H6IL8g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/commands/parameter-builder.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/commands/parameter-builder.html",
+          "hash": "YjRNxzKSXzrgNM/Nm1q9e4euJfOHwpClmBdL2e3amLU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/customizing/introduction.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/customizing/introduction.html",
+          "hash": "JZajoprl7koE4aJmF4H9hVEq3zIcqrnVHM8F6evbvHo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/avatars.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/avatars.html",
+          "hash": "Ncz41/nRzmXBl7/TNj4gBC3vTdA1qx2MGf3SRO6QS5U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/caching.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/caching.html",
+          "hash": "A8Mk9+yDYLe8weSIvukFpDhFts5yoxIK3HGT504xrag="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "UidNotFound"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/errors-handling.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/errors-handling.html",
+          "hash": "54W78nYYgSig7Uaao8NI0cUiCCfRUp46NZepEBdDsV0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/interactive.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/interactive.html",
+          "hash": "qor3fJW4gMJKDQBXiLmOFaIHEBj5aU1/SYv6CVu7Xec="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "UidNotFound"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/logging.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/logging.html",
+          "hash": "s7wLsaGX954wBczIBXe+f4Lh7CdrRlVpOmU5fl+FuJ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/receiving-profile-updates.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/receiving-profile-updates.html",
+          "hash": "jCYLgLJVhRuuPCcKfG68JUFI4dQMxBh+69aHjjSemIU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/reconnection.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/reconnection.html",
+          "hash": "Mn7lhkSm9V0eA+CZuhts02Wq1bWY+9QJTqPQYAO9QCY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/features/sender.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/features/sender.html",
+          "hash": "SXYwSK0SA799HOo+2Bq7Kv+iUKp7c5Ye52Ff5SSqLHY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/getting-started/connecting-bot.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/getting-started/connecting-bot.html",
+          "hash": "Il6cXHVCJpi/hjwjleyjrLfXLWlzrye/NtptHCeARqs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/getting-started/installation.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/getting-started/installation.html",
+          "hash": "02PSheGJrWiPdj1OaryTqYDMu1YN2rT9TrtHp6DJ0SA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/index.html",
+          "hash": "mvjgEMr2O/49cTPiyEZ3J2TtlgD4Fu0VM+ZNf6X3v0U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "guides/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "guides/toc.html",
+          "hash": "nyo1zfIWB++bpSSLaFUCq/+glPHo0RmR0x35pOyz+NE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "01IEq5qQu1QP28bUpPDi9COXJpEkvGKty0ZFbB8TXrE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "robots.txt",
+      "output": {
+        "resource": {
+          "relative_path": "robots.txt"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "VdPRJ5HXFI0fBvY/SfZ2Bcq6STQAf/jwDyrmNT4r7Us="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "upgrading/1.x-2.x.md",
+      "output": {
+        ".html": {
+          "relative_path": "upgrading/1.x-2.x.html",
+          "hash": "xrybvbnVC2VfveQPZER1OjboVXg+gDdTpM5dI+ICmRU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "upgrading/2.0-2.1.md",
+      "output": {
+        ".html": {
+          "relative_path": "upgrading/2.0-2.1.html",
+          "hash": "jLh8TMsP7fHx1KMPRxG+N3y1qg1DpfiKyqJvnb/mYNw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "upgrading/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "upgrading/index.html",
+          "hash": "9METcOwQSUOlViVQDot4TtNjcE9fqknoyM9AzWv45uA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "upgrading/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "upgrading/toc.html",
+          "hash": "w4dNgmIuQdD4xL8jJjrGqGTxHA8vN9FbAyVcOM6xV1I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 37,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 394,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
