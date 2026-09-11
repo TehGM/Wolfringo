@@ -3,7 +3,9 @@ uid: Guides.GettingStarted.Connecting
 ---
 
 # Connecting the bot
-Once Wolfringo is [installed](xref:Guides.GettingStarted.Installation), it's time to get your bot connected. The way to do it varies whether you're using Wolfringo.Hosting package or not.
+Once Wolfringo is [installed](xref:Guides.GettingStarted.Installation), it's time to get your bot connected. The way to do it varies whether you're using Wolfringo.Hosting package or not.  
+In either case you need an account for the bot, its login and password, and also an API Key which you can get by having your bot approved on [\[bot approval\]](http://wolflive.com/bot+approval?r=80280172) or [\[bot approval.ar\]](http://wolflive.com/bot+approval.ar?r=80280172).  
+If you provide invalid credentials or API Key, the bot will output an error when trying to connect.
 
 ### [Without Wolfringo.Hosting (Normal Bot)](#tab/connecting-normal-bot)
 First, add following using directives to your Program.cs:
@@ -40,7 +42,11 @@ static async Task MainAsync(string[] args)
 Now we need to do a few things - create a WolfClient instance using a builder, register event listeners, connect the bot, and prevent application from exiting. To do this, you can use following code inside of your MainAsync method:
 ```csharp
 // create client and listen to events we're interested in
-_client = new WolfClientBuilder().Build();
+_client = new WolfClientBuilder()
+    // note: it is recommended to not hardcode API key, and use .gitignore-d config file instead
+    // see exaple project linked below for a full example!
+    .WithApiKey("ApiKey")
+    .Build();
 // these will show error for now - don't worry, we'll handle that in a moment!
 _client.AddMessageListener<WelcomeEvent>(OnWelcome);
 _client.AddMessageListener<ChatMessage>(OnChatMessage);
@@ -124,7 +130,7 @@ services.Configure<HostedWolfClientOptions>(context.Configuration.GetSection("Wo
 // note: it is recommended to not hardcode username and password, and use .gitignore-d config file instead
 // see exaple project linked below for a full example!
 services.AddWolfClient()
-    .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email);
+    .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email, "ApiKey");
 
 // add our HostedMessageHandler
 services.AddHostedService<HostedMessageHandler>();
@@ -156,7 +162,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             // add client
             // note: it is recommended to not hardcode username and password, and use .gitignore-d config file instead
             // see exaple project linked below for a full example!
-            .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email);
+            .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email, "ApiKey");
             
         // add our HostedMessageHandler
         services.AddHostedService<HostedMessageHandler>();
@@ -176,7 +182,7 @@ host.RunAsync().GetAwaiter().GetResult();
 Unlike bots without .NET Generic Host, @TehGM.Wolfringo.Hosting.HostedWolfClient automatically handles reconnection internally. By default it'll attempt to reconnect 5 times. You can change that by either changing "AutoReconnectAttempts" in [settings](https://github.com/TehGM/Wolfringo/blob/master/Examples/HostedPingBot/appsettings.json), or using following method:
 ```csharp highlight="3"
 services.AddWolfClient()
-    .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email)
+    .SetCredentials("BotEmail", "BotPassword", WolfLoginType.Email, "ApiKey")
     .SetAutoReconnectAttempts(-1);  // by default, bot will try to reconnect 5 times - here we change it to -1, which makes it infinite
 ```
 > [!TIP]

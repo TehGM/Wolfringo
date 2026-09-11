@@ -10,6 +10,8 @@
         /// <summary>Default device to pass to the server when connecting.</summary>
         public const WolfDevice DefaultDevice = WolfDevice.Bot;
 
+        /// <summary>API Key to connect with. Must match the account that will be used to connect.</summary>
+        public string ApiKey { get; set; }
         /// <summary>WOLF server URL to connect to.</summary>
         public string ServerURL { get; set; } = DefaultServerURL;
         /// <summary>Device to connect as.</summary>

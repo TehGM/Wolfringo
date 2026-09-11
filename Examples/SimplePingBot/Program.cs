@@ -20,8 +20,9 @@ namespace TehGM.Wolfringo.Examples.SimplePingBot
             // optional: create a logger
             ILogger<WolfClient> log = CreateLogger<WolfClient>();
 
-            // create client and listen to events we're interested in
+            // create client, set API Key and listen to events we're interested in
             _client = new WolfClientBuilder()
+                .WithApiKey(Config.Load().ApiKey)
                 .WithLogging(log)
                 .Build();
             _client.MessageReceived += OnMessageReceived;               // This event is raised when client receives and parses any message type.

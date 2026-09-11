@@ -58,6 +58,8 @@ namespace TehGM.Wolfringo
         protected bool IgnoreOwnChatMessages { get; }
         /// <summary>Token used with the connection.</summary>
         protected string Token { get; }
+        /// <summary>API Key used to connect.</summary>
+        protected string ApiKey { get; }
         /// <summary>Socket client used by this WOLF client.</summary>
         protected ISocketClient SocketClient { get; }
         /// <summary>Callbacks dispatcher used by this WOLF client.</summary>
@@ -108,6 +110,7 @@ namespace TehGM.Wolfringo
             this.IgnoreOwnChatMessages = options.IgnoreOwnChatMessages;
             this.Url = options.ServerURL;
             this.Device = options.Device;
+            this.ApiKey = options.ApiKey;
             this.Token = tokenProvider.GetToken();
 
             // init dispatcher
@@ -187,8 +190,9 @@ namespace TehGM.Wolfringo
             this.Clear();
             await this.Cache.OnConnectingAsync(this, cancellationToken).ConfigureAwait(false);
             this._connectionCts = new CancellationTokenSource();
+            string path = $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket&apiKey={this.ApiKey}";
             await this.SocketClient.ConnectAsync(
-                new Uri(new Uri(this.Url), $"/socket.io/?token={this.Token}&device={device.ToString().ToLowerInvariant()}&EIO=3&transport=websocket"),
+                new Uri(new Uri(this.Url), path),
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -419,6 +423,8 @@ namespace TehGM.Wolfringo
                         // if welcome is already logged in, we can populate userID
                         if (msg is WelcomeEvent welcome && welcome.LoggedInUser != null)
                             this.CurrentUserID = welcome.LoggedInUser.ID;
+                        else if (msg is ObjectionEvent objection)
+                            this.Log?.LogError("Server objected: {Message}", objection.Message);
 
                         // cache
                         if (this.Cache != null)

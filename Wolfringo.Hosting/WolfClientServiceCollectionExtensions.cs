@@ -64,11 +64,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <seealso cref="HostedWolfClientOptions.LoginUsername"/>
         /// <seealso cref="HostedWolfClientOptions.LoginPassword"/>
         /// <seealso cref="HostedWolfClientOptions.LoginType"/>
+        [Obsolete("WOLF is making changes to require API Key to connect. Use overload that accepts API Key as a parameter")]
         public static IHostedWolfClientServiceBuilder SetCredentials(this IHostedWolfClientServiceBuilder builder, string login, string password, WolfLoginType loginType = WolfLoginType.Email)
+            => builder.SetCredentials(login, password, null, loginType);
+
+        /// <summary>Sets login credentials.</summary>
+        /// <param name="builder">Hosted WOLF Client Service builder.</param>
+        /// <param name="login">Login.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="apiKey">API Key. Must match API Key assigned for this user.</param>
+        /// <param name="loginType">Login Type.</param>
+        /// <seealso cref="HostedWolfClientOptions.LoginUsername"/>
+        /// <seealso cref="HostedWolfClientOptions.LoginPassword"/>
+        /// <seealso cref="HostedWolfClientOptions.LoginType"/>
+        public static IHostedWolfClientServiceBuilder SetCredentials(this IHostedWolfClientServiceBuilder builder, string login, string password, string apiKey, WolfLoginType loginType = WolfLoginType.Email)
             => builder.Configure(options =>
             {
                 options.LoginUsername = login;
                 options.LoginPassword = password;
+                options.ApiKey = apiKey;
                 options.LoginType = loginType;
             });
 

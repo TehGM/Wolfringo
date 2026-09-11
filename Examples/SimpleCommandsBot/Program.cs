@@ -19,6 +19,8 @@ namespace TehGM.Wolfringo.Examples.SimpleCommandsBot
 
             // create client with builder
             _client = new WolfClientBuilder()
+                // configure API Key
+                .WithApiKey(Config.Load().ApiKey)
                 // add logging
                 .WithLogging(CreateLoggerFactory())
                 // add commands

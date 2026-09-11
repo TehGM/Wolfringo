@@ -19,6 +19,8 @@ namespace TehGM.Wolfringo.Hosting
         /// <summary>Whether the hosted client should automatically login when connected.</summary>
         /// <remarks>Defaults to true.</remarks>
         public bool AutoLogin { get; set; } = true;
+        /// <summary>API Key to connect with. Must match the account that will be used to connect.</summary>
+        public string ApiKey { get; set; }
         /// <summary>Username to use as login when automatically logging in.</summary>
         public string LoginUsername { get; set; }
         /// <summary>Password to authenticate with when automatically logging in.</summary>

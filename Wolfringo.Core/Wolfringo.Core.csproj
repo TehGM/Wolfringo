@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net9.0</TargetFrameworks>
     <RootNamespace>TehGM.Wolfringo</RootNamespace>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <Authors>TehGM</Authors>
     <Product>Wolfringo</Product>
     <RepositoryUrl>https://github.com/TehGM/Wolfringo</RepositoryUrl>
@@ -11,25 +11,15 @@
     <Description>A .NET Library for WOLF (previously Palringo)</Description>
     <PackageProjectUrl>https://wolfringo.tehgm.net</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <AssemblyVersion>2.2.1.0</AssemblyVersion>
+    <FileVersion>2.2.1.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageTags>wolf palringo wolfringo pal bot client</PackageTags>
     <PackageIcon>wolfringo_logo.png</PackageIcon>
     <PackageReleaseNotes>
-		- Add IChatEmbedDeserializer to allow deserialization of chat embeds;
-		- Add support for Link and Image preview embeds;
-		- Chat Messages and retrieved chat histories will now have Embeds property properly populated;
-		- ChatMessageSendingOptions provide 2 predefined statics: DisableEmbeds and DisableLinkDetection;
-		- Update UrlMetadataMessage to use headers with version 2;
-		- Fix an error when a message containing an embed is received;
-		- Fix link metadata message not having a serializer registered with the provider;
-		- ChatMessageSerializer now has a constructor that takes a IChatEmbedDeserializer;
-		- ChatHistoryResponseSerializer now has a constructor that takes a IChatEmbedDeserializer;
-		- Removed unnecessary locks in CommandsSystem, MessageSerializerProvider and ResponseSerializerProvider;
-		- BuildDefaultServiceProvider protected methods are marked as obsolete in WolfClient and CommandsSystem;
+		- Support connecting with API Key.
 	</PackageReleaseNotes>
 	<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
   </PropertyGroup>

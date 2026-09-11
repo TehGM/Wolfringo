@@ -31,7 +31,7 @@ namespace TehGM.Wolfringo.Examples.HostedCommandsBot
                     // add wolf client
                     services.AddWolfClient()
                         /** Commented methods below override configuration from appsettings.json and appsecrets.json - use them if you want to override, or do not use config files **/
-                        //.SetCredentials("login", "password")              -- sets bot credentials. Note: it's recommended to not use this method, 
+                        //.SetCredentials("login", "password", "api key")   -- sets bot credentials. Note: it's recommended to not use this method, 
                         //                                                      and stick to config file that is excluded from the repository - such as appsettings.json in this example
                         //.SetAutoReconnectAttempts(15)                     -- sets auto reconnect attempts limit
                         //.SetAutoReconnectDelay(TimeSpan.FromSeconds(1))   -- sets delay between auto reconnect attempts
